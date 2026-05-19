@@ -151,7 +151,7 @@
                                 <span class="hidden md:block font-bold text-lg tracking-wider text-white">BC <span class="text-accent-gold">MANABÍ</span></span>
                             </div>
                             
-                            <!-- Unified Desktop Navigation Tabs (Items conditionally hidden in JS) -->
+                            <!-- Unified Desktop Navigation Tabs -->
                             <div id="supervisor-tabs" class="hidden md:block ml-10">
                                 <div class="flex space-x-4">
                                     <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-3 py-2 rounded-md text-sm font-semibold transition-colors bg-manabi-800 text-white flex items-center gap-2">
@@ -189,7 +189,7 @@
                     </div>
                 </div>
                 
-                <!-- Unified Mobile Navigation Menu (Items conditionally hidden in JS) -->
+                <!-- Unified Mobile Navigation Menu -->
                 <div id="supervisor-mobile-tabs" class="hidden md:hidden bg-manabi-950 px-2 pt-2 pb-3 space-y-1 flex justify-around border-t border-manabi-800">
                     <button onclick="switchTab('dashboard')" id="nav-mobile-dashboard" class="flex-1 py-2 text-xs font-medium rounded-md text-center text-white bg-manabi-800 flex flex-col items-center gap-1">
                         <i class="fas fa-chart-line text-base"></i> Dashboard
@@ -227,7 +227,7 @@
 
                     <!-- KPI Cards Grid -->
                     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                        <!-- Card 1: Saldo Neto de Bóveda (Excluyendo Supervisoras) -->
+                        <!-- Card 1: Saldo Neto de Bóveda -->
                         <div class="bg-white overflow-hidden shadow-md rounded-xl border border-slate-200">
                             <div class="p-5">
                                 <div class="flex items-center">
@@ -667,7 +667,7 @@
                         <!-- Spreadsheet View -->
                         <div class="overflow-x-auto custom-scrollbar">
                             <table class="min-w-full divide-y divide-slate-200 table-fixed">
-                                <head class="bg-slate-50 border-b border-slate-200">
+                                <thead class="bg-slate-50 border-b border-slate-200">
                                     <tr>
                                         <th scope="col" class="w-12 px-3 py-2 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider bg-slate-100 border-r border-slate-200">Fila</th>
                                         <th scope="col" class="w-36 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Código ID</th>
@@ -1186,9 +1186,9 @@ function createResponse(obj) {
         }
 
         function updateUI() {
-            let totalDeposits = 0;
+            let totalDepositsCents = 0;
             let countDeposits = 0;
-            let totalWithdrawals = 0;
+            let totalWithdrawalsCents = 0;
             let countWithdrawals = 0;
 
             // Sort transactions descending
@@ -1198,17 +1198,21 @@ function createResponse(obj) {
             const operativeTx = transactions.filter(tx => !isSupervisorOrAdmin(tx.user));
 
             operativeTx.forEach(tx => {
-                const amt = parseFloat(tx.amount);
+                // Multiplicamos por 100 y redondeamos para evitar perdida de precision con decimales en JS
+                const amtCents = Math.round(parseFloat(tx.amount) * 100);
                 if (tx.type === 'deposito') {
-                    totalDeposits += amt;
+                    totalDepositsCents += amtCents;
                     countDeposits++;
                 } else {
-                    totalWithdrawals += amt;
+                    totalWithdrawalsCents += amtCents;
                     countWithdrawals++;
                 }
             });
 
-            const netBalance = totalDeposits - totalWithdrawals;
+            const netBalanceCents = totalDepositsCents - totalWithdrawalsCents;
+            const netBalance = netBalanceCents / 100;
+            const totalDeposits = totalDepositsCents / 100;
+            const totalWithdrawals = totalWithdrawalsCents / 100;
 
             // Update main counters
             const balanceEl = document.getElementById('kpi-balance');
@@ -1354,8 +1358,10 @@ function createResponse(obj) {
                 const d = tx.date.split(' ')[0];
                 if (dates.includes(d)) {
                     const u = USER_DATABASE[tx.user] ? USER_DATABASE[tx.user].name : tx.user;
-                    if (!userTotals[d][u]) userTotals[d][u] = 0;
-                    userTotals[d][u] += (tx.type === 'deposito' ? tx.amount : -tx.amount);
+                    if (!userTotals[d][u]) userTotals[d][u] = 0; // Usaremos centavos internamente
+                    
+                    const amtCents = Math.round(parseFloat(tx.amount) * 100);
+                    userTotals[d][u] += (tx.type === 'deposito' ? amtCents : -amtCents);
                 }
             });
 
@@ -1365,7 +1371,7 @@ function createResponse(obj) {
             const datasets = uniqueUsers.map((user, idx) => {
                 return {
                     label: user,
-                    data: dates.map(d => userTotals[d][user] || 0),
+                    data: dates.map(d => (userTotals[d][user] || 0) / 100), // Convertimos de vuelta a dólares
                     backgroundColor: colors[idx % colors.length],
                     borderRadius: 4
                 };
@@ -1395,7 +1401,10 @@ function createResponse(obj) {
         function handleTransactionSubmit(e) {
             e.preventDefault();
 
-            const amountVal = parseFloat(document.getElementById('amount').value);
+            let amountVal = parseFloat(document.getElementById('amount').value);
+            // Garantizamos estricto redondeo a 2 decimales en la captura inicial
+            amountVal = Math.round(amountVal * 100) / 100;
+            
             const movNum = document.getElementById('movement_number').value.trim();
             const dateVal = document.getElementById('live-clock').value;
             const conceptVal = document.getElementById('concept').value.trim();
@@ -1428,11 +1437,10 @@ function createResponse(obj) {
             resetForm();
             updateUI();
 
-            if (isSupervisorOrAdmin(currentUser)) {
-                switchTab('dashboard');
-            } else {
-                switchTab('transaction');
-            }
+            // ACTUALIZACIÓN DE LÓGICA SOLICITADA:
+            // Sin importar si es supervisor o auditor, los obligamos a mantenerse en la pestaña de transacción 
+            // de modo que puedan seguir ingresando más montos ininterrumpidamente.
+            switchTab('transaction');
         }
 
         function resetForm() {
@@ -1450,39 +1458,44 @@ function createResponse(obj) {
         function calculateExpectedCash() {
             // Find current user expected cash: Deposits - Withdrawals of the current user
             const myTx = transactions.filter(tx => tx.user === currentUser);
-            let expected = 0;
+            let expectedCents = 0;
             myTx.forEach(tx => {
+                const amtCents = Math.round(parseFloat(tx.amount) * 100);
                 if (tx.type === 'deposito') {
-                    expected += tx.amount;
+                    expectedCents += amtCents;
                 } else {
-                    expected -= tx.amount;
+                    expectedCents -= amtCents;
                 }
             });
+            const expected = expectedCents / 100;
             document.getElementById('reconcile-expected-view').innerText = formatCurrency(expected);
             document.getElementById('reconcile-expected-view').dataset.expected = expected;
         }
 
         function calculateReconcile() {
             const denomInputs = document.querySelectorAll('.denom-input');
-            let physicalTotal = 0;
+            let physicalTotalCents = 0;
 
             denomInputs.forEach(input => {
                 const count = parseInt(input.value) || 0;
-                const value = parseFloat(input.dataset.value);
-                physicalTotal += (count * value);
+                const valueCents = Math.round(parseFloat(input.dataset.value) * 100);
+                physicalTotalCents += (count * valueCents);
             });
 
+            const physicalTotal = physicalTotalCents / 100;
             document.getElementById('reconcile-physical-view').innerText = formatCurrency(physicalTotal);
             document.getElementById('reconcile-physical-view').dataset.physical = physicalTotal;
 
             const expected = parseFloat(document.getElementById('reconcile-expected-view').dataset.expected) || 0;
-            const difference = physicalTotal - expected;
+            // Cálculo en centavos
+            const differenceCents = physicalTotalCents - Math.round(expected * 100);
+            const difference = differenceCents / 100;
 
             const diffBox = document.getElementById('reconcile-diff-box');
-            if (Math.abs(difference) < 0.009) {
+            if (differenceCents === 0) {
                 diffBox.innerText = `Caja Balanceada ($0.00)`;
                 diffBox.className = "p-3 rounded-lg text-center font-bold text-sm bg-emerald-50 text-emerald-700 border border-emerald-200";
-            } else if (difference > 0) {
+            } else if (differenceCents > 0) {
                 diffBox.innerText = `Sobrante (+${formatCurrency(difference)})`;
                 diffBox.className = "p-3 rounded-lg text-center font-bold text-sm bg-amber-50 text-amber-700 border border-amber-200";
             } else {
@@ -1500,18 +1513,21 @@ function createResponse(obj) {
         function submitReconciliation() {
             const expected = parseFloat(document.getElementById('reconcile-expected-view').dataset.expected) || 0;
             const physical = parseFloat(document.getElementById('reconcile-physical-view').dataset.physical) || 0;
-            const difference = physical - expected;
+            
+            // Usar cálculo basado en centavos para estricta precisión de validación
+            const differenceCents = Math.round(physical * 100) - Math.round(expected * 100);
+            const difference = differenceCents / 100;
             const observations = document.getElementById('reconcile-obs').value.trim();
 
             let stateTitle = "";
             let stateMsg = "";
             let confirmBtnText = "Proceder a Firmar";
 
-            if (Math.abs(difference) < 0.009) {
+            if (differenceCents === 0) {
                 stateTitle = "Caja Cuadrada Correctamente";
                 stateMsg = "¡Felicidades! Todo cuadra perfectamente. No se registran diferencias contables. ¿Desea reportar y guardar este arqueo?";
                 confirmBtnText = "Sí, Guardar Cuadre";
-            } else if (difference > 0) {
+            } else if (differenceCents > 0) {
                 stateTitle = "Arqueo con Sobrante de Caja";
                 stateMsg = `Atención: Se ha detectado un SOBRANTE de efectivo por valor de ${formatCurrency(difference)}. ¿Desea reportar este excedente de dinero bajo su firma digital?`;
                 confirmBtnText = "Guardar con Sobrante";
@@ -1658,7 +1674,7 @@ function createResponse(obj) {
                         <x:Name>Planilla BC Manabí</x:Name>
                         <x:WorksheetOptions>
                           <x:DisplayGridlines/>
-                        </WorksheetOptions>
+                        </x:WorksheetOptions>
                       </x:ExcelWorksheet>
                     </x:ExcelWorksheets>
                   </x:ExcelWorkbook>
