@@ -1,549 +1,1692 @@
-```react
-/**
- * NovaShop Pro Enterprise - Edición para GitHub
- * Lenguaje: JavaScript (React)
- * Estilo: Tailwind CSS
- * Backend: Firebase Firestore & Auth
- */
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BC Manabí - Portal de Transacciones</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { initializeApp } from 'firebase/app';
-import { 
-  getFirestore, collection, doc, onSnapshot, 
-  addDoc, updateDoc, deleteDoc, serverTimestamp 
-} from 'firebase/firestore';
-import { 
-  getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken 
-} from 'firebase/auth';
-import { 
-  ShoppingCart, Search, Plus, Star, X, TrendingUp, Package, Trash2, 
-  ChevronRight, User, Lock, CheckCircle, Truck, CreditCard, 
-  MapPin, LayoutDashboard, BarChart3, Box, History, ArrowLeft,
-  DollarSign, ShoppingBag, Settings, Briefcase, Globe, ArrowUpRight, 
-  Smartphone, Github, Code2
-} from 'lucide-react';
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        manabi: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#bbdffd',
+                            300: '#7cc4fa',
+                            400: '#33a7f5',
+                            500: '#0a8be3',
+                            600: '#006ec1',
+                            700: '#00589d',
+                            800: '#054b81',
+                            900: '#0a3f6c',
+                            950: '#072848',
+                        },
+                        accent: {
+                            gold: '#D4AF37',
+                            goldHover: '#C5A028'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar for Spreadsheet View */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="h-full font-sans antialiased text-slate-800">
 
-// --- CONFIGURACIÓN DE INFRAESTRUCTURA ---
-const firebaseConfig = JSON.parse(__firebase_config);
-const firebaseApp = initializeApp(firebaseConfig);
-const auth = getAuth(firebaseApp);
-const db = getFirestore(firebaseApp);
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'novashop-github-repo';
+    <div id="app" class="min-h-screen flex flex-col justify-between">
 
-// --- COMPONENTES DE INTERFAZ (UI COMPONENTS) ---
+        <!-- Login Wrapper -->
+        <div id="login-screen" class="flex-1 flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-slate-900 bg-cover bg-center" style="background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.95), rgba(7, 40, 72, 0.95)), url('https://www.bcmanabi.com/img/LOGOP2.jpg');">
+            <div class="sm:mx-auto sm:w-full sm:max-w-md">
+                <div class="flex justify-center">
+                    <!-- Brand Logo with Fallback -->
+                    <img class="h-20 w-auto rounded-lg shadow-2xl border-2 border-manabi-600 bg-white p-2" 
+                         src="https://www.bcmanabi.com/img/LOGOP2.jpg" 
+                         onerror="this.src='https://placehold.co/200x80/054b81/ffffff?text=BC+MANABI'"
+                         alt="Banco Comercial de Manabí">
+                </div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-white tracking-tight">
+                    Portal de Registro Diario
+                </h2>
+                <p class="mt-2 text-center text-sm text-manabi-300">
+                    Control de Caja y Conciliación Automatizada
+                </p>
+            </div>
 
-/**
- * Tarjeta de métricas para el Dashboard de Administrador
- */
-const MetricCard = ({ label, value, icon: Icon, color, trend }) => (
-  <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 group">
-    <div className="flex justify-between items-start mb-6">
-      <div className={`${color} p-4 rounded-2xl shadow-inner group-hover:scale-110 transition-transform`}>
-        <Icon className="w-6 h-6" />
-      </div>
-      {trend && (
-        <span className="flex items-center gap-1 text-[10px] font-black text-emerald-500 bg-emerald-50 px-2.5 py-1 rounded-lg">
-          <ArrowUpRight className="w-3 h-3" /> {trend}
-        </span>
-      )}
-    </div>
-    <p className="text-slate-400 font-black text-[10px] uppercase tracking-[0.2em] mb-1">{label}</p>
-    <p className="text-3xl font-black text-slate-900 tracking-tighter">{value}</p>
-  </div>
-);
+            <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
+                <div class="bg-white py-8 px-4 shadow-2xl rounded-2xl sm:px-10 border border-slate-100">
+                    
+                    <form id="login-form" class="space-y-6">
+                        <div>
+                            <label for="username" class="block text-sm font-semibold text-slate-700">Usuario o Email Bancario</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fas fa-user-circle text-sm"></i>
+                                </div>
+                                <select id="username" name="username" class="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 focus:border-manabi-500 sm:text-sm bg-slate-50 font-medium">
+                                    <option value="cajero1@bcmanabi.com" selected>Cajera Principal (María Auxiliadora)</option>
+                                    <option value="cajero2@bcmanabi.com">Cajero Auxiliar (José Delgado)</option>
+                                    <option value="supervisor@bcmanabi.com">Supervisor (Ing. Supervisor Manabí)</option>
+                                    <option value="admin@bcmanabi.com">Administrador General (Auditor)</option>
+                                </select>
+                            </div>
+                        </div>
 
-/**
- * Modal Profesional para Gestión de Inventario
- */
-const InventoryForm = ({ isOpen, onClose, form, setForm, onSave, loading }) => {
-  if (!isOpen) return null;
-  return (
-    <div className="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-xl flex items-center justify-center p-6 animate-in fade-in duration-300">
-      <div className="bg-white p-10 rounded-[3.5rem] shadow-2xl w-full max-w-2xl border border-slate-100 max-h-[95vh] overflow-y-auto no-scrollbar relative">
-        <button onClick={onClose} className="absolute top-10 right-10 bg-slate-50 p-3 rounded-full hover:bg-rose-50 hover:text-rose-600 transition-all">
-          <X className="w-6 h-6" />
-        </button>
-        <div className="mb-10 text-center md:text-left">
-          <h2 className="text-3xl font-black text-slate-900 tracking-tighter mb-2 flex items-center justify-center md:justify-start gap-3 italic">
-            <div className="bg-indigo-600 text-white p-2 rounded-xl shadow-lg"><Plus className="w-6 h-6" /></div> 
-            Despliegue de Inventario
-          </h2>
-          <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Añadir nuevos recursos al repositorio de la tienda</p>
+                        <div>
+                            <label for="password" class="block text-sm font-semibold text-slate-700">Contraseña de Firma Digital</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fas fa-key text-sm"></i>
+                                </div>
+                                <input id="password" name="password" type="password" required 
+                                       placeholder="••••••••"
+                                       class="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 focus:border-manabi-500 sm:text-sm">
+                            </div>
+                            <div class="mt-2 text-right">
+                                <button type="button" onclick="showResetPasswordModal()" class="text-[11px] text-manabi-600 hover:text-manabi-800 hover:underline">
+                                    <i class="fas fa-unlock-alt mr-1"></i>¿Olvidó su contraseña? (Usar Código Maestro)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="login-error" class="hidden text-xs text-rose-600 font-semibold bg-rose-50 p-2.5 rounded-lg border border-rose-200 flex items-center gap-2">
+                            <i class="fas fa-exclamation-circle text-sm"></i>
+                            <span id="login-error-text">Credenciales incorrectas</span>
+                        </div>
+
+                        <div>
+                            <button type="submit" 
+                                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-bold text-white bg-manabi-700 hover:bg-manabi-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-manabi-500 transition-all transform active:scale-95">
+                                <i class="fas fa-unlock-alt mr-2 mt-0.5"></i> Autenticar Firma de Caja
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="mt-6 pt-6 border-t border-slate-200 flex flex-col items-center gap-2">
+                        <span class="text-[11px] text-slate-400 flex items-center justify-center">
+                            <i class="fas fa-shield-alt mr-1.5 text-manabi-500"></i> Sistema Seguro de Auditoría BC Manabí
+                        </span>
+                        <a href="https://www.facebook.com/photo/?fbid=1203859851892796&set=a.498074075804714" target="_blank" class="text-[10px] text-slate-400 hover:text-manabi-600 text-center px-4">
+                            Comunicado Oficial Banco Comercial de Manabí
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <form onSubmit={onSave} className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Nombre del Producto</label>
-              <input required type="text" placeholder="Ej. iPhone 15 Pro" className="w-full bg-slate-50 border-2 border-transparent rounded-2xl p-5 font-bold outline-none focus:border-indigo-600 focus:bg-white transition-all shadow-inner" value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Categoría</label>
-              <select className="w-full bg-slate-50 border-2 border-transparent rounded-2xl p-5 font-bold outline-none appearance-none cursor-pointer focus:border-indigo-600 focus:bg-white shadow-inner" value={form.category} onChange={e => setForm({...form, category: e.target.value})}>
-                <option>Tecnología</option><option>Audio</option><option>Hogar</option><option>Accesorios</option>
-              </select>
-            </div>
-          </div>
+        <div id="dashboard-screen" class="hidden flex-1 flex flex-col bg-slate-100">
+            <!-- Header Nav -->
+            <nav class="bg-manabi-900 border-b border-manabi-950 text-white shadow-lg sticky top-0 z-40">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex items-center justify-between h-16">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 flex items-center gap-2">
+                                <img class="h-10 w-auto rounded bg-white p-0.5" src="https://www.bcmanabi.com/img/LOGOP2.jpg" onerror="this.src='https://placehold.co/100x40/ffffff/054b81?text=BCM'" alt="Logo">
+                                <span class="hidden md:block font-bold text-lg tracking-wider text-white">BC <span class="text-accent-gold">MANABÍ</span></span>
+                            </div>
+                            
+                            <!-- Supervisor Navigation Tabs (Hidden for Cajeros) -->
+                            <div id="supervisor-tabs" class="hidden md:block ml-10">
+                                <div class="flex space-x-4">
+                                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-3 py-2 rounded-md text-sm font-semibold transition-colors bg-manabi-800 text-white flex items-center gap-2">
+                                        <i class="fas fa-chart-line"></i> Dashboard
+                                    </button>
+                                    <button onclick="switchTab('transaction')" id="nav-transaction" class="px-3 py-2 rounded-md text-sm font-semibold transition-colors text-manabi-200 hover:text-white hover:bg-manabi-800 flex items-center gap-2">
+                                        <i class="fas fa-plus-circle"></i> Registrar Transacción
+                                    </button>
+                                    <button onclick="switchTab('spreadsheet')" id="nav-spreadsheet" class="px-3 py-2 rounded-md text-sm font-semibold transition-colors text-manabi-200 hover:text-white hover:bg-manabi-800 flex items-center gap-2">
+                                        <i class="fas fa-table"></i> Hoja de Cálculo
+                                    </button>
+                                    <button onclick="switchTab('sync')" id="nav-sync" class="px-3 py-2 rounded-md text-sm font-semibold transition-colors text-manabi-200 hover:text-white hover:bg-manabi-800 flex items-center gap-2">
+                                        <i class="fas fa-sync-alt"></i> Sincronizar Sheets
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Costo ($)</label>
-              <input required type="number" step="0.01" className="w-full bg-slate-50 border-none rounded-2xl p-5 font-bold outline-none shadow-inner" value={form.costPrice} onChange={e => setForm({...form, costPrice: e.target.value})} />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Venta ($)</label>
-              <input required type="number" step="0.01" className="w-full bg-slate-50 border-none rounded-2xl p-5 font-bold outline-none shadow-inner" value={form.price} onChange={e => setForm({...form, price: e.target.value})} />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Stock</label>
-              <input required type="number" className="w-full bg-slate-50 border-none rounded-2xl p-5 font-bold outline-none shadow-inner" value={form.stock} onChange={e => setForm({...form, stock: e.target.value})} />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">URL Imagen HQ (Procura subir a un hosting)</label>
-            <input required type="url" placeholder="https://images.unsplash.com/..." className="w-full bg-slate-50 border-none rounded-2xl p-5 font-bold outline-none shadow-inner" value={form.image} onChange={e => setForm({...form, image: e.target.value})} />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Especificaciones / Detalles</label>
-            <textarea rows="3" className="w-full bg-slate-50 border-none rounded-2xl p-5 font-bold outline-none shadow-inner resize-none" value={form.description} onChange={e => setForm({...form, description: e.target.value})}></textarea>
-          </div>
-
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="w-full bg-slate-900 text-white py-6 rounded-[2.5rem] font-black text-xl shadow-2xl hover:bg-indigo-600 transition-all flex items-center justify-center gap-4 active:scale-95 disabled:bg-slate-300"
-          >
-            {loading ? <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div> : <><CheckCircle className="w-6 h-6" /> Confirmar en Base de Datos</>}
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-// --- APLICACIÓN PRINCIPAL (APP MODULE) ---
-
-export default function App() {
-  // --- ESTADOS PERSISTENTES (FIREBASE SYNC) ---
-  const [user, setUser] = useState(null);
-  const [view, setView] = useState('store'); // store | detail | admin | checkout
-  const [products, setProducts] = useState([]);
-  const [sales, setSales] = useState([]);
-  const [cart, setCart] = useState([]);
-  const [selectedProductId, setSelectedProductId] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isActionLoading, setIsActionLoading] = useState(false);
-
-  // --- ESTADOS DE UI & FILTROS ---
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("Todos");
-
-  // --- ESTADOS DE FORMULARIOS ---
-  const [productForm, setProductForm] = useState({
-    title: '', price: '', costPrice: '', stock: '', category: 'Tecnología', image: '', description: '', specs: ''
-  });
-  const [checkoutOrder, setCheckoutOrder] = useState({ name: '', phone: '', city: 'Portoviejo', address: '', method: 'Transferencia' });
-  const [isOrderComplete, setIsOrderComplete] = useState(false);
-
-  // --- SINCRONIZACIÓN EN TIEMPO REAL ---
-  useEffect(() => {
-    const authHandler = async () => {
-      try {
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-          await signInWithCustomToken(auth, __initial_auth_token);
-        } else { await signInAnonymously(auth); }
-      } catch (err) { console.error("Auth Failure", err); }
-    };
-    authHandler();
-    return onAuthStateChanged(auth, setUser);
-  }, []);
-
-  useEffect(() => {
-    if (!user) return;
-    const prodsRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
-    const salesRef = collection(db, 'artifacts', appId, 'public', 'data', 'sales');
-
-    const unsubP = onSnapshot(prodsRef, (snapshot) => {
-      setProducts(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-      setIsLoading(false);
-    });
-    const unsubS = onSnapshot(salesRef, (snapshot) => {
-      setSales(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-    });
-    return () => { unsubP(); unsubS(); };
-  }, [user]);
-
-  // --- LÓGICA DE COMPUTACIÓN (USEMEMO) ---
-  const filteredProducts = useMemo(() => {
-    return products.filter(p => {
-      const matchSearch = p.title?.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchCat = activeCategory === "Todos" || p.category === activeCategory;
-      return matchSearch && matchCat;
-    });
-  }, [products, searchQuery, activeCategory]);
-
-  const cartTotal = useMemo(() => cart.reduce((acc, item) => acc + (item.price * item.quantity), 0), [cart]);
-
-  // --- CONTROLADORES DE EVENTOS (HANDLERS) ---
-  const handleAddToCart = (p) => {
-    if (p.stock <= 0) return;
-    const exists = cart.find(item => item.id === p.id);
-    if (exists) {
-      setCart(cart.map(item => item.id === p.id ? { ...item, quantity: item.quantity + 1 } : item));
-    } else {
-      setCart([...cart, { ...p, quantity: 1 }]);
-    }
-  };
-
-  const handleSaveProduct = async (e) => {
-    e.preventDefault();
-    setIsActionLoading(true);
-    try {
-      const data = {
-        ...productForm,
-        price: parseFloat(productForm.price),
-        costPrice: parseFloat(productForm.costPrice),
-        stock: parseInt(productForm.stock),
-        rating: 5.0,
-        createdAt: serverTimestamp()
-      };
-      await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), data);
-      setIsAddProductModalOpen(false);
-      setProductForm({ title: '', price: '', costPrice: '', stock: '', category: 'Tecnología', image: '', description: '', specs: '' });
-    } catch (err) { console.error("Error al guardar:", err); } finally { setIsActionLoading(false); }
-  };
-
-  const handleFinalCheckout = async () => {
-    setIsActionLoading(true);
-    const totalCost = cart.reduce((a, b) => a + (b.costPrice * b.quantity), 0);
-    const shipping = checkoutOrder.city === 'Nacional' ? 5 : 2.5;
-    
-    const record = {
-      date: new Date().toISOString(),
-      customer: checkoutOrder,
-      total: cartTotal + shipping,
-      profit: cartTotal - totalCost,
-      status: 'Enviado'
-    };
-
-    try {
-      await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'sales'), record);
-      
-      // Integración WhatsApp API
-      const waText = `*Orden NovaShop Pro*%0A*Nombre:* ${checkoutOrder.name}%0A*Destino:* ${checkoutOrder.city}%0A*Monto:* $${(cartTotal+shipping).toFixed(2)}`;
-      window.open(`https://wa.me/593900000000?text=${waText}`, '_blank');
-
-      // Actualización de Inventario (Realtime)
-      for (const item of cart) {
-        const ref = doc(db, 'artifacts', appId, 'public', 'data', 'products', item.id);
-        await updateDoc(ref, { stock: Math.max(0, item.stock - item.quantity) });
-      }
-
-      setCart([]);
-      setIsOrderComplete(true);
-    } catch (e) { console.error("Error Checkout:", e); } finally { setIsActionLoading(false); }
-  };
-
-  if (isLoading) return <LoadingScreen />;
-
-  return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-indigo-100">
-      
-      {/* HEADER PREMIUM (ENGINEERING STYLE) */}
-      <header className="sticky top-0 z-[80] bg-white/70 backdrop-blur-2xl border-b border-slate-100">
-        <div className="container mx-auto px-6 h-24 flex items-center justify-between gap-10">
-          <div className="flex items-center gap-12">
-            <div onClick={() => { setView('store'); setIsOrderComplete(false); }} className="flex items-center gap-3 cursor-pointer group">
-              <div className="bg-slate-950 text-white p-3 rounded-2xl shadow-xl shadow-indigo-100 group-hover:bg-indigo-600 transition-all group-hover:rotate-6">
-                <Briefcase className="w-6 h-6" />
-              </div>
-              <span className="text-3xl font-black tracking-tighter">Nova<span className="text-indigo-600 italic font-black">Shop</span></span>
-            </div>
-            
-            <nav className="hidden lg:flex items-center gap-2">
-              <button onClick={() => setView('store')} className={`px-6 py-2.5 rounded-xl text-sm font-black transition-all ${view === 'store' || view === 'detail' ? 'bg-slate-950 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Tienda</button>
-              {isAdmin && <button onClick={() => setView('admin')} className={`px-6 py-2.5 rounded-xl text-sm font-black transition-all ${view === 'admin' ? 'bg-slate-950 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Admin Panel</button>}
+                        <!-- User Profile Area -->
+                        <div class="flex items-center gap-4">
+                            <div class="text-right">
+                                <div id="display-user-name" class="text-sm font-bold text-white">Nombre Usuario</div>
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                    <div id="display-user-role" class="text-xs text-manabi-300 font-semibold tracking-wider uppercase">Rol Asignado</div>
+                                </div>
+                            </div>
+                            <button onclick="handleLogout()" class="bg-manabi-800 p-2 rounded-lg text-manabi-200 hover:text-white hover:bg-red-600 transition-all duration-200 shadow-inner" title="Cerrar sesión">
+                                <i class="fas fa-sign-out-alt"></i> Terminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Navigation Menu for Supervisor (Hidden for Cajeros) -->
+                <div id="supervisor-mobile-tabs" class="hidden md:hidden bg-manabi-950 px-2 pt-2 pb-3 space-y-1 flex justify-around border-t border-manabi-800">
+                    <button onclick="switchTab('dashboard')" id="nav-mobile-dashboard" class="flex-1 py-2 text-xs font-medium rounded-md text-center text-white bg-manabi-800 flex flex-col items-center gap-1">
+                        <i class="fas fa-chart-line text-base"></i> Dashboard
+                    </button>
+                    <button onclick="switchTab('transaction')" id="nav-mobile-transaction" class="flex-1 py-2 text-xs font-medium rounded-md text-center text-manabi-300 hover:text-white flex flex-col items-center gap-1">
+                        <i class="fas fa-plus-circle text-base"></i> Registrar
+                    </button>
+                    <button onclick="switchTab('spreadsheet')" id="nav-mobile-spreadsheet" class="flex-1 py-2 text-xs font-medium rounded-md text-center text-manabi-300 hover:text-white flex flex-col items-center gap-1">
+                        <i class="fas fa-table text-base"></i> Hoja
+                    </button>
+                    <button onclick="switchTab('sync')" id="nav-mobile-sync" class="flex-1 py-2 text-xs font-medium rounded-md text-center text-manabi-300 hover:text-white flex flex-col items-center gap-1">
+                        <i class="fas fa-sync-alt text-base"></i> Sincronizar
+                    </button>
+                </div>
             </nav>
-          </div>
 
-          <div className="flex-1 max-w-xl hidden md:block relative group">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-indigo-600 transition-colors" />
-            <input 
-              type="text" 
-              placeholder="Buscar tecnología de alto rendimiento..." 
-              className="w-full bg-slate-50 border-2 border-transparent rounded-3xl py-4 pl-14 pr-6 text-sm font-bold outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/5 transition-all shadow-inner"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-            />
-          </div>
+            <!-- Alert Toast Message container -->
+            <div id="toast-container" class="fixed top-4 right-4 z-50 pointer-events-none flex flex-col gap-2"></div>
 
-          <div className="flex items-center gap-4">
-            <button onClick={() => isAdmin ? setIsAdmin(false) : setIsLoginModalOpen(true)} className={`p-4 rounded-2xl transition-all ${isAdmin ? 'bg-indigo-600 text-white' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>
-              {isAdmin ? <Settings className="w-6 h-6 animate-spin-slow" /> : <User className="w-6 h-6" />}
-            </button>
-            <button onClick={() => setView('checkout')} className="relative bg-slate-950 text-white p-4 rounded-2xl hover:bg-indigo-600 transition-all shadow-2xl active:scale-95">
-              <ShoppingCart className="w-6 h-6" />
-              {cart.length > 0 && <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-black w-6 h-6 flex items-center justify-center rounded-full border-4 border-white animate-pulse">{cart.reduce((a,b)=>a+b.quantity,0)}</span>}
-            </button>
-          </div>
-        </div>
-      </header>
+            <!-- Content Container -->
+            <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1">
+                
+                <div id="tab-content-dashboard" class="space-y-6">
+                    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                        <!-- Card 1: Saldo Neto -->
+                        <div class="bg-white overflow-hidden shadow-md rounded-xl border border-slate-200">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 bg-manabi-100 rounded-lg p-3 text-manabi-600">
+                                        <i class="fas fa-vault text-2xl"></i>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                                Saldo Diario en Bóveda
+                                            </dt>
+                                            <dd class="flex items-baseline">
+                                                <div id="kpi-balance" class="text-2xl font-bold text-slate-950">
+                                                    $0.00
+                                                </div>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 px-5 py-3 border-t border-slate-100 flex items-center justify-between">
+                                <span class="text-xs text-slate-500 font-medium">Flujo contable consolidado</span>
+                                <i class="fas fa-info-circle text-slate-400 text-xs" title="Total de depósitos menos retiros procesados hoy."></i>
+                            </div>
+                        </div>
 
-      {/* RENDERIZADO DE VISTAS (SPA PATTERN) */}
-      <main className="container mx-auto px-6 py-12">
-        
-        {view === 'store' && (
-          <div className="animate-in fade-in duration-700">
-            {/* HERO EXECUTIVE */}
-            <div className="relative mb-24 rounded-[4rem] overflow-hidden bg-slate-900 h-[550px] flex items-center shadow-2xl border-4 border-white">
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&q=80&w=2000')] bg-cover bg-center opacity-30"></div>
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/60 to-transparent"></div>
-              <div className="relative z-10 px-12 md:px-24 max-w-4xl text-white">
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 w-fit px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest mb-10 shadow-xl">
-                  <Globe className="w-3 h-3 text-indigo-400" /> Manabí Hub • Portoviejo & Manta
-                </div>
-                <h1 className="text-6xl md:text-8xl font-black leading-[0.85] tracking-tighter mb-10 italic">
-                  Innovación <br/><span className="text-indigo-400">sin límites.</span>
-                </h1>
-                <p className="text-xl text-slate-300 font-medium mb-12 max-w-lg leading-relaxed">NovaShop Enterprise: La curaduría tecnológica más exclusiva de la provincia. Ingeniería certificada a tu alcance.</p>
-                <div className="flex flex-wrap gap-5">
-                  <button className="bg-indigo-600 text-white px-12 py-5 rounded-3xl font-black text-lg hover:scale-105 transition-transform shadow-2xl shadow-indigo-600/30">Explorar Catálogo</button>
-                  <button className="bg-white/10 backdrop-blur-md px-12 py-5 rounded-3xl font-black text-lg border border-white/20 hover:bg-white/20 transition-all">Soporte Técnico</button>
-                </div>
-              </div>
-            </div>
+                        <!-- Card 2: Depósitos -->
+                        <div class="bg-white overflow-hidden shadow-md rounded-xl border border-slate-200">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 bg-emerald-100 rounded-lg p-3 text-emerald-600">
+                                        <i class="fas fa-arrow-alt-circle-up text-2xl"></i>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                                Ingresos de Caja
+                                            </dt>
+                                            <dd class="flex items-baseline">
+                                                <div id="kpi-deposits" class="text-2xl font-bold text-emerald-600">
+                                                    $0.00
+                                                </div>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-emerald-50/50 px-5 py-3 border-t border-slate-100 flex items-center justify-between">
+                                <span id="kpi-deposits-count" class="text-xs text-emerald-700 font-bold">0 depósitos</span>
+                                <i class="fas fa-circle-chevron-up text-emerald-500 text-xs"></i>
+                            </div>
+                        </div>
 
-            {/* SECCIÓN DE PRODUCTOS */}
-            <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-8 px-4">
-              <div>
-                <h2 className="text-4xl font-black text-slate-900 tracking-tighter italic">Elegidos por Ingeniería</h2>
-                <div className="h-2 w-32 bg-gradient-to-r from-indigo-600 to-transparent rounded-full mt-4"></div>
-              </div>
-              <div className="flex gap-2 p-1.5 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-x-auto no-scrollbar max-w-full">
-                {["Todos", "Tecnología", "Audio", "Hogar", "Accesorios"].map(cat => (
-                  <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-8 py-3 rounded-xl text-sm font-black transition-all whitespace-nowrap ${activeCategory === cat ? 'bg-indigo-600 text-white shadow-xl' : 'text-slate-400 hover:text-indigo-600'}`}>{cat}</button>
-                ))}
-              </div>
-            </div>
+                        <!-- Card 3: Retiros -->
+                        <div class="bg-white overflow-hidden shadow-md rounded-xl border border-slate-200">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 bg-rose-100 rounded-lg p-3 text-rose-600">
+                                        <i class="fas fa-arrow-alt-circle-down text-2xl"></i>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                                Egresos de Caja
+                                            </dt>
+                                            <dd class="flex items-baseline">
+                                                <div id="kpi-withdrawals" class="text-2xl font-bold text-rose-600">
+                                                    $0.00
+                                                </div>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-rose-50/50 px-5 py-3 border-t border-slate-100 flex items-center justify-between">
+                                <span id="kpi-withdrawals-count" class="text-xs text-rose-700 font-bold">0 retiros</span>
+                                <i class="fas fa-circle-chevron-down text-rose-500 text-xs"></i>
+                            </div>
+                        </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
-              {filteredProducts.map(p => (
-                <div key={p.id} className="group bg-white rounded-[3.5rem] p-6 border border-slate-50 hover:shadow-[0_40px_80px_-15px_rgba(0,0,0,0.08)] transition-all duration-700 flex flex-col relative">
-                  <div className="relative aspect-square mb-8 bg-slate-50 rounded-[2.5rem] overflow-hidden cursor-pointer" onClick={() => { setSelectedProductId(p.id); setView('detail'); }}>
-                    <img src={p.image} className="w-full h-full object-contain p-10 mix-blend-multiply group-hover:scale-110 transition-transform duration-700" alt={p.title} />
-                    <button onClick={(e) => { e.stopPropagation(); handleAddToCart(p); }} disabled={p.stock <= 0} className="absolute bottom-6 right-6 bg-slate-950 text-white p-5 rounded-[2rem] shadow-2xl opacity-0 group-hover:opacity-100 translate-y-6 group-hover:translate-y-0 transition-all hover:bg-indigo-600 active:scale-90"><Plus className="w-7 h-7" /></button>
-                  </div>
-                  <div className="flex-1 px-2 flex flex-col">
-                    <div className="flex justify-between items-center mb-3">
-                      <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">{p.category}</p>
-                      <div className="flex items-center gap-1 text-amber-500 font-bold text-[10px]"><Star className="w-3 h-3 fill-current" /> {p.rating}</div>
+                        <!-- Card 4: Sincronización -->
+                        <div class="bg-white overflow-hidden shadow-md rounded-xl border border-slate-200">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div id="sync-status-icon-bg" class="flex-shrink-0 bg-amber-100 rounded-lg p-3 text-amber-600">
+                                        <i id="sync-status-icon" class="fas fa-unlink text-2xl"></i>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                                Google Sheets
+                                            </dt>
+                                            <dd class="flex items-baseline">
+                                                <div id="sync-status-text" class="text-base font-bold text-slate-800 truncate">
+                                                    No Vinculado
+                                                </div>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 px-5 py-3 border-t border-slate-100 flex items-center justify-between">
+                                <button onclick="switchTab('sync')" class="text-xs text-manabi-600 hover:text-manabi-800 font-bold flex items-center gap-1">
+                                    Configurar Red <i class="fas fa-plug text-[10px]"></i>
+                                </button>
+                                <span id="sync-last-time" class="text-[10px] text-slate-400 font-mono">Sin historial</span>
+                            </div>
+                        </div>
                     </div>
-                    <h3 className="text-xl font-black text-slate-800 leading-tight mb-6 line-clamp-2 cursor-pointer group-hover:text-indigo-600 transition-colors" onClick={() => { setSelectedProductId(p.id); setView('detail'); }}>{p.title}</h3>
-                    <div className="mt-auto flex items-center justify-between border-t border-slate-50 pt-6">
-                      <span className="text-3xl font-black text-slate-950 tracking-tighter">${p.price?.toFixed(2)}</span>
-                      <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg ${p.stock > 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>{p.stock > 0 ? 'En Stock' : 'Agotado'}</span>
+
+                    <!-- Charts and Recent Logs -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Chart Card -->
+                        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 lg:col-span-2">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                                    <i class="fas fa-chart-line text-manabi-600"></i> Flujo Diario de Operaciones de Caja
+                                </h3>
+                                <span class="text-xs text-slate-400 italic font-mono">Últimos 7 días activos</span>
+                            </div>
+                            <div class="h-80 w-full relative">
+                                <canvas id="chart-daily-flow"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Quick Overview -->
+                        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900 mb-2 flex items-center gap-2">
+                                    <i class="fas fa-list-ol text-manabi-600"></i> Auditoría de Últimos Movimientos
+                                </h3>
+                                <p class="text-xs text-slate-500 mb-4">Últimas 5 transacciones reportadas en la red de cajeros.</p>
+                                
+                                <div id="dashboard-recent-list" class="space-y-3 overflow-y-auto max-h-[220px] pr-1 custom-scrollbar">
+                                    <div class="text-center py-8 text-slate-400 text-sm">
+                                        <i class="fas fa-info-circle text-2xl mb-2 block"></i> Sin movimientos hoy
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 pt-4 border-t border-slate-100 flex gap-2">
+                                <button onclick="switchTab('transaction')" class="flex-1 bg-manabi-700 hover:bg-manabi-800 text-white font-bold py-2.5 px-3 rounded-lg text-xs transition-all text-center">
+                                    <i class="fas fa-plus mr-1"></i> Nueva Transacción
+                                </button>
+                                <button onclick="switchTab('spreadsheet')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-3 rounded-lg text-xs transition-all text-center">
+                                    <i class="fas fa-table mr-1"></i> Ir a Planilla
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {view === 'admin' && isAdmin && (
-          <div className="animate-in fade-in duration-500">
-            <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8">
-              <div>
-                <h1 className="text-5xl font-black text-slate-900 tracking-tighter italic">Dashboard Pro</h1>
-                <p className="text-slate-400 font-black text-[10px] uppercase tracking-[0.3em]">Gestión de Activos y Métricas Financieras</p>
-              </div>
-              <button onClick={() => setIsAddProductModalOpen(true)} className="bg-slate-950 text-white px-10 py-5 rounded-[2.5rem] font-black flex items-center gap-3 hover:bg-indigo-600 shadow-2xl transition-all active:scale-95"><Plus className="w-6 h-6" /> Nuevo Artículo</button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-16">
-              <MetricCard label="Ventas Totales" value={`$${sales.reduce((a,b)=>a+(b.total||0),0).toLocaleString()}`} icon={Wallet} color="bg-emerald-50 text-emerald-600" trend="+24%" />
-              <MetricCard label="Ganancia Neta" value={`$${sales.reduce((a,b)=>a+(b.profit||0),0).toLocaleString()}`} icon={TrendingUp} color="bg-indigo-50 text-indigo-600" trend="+12%" />
-              <MetricCard label="Valor Inventario" value={`$${products.reduce((a,b)=>a+(b.costPrice*b.stock),0).toLocaleString()}`} icon={Box} color="bg-amber-50 text-amber-600" />
-            </div>
-
-            <div className="bg-white rounded-[4rem] border border-slate-100 shadow-sm overflow-hidden mb-24">
-              <div className="p-12 border-b border-slate-50 bg-slate-50/50 flex items-center justify-between">
-                <h3 className="text-2xl font-black text-slate-800 italic">Inventory Management</h3>
-                <Code2 className="w-6 h-6 text-slate-300" />
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead className="bg-white border-b border-slate-50 text-[10px] font-black uppercase text-slate-400 tracking-[0.25em]">
-                    <tr><th className="px-12 py-10">Producto Identificado</th><th className="px-6 py-10 text-center">Inversión</th><th className="px-6 py-10 text-center">Precio Retail</th><th className="px-6 py-10 text-center">ROI %</th><th className="px-12 py-10"></th></tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {products.map(p => (
-                      <tr key={p.id} className="hover:bg-slate-50/50 transition-all group">
-                        <td className="px-12 py-8"><div className="flex items-center gap-6"><img src={p.image} className="w-14 h-14 rounded-2xl object-contain bg-slate-50 shadow-sm" /><div className="font-bold text-slate-800 text-base">{p.title}<p className="text-[10px] text-slate-400 mt-1 uppercase font-black tracking-widest">{p.category}</p></div></div></td>
-                        <td className="px-6 py-8 text-center font-mono text-slate-400 text-sm">${p.costPrice?.toFixed(2)}</td>
-                        <td className="px-6 py-8 text-center font-mono font-black text-indigo-600 text-lg">${p.price?.toFixed(2)}</td>
-                        <td className="px-6 py-8 text-center font-black text-emerald-500 italic">+{p.price ? (((p.price - p.costPrice) / p.price) * 100).toFixed(0) : 0}%</td>
-                        <td className="px-12 py-8 text-right"><button onClick={async() => {if(confirm('¿Wipe data?')) await deleteDoc(doc(db,'artifacts',appId,'public','data','products',p.id))}} className="text-slate-300 hover:text-rose-500 transition-colors"><Trash2 className="w-5 h-5" /></button></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {view === 'detail' && selectedProduct && (
-          <div className="animate-in slide-in-from-right-10 duration-700 max-w-7xl mx-auto py-6">
-            <button onClick={() => setView('store')} className="flex items-center gap-3 text-slate-400 hover:text-indigo-600 font-black text-[11px] uppercase tracking-widest mb-16 transition-all"><ArrowLeft className="w-5 h-5" /> Back to Repository</button>
-            <div className="grid lg:grid-cols-2 gap-24 items-start">
-              <div className="bg-white p-24 rounded-[5rem] border border-slate-50 shadow-sm sticky top-32 flex items-center justify-center group overflow-hidden">
-                <img src={selectedProduct.image} className="max-w-full max-h-[550px] object-contain group-hover:scale-110 transition-transform duration-[2s]" alt="" />
-                <div className="absolute top-12 left-12 bg-indigo-600 text-white p-8 rounded-[3rem] shadow-2xl shadow-indigo-600/30 flex flex-col items-center">
-                  <Star className="w-8 h-8 fill-white mb-2" />
-                  <p className="text-2xl font-black">Elite</p>
-                </div>
-              </div>
-              <div className="flex flex-col py-10">
-                <span className="bg-indigo-100 text-indigo-600 px-6 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest w-fit mb-10">{selectedProduct.category}</span>
-                <h1 className="text-6xl md:text-8xl font-black text-slate-950 leading-[0.8] tracking-tighter mb-12 italic">{selectedProduct.title}</h1>
-                <p className="text-2xl text-slate-500 font-medium leading-relaxed mb-20">{selectedProduct.description || "Un activo tecnológico de alto calibre diseñado para superar los estándares de producción más exigentes."}</p>
-                <div className="mt-auto bg-slate-950 rounded-[4.5rem] p-16 text-white flex flex-col md:flex-row items-center justify-between gap-12 shadow-[0_60px_100px_-20px_rgba(0,0,0,0.4)] border-4 border-slate-800">
-                  <div><p className="text-slate-400 font-black text-[11px] uppercase mb-4 tracking-[0.3em]">Net Inversion</p><p className="text-8xl font-black tracking-tighter italic text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">${selectedProduct.price?.toFixed(2)}</p></div>
-                  <button onClick={() => handleAddToCart(selectedProduct)} disabled={selectedProduct.stock <= 0} className="w-full md:w-auto bg-indigo-600 hover:bg-indigo-500 px-20 py-8 rounded-[3rem] font-black text-3xl shadow-2xl active:scale-95 transition-all hover:scale-105">Commit to Cart</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {view === 'checkout' && (
-          <div className="max-w-6xl mx-auto animate-in fade-in duration-500">
-            {isOrderComplete ? (
-              <div className="text-center py-40 animate-in zoom-in duration-700">
-                <div className="bg-emerald-100 w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-10 shadow-inner"><CheckCircle className="w-16 h-16 text-emerald-600" /></div>
-                <h2 className="text-7xl font-black text-slate-900 mb-8 tracking-tighter italic">Push Successful!</h2>
-                <p className="text-slate-500 text-2xl font-medium mb-20 max-w-xl mx-auto leading-relaxed">Tu despliegue ha sido registrado en nuestra central de Portoviejo. Un agente Concierge te contactará vía WhatsApp para el envío físico.</p>
-                <button onClick={() => { setView('store'); setIsOrderComplete(false); }} className="bg-slate-900 text-white px-20 py-7 rounded-[3rem] font-black text-2xl shadow-xl transition-all hover:bg-indigo-600 hover:scale-105">Back to Master Branch</button>
-              </div>
-            ) : (
-              <div className="grid lg:grid-cols-3 gap-24">
-                <div className="lg:col-span-2 space-y-16">
-                  <h1 className="text-6xl font-black text-slate-900 tracking-tighter italic mb-14">Finalizar Deployment</h1>
-                  <div className="bg-white p-14 rounded-[4.5rem] border border-slate-100 shadow-sm space-y-12">
-                    <h3 className="text-2xl font-black flex items-center gap-4 italic"><MapPin className="text-indigo-600" /> Dirección del Endpoint</h3>
-                    <div className="grid md:grid-cols-2 gap-10">
-                      <div className="space-y-4">
-                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-4">Nombre Completo</label>
-                        <input type="text" placeholder="Ej. Carlos Moreira" className="w-full bg-slate-50 border-none rounded-[2rem] p-7 font-bold outline-none focus:ring-4 focus:ring-indigo-600/5 focus:bg-white transition-all shadow-inner" value={checkoutOrder.name} onChange={e=>setCheckoutOrder({...checkoutOrder, name:e.target.value})} />
-                      </div>
-                      <div className="space-y-4">
-                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-4">WhatsApp Contact</label>
-                        <input type="tel" placeholder="09XXXXXXX" className="w-full bg-slate-50 border-none rounded-[2rem] p-7 font-bold outline-none focus:ring-4 focus:ring-indigo-600/5 focus:bg-white transition-all shadow-inner" value={checkoutOrder.phone} onChange={e=>setCheckoutOrder({...checkoutOrder, phone:e.target.value})} />
-                      </div>
-                    </div>
-                    <div className="space-y-4">
-                      <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-4">Ubicación Estratégica</label>
-                      <select className="w-full bg-slate-50 border-none rounded-[2rem] p-7 font-black outline-none appearance-none cursor-pointer focus:ring-4 focus:ring-indigo-600/5" value={checkoutOrder.city} onChange={e=>setCheckoutOrder({...checkoutOrder, city:e.target.value})}>
-                        <option value="Portoviejo">Portoviejo (Entrega Express Hoy)</option><option value="Manta">Manta (Entrega Express Hoy)</option><option value="Nacional">Resto de Ecuador (Servientrega 24h)</option>
-                      </select>
-                    </div>
-                    <div className="space-y-4">
-                      <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-4">Referencia de Despliegue</label>
-                      <textarea placeholder="Indica calle, número y referencias importantes..." rows="4" className="w-full bg-slate-50 border-none rounded-[2rem] p-7 font-bold outline-none focus:ring-4 focus:ring-indigo-600/5 focus:bg-white transition-all shadow-inner resize-none" value={checkoutOrder.address} onChange={e=>setCheckoutOrder({...checkoutOrder, address:e.target.value})}></textarea>
-                    </div>
-                  </div>
                 </div>
 
-                <div className="bg-slate-950 rounded-[5rem] p-14 text-white h-fit sticky top-32 shadow-[0_80px_150px_-30px_rgba(0,0,0,0.5)] border-4 border-slate-800">
-                  <h3 className="text-3xl font-black mb-12 border-b border-white/10 pb-8 italic text-indigo-400 tracking-widest uppercase">Build Summary</h3>
-                  <div className="space-y-8 mb-16 max-h-72 overflow-y-auto no-scrollbar pr-4">
-                    {cart.map(i => <div key={i.id} className="flex justify-between items-center text-base font-bold"><span className="text-slate-500">x{i.quantity} {i.title}</span><span className="text-indigo-400">${(i.price*i.quantity).toFixed(2)}</span></div>)}
-                  </div>
-                  <div className="space-y-6 border-t border-white/10 pt-12">
-                    <div className="flex justify-between font-black text-slate-500 text-xs uppercase tracking-[0.3em]"><span>Logistics Fee</span><span>${checkoutOrder.city === 'Nacional' ? '5.00' : '2.50'}</span></div>
-                    <div className="flex justify-between items-end pt-16">
-                      <span className="text-sm font-black tracking-[0.5em] uppercase text-white">TOTAL</span>
-                      <span className="text-7xl font-black text-indigo-400 tracking-tighter italic">${(cartTotal + (checkoutOrder.city === 'Nacional' ? 5 : 2.5)).toFixed(2)}</span>
+                <div id="tab-content-transaction" class="hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        <!-- Form Area -->
+                        <div class="lg:col-span-2 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                            <div class="bg-manabi-900 text-white p-6 relative">
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-15">
+                                    <i class="fas fa-university text-7xl"></i>
+                                </div>
+                                <h2 class="text-xl font-bold flex items-center gap-2">
+                                    <i class="fas fa-cash-register text-accent-gold"></i>
+                                    Formulario de Registro de Caja
+                                </h2>
+                                <p class="text-xs text-manabi-200">Ingrese cada depósito o retiro de efectivo al instante.</p>
+                            </div>
+                            
+                            <form id="transaction-form" class="p-6 sm:p-8 space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Transaction Type -->
+                                    <div class="col-span-1 md:col-span-2">
+                                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Tipo de Movimiento</label>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <label class="relative flex items-center justify-center p-5 border-2 rounded-xl cursor-pointer hover:bg-emerald-50 focus:outline-none transition-all border-emerald-500 bg-emerald-50/70" id="label-type-deposit">
+                                                <input type="radio" name="trans_type" value="deposito" checked class="sr-only" onchange="toggleTypeUI('deposito')">
+                                                <div class="text-center">
+                                                    <i class="fas fa-arrow-circle-down text-3xl text-emerald-600 mb-2"></i>
+                                                    <div class="font-bold text-emerald-900 text-sm">DEPÓSITO (Ingreso)</div>
+                                                    <div class="text-[10px] text-emerald-600 mt-0.5">Suma saldo a caja</div>
+                                                </div>
+                                                <div class="absolute top-2 right-2 text-emerald-600" id="check-deposit">
+                                                    <i class="fas fa-check-circle text-lg"></i>
+                                                </div>
+                                            </label>
+
+                                            <label class="relative flex items-center justify-center p-5 border-2 rounded-xl cursor-pointer hover:bg-rose-50 focus:outline-none transition-all border-slate-200" id="label-type-withdrawal">
+                                                <input type="radio" name="trans_type" value="retiro" class="sr-only" onchange="toggleTypeUI('retiro')">
+                                                <div class="text-center">
+                                                    <i class="fas fa-arrow-circle-up text-3xl text-rose-600 mb-2"></i>
+                                                    <div class="font-bold text-rose-900 text-sm">RETIRO (Egreso)</div>
+                                                    <div class="text-[10px] text-rose-600 mt-0.5">Resta saldo a caja</div>
+                                                </div>
+                                                <div class="absolute top-2 right-2 text-rose-600 hidden" id="check-withdrawal">
+                                                    <i class="fas fa-check-circle text-lg"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Amount (Monto) -->
+                                    <div>
+                                        <label for="amount" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Monto de la Transacción ($) *</label>
+                                        <div class="mt-1 relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold text-lg">
+                                                $
+                                            </div>
+                                            <input type="number" step="0.01" min="0.01" required name="amount" id="amount" 
+                                                   placeholder="0.00" 
+                                                   class="block w-full pl-9 pr-3 py-3.5 border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 focus:border-manabi-500 text-xl font-bold tracking-tight bg-slate-50/50">
+                                        </div>
+                                        <p class="mt-1.5 text-[10px] text-slate-400">Ingrese el monto completo con sus decimales.</p>
+                                    </div>
+
+                                    <!-- Movement Number -->
+                                    <div>
+                                        <label for="movement_number" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nº de Papeleta / Movimiento <span class="text-slate-400 font-normal italic">(Opcional)</span></label>
+                                        <div class="mt-1 relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                                <i class="fas fa-receipt"></i>
+                                            </div>
+                                            <input type="text" name="movement_number" id="movement_number" 
+                                                   placeholder="Ej. DP-987456" 
+                                                   class="block w-full pl-9 pr-3 py-3.5 border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 focus:border-manabi-500 sm:text-sm bg-slate-50/50">
+                                        </div>
+                                        <p class="mt-1.5 text-[10px] text-slate-400">Número de referencia del comprobante físico.</p>
+                                    </div>
+
+                                    <!-- Date Selection -->
+                                    <div>
+                                        <label for="trans_date" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Fecha de Operación</label>
+                                        <div class="mt-1 relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </div>
+                                            <input type="date" required name="trans_date" id="trans_date" 
+                                                   class="block w-full pl-9 pr-3 py-3.5 border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 focus:border-manabi-500 sm:text-sm bg-slate-50/50">
+                                        </div>
+                                    </div>
+
+                                    <!-- Concept / Description -->
+                                    <div>
+                                        <label for="concept" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Concepto o Detalle <span class="text-slate-400 font-normal italic">(Opcional)</span></label>
+                                        <div class="mt-1 relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                                <i class="fas fa-align-left"></i>
+                                            </div>
+                                            <!-- REMOVED 'required' ATTRIBUTE SO IT IS OPTIONAL -->
+                                            <input type="text" name="concept" id="concept"
+                                                   placeholder="Ej. Depósito cuenta de ahorros cliente" 
+                                                   class="block w-full pl-9 pr-3 py-3.5 border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 focus:border-manabi-500 sm:text-sm bg-slate-50/50">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- User audit alert card -->
+                                <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-center gap-3">
+                                    <i class="fas fa-user-shield text-manabi-600 text-lg"></i>
+                                    <div class="text-[11px] text-slate-500 leading-relaxed">
+                                        Firma digital activa. Esta transacción será auditada y guardada bajo el registro irrevocable de: <span id="form-user-audit" class="font-bold text-slate-800">Cajero Principal</span>.
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-4">
+                                    <button type="button" onclick="resetForm()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-lg text-xs transition-all text-center">
+                                        Limpiar Campos
+                                    </button>
+                                    <button type="submit" class="flex-1 bg-manabi-700 hover:bg-manabi-800 text-white font-bold py-3 px-4 rounded-lg text-xs shadow-md transition-all text-center transform active:scale-95 flex items-center justify-center gap-2">
+                                        <i class="fas fa-check-double text-accent-gold"></i> Registrar Transacción
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Side helper panel (Especially for Cajeros) -->
+                        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900 mb-3 flex items-center gap-2 pb-2 border-b border-slate-100">
+                                    <i class="fas fa-history text-slate-500"></i> Mis Registros Recientes
+                                </h3>
+                                <p class="text-[11px] text-slate-500 mb-4 leading-relaxed">
+                                    Se listan las últimas transacciones ingresadas hoy bajo tu firma digital en este navegador.
+                                </p>
+                                
+                                <div id="cajero-recent-list" class="space-y-3 overflow-y-auto max-h-[350px] pr-1 custom-scrollbar">
+                                    <!-- Dynamic content inject here -->
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 p-4 bg-manabi-50 border border-manabi-100 rounded-xl">
+                                <span class="block text-xs font-bold text-manabi-800 mb-1"><i class="fas fa-info-circle mr-1 text-accent-gold"></i> Ayuda al Cajero</span>
+                                <p class="text-[10px] text-manabi-900 leading-relaxed">
+                                    Si cometió un error en un registro, por favor notifique inmediatamente al Supervisor para que proceda con la anulación desde su consola de control.
+                                </p>
+                            </div>
+                        </div>
+
                     </div>
-                  </div>
-                  <button onClick={handleFinalCheckout} disabled={cart.length === 0 || !checkoutOrder.name || isActionLoading} className="w-full bg-white text-slate-950 py-9 rounded-[3.5rem] font-black text-3xl mt-20 hover:bg-indigo-400 hover:text-white transition-all shadow-2xl active:scale-95 hover:scale-105 disabled:bg-slate-800 disabled:text-slate-600 disabled:scale-100">Push to WhatsApp</button>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
-      </main>
 
-      {/* FOOTER BOUTIQUE (ENGINEERED) */}
-      <footer className="bg-white border-t border-slate-100 py-32 mt-32">
-        <div className="container mx-auto px-6 text-center">
-          <div className="flex items-center justify-center gap-4 mb-10 cursor-pointer" onClick={()=>setView('store')}>
-            <div className="bg-slate-950 text-white p-3 rounded-2xl"><Github className="w-8 h-8" /></div>
-            <span className="text-4xl font-black tracking-tighter italic">NovaShop</span>
-          </div>
-          <p className="text-slate-400 text-2xl font-medium mb-20 max-w-xl mx-auto leading-relaxed italic">Construyendo la infraestructura tecnológica de Manabí. Portoviejo y Manta unidos por la excelencia técnica.</p>
-          <div className="flex flex-wrap justify-center gap-14 text-[11px] font-black text-slate-400 uppercase tracking-[0.4em]">
-            <a href="#" className="hover:text-indigo-600 transition-colors">Documentation</a>
-            <a href="#" className="hover:text-indigo-600 transition-colors">API References</a>
-            <button onClick={() => setIsLoginModalOpen(true)} className="hover:text-indigo-600 transition-colors underline underline-offset-8">Admin Portal</button>
-          </div>
-          <div className="mt-24 text-[10px] text-slate-200 font-black tracking-[0.8em] uppercase">NovaShop Enterprise Elite Tech Stack © 2026</div>
-        </div>
-      </footer>
+                <div id="tab-content-spreadsheet" class="hidden space-y-4">
+                    <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                        
+                        <!-- Filter & Header controls -->
+                        <div class="p-6 border-b border-slate-100 space-y-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                <div>
+                                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                                        <i class="fas fa-table text-emerald-600"></i> Consola Planilla Interactiva (Hoja de Cálculo)
+                                    </h3>
+                                    <p class="text-xs text-slate-500">Administre y filtre los registros de transacciones. Sincronización offline/online.</p>
+                                </div>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <!-- Date Export Action -->
+                                    <button onclick="exportFilteredDayCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-3 rounded flex items-center gap-1.5 transition-colors shadow">
+                                        <i class="fas fa-calendar-day text-accent-gold"></i> Exportar Día Filtrado (CSV)
+                                    </button>
+                                    <button onclick="exportAllToCSV()" class="bg-slate-700 hover:bg-slate-850 text-white text-xs font-bold py-2 px-3 rounded flex items-center gap-1.5 transition-colors shadow">
+                                        <i class="fas fa-file-excel"></i> Exportar Todo a CSV
+                                    </button>
+                                    <button onclick="clearAllTransactionsConfirm()" class="bg-red-50 hover:bg-red-105 text-red-600 border border-red-200 text-xs font-bold py-2 px-3 rounded flex items-center gap-1.5 transition-colors">
+                                        <i class="fas fa-trash-alt"></i> Limpiar Tabla
+                                    </button>
+                                </div>
+                            </div>
 
-      {/* ADMIN AUTH OVERLAY */}
-      {isLoginModalOpen && (
-        <div className="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-xl flex items-center justify-center p-6 animate-in zoom-in-95 duration-300">
-          <div className="bg-white p-14 rounded-[5rem] shadow-2xl w-full max-w-md border border-slate-100 text-center relative">
-            <button onClick={() => setIsLoginModalOpen(false)} className="absolute top-12 right-12 text-slate-300 hover:text-slate-600 transition-colors"><X className="w-8 h-8" /></button>
-            <div className="w-24 h-24 bg-indigo-50 text-indigo-600 rounded-[3rem] flex items-center justify-center mx-auto mb-12 shadow-inner border-2 border-indigo-100"><Lock className="w-10 h-10" /></div>
-            <h2 className="text-5xl font-black text-slate-900 mb-4 tracking-tighter italic">Admin Access</h2>
-            <p className="text-slate-400 text-[11px] font-black uppercase tracking-widest mb-14">Administrative Level Authorization</p>
-            <div className="space-y-6 mb-16">
-              <input type="text" placeholder="Username" className="w-full bg-slate-50 border-none rounded-[2.5rem] p-7 font-black outline-none focus:ring-4 focus:ring-indigo-600/5 shadow-inner" id="u" defaultValue="admin" />
-              <input type="password" placeholder="Passkey" className="w-full bg-slate-50 border-none rounded-[2.5rem] p-7 font-black outline-none focus:ring-4 focus:ring-indigo-600/5 shadow-inner" id="p" defaultValue="admin123" />
-            </div>
-            <button onClick={() => {if(document.getElementById('u').value === 'admin' && document.getElementById('p').value === 'admin123') { setIsAdmin(true); setIsLoginModalOpen(false); setView('admin'); }}} className="w-full bg-slate-950 text-white py-8 rounded-[3rem] font-black text-2xl shadow-2xl hover:bg-indigo-600 transition-all active:scale-95">Authorize Identity</button>
-          </div>
-        </div>
-      )}
+                            <!-- Filter inputs Grid -->
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Filtrar por Día Específico</label>
+                                    <input type="date" id="filter-date" onchange="applyFilters()" class="block w-full text-xs border border-slate-300 rounded-md p-2 bg-white">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Tipo de Operación</label>
+                                    <select id="filter-type" onchange="applyFilters()" class="block w-full text-xs border border-slate-300 rounded-md p-2 bg-white">
+                                        <option value="all">Todas las transacciones</option>
+                                        <option value="deposito">Depósitos (+)</option>
+                                        <option value="retiro">Retiros (-)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Filtrar por Cajero</label>
+                                    <select id="filter-user" onchange="applyFilters()" class="block w-full text-xs border border-slate-300 rounded-md p-2 bg-white">
+                                        <option value="all">Todos los cajeros</option>
+                                        <option value="cajero1@bcmanabi.com">María Auxiliadora (Principal)</option>
+                                        <option value="cajero2@bcmanabi.com">José Delgado (Auxiliar)</option>
+                                        <option value="supervisor@bcmanabi.com">Ing. Supervisor Manabí</option>
+                                        <option value="admin@bcmanabi.com">Administrador General</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-end gap-2">
+                                    <button onclick="resetFilters()" class="flex-1 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold py-2 px-3 rounded border border-slate-200 transition-colors">
+                                        <i class="fas fa-undo-alt mr-1"></i> Limpiar Filtros
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
-      {/* FORMULARIO ESTABLE (PREVIENE PÉRDIDA DE FOCO) */}
-      <InventoryForm 
-        isOpen={isAddProductModalOpen} 
-        onClose={() => setIsAddProductModalOpen(false)} 
-        form={productForm} 
-        setForm={setProductForm} 
-        onSave={handleSaveProduct} 
-        loading={isActionLoading} 
-      />
+                        <!-- Spreadsheet View -->
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table class="min-w-full divide-y divide-slate-200 table-fixed">
+                                <thead class="bg-slate-50 border-b border-slate-200">
+                                    <tr>
+                                        <th scope="col" class="w-12 px-3 py-2 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider bg-slate-100 border-r border-slate-200">Fila</th>
+                                        <th scope="col" class="w-36 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Código ID</th>
+                                        <th scope="col" class="w-32 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Fecha</th>
+                                        <th scope="col" class="w-28 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Tipo</th>
+                                        <th scope="col" class="w-40 px-4 py-2 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Monto</th>
+                                        <th scope="col" class="w-36 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Nº Movimiento</th>
+                                        <th scope="col" class="w-48 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Concepto de Operación</th>
+                                        <th scope="col" class="w-44 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Registrado Por</th>
+                                        <th scope="col" class="w-24 px-4 py-2 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Anulación</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="spreadsheet-tbody" class="bg-white divide-y divide-slate-100">
+                                    <!-- Table Rows populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
-        .animate-spin-slow { animation: spin 4s linear infinite; }
-      `}</style>
-    </div>
-  );
+                <div id="tab-content-sync" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Setup Form & Status Card -->
+                        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 lg:col-span-1">
+                            <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+                                <i class="fas fa-link text-manabi-600"></i> Enlace con Google Sheets
+                            </h3>
+                            <p class="text-xs text-slate-500 mb-4">La conexión a su script del Banco está preconfigurada.</p>
+
+                            <div class="space-y-4">
+                                <div class="p-3 bg-manabi-50 rounded-lg border border-manabi-150">
+                                    <span class="block text-xs font-bold text-manabi-800">Hoja de Destino:</span>
+                                    <a href="https://docs.google.com/spreadsheets/d/11bMDArYonIgdrjxLofx9BiwNoEeKPvuEuQY0EO7D1CM/edit?usp=sharing" target="_blank" class="text-[10px] text-manabi-600 hover:text-manabi-800 break-words font-semibold underline">
+                                        <i class="fas fa-file-invoice-dollar mr-1"></i> Abrir Google Sheet Oficial BC Manabí
+                                    </a>
+                                </div>
+
+                                <div>
+                                    <label for="apps-script-url" class="block text-xs font-bold text-slate-700 mb-1">URL de Apps Script Web App *</label>
+                                    <!-- PRE-FILLED WITH USER'S PROVIDED URL -->
+                                    <input type="url" id="apps-script-url" value="https://script.google.com/macros/s/AKfycbyjcChYHn7GwD6O12C3AFt3RPFS82wsPKpRemG2_8oiId-g4Gq0_vRnIS0pmpVudMZM6Q/exec"
+                                           class="mt-1 block w-full text-xs border border-slate-300 rounded-lg p-2.5 focus:ring-manabi-500 focus:border-manabi-500 bg-slate-50" readonly>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="autosync-toggle" checked class="h-4 w-4 text-manabi-600 focus:ring-manabi-500 border-slate-300 rounded">
+                                    <label for="autosync-toggle" class="ml-2 block text-xs font-semibold text-slate-750">Sincronizar automáticamente en cada registro</label>
+                                </div>
+
+                                <div class="pt-4 border-t border-slate-100 space-y-2">
+                                    <button onclick="saveSyncSettings()" class="w-full bg-manabi-700 hover:bg-manabi-800 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-1.5">
+                                        <i class="fas fa-save text-accent-gold"></i> Guardar Enlace
+                                    </button>
+                                    <button id="btn-sync-now" onclick="triggerManualSync()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-1.5">
+                                        <i class="fas fa-sync"></i> Enviar Todo el Historial Ahora
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Guide and Instructions -->
+                        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 lg:col-span-2 space-y-4">
+                            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fas fa-check-circle text-emerald-600"></i> Su App Script está configurado
+                            </h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Hemos vinculado exitosamente el sistema con el ID de despliegue <code class="bg-slate-100 px-1 py-0.5 rounded font-bold">AKfycbyjcC...</code>. Si necesita volver a implementar el código en el futuro, use la siguiente plantilla de JavaScript.
+                            </p>
+
+                            <!-- Script Preview Card -->
+                            <div class="mt-4">
+                                <div class="flex items-center justify-between bg-slate-800 text-slate-300 px-4 py-2 rounded-t-lg">
+                                    <span class="text-xs font-semibold font-mono">GoogleAppsScript.js</span>
+                                    <button onclick="copyAppsScriptCode()" class="text-xs text-manabi-300 hover:text-white flex items-center gap-1.5 font-bold transition-colors">
+                                        <i class="fas fa-copy"></i> Copiar Código
+                                    </button>
+                                </div>
+                                <pre id="apps-script-code-block" class="bg-slate-900 text-slate-100 p-4 rounded-b-lg text-[11px] font-mono overflow-x-auto max-h-56 custom-scrollbar leading-relaxed">
+function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var payload = JSON.parse(e.postData.contents);
+    
+    // Si la hoja está totalmente en blanco, colocar los encabezados para el banco
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(["ID Transacción", "Fecha", "Tipo", "Monto", "Movimiento Nº", "Concepto", "Usuario Cajero", "Fecha de Sincronización"]);
+    }
+    
+    // Guardar los datos recibidos (Sincronización Total)
+    if (Array.isArray(payload)) {
+      payload.forEach(function(item) {
+        sheet.appendRow([
+          item.id,
+          item.date,
+          item.type,
+          item.amount,
+          item.movementNumber || "S/N",
+          item.concept || "Sin detalle",
+          item.user,
+          new Date()
+        ]);
+      });
+    } else {
+      // Auto-sincronización de un solo elemento
+      sheet.appendRow([
+        payload.id,
+        payload.date,
+        payload.type,
+        payload.amount,
+        payload.movementNumber || "S/N",
+        payload.concept || "Sin detalle",
+        payload.user,
+        new Date()
+      ]);
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "Sincronizado" }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", error: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
-const LoadingScreen = () => (
-  <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-    <div className="relative">
-      <div className="w-32 h-32 border-[8px] border-slate-100 rounded-full"></div>
-      <div className="absolute top-0 w-32 h-32 border-[8px] border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-    </div>
-    <p className="mt-16 font-black text-slate-300 uppercase tracking-[0.6em] text-xs animate-pulse italic">NovaShop Enterprise Stack Initializing...</p>
-  </div>
-);
+function doGet() {
+  return ContentService.createTextOutput(JSON.stringify({ status: "online", active: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-```
+            </main>
+
+            <!-- Bottom Footer Area -->
+            <footer class="bg-manabi-950 text-white border-t border-manabi-900 py-6">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <img class="h-8 w-auto bg-white rounded p-0.5" src="https://www.bcmanabi.com/img/LOGOP2.jpg" onerror="this.src='https://placehold.co/100x40/ffffff/054b81?text=BCM'" alt="Logo">
+                        <div>
+                            <span class="block text-xs font-semibold text-slate-400">Banco Comercial de Manabí S.A.</span>
+                            <span class="block text-[11px] text-slate-500">Portoviejo - Manabí, Ecuador &copy; 2026</span>
+                        </div>
+                    </div>
+                    <div class="text-center sm:text-right">
+                        <p class="text-xs text-manabi-300">Portal de Operaciones de Caja v4.5</p>
+                        <p class="text-[10px] text-slate-500">Módulo seguro de control local encriptado y volcado remoto</p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Custom Warning Modal (instead of alerts) -->
+        <div id="custom-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div class="fixed inset-0 bg-slate-900/75 transition-opacity" aria-hidden="true" onclick="closeModal()"></div>
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                <div class="relative inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-slate-200">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 text-red-600 sm:mx-0 sm:h-10 sm:w-10" id="modal-icon-bg">
+                                <i id="modal-icon" class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                <h3 class="text-lg leading-6 font-bold text-slate-950" id="modal-title">
+                                    Confirmar Acción
+                                </h3>
+                                <div class="mt-2">
+                                    <p class="text-sm text-slate-500" id="modal-message">
+                                        ¿Está seguro de proceder con esta acción?
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
+                        <button type="button" id="modal-btn-confirm" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-semibold text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Confirmar
+                        </button>
+                        <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-lg border border-slate-300 shadow-sm px-4 py-2 bg-white text-base font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-manabi-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Password Reset Modal -->
+        <div id="reset-password-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="reset-modal-title" role="dialog" aria-modal="true">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div class="fixed inset-0 bg-slate-900/75 transition-opacity" aria-hidden="true" onclick="closeResetPasswordModal()"></div>
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                <div class="relative inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full border border-slate-200">
+                    <div class="bg-manabi-900 px-4 py-4 sm:px-6">
+                        <h3 class="text-lg leading-6 font-bold text-white flex items-center gap-2" id="reset-modal-title">
+                            <i class="fas fa-key text-accent-gold"></i> Restablecer Contraseña
+                        </h3>
+                    </div>
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Usuario a restablecer</label>
+                                <select id="reset-username" class="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 text-sm bg-slate-50">
+                                    <option value="cajero1@bcmanabi.com">Cajera Principal (María Auxiliadora)</option>
+                                    <option value="cajero2@bcmanabi.com">Cajero Auxiliar (José Delgado)</option>
+                                    <option value="supervisor@bcmanabi.com">Supervisor (Ing. Supervisor Manabí)</option>
+                                    <option value="admin@bcmanabi.com">Administrador General (Auditor)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Código Maestro de Autorización *</label>
+                                <input type="password" id="reset-master-code" placeholder="Ingrese el código maestro" class="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Nueva Contraseña *</label>
+                                <input type="password" id="reset-new-password" placeholder="Min. 6 caracteres" class="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 text-sm">
+                            </div>
+                            <div id="reset-error" class="hidden text-xs text-rose-600 bg-rose-50 p-2 rounded-lg border border-rose-200">
+                                <!-- Error message -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
+                        <button type="button" onclick="executePasswordReset()" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-manabi-700 text-base font-semibold text-white hover:bg-manabi-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-manabi-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Cambiar Contraseña
+                        </button>
+                        <button type="button" onclick="closeResetPasswordModal()" class="mt-3 w-full inline-flex justify-center rounded-lg border border-slate-300 shadow-sm px-4 py-2 bg-white text-base font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-manabi-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Bancario User Database
+        const USER_DATABASE = {
+            "cajero1@bcmanabi.com": { pass: "cajero_bc1", name: "María Auxiliadora", role: "Cajera Principal" },
+            "cajero2@bcmanabi.com": { pass: "cajero_bc2", name: "José Delgado", role: "Cajero Auxiliar" },
+            "supervisor@bcmanabi.com": { pass: "super_manabi", name: "Ing. Supervisor Manabí", role: "Supervisor de Operaciones" },
+            "admin@bcmanabi.com": { pass: "admin_manabi", name: "Auditor General", role: "Administrador" }
+        };
+
+        // Master Code for password resets
+        const MASTER_CODE = "BCMASTER2026";
+
+        // Application State
+        let currentUser = null;
+        let transactions = [];
+        let trendChart = null;
+
+        // Sync Configuration State (Pre-filled with user's specific endpoint)
+        let syncSettings = {
+            url: 'https://script.google.com/macros/s/AKfycbyjcChYHn7GwD6O12C3AFt3RPFS82wsPKpRemG2_8oiId-g4Gq0_vRnIS0pmpVudMZM6Q/exec',
+            autoSync: true,
+            lastSynced: null
+        };
+
+        // Bootstrapper on DOM Load
+        window.onload = function() {
+            // Load state from local memory safely
+            const savedUser = localStorage.getItem('bc_current_user');
+            const savedTx = localStorage.getItem('bc_transactions');
+            const savedSettings = localStorage.getItem('bc_sync_settings');
+            const savedPasswords = localStorage.getItem('bc_user_passwords');
+
+            // Load saved passwords if they exist (overrides defaults)
+            if (savedPasswords) {
+                const parsedPasswords = JSON.parse(savedPasswords);
+                for (const email in parsedPasswords) {
+                    if (USER_DATABASE[email]) {
+                        USER_DATABASE[email].pass = parsedPasswords[email];
+                    }
+                }
+            }
+
+            if (savedTx) {
+                transactions = JSON.parse(savedTx);
+            } else {
+                // Pre-populate with seed mock entries for Banco Comercial de Manabí
+                transactions = [
+                    { id: 'TX-7491-912', date: getFormattedDate(0), type: 'deposito', amount: 8250.00, movementNumber: 'DP-784910', concept: 'Depósito cuenta corriente de Empresa Portoviejo S.A.', user: 'cajero1@bcmanabi.com' },
+                    { id: 'TX-8910-441', date: getFormattedDate(0), type: 'retiro', amount: 1200.00, movementNumber: 'RT-551239', concept: 'Retiro de efectivo - Pago de cheques ventanilla Portoviejo', user: 'cajero2@bcmanabi.com' },
+                    { id: 'TX-3312-054', date: getFormattedDate(-1), type: 'deposito', amount: 4500.00, movementNumber: 'DP-441235', concept: 'Abono en ventanilla comercial - Cliente VIP', user: 'supervisor@bcmanabi.com' }
+                ];
+                localStorage.setItem('bc_transactions', JSON.stringify(transactions));
+            }
+
+            if (savedSettings) {
+                syncSettings = JSON.parse(savedSettings);
+                document.getElementById('apps-script-url').value = syncSettings.url;
+                document.getElementById('autosync-toggle').checked = syncSettings.autoSync;
+            }
+
+            if (savedUser && USER_DATABASE[savedUser]) {
+                loginUser(savedUser);
+            } else {
+                showScreen('login');
+            }
+
+            // Set input date default
+            document.getElementById('trans_date').value = getFormattedDate(0);
+
+            // Handle Login process
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const usernameSelect = document.getElementById('username');
+                const passwordInput = document.getElementById('password');
+                const errorDiv = document.getElementById('login-error');
+
+            const selectedUser = usernameSelect.value;
+            const typedPassword = passwordInput.value;
+
+            if (USER_DATABASE[selectedUser] && USER_DATABASE[selectedUser].pass === typedPassword) {
+                    errorDiv.classList.add('hidden');
+                    loginUser(selectedUser);
+                    showToast('Firma digital verificada. ¡Acceso concedido!', 'success');
+                    passwordInput.value = '';
+                } else {
+                    errorDiv.classList.remove('hidden');
+                    document.getElementById('login-error-text').innerText = 'Contraseña digital incorrecta. Por favor intente de nuevo.';
+                }
+            });
+
+            // Handle transaction submission
+            document.getElementById('transaction-form').addEventListener('submit', handleTransactionSubmit);
+        };
+
+        // Utility: Verify if current logged in account has superior privileges
+        function isSupervisorOrAdmin(email) {
+            return email === 'supervisor@bcmanabi.com' || email === 'admin@bcmanabi.com';
+        }
+
+        // Login Actions
+        function loginUser(email) {
+            currentUser = email;
+            localStorage.setItem('bc_current_user', email);
+            
+            // UI elements population
+            document.getElementById('display-user-name').innerText = USER_DATABASE[email].name;
+            document.getElementById('display-user-role').innerText = USER_DATABASE[email].role;
+            document.getElementById('form-user-audit').innerText = USER_DATABASE[email].name;
+
+            showScreen('dashboard');
+
+            // Apply Role Restrictions!
+            const isSuperior = isSupervisorOrAdmin(email);
+            const supTabs = document.getElementById('supervisor-tabs');
+            const supMobileTabs = document.getElementById('supervisor-mobile-tabs');
+
+            if (isSuperior) {
+                supTabs.classList.remove('hidden');
+                supMobileTabs.classList.remove('hidden');
+                // Supervisors land on the dashboard
+                switchTab('dashboard');
+            } else {
+                supTabs.classList.add('hidden');
+                supMobileTabs.classList.add('hidden');
+                // Cajeros are forced to the simple transaction tab immediately!
+                switchTab('transaction');
+            }
+
+            updateUI();
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('bc_current_user');
+            showScreen('login');
+            showToast('Firma digital desvinculada. Sesión segura terminada.', 'info');
+        }
+
+        // Display Toggling
+        function showScreen(screen) {
+            const login = document.getElementById('login-screen');
+            const dashboard = document.getElementById('dashboard-screen');
+
+            if (screen === 'login') {
+                login.classList.remove('hidden');
+                dashboard.classList.add('hidden');
+            } else {
+                login.classList.add('hidden');
+                dashboard.classList.remove('hidden');
+            }
+        }
+
+        function switchTab(tabId) {
+            // Guard against unauthorized Cajero manual tab switching
+            if (!isSupervisorOrAdmin(currentUser) && tabId !== 'transaction') {
+                tabId = 'transaction';
+            }
+
+            const tabs = ['dashboard', 'transaction', 'spreadsheet', 'sync'];
+            tabs.forEach(t => {
+                const navBtn = document.getElementById(`nav-${t}`);
+                const mobileBtn = document.getElementById(`nav-mobile-${t}`);
+                const content = document.getElementById(`tab-content-${t}`);
+
+                if (navBtn) {
+                    navBtn.className = "px-3 py-2 rounded-md text-sm font-semibold transition-colors " + 
+                                       (t === tabId ? "bg-manabi-800 text-white" : "text-manabi-200 hover:text-white hover:bg-manabi-800");
+                }
+                if (mobileBtn) {
+                    mobileBtn.className = "flex-1 py-2 text-xs font-medium rounded-md text-center flex flex-col items-center gap-1 " + 
+                                          (t === tabId ? "bg-manabi-800 text-white" : "text-manabi-300 hover:text-white");
+                }
+                if (content) {
+                    if (t === tabId) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                }
+            });
+
+            // View refresh triggers
+            if (tabId === 'spreadsheet') {
+                renderSpreadsheet();
+            } else if (tabId === 'dashboard') {
+                updateUI();
+            } else if (tabId === 'transaction') {
+                renderCajeroRecentLogs();
+            }
+        }
+
+        // Toggle visual style for Deposit vs Withdrawal buttons
+        function toggleTypeUI(type) {
+            const labelDeposit = document.getElementById('label-type-deposit');
+            const labelWithdrawal = document.getElementById('label-type-withdrawal');
+            const checkDeposit = document.getElementById('check-deposit');
+            const checkWithdrawal = document.getElementById('check-withdrawal');
+
+            if (type === 'deposito') {
+                labelDeposit.className = "relative flex items-center justify-center p-5 border-2 rounded-xl cursor-pointer hover:bg-emerald-50 focus:outline-none transition-all border-emerald-500 bg-emerald-50/70";
+                labelWithdrawal.className = "relative flex items-center justify-center p-5 border-2 rounded-xl cursor-pointer hover:bg-rose-50 focus:outline-none transition-all border-slate-200";
+                checkDeposit.classList.remove('hidden');
+                checkWithdrawal.classList.add('hidden');
+            } else {
+                labelDeposit.className = "relative flex items-center justify-center p-5 border-2 rounded-xl cursor-pointer hover:bg-emerald-50 focus:outline-none transition-all border-slate-200";
+                labelWithdrawal.className = "relative flex items-center justify-center p-5 border-2 rounded-xl cursor-pointer hover:bg-rose-50 focus:outline-none transition-all border-rose-500 bg-rose-50/70";
+                checkDeposit.classList.add('hidden');
+                checkWithdrawal.classList.remove('hidden');
+            }
+        }
+
+        // Calculate Vault Balance & Stats
+        function updateUI() {
+            let totalDeposits = 0;
+            let countDeposits = 0;
+            let totalWithdrawals = 0;
+            let countWithdrawals = 0;
+
+            // Date sort descending
+            transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            transactions.forEach(tx => {
+                const amt = parseFloat(tx.amount);
+                if (tx.type === 'deposito') {
+                    totalDeposits += amt;
+                    countDeposits++;
+                } else {
+                    totalWithdrawals += amt;
+                    countWithdrawals++;
+                }
+            });
+
+            const netBalance = totalDeposits - totalWithdrawals;
+
+            // Only update supervisor widgets if they exist in DOM & user is privileged
+            if (isSupervisorOrAdmin(currentUser)) {
+                document.getElementById('kpi-balance').innerText = formatCurrency(netBalance);
+                if (netBalance >= 0) {
+                    document.getElementById('kpi-balance').className = "text-2xl font-bold text-slate-900";
+                } else {
+                    document.getElementById('kpi-balance').className = "text-2xl font-bold text-red-650";
+                }
+
+                document.getElementById('kpi-deposits').innerText = formatCurrency(totalDeposits);
+                document.getElementById('kpi-deposits-count').innerText = `${countDeposits} depósitos`;
+
+                document.getElementById('kpi-withdrawals').innerText = formatCurrency(totalWithdrawals);
+                document.getElementById('kpi-withdrawals-count').innerText = `${countWithdrawals} retiros`;
+
+                // Update sync status indicator
+                const statusText = document.getElementById('sync-status-text');
+                const statusIcon = document.getElementById('sync-status-icon');
+                const statusIconBg = document.getElementById('sync-status-icon-bg');
+                const statusLastTime = document.getElementById('sync-last-time');
+
+                if (syncSettings.url) {
+                    statusText.innerText = "Sincronizado";
+                    statusIcon.className = "fas fa-link text-2xl";
+                    statusIconBg.className = "flex-shrink-0 bg-emerald-100 rounded-lg p-3 text-emerald-600";
+                    statusLastTime.innerText = syncSettings.lastSynced ? `Activo: ${syncSettings.lastSynced}` : "Listo";
+                } else {
+                    statusText.innerText = "No Vinculado";
+                    statusIcon.className = "fas fa-unlink text-2xl";
+                    statusIconBg.className = "flex-shrink-0 bg-amber-100 rounded-lg p-3 text-amber-600";
+                    statusLastTime.innerText = "Sin conectar";
+                }
+
+                renderRecentActivity();
+                renderCharts();
+            }
+
+            renderCajeroRecentLogs();
+        }
+
+        // Render recent activities for supervisor dashboard
+        function renderRecentActivity() {
+            const listContainer = document.getElementById('dashboard-recent-list');
+            if (!listContainer) return;
+            
+            listContainer.innerHTML = '';
+
+            const recent = transactions.slice(0, 5); // top 5 recent entries
+
+            if (recent.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="text-center py-8 text-slate-400 text-xs">
+                        <i class="fas fa-folder-open text-2xl mb-2 block"></i> No hay registros el día de hoy
+                    </div>`;
+                return;
+            }
+
+            recent.forEach(tx => {
+                const isDeposit = tx.type === 'deposito';
+                const badgeColor = isDeposit ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800';
+                const icon = isDeposit ? 'fa-plus' : 'fa-minus';
+                const shortUser = USER_DATABASE[tx.user] ? USER_DATABASE[tx.user].name : tx.user.split('@')[0];
+
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors";
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="p-1.5 rounded-full ${badgeColor}">
+                            <i class="fas ${icon} text-[10px]"></i>
+                        </span>
+                        <div>
+                            <span class="block font-bold text-xs text-slate-900 truncate max-w-[150px]">${tx.concept}</span>
+                            <span class="text-[10px] text-slate-400 block">${tx.date} • <span class="font-semibold text-slate-600">${shortUser}</span></span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-extrabold ${isDeposit ? 'text-emerald-600' : 'text-rose-600'}">
+                        ${isDeposit ? '+' : '-'}${formatCurrency(tx.amount)}
+                    </span>
+                `;
+                listContainer.appendChild(div);
+            });
+        }
+
+        // Render Cajero recent log history (Side Panel / Mobile view helper)
+        function renderCajeroRecentLogs() {
+            const container = document.getElementById('cajero-recent-list');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            // Filter only this user's transactions
+            const myTx = transactions.filter(tx => tx.user === currentUser).slice(0, 6);
+
+            if (myTx.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-slate-400 text-xs bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl">
+                        <i class="fas fa-pen-nib text-xl mb-1.5 text-slate-300 block"></i>
+                        Aún no registra movimientos hoy.
+                    </div>`;
+                return;
+            }
+
+            myTx.forEach(tx => {
+                const isDeposit = tx.type === 'deposito';
+                const borderLeft = isDeposit ? 'border-l-4 border-l-emerald-500' : 'border-l-4 border-l-rose-500';
+                
+                const div = document.createElement('div');
+                div.className = `p-3 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center justify-between ${borderLeft} transition-all`;
+                div.innerHTML = `
+                    <div class="min-w-0 flex-1 pr-2">
+                        <span class="block text-xs font-bold text-slate-950 truncate">${tx.concept}</span>
+                        <div class="flex items-center gap-2 mt-0.5 text-[10px] text-slate-400">
+                            <span class="font-mono bg-slate-100 px-1 py-0.5 rounded text-slate-600 font-semibold">${tx.movementNumber || 'S/N'}</span>
+                            <span>${tx.date}</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-black block ${isDeposit ? 'text-emerald-600' : 'text-rose-600'}">
+                            ${isDeposit ? '+' : '-'}${formatCurrency(tx.amount)}
+                        </span>
+                        <span class="text-[9px] uppercase font-bold text-slate-400">${tx.type}</span>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Render dynamic Chart.js
+        function renderCharts() {
+            const canvasEl = document.getElementById('chart-daily-flow');
+            if (!canvasEl) return;
+            const ctx = canvasEl.getContext('2d');
+            
+            // Map operations
+            const dateMap = {};
+            transactions.forEach(tx => {
+                if (!dateMap[tx.date]) {
+                    dateMap[tx.date] = { deposito: 0, retiro: 0 };
+                }
+                dateMap[tx.date][tx.type] += parseFloat(tx.amount);
+            });
+
+            // Extract last 7 unique days sorted chronologically
+            const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(a) - new Date(b)).slice(-7);
+
+            const depositsData = sortedDates.map(date => dateMap[date].deposito);
+            const withdrawalsData = sortedDates.map(date => dateMap[date].retiro);
+
+            if (trendChart) {
+                trendChart.destroy();
+            }
+
+            trendChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sortedDates,
+                    datasets: [
+                        {
+                            label: 'Depósitos (+)',
+                            data: depositsData,
+                            backgroundColor: 'rgba(16, 185, 129, 0.85)',
+                            borderColor: 'rgb(16, 185, 129)',
+                            borderWidth: 1.5,
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Retiros (-)',
+                            data: withdrawalsData,
+                            backgroundColor: 'rgba(244, 63, 94, 0.85)',
+                            borderColor: 'rgb(244, 63, 94)',
+                            borderWidth: 1.5,
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    family: 'Inter',
+                                    size: 11,
+                                    weight: 600
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Transaction Submit Action
+        function handleTransactionSubmit(e) {
+            e.preventDefault();
+
+            const amountVal = parseFloat(document.getElementById('amount').value);
+            const movNum = document.getElementById('movement_number').value.trim();
+            const dateVal = document.getElementById('trans_date').value;
+            const conceptVal = document.getElementById('concept').value.trim();
+            const checkedRadio = document.querySelector('input[name="trans_type"]:checked');
+
+            // NOTE: concept is OPTIONAL, we don't check !conceptVal anymore
+            if (!checkedRadio || isNaN(amountVal) || amountVal <= 0 || !dateVal) {
+                showToast("Por favor complete el Monto y la Fecha de la operación", "warning");
+                return;
+            }
+
+            const newTx = {
+                id: 'TX-' + Math.floor(1000 + Math.random() * 9000) + '-' + Date.now().toString().slice(-4),
+                date: dateVal,
+                type: checkedRadio.value,
+                amount: amountVal,
+                movementNumber: movNum || 'S/N', // Defaults to Sin Numero if empty
+                concept: conceptVal || 'Sin detalle', // Defaults to Sin Detalle if empty
+                user: currentUser // This saves exactly which user is logged in
+            };
+
+            // Save inside local storage
+            transactions.unshift(newTx);
+            localStorage.setItem('bc_transactions', JSON.stringify(transactions));
+
+            showToast("Transacción registrada correctamente en base local.", "success");
+            
+            // Auto-Sincronización check
+            if (syncSettings.url && syncSettings.autoSync) {
+                syncSingleToSheets(newTx);
+            }
+
+            // Clean up and refresh UI views
+            resetForm();
+            updateUI();
+
+            // Land supervisor on dashboard, but keep cajeros strictly inside the registry page
+            if (isSupervisorOrAdmin(currentUser)) {
+                switchTab('dashboard');
+            } else {
+                switchTab('transaction');
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('transaction-form').reset();
+            document.getElementById('trans_date').value = getFormattedDate(0);
+            toggleTypeUI('deposito');
+        }
+
+        // Spreadsheet Populator (Privileged only)
+        function renderSpreadsheet() {
+            const tbody = document.getElementById('spreadsheet-tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+
+            const filteredData = applyFilters(true); // Fetch filtered database arrays
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="px-6 py-12 text-center text-sm text-slate-400 font-sans">
+                            <i class="fas fa-folder-open text-3xl mb-2 block"></i> No se encontraron movimientos en este día / filtros aplicados.
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            filteredData.forEach((tx, index) => {
+                const rowNum = filteredData.length - index;
+                const isDeposit = tx.type === 'deposito';
+                const userName = USER_DATABASE[tx.user] ? USER_DATABASE[tx.user].name : tx.user.split('@')[0];
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition-colors font-mono text-xs";
+                tr.innerHTML = `
+                    <td class="px-3 py-2.5 text-center font-bold text-slate-400 bg-slate-50 border-r border-slate-200">${rowNum}</td>
+                    <td class="px-4 py-2.5 font-semibold text-slate-500 border-r border-slate-200" title="${tx.id}">${tx.id}</td>
+                    <td class="px-4 py-2.5 whitespace-nowrap text-slate-700 border-r border-slate-200">${tx.date}</td>
+                    <td class="px-4 py-2.5 whitespace-nowrap border-r border-slate-200">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wide uppercase ${isDeposit ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                            ${tx.type}
+                        </span>
+                    </td>
+                    <td class="px-4 py-2.5 text-right font-bold border-r border-slate-200 ${isDeposit ? 'text-emerald-600' : 'text-rose-600'}">
+                        ${isDeposit ? '+' : '-'}${formatCurrency(tx.amount)}
+                    </td>
+                    <td class="px-4 py-2.5 font-medium text-slate-800 border-r border-slate-200">${tx.movementNumber || 'N/A'}</td>
+                    <td class="px-4 py-2.5 text-slate-700 border-r border-slate-200 truncate font-sans max-w-[200px]" title="${tx.concept}">${tx.concept}</td>
+                    <td class="px-4 py-2.5 text-slate-500 font-sans truncate border-r border-slate-200" title="${tx.user}">${userName}</td>
+                    <td class="px-4 py-2.5 text-center whitespace-nowrap">
+                        <button onclick="deleteTransaction('${tx.id}')" class="text-rose-600 hover:text-rose-800 transition-colors font-sans font-bold px-2 py-1" title="Anular transacción">
+                            <i class="fas fa-trash-alt"></i> Anular
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Filtering engine
+        function applyFilters(returnArrayOnly = false) {
+            const filterDate = document.getElementById('filter-date') ? document.getElementById('filter-date').value : '';
+            const typeVal = document.getElementById('filter-type') ? document.getElementById('filter-type').value : 'all';
+            const userVal = document.getElementById('filter-user') ? document.getElementById('filter-user').value : 'all';
+
+            const filtered = transactions.filter(tx => {
+                const matchesDate = !filterDate || tx.date === filterDate;
+                const matchesType = typeVal === 'all' || tx.type === typeVal;
+                const matchesUser = userVal === 'all' || tx.user === userVal;
+
+                return matchesDate && matchesType && matchesUser;
+            });
+
+            if (returnArrayOnly) {
+                return filtered;
+            }
+
+            // Direct rendering side effect trigger
+            renderSpreadsheet();
+        }
+
+        function resetFilters() {
+            if (document.getElementById('filter-date')) document.getElementById('filter-date').value = '';
+            if (document.getElementById('filter-type')) document.getElementById('filter-type').value = 'all';
+            if (document.getElementById('filter-user')) document.getElementById('filter-user').value = 'all';
+            applyFilters();
+        }
+
+        // Save Google Sheet URL Sincronizador settings
+        function saveSyncSettings() {
+            const url = document.getElementById('apps-script-url').value.trim();
+            const autoSync = document.getElementById('autosync-toggle').checked;
+
+            syncSettings.url = url;
+            syncSettings.autoSync = autoSync;
+
+            localStorage.setItem('bc_sync_settings', JSON.stringify(syncSettings));
+            showToast("Conexión de sincronización actualizada.", "success");
+            updateUI();
+        }
+
+        // Delete Row (Supervisor only action)
+        function deleteTransaction(id) {
+            showModal(
+                "¿Anular esta Transacción?",
+                `Está a punto de anular permanentemente el registro bancario ${id} del almacenamiento local del dispositivo.`,
+                "Sí, Anular",
+                function() {
+                    transactions = transactions.filter(tx => tx.id !== id);
+                    localStorage.setItem('bc_transactions', JSON.stringify(transactions));
+                    showToast("Registro bancario anulado.", "info");
+                    renderSpreadsheet();
+                    updateUI();
+                }
+            );
+        }
+
+        // Clear All Database local
+        function clearAllTransactionsConfirm() {
+            showModal(
+                "¿Limpiar Toda la Planilla Local?",
+                "Esta acción vaciará por completo todo el historial de transacciones local. ¡Asegúrese de haber exportado sus datos a CSV primero!",
+                "Proceder a Limpiar",
+                function() {
+                    transactions = [];
+                    localStorage.setItem('bc_transactions', JSON.stringify([]));
+                    showToast("La planilla local se encuentra vacía.", "info");
+                    renderSpreadsheet();
+                    updateUI();
+                }
+            );
+        }
+
+        // Manual Sincronización
+        function triggerManualSync() {
+            if (!syncSettings.url) {
+                showToast("Por favor configure la URL de Apps Script del Banco primero.", "warning");
+                return;
+            }
+
+            const btn = document.getElementById('btn-sync-now');
+            const orig = btn.innerHTML;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-1.5"></i> Volcando datos en nube...`;
+            btn.disabled = true;
+
+            fetch(syncSettings.url, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(transactions)
+            })
+            .then(() => {
+                syncSettings.lastSynced = new Date().toLocaleTimeString();
+                localStorage.setItem('bc_sync_settings', JSON.stringify(syncSettings));
+                showToast("Planilla sincronizada con éxito.", "success");
+                updateUI();
+            })
+            .catch(error => {
+                showToast("Falla de red al conectar con Google Sheets.", "error");
+                console.error("Sheets connection error:", error);
+            })
+            .finally(() => {
+                btn.innerHTML = orig;
+                btn.disabled = false;
+            });
+        }
+
+        // Auto Sync Single helper background trigger
+        function syncSingleToSheets(tx) {
+            fetch(syncSettings.url, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(tx)
+            })
+            .then(() => {
+                syncSettings.lastSynced = new Date().toLocaleTimeString();
+                localStorage.setItem('bc_sync_settings', JSON.stringify(syncSettings));
+                showToast("Movimiento sincronizado con la nube.", "info");
+                updateUI();
+            })
+            .catch(err => {
+                console.warn("Background sheet sync failed: ", err);
+            });
+        }
+
+        // Export only matching filtered day to CSV
+        function exportFilteredDayCSV() {
+            const filterDate = document.getElementById('filter-date').value;
+            if (!filterDate) {
+                showToast("Por favor, seleccione un día específico en el filtro de arriba antes de exportar.", "warning");
+                return;
+            }
+
+            const dayData = transactions.filter(tx => tx.date === filterDate);
+            if (dayData.length === 0) {
+                showToast(`No existen movimientos registrados para el día ${filterDate}.`, "warning");
+                return;
+            }
+
+            generateAndDownloadCSV(dayData, `BC_Manabi_Caja_${filterDate}.csv`);
+        }
+
+        // Export Entire Database to CSV
+        function exportAllToCSV() {
+            if (transactions.length === 0) {
+                showToast("No existen registros contables para exportar.", "warning");
+                return;
+            }
+            generateAndDownloadCSV(transactions, `BC_Manabi_Caja_TOTAL_Completo.csv`);
+        }
+
+        // CSV compiler and downloader helper
+        function generateAndDownloadCSV(dataList, filename) {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            // Column Headers
+            csvContent += "ID,Fecha,Tipo,Monto,Movimiento N,Concepto,Usuario Cajero\n";
+
+            dataList.forEach(tx => {
+                const cashierName = USER_DATABASE[tx.user] ? USER_DATABASE[tx.user].name : tx.user;
+                const row = [
+                    `"${tx.id}"`,
+                    `"${tx.date}"`,
+                    `"${tx.type}"`,
+                    tx.amount,
+                    `"${tx.movementNumber || ''}"`,
+                    `"${tx.concept.replace(/"/g, '""')}"`,
+                    `"${cashierName}"`
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", filename);
+            document.body.appendChild(link); // Firefox standard compliance
+            link.click();
+            document.body.removeChild(link);
+            showToast("Descarga de archivo CSV completada.", "success");
+        }
+
+        // Apps Script Copy Clipboard Utility
+        function copyAppsScriptCode() {
+            const codeText = document.getElementById('apps-script-code-block').innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = codeText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast("Código copiado al portapapeles.", "success");
+        }
+
+        // Format tools
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(value);
+        }
+
+        function getFormattedDate(offsetDays = 0) {
+            const date = new Date();
+            date.setDate(date.getDate() + offsetDays);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Custom Toast Notifications
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bgClass = "bg-slate-900";
+            let icon = "fa-info-circle";
+            if (type === 'success') { bgClass = "bg-emerald-600"; icon = "fa-check-circle"; }
+            else if (type === 'warning') { bgClass = "bg-amber-600"; icon = "fa-exclamation-triangle"; }
+            else if (type === 'error') { bgClass = "bg-rose-600"; icon = "fa-times-circle"; }
+
+            toast.className = `${bgClass} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 transition-all duration-300 opacity-0 transform translate-y-2 pointer-events-auto max-w-sm`;
+            toast.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <span class="text-xs font-semibold">${message}</span>
+            `;
+
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('opacity-0', 'translate-y-2');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // Modal triggers
+        let modalConfirmCallback = null;
+
+        function showModal(title, msg, confirmText, callback) {
+            const modal = document.getElementById('custom-modal');
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = msg;
+            
+            const btnConfirm = document.getElementById('modal-btn-confirm');
+            btnConfirm.innerText = confirmText;
+            
+            modalConfirmCallback = callback;
+            
+            btnConfirm.onclick = function() {
+                if (modalConfirmCallback) {
+                    modalConfirmCallback();
+                }
+                closeModal();
+            };
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+            modalConfirmCallback = null;
+        }
+
+        // Password Reset Modal Logic
+        function showResetPasswordModal() {
+            // Pre-select the currently chosen username in the login dropdown
+            const loginUsername = document.getElementById('username').value;
+            document.getElementById('reset-username').value = loginUsername;
+            
+            document.getElementById('reset-master-code').value = '';
+            document.getElementById('reset-new-password').value = '';
+            document.getElementById('reset-error').classList.add('hidden');
+            document.getElementById('reset-password-modal').classList.remove('hidden');
+        }
+
+        function closeResetPasswordModal() {
+            document.getElementById('reset-password-modal').classList.add('hidden');
+        }
+
+        function executePasswordReset() {
+            const email = document.getElementById('reset-username').value;
+            const masterCode = document.getElementById('reset-master-code').value;
+            const newPassword = document.getElementById('reset-new-password').value;
+            const errorDiv = document.getElementById('reset-error');
+
+            if (masterCode !== MASTER_CODE) {
+                errorDiv.innerText = "Código maestro incorrecto. Acceso denegado.";
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                errorDiv.innerText = "La nueva contraseña debe tener al menos 6 caracteres.";
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            // Update password in runtime database
+            if (USER_DATABASE[email]) {
+                USER_DATABASE[email].pass = newPassword;
+                
+                // Save custom passwords to localStorage so they persist
+                const customPasswords = {};
+                for (const key in USER_DATABASE) {
+                    customPasswords[key] = USER_DATABASE[key].pass;
+                }
+                localStorage.setItem('bc_user_passwords', JSON.stringify(customPasswords));
+
+                showToast(`Contraseña actualizada exitosamente para ${USER_DATABASE[email].name}`, "success");
+                closeResetPasswordModal();
+            }
+        }
+    </script>
+</body>
+</html>
