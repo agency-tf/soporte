@@ -11,7 +11,7 @@
     <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -81,7 +81,7 @@
                     Portal de Registro Diario
                 </h2>
                 <p class="mt-2 text-center text-sm text-manabi-300">
-                    Control de Caja y Conciliación Automatizada
+                    Control de Caja y Sincronización de Auditoría
                 </p>
             </div>
 
@@ -136,16 +136,14 @@
                     
                     <div class="mt-6 pt-6 border-t border-slate-200 flex flex-col items-center gap-2">
                         <span class="text-[11px] text-slate-400 flex items-center justify-center">
-                            <i class="fas fa-shield-alt mr-1.5 text-manabi-500"></i> Sistema Seguro de Auditoría BC Manabí
+                            <i class="fas fa-solid fa-shield-alt mr-1.5 text-manabi-500"></i> Sistema Seguro de Auditoría BC Manabí
                         </span>
-                        <a href="https://www.facebook.com/photo/?fbid=1203859851892796&set=a.498074075804714" target="_blank" class="text-[10px] text-slate-400 hover:text-manabi-600 text-center px-4">
-                            Comunicado Oficial Banco Comercial de Manabí
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Dashboard Screen View -->
         <div id="dashboard-screen" class="hidden flex-1 flex flex-col bg-slate-100">
             <!-- Header Nav -->
             <nav class="bg-manabi-900 border-b border-manabi-950 text-white shadow-lg sticky top-0 z-40">
@@ -336,7 +334,7 @@
                                 <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
                                     <i class="fas fa-chart-line text-manabi-600"></i> Flujo Diario de Operaciones de Caja
                                 </h3>
-                                <span class="text-xs text-slate-400 italic font-mono">Últimos 7 días activos</span>
+                                <span class="text-xs text-slate-400 italic font-mono">Operaciones en tiempo real</span>
                             </div>
                             <div class="h-80 w-full relative">
                                 <canvas id="chart-daily-flow"></canvas>
@@ -349,7 +347,7 @@
                                 <h3 class="text-base font-bold text-slate-900 mb-2 flex items-center gap-2">
                                     <i class="fas fa-list-ol text-manabi-600"></i> Auditoría de Últimos Movimientos
                                 </h3>
-                                <p class="text-xs text-slate-500 mb-4">Últimas 5 transacciones reportadas en la red de cajeros.</p>
+                                <p class="text-xs text-slate-500 mb-4">Últimas transacciones reportadas en la red de cajeros.</p>
                                 
                                 <div id="dashboard-recent-list" class="space-y-3 overflow-y-auto max-h-[220px] pr-1 custom-scrollbar">
                                     <div class="text-center py-8 text-slate-400 text-sm">
@@ -370,6 +368,7 @@
                     </div>
                 </div>
 
+                <!-- Transaction Registry Tab View -->
                 <div id="tab-content-transaction" class="hidden">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         
@@ -446,16 +445,17 @@
                                         <p class="mt-1.5 text-[10px] text-slate-400">Número de referencia del comprobante físico.</p>
                                     </div>
 
-                                    <!-- Date Selection -->
+                                    <!-- Date and Time Selection (LOCKED & DYNAMIC) -->
                                     <div>
-                                        <label for="trans_date" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Fecha de Operación</label>
+                                        <label for="trans_date" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Fecha y Hora de Registro (Inmutable)</label>
                                         <div class="mt-1 relative rounded-md shadow-sm">
                                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                                                <i class="fas fa-calendar-alt"></i>
+                                                <i class="fas fa-clock"></i>
                                             </div>
-                                            <input type="date" required name="trans_date" id="trans_date" 
-                                                   class="block w-full pl-9 pr-3 py-3.5 border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 focus:border-manabi-500 sm:text-sm bg-slate-50/50">
+                                            <input type="text" readonly disabled name="trans_date" id="trans_date" 
+                                                   class="block w-full pl-9 pr-3 py-3.5 border-2 border-slate-200 rounded-lg bg-slate-100 text-slate-500 sm:text-sm font-semibold cursor-not-allowed">
                                         </div>
+                                        <p class="mt-1.5 text-[10px] text-slate-400">La hora exacta se estampa automáticamente al procesar la firma digital.</p>
                                     </div>
 
                                     <!-- Concept / Description -->
@@ -465,7 +465,6 @@
                                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                                                 <i class="fas fa-align-left"></i>
                                             </div>
-                                            <!-- REMOVED 'required' ATTRIBUTE SO IT IS OPTIONAL -->
                                             <input type="text" name="concept" id="concept"
                                                    placeholder="Ej. Depósito cuenta de ahorros cliente" 
                                                    class="block w-full pl-9 pr-3 py-3.5 border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 focus:border-manabi-500 sm:text-sm bg-slate-50/50">
@@ -518,6 +517,7 @@
                     </div>
                 </div>
 
+                <!-- Spreadsheet Tab View (Restricted/Privileged View) -->
                 <div id="tab-content-spreadsheet" class="hidden space-y-4">
                     <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
                         
@@ -538,7 +538,7 @@
                                     <button onclick="exportAllToCSV()" class="bg-slate-700 hover:bg-slate-850 text-white text-xs font-bold py-2 px-3 rounded flex items-center gap-1.5 transition-colors shadow">
                                         <i class="fas fa-file-excel"></i> Exportar Todo a CSV
                                     </button>
-                                    <button onclick="clearAllTransactionsConfirm()" class="bg-red-50 hover:bg-red-105 text-red-600 border border-red-200 text-xs font-bold py-2 px-3 rounded flex items-center gap-1.5 transition-colors">
+                                    <button id="btn-clear-table" onclick="clearAllTransactionsConfirm()" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-bold py-2 px-3 rounded flex items-center gap-1.5 transition-colors">
                                         <i class="fas fa-trash-alt"></i> Limpiar Tabla
                                     </button>
                                 </div>
@@ -583,7 +583,7 @@
                                     <tr>
                                         <th scope="col" class="w-12 px-3 py-2 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider bg-slate-100 border-r border-slate-200">Fila</th>
                                         <th scope="col" class="w-36 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Código ID</th>
-                                        <th scope="col" class="w-32 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Fecha</th>
+                                        <th scope="col" class="w-44 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Fecha y Hora</th>
                                         <th scope="col" class="w-28 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Tipo</th>
                                         <th scope="col" class="w-40 px-4 py-2 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Monto</th>
                                         <th scope="col" class="w-36 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Nº Movimiento</th>
@@ -600,75 +600,87 @@
                     </div>
                 </div>
 
+                <!-- Synchronization Console View -->
                 <div id="tab-content-sync" class="hidden space-y-6">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <!-- Setup Form & Status Card -->
-                        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 lg:col-span-1">
-                            <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
-                                <i class="fas fa-link text-manabi-600"></i> Enlace con Google Sheets
-                            </h3>
-                            <p class="text-xs text-slate-500 mb-4">La conexión a su script del Banco está preconfigurada.</p>
+                        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 lg:col-span-1 flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+                                    <i class="fas fa-link text-manabi-600"></i> Enlace con Google Sheets
+                                </h3>
+                                <p class="text-xs text-slate-500 mb-4">La conexión a su script del Banco está preconfigurada.</p>
 
-                            <div class="space-y-4">
-                                <div class="p-3 bg-manabi-50 rounded-lg border border-manabi-150">
-                                    <span class="block text-xs font-bold text-manabi-800">Hoja de Destino:</span>
-                                    <a href="https://docs.google.com/spreadsheets/d/11bMDArYonIgdrjxLofx9BiwNoEeKPvuEuQY0EO7D1CM/edit?usp=sharing" target="_blank" class="text-[10px] text-manabi-600 hover:text-manabi-800 break-words font-semibold underline">
-                                        <i class="fas fa-file-invoice-dollar mr-1"></i> Abrir Google Sheet Oficial BC Manabí
-                                    </a>
-                                </div>
+                                <div class="space-y-4">
+                                    <div class="p-3 bg-manabi-50 rounded-lg border border-manabi-150">
+                                        <span class="block text-xs font-bold text-manabi-800">Hoja de Destino:</span>
+                                        <a href="https://docs.google.com/spreadsheets/d/11bMDArYonIgdrjxLofx9BiwNoEeKPvuEuQY0EO7D1CM/edit?usp=sharing" target="_blank" class="text-[10px] text-manabi-600 hover:text-manabi-800 break-words font-semibold underline">
+                                            <i class="fas fa-file-invoice-dollar mr-1"></i> Abrir Google Sheet Oficial BC Manabí
+                                        </a>
+                                    </div>
 
-                                <div>
+                                    <div>
                                     <label for="apps-script-url" class="block text-xs font-bold text-slate-700 mb-1">URL de Apps Script Web App *</label>
-                                    <!-- PRE-FILLED WITH USER'S PROVIDED URL -->
-                                    <input type="url" id="apps-script-url" value="https://script.google.com/macros/s/AKfycbyjcChYHn7GwD6O12C3AFt3RPFS82wsPKpRemG2_8oiId-g4Gq0_vRnIS0pmpVudMZM6Q/exec"
+                                    <input type="url" id="apps-script-url" value="https://script.google.com/macros/s/AKfycbzUZfgM1hzkKWg7tSoAkwGTH6oIX2AxJM1M5c5jr0liz42xF9790AehYOEFnxgPEB3Pug/exec"
                                            class="mt-1 block w-full text-xs border border-slate-300 rounded-lg p-2.5 focus:ring-manabi-500 focus:border-manabi-500 bg-slate-50" readonly>
                                 </div>
 
                                 <div class="flex items-center">
-                                    <input type="checkbox" id="autosync-toggle" checked class="h-4 w-4 text-manabi-600 focus:ring-manabi-500 border-slate-300 rounded">
-                                    <label for="autosync-toggle" class="ml-2 block text-xs font-semibold text-slate-750">Sincronizar automáticamente en cada registro</label>
+                                        <input type="checkbox" id="autosync-toggle" checked class="h-4 w-4 text-manabi-600 focus:ring-manabi-500 border-slate-300 rounded">
+                                        <label for="autosync-toggle" class="ml-2 block text-xs font-semibold text-slate-755">Sincronizar automáticamente en cada registro</label>
+                                    </div>
                                 </div>
+                            </div>
 
-                                <div class="pt-4 border-t border-slate-100 space-y-2">
-                                    <button onclick="saveSyncSettings()" class="w-full bg-manabi-700 hover:bg-manabi-800 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-1.5">
-                                        <i class="fas fa-save text-accent-gold"></i> Guardar Enlace
-                                    </button>
-                                    <button id="btn-sync-now" onclick="triggerManualSync()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-1.5">
-                                        <i class="fas fa-sync"></i> Enviar Todo el Historial Ahora
-                                    </button>
-                                </div>
+                            <div class="pt-4 border-t border-slate-100 space-y-2 mt-4">
+                                <button onclick="saveSyncSettings()" class="w-full bg-manabi-700 hover:bg-manabi-800 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-1.5">
+                                    <i class="fas fa-save text-accent-gold"></i> Guardar Enlace
+                                </button>
+                                <button id="btn-sync-now" onclick="triggerManualSync()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-1.5">
+                                    <i class="fas fa-sync"></i> Enviar Todo el Historial Ahora
+                                </button>
                             </div>
                         </div>
 
                         <!-- Guide and Instructions -->
                         <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 lg:col-span-2 space-y-4">
+                            <div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-4 flex gap-3 items-start">
+                                <i class="fas fa-exclamation-triangle text-lg text-amber-600 mt-0.5"></i>
+                                <div class="text-xs space-y-1">
+                                    <p class="font-bold">⚠️ ¿Sigue sin escribir datos en tu hoja?</p>
+                                    <p>Por políticas de seguridad, Google bloquea la escritura si no configuras el script correctamente. Asegúrate de que al **Implementar como Aplicación Web** hayas elegido:</p>
+                                    <ul class="list-disc list-inside mt-1 font-semibold space-y-0.5">
+                                        <li>Ejecutar como: <span class="underline">Yo (tu correo)</span></li>
+                                        <li>Quién tiene acceso: <span class="underline text-emerald-700">Cualquiera (Anyone)</span> <span class="text-[10px] font-normal text-amber-800">(¡OBLIGATORIO!)</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+
                             <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                                 <i class="fas fa-check-circle text-emerald-600"></i> Su App Script está configurado
                             </h3>
                             <p class="text-xs text-slate-600 leading-relaxed">
-                                Hemos vinculado exitosamente el sistema con el ID de despliegue <code class="bg-slate-100 px-1 py-0.5 rounded font-bold">AKfycbyjcC...</code>. Si necesita volver a implementar el código en el futuro, use la siguiente plantilla de JavaScript.
+                                Hemos vinculado exitosamente el sistema con el ID de despliegue <code class="bg-slate-100 px-1 py-0.5 rounded font-bold">AKfycbzUZf...</code>. Si necesita volver a implementar el código en el futuro, use la siguiente plantilla de JavaScript.
                             </p>
 
                             <!-- Script Preview Card -->
-                            <div class="mt-4">
+                            <div class="mt-2">
                                 <div class="flex items-center justify-between bg-slate-800 text-slate-300 px-4 py-2 rounded-t-lg">
                                     <span class="text-xs font-semibold font-mono">GoogleAppsScript.js</span>
                                     <button onclick="copyAppsScriptCode()" class="text-xs text-manabi-300 hover:text-white flex items-center gap-1.5 font-bold transition-colors">
                                         <i class="fas fa-copy"></i> Copiar Código
                                     </button>
                                 </div>
-                                <pre id="apps-script-code-block" class="bg-slate-900 text-slate-100 p-4 rounded-b-lg text-[11px] font-mono overflow-x-auto max-h-56 custom-scrollbar leading-relaxed">
+                                <pre id="apps-script-code-block" class="bg-slate-900 text-slate-100 p-4 rounded-b-lg text-[11px] font-mono overflow-x-auto max-h-48 custom-scrollbar leading-relaxed">
 function doPost(e) {
   try {
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     var payload = JSON.parse(e.postData.contents);
     
-    // Si la hoja está totalmente en blanco, colocar los encabezados para el banco
     if (sheet.getLastRow() === 0) {
       sheet.appendRow(["ID Transacción", "Fecha", "Tipo", "Monto", "Movimiento Nº", "Concepto", "Usuario Cajero", "Fecha de Sincronización"]);
     }
     
-    // Guardar los datos recibidos (Sincronización Total)
     if (Array.isArray(payload)) {
       payload.forEach(function(item) {
         sheet.appendRow([
@@ -683,7 +695,6 @@ function doPost(e) {
         ]);
       });
     } else {
-      // Auto-sincronización de un solo elemento
       sheet.appendRow([
         payload.id,
         payload.date,
@@ -728,7 +739,7 @@ function doGet() {
                         </div>
                     </div>
                     <div class="text-center sm:text-right">
-                        <p class="text-xs text-manabi-300">Portal de Operaciones de Caja v4.5</p>
+                        <p class="text-xs text-manabi-300">Portal de Operaciones de Caja v4.6</p>
                         <p class="text-[10px] text-slate-500">Módulo seguro de control local encriptado y volcado remoto</p>
                     </div>
                 </div>
@@ -838,7 +849,7 @@ function doGet() {
 
         // Sync Configuration State (Pre-filled with user's specific endpoint)
         let syncSettings = {
-            url: 'https://script.google.com/macros/s/AKfycbyjcChYHn7GwD6O12C3AFt3RPFS82wsPKpRemG2_8oiId-g4Gq0_vRnIS0pmpVudMZM6Q/exec',
+            url: 'https://script.google.com/macros/s/AKfycbzUZfgM1hzkKWg7tSoAkwGTH6oIX2AxJM1M5c5jr0liz42xF9790AehYOEFnxgPEB3Pug/exec',
             autoSync: true,
             lastSynced: null
         };
@@ -863,20 +874,27 @@ function doGet() {
 
             if (savedTx) {
                 transactions = JSON.parse(savedTx);
+                // Si existía información de las semillas de prueba anteriores, forzamos la limpieza a 0
+                if (transactions.some(tx => tx.id === 'TX-7491-912' || tx.id === 'TX-8910-441')) {
+                    transactions = [];
+                    localStorage.setItem('bc_transactions', JSON.stringify([]));
+                }
             } else {
-                // Pre-populate with seed mock entries for Banco Comercial de Manabí
-                transactions = [
-                    { id: 'TX-7491-912', date: getFormattedDate(0), type: 'deposito', amount: 8250.00, movementNumber: 'DP-784910', concept: 'Depósito cuenta corriente de Empresa Portoviejo S.A.', user: 'cajero1@bcmanabi.com' },
-                    { id: 'TX-8910-441', date: getFormattedDate(0), type: 'retiro', amount: 1200.00, movementNumber: 'RT-551239', concept: 'Retiro de efectivo - Pago de cheques ventanilla Portoviejo', user: 'cajero2@bcmanabi.com' },
-                    { id: 'TX-3312-054', date: getFormattedDate(-1), type: 'deposito', amount: 4500.00, movementNumber: 'DP-441235', concept: 'Abono en ventanilla comercial - Cliente VIP', user: 'supervisor@bcmanabi.com' }
-                ];
-                localStorage.setItem('bc_transactions', JSON.stringify(transactions));
+                transactions = [];
+                localStorage.setItem('bc_transactions', JSON.stringify([]));
             }
 
             if (savedSettings) {
                 syncSettings = JSON.parse(savedSettings);
+                // Aseguramos que se use la nueva URL por defecto si estaba configurada una anterior
+                if (!syncSettings.url || syncSettings.url.includes("AKfycbyjcCh")) {
+                    syncSettings.url = 'https://script.google.com/macros/s/AKfycbzUZfgM1hzkKWg7tSoAkwGTH6oIX2AxJM1M5c5jr0liz42xF9790AehYOEFnxgPEB3Pug/exec';
+                }
                 document.getElementById('apps-script-url').value = syncSettings.url;
                 document.getElementById('autosync-toggle').checked = syncSettings.autoSync;
+            } else {
+                // Forzar guardado inicial de ajustes
+                localStorage.setItem('bc_sync_settings', JSON.stringify(syncSettings));
             }
 
             if (savedUser && USER_DATABASE[savedUser]) {
@@ -885,8 +903,16 @@ function doGet() {
                 showScreen('login');
             }
 
-            // Set input date default
-            document.getElementById('trans_date').value = getFormattedDate(0);
+            // Set input date default text value immediately
+            document.getElementById('trans_date').value = getCurrentDateTimeString();
+
+            // Real-time dynamic clock update for the locked date & time field
+            setInterval(function() {
+                const clockEl = document.getElementById('trans_date');
+                if (clockEl) {
+                    clockEl.value = getCurrentDateTimeString();
+                }
+            }, 1000);
 
             // Handle Login process
             document.getElementById('login-form').addEventListener('submit', function(e) {
@@ -895,10 +921,10 @@ function doGet() {
                 const passwordInput = document.getElementById('password');
                 const errorDiv = document.getElementById('login-error');
 
-            const selectedUser = usernameSelect.value;
-            const typedPassword = passwordInput.value;
+                const selectedUser = usernameSelect.value;
+                const typedPassword = passwordInput.value;
 
-            if (USER_DATABASE[selectedUser] && USER_DATABASE[selectedUser].pass === typedPassword) {
+                if (USER_DATABASE[selectedUser] && USER_DATABASE[selectedUser].pass === typedPassword) {
                     errorDiv.classList.add('hidden');
                     loginUser(selectedUser);
                     showToast('Firma digital verificada. ¡Acceso concedido!', 'success');
@@ -1037,7 +1063,7 @@ function doGet() {
             let totalWithdrawals = 0;
             let countWithdrawals = 0;
 
-            // Date sort descending
+            // Date sort descending (recent first)
             transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             transactions.forEach(tx => {
@@ -1055,18 +1081,25 @@ function doGet() {
 
             // Only update supervisor widgets if they exist in DOM & user is privileged
             if (isSupervisorOrAdmin(currentUser)) {
-                document.getElementById('kpi-balance').innerText = formatCurrency(netBalance);
-                if (netBalance >= 0) {
-                    document.getElementById('kpi-balance').className = "text-2xl font-bold text-slate-900";
-                } else {
-                    document.getElementById('kpi-balance').className = "text-2xl font-bold text-red-650";
+                const kpiBalanceEl = document.getElementById('kpi-balance');
+                if (kpiBalanceEl) {
+                    kpiBalanceEl.innerText = formatCurrency(netBalance);
+                    if (netBalance >= 0) {
+                        kpiBalanceEl.className = "text-2xl font-bold text-slate-900";
+                    } else {
+                        kpiBalanceEl.className = "text-2xl font-bold text-rose-600";
+                    }
                 }
 
-                document.getElementById('kpi-deposits').innerText = formatCurrency(totalDeposits);
-                document.getElementById('kpi-deposits-count').innerText = `${countDeposits} depósitos`;
+                if (document.getElementById('kpi-deposits')) {
+                    document.getElementById('kpi-deposits').innerText = formatCurrency(totalDeposits);
+                    document.getElementById('kpi-deposits-count').innerText = `${countDeposits} depósitos`;
+                }
 
-                document.getElementById('kpi-withdrawals').innerText = formatCurrency(totalWithdrawals);
-                document.getElementById('kpi-withdrawals-count').innerText = `${countWithdrawals} retiros`;
+                if (document.getElementById('kpi-withdrawals')) {
+                    document.getElementById('kpi-withdrawals').innerText = formatCurrency(totalWithdrawals);
+                    document.getElementById('kpi-withdrawals-count').innerText = `${countWithdrawals} retiros`;
+                }
 
                 // Update sync status indicator
                 const statusText = document.getElementById('sync-status-text');
@@ -1074,12 +1107,12 @@ function doGet() {
                 const statusIconBg = document.getElementById('sync-status-icon-bg');
                 const statusLastTime = document.getElementById('sync-last-time');
 
-                if (syncSettings.url) {
+                if (statusText && syncSettings.url) {
                     statusText.innerText = "Sincronizado";
                     statusIcon.className = "fas fa-link text-2xl";
                     statusIconBg.className = "flex-shrink-0 bg-emerald-100 rounded-lg p-3 text-emerald-600";
                     statusLastTime.innerText = syncSettings.lastSynced ? `Activo: ${syncSettings.lastSynced}` : "Listo";
-                } else {
+                } else if (statusText) {
                     statusText.innerText = "No Vinculado";
                     statusIcon.className = "fas fa-unlink text-2xl";
                     statusIconBg.className = "flex-shrink-0 bg-amber-100 rounded-lg p-3 text-amber-600";
@@ -1123,7 +1156,7 @@ function doGet() {
                         <span class="p-1.5 rounded-full ${badgeColor}">
                             <i class="fas ${icon} text-[10px]"></i>
                         </span>
-                        <div>
+                        <div class="min-w-0">
                             <span class="block font-bold text-xs text-slate-900 truncate max-w-[150px]">${tx.concept}</span>
                             <span class="text-[10px] text-slate-400 block">${tx.date} • <span class="font-semibold text-slate-600">${shortUser}</span></span>
                         </div>
@@ -1186,17 +1219,33 @@ function doGet() {
             if (!canvasEl) return;
             const ctx = canvasEl.getContext('2d');
             
-            // Map operations
+            // Map operations (grouping by date only, omitting the hour/minutes part)
             const dateMap = {};
             transactions.forEach(tx => {
-                if (!dateMap[tx.date]) {
-                    dateMap[tx.date] = { deposito: 0, retiro: 0 };
+                const dateOnly = tx.date.split(' ')[0]; // Extract YYYY-MM-DD from YYYY-MM-DD HH:MM:SS
+                if (!dateMap[dateOnly]) {
+                    dateMap[dateOnly] = { deposito: 0, retiro: 0 };
                 }
-                dateMap[tx.date][tx.type] += parseFloat(tx.amount);
+                dateMap[dateOnly][tx.type] += parseFloat(tx.amount);
             });
 
             // Extract last 7 unique days sorted chronologically
             const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(a) - new Date(b)).slice(-7);
+
+            // Handle empty trends gracefully
+            if (sortedDates.length === 0) {
+                if (trendChart) {
+                    trendChart.destroy();
+                    trendChart = null;
+                }
+                // Draw simple placeholder text on canvas
+                ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+                ctx.fillStyle = "#94a3b8";
+                ctx.font = "14px Inter";
+                ctx.textAlign = "center";
+                ctx.fillText("Sin transacciones registradas para graficar.", canvasEl.width / 2, canvasEl.height / 2);
+                return;
+            }
 
             const depositsData = sortedDates.map(date => dateMap[date].deposito);
             const withdrawalsData = sortedDates.map(date => dateMap[date].retiro);
@@ -1263,24 +1312,25 @@ function doGet() {
 
             const amountVal = parseFloat(document.getElementById('amount').value);
             const movNum = document.getElementById('movement_number').value.trim();
-            const dateVal = document.getElementById('trans_date').value;
             const conceptVal = document.getElementById('concept').value.trim();
             const checkedRadio = document.querySelector('input[name="trans_type"]:checked');
 
-            // NOTE: concept is OPTIONAL, we don't check !conceptVal anymore
-            if (!checkedRadio || isNaN(amountVal) || amountVal <= 0 || !dateVal) {
-                showToast("Por favor complete el Monto y la Fecha de la operación", "warning");
+            if (!checkedRadio || isNaN(amountVal) || amountVal <= 0) {
+                showToast("Por favor complete el Monto de la operación", "warning");
                 return;
             }
 
+            // Capture exact current local datetime timestamp!
+            const exactDateTime = getCurrentDateTimeString();
+
             const newTx = {
                 id: 'TX-' + Math.floor(1000 + Math.random() * 9000) + '-' + Date.now().toString().slice(-4),
-                date: dateVal,
+                date: exactDateTime, // Immutable server-like date and time
                 type: checkedRadio.value,
                 amount: amountVal,
-                movementNumber: movNum || 'S/N', // Defaults to Sin Numero if empty
-                concept: conceptVal || 'Sin detalle', // Defaults to Sin Detalle if empty
-                user: currentUser // This saves exactly which user is logged in
+                movementNumber: movNum || 'S/N', 
+                concept: conceptVal || 'Sin detalle', 
+                user: currentUser 
             };
 
             // Save inside local storage
@@ -1308,11 +1358,11 @@ function doGet() {
 
         function resetForm() {
             document.getElementById('transaction-form').reset();
-            document.getElementById('trans_date').value = getFormattedDate(0);
+            document.getElementById('trans_date').value = getCurrentDateTimeString();
             toggleTypeUI('deposito');
         }
 
-        // Spreadsheet Populator (Privileged only)
+        // Spreadsheet Populator
         function renderSpreadsheet() {
             const tbody = document.getElementById('spreadsheet-tbody');
             if (!tbody) return;
@@ -1370,7 +1420,8 @@ function doGet() {
             const userVal = document.getElementById('filter-user') ? document.getElementById('filter-user').value : 'all';
 
             const filtered = transactions.filter(tx => {
-                const matchesDate = !filterDate || tx.date === filterDate;
+                // Match prefix of date because date now contains time (starts with YYYY-MM-DD)
+                const matchesDate = !filterDate || tx.date.startsWith(filterDate);
                 const matchesType = typeVal === 'all' || tx.type === typeVal;
                 const matchesUser = userVal === 'all' || tx.user === userVal;
 
@@ -1392,8 +1443,13 @@ function doGet() {
             applyFilters();
         }
 
-        // Save Google Sheet URL Sincronizador settings
+        // Save Google Sheet URL Sincronizador settings (Supervisor Protected)
         function saveSyncSettings() {
+            if (!isSupervisorOrAdmin(currentUser)) {
+                showToast("Acceso denegado. Solo el supervisor puede modificar el enlace.", "error");
+                return;
+            }
+
             const url = document.getElementById('apps-script-url').value.trim();
             const autoSync = document.getElementById('autosync-toggle').checked;
 
@@ -1407,6 +1463,11 @@ function doGet() {
 
         // Delete Row (Supervisor only action)
         function deleteTransaction(id) {
+            if (!isSupervisorOrAdmin(currentUser)) {
+                showToast("Acceso denegado. Solo el supervisor puede anular transacciones.", "error");
+                return;
+            }
+
             showModal(
                 "¿Anular esta Transacción?",
                 `Está a punto de anular permanentemente el registro bancario ${id} del almacenamiento local del dispositivo.`,
@@ -1421,8 +1482,13 @@ function doGet() {
             );
         }
 
-        // Clear All Database local
+        // Clear All Database local (Supervisor only action)
         function clearAllTransactionsConfirm() {
+            if (!isSupervisorOrAdmin(currentUser)) {
+                showToast("Acceso denegado. Solo el supervisor puede vaciar la planilla.", "error");
+                return;
+            }
+
             showModal(
                 "¿Limpiar Toda la Planilla Local?",
                 "Esta acción vaciará por completo todo el historial de transacciones local. ¡Asegúrese de haber exportado sus datos a CSV primero!",
@@ -1437,8 +1503,13 @@ function doGet() {
             );
         }
 
-        // Manual Sincronización
+        // Manual Sincronización (Optimized for CORS simple request text/plain)
         function triggerManualSync() {
+            if (!isSupervisorOrAdmin(currentUser)) {
+                showToast("Acceso denegado. Solo el supervisor puede sincronizar manual.", "error");
+                return;
+            }
+
             if (!syncSettings.url) {
                 showToast("Por favor configure la URL de Apps Script del Banco primero.", "warning");
                 return;
@@ -1449,18 +1520,19 @@ function doGet() {
             btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-1.5"></i> Volcando datos en nube...`;
             btn.disabled = true;
 
+            // Enforcing Content-Type: text/plain to classify as a CORS simple-request bypasses CORS errors
             fetch(syncSettings.url, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'text/plain',
                 },
                 body: JSON.stringify(transactions)
             })
             .then(() => {
                 syncSettings.lastSynced = new Date().toLocaleTimeString();
                 localStorage.setItem('bc_sync_settings', JSON.stringify(syncSettings));
-                showToast("Planilla sincronizada con éxito.", "success");
+                showToast("Planilla sincronizada con éxito (Verifica tu Google Sheets).", "success");
                 updateUI();
             })
             .catch(error => {
@@ -1473,13 +1545,13 @@ function doGet() {
             });
         }
 
-        // Auto Sync Single helper background trigger
+        // Auto Sync Single helper background trigger (uses Simple Request bypass for zero preflights)
         function syncSingleToSheets(tx) {
             fetch(syncSettings.url, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'text/plain',
                 },
                 body: JSON.stringify(tx)
             })
@@ -1502,7 +1574,7 @@ function doGet() {
                 return;
             }
 
-            const dayData = transactions.filter(tx => tx.date === filterDate);
+            const dayData = transactions.filter(tx => tx.date.startsWith(filterDate));
             if (dayData.length === 0) {
                 showToast(`No existen movimientos registrados para el día ${filterDate}.`, "warning");
                 return;
@@ -1524,7 +1596,7 @@ function doGet() {
         function generateAndDownloadCSV(dataList, filename) {
             let csvContent = "data:text/csv;charset=utf-8,";
             // Column Headers
-            csvContent += "ID,Fecha,Tipo,Monto,Movimiento N,Concepto,Usuario Cajero\n";
+            csvContent += "ID,Fecha y Hora,Tipo,Monto,Movimiento N,Concepto,Usuario Cajero\n";
 
             dataList.forEach(tx => {
                 const cashierName = USER_DATABASE[tx.user] ? USER_DATABASE[tx.user].name : tx.user;
@@ -1577,6 +1649,18 @@ function doGet() {
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
+        }
+
+        // Custom timestamp string generator (YYYY-MM-DD HH:MM:SS)
+        function getCurrentDateTimeString() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         }
 
         // Custom Toast Notifications
