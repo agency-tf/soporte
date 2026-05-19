@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BC Manabí - Portal de Transacciones</title>
+    <title>BC Manabí - Portal de Operaciones de Caja</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -11,7 +11,7 @@
     <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -46,7 +46,6 @@
         }
     </script>
     <style>
-        /* Custom Scrollbar for Spreadsheet View */
         .custom-scrollbar::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -63,31 +62,29 @@
         }
     </style>
 </head>
-<body class="h-full font-sans antialiased text-slate-800">
+<body class="h-full font-sans antialiased text-slate-800 bg-slate-50">
 
     <div id="app" class="min-h-screen flex flex-col justify-between">
 
-        <!-- Login Wrapper -->
+        <!-- ================= LOGIN SCREEN ================= -->
         <div id="login-screen" class="flex-1 flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-slate-900 bg-cover bg-center" style="background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.95), rgba(7, 40, 72, 0.95)), url('https://www.bcmanabi.com/img/LOGOP2.jpg');">
             <div class="sm:mx-auto sm:w-full sm:max-w-md">
                 <div class="flex justify-center">
-                    <!-- Brand Logo with Fallback -->
                     <img class="h-20 w-auto rounded-lg shadow-2xl border-2 border-manabi-600 bg-white p-2" 
                          src="https://www.bcmanabi.com/img/LOGOP2.jpg" 
                          onerror="this.src='https://placehold.co/200x80/054b81/ffffff?text=BC+MANABI'"
                          alt="Banco Comercial de Manabí">
                 </div>
                 <h2 class="mt-6 text-center text-3xl font-extrabold text-white tracking-tight">
-                    Portal de Registro Diario
+                    Portal Operativo de Caja
                 </h2>
-                <p class="mt-2 text-center text-sm text-manabi-300">
-                    Control de Caja y Sincronización de Auditoría
+                <p class="mt-2 text-center text-sm text-manabi-300 font-semibold uppercase tracking-wider">
+                    Banco Comercial de Manabí S.A.
                 </p>
             </div>
 
             <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
                 <div class="bg-white py-8 px-4 shadow-2xl rounded-2xl sm:px-10 border border-slate-100">
-                    
                     <form id="login-form" class="space-y-6">
                         <div>
                             <label for="username" class="block text-sm font-semibold text-slate-700">Usuario o Email Bancario</label>
@@ -98,7 +95,7 @@
                                 <select id="username" name="username" class="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 focus:border-manabi-500 sm:text-sm bg-slate-50 font-medium">
                                     <option value="cajero1@bcmanabi.com" selected>Cajera Principal (María Auxiliadora)</option>
                                     <option value="cajero2@bcmanabi.com">Cajero Auxiliar (José Delgado)</option>
-                                    <option value="supervisor@bcmanabi.com">Supervisor (Ing. Supervisor Manabí)</option>
+                                    <option value="supervisor@bcmanabi.com">Supervisor (Economista Andrea Vera)</option>
                                     <option value="admin@bcmanabi.com">Administrador General (Auditor)</option>
                                 </select>
                             </div>
@@ -116,7 +113,7 @@
                             </div>
                             <div class="mt-2 text-right">
                                 <button type="button" onclick="showResetPasswordModal()" class="text-[11px] text-manabi-600 hover:text-manabi-800 hover:underline">
-                                    <i class="fas fa-unlock-alt mr-1"></i>¿Olvidó su contraseña? (Usar Código Maestro)
+                                    <i class="fas fa-unlock-alt mr-1"></i>¿Olvidó su contraseña?
                                 </button>
                             </div>
                         </div>
@@ -136,16 +133,15 @@
                     
                     <div class="mt-6 pt-6 border-t border-slate-200 flex flex-col items-center gap-2">
                         <span class="text-[11px] text-slate-400 flex items-center justify-center">
-                            <i class="fas fa-solid fa-shield-alt mr-1.5 text-manabi-500"></i> Sistema Seguro de Auditoría BC Manabí
+                            <i class="fas fa-shield-alt mr-1.5 text-manabi-500"></i> Sistema de Gestión Integral BC Manabí
                         </span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Dashboard Screen View -->
+        <!-- ================= MAIN SYSTEM SCREEN ================= -->
         <div id="dashboard-screen" class="hidden flex-1 flex flex-col bg-slate-100">
-            <!-- Header Nav -->
             <nav class="bg-manabi-900 border-b border-manabi-950 text-white shadow-lg sticky top-0 z-40">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex items-center justify-between h-16">
@@ -155,7 +151,7 @@
                                 <span class="hidden md:block font-bold text-lg tracking-wider text-white">BC <span class="text-accent-gold">MANABÍ</span></span>
                             </div>
                             
-                            <!-- Supervisor Navigation Tabs (Hidden for Cajeros) -->
+                            <!-- Supervisor & Admin Navigation Tabs -->
                             <div id="supervisor-tabs" class="hidden md:block ml-10">
                                 <div class="flex space-x-4">
                                     <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-3 py-2 rounded-md text-sm font-semibold transition-colors bg-manabi-800 text-white flex items-center gap-2">
@@ -164,11 +160,14 @@
                                     <button onclick="switchTab('transaction')" id="nav-transaction" class="px-3 py-2 rounded-md text-sm font-semibold transition-colors text-manabi-200 hover:text-white hover:bg-manabi-800 flex items-center gap-2">
                                         <i class="fas fa-plus-circle"></i> Registrar Transacción
                                     </button>
+                                    <button onclick="switchTab('reconcile')" id="nav-reconcile" class="px-3 py-2 rounded-md text-sm font-semibold transition-colors text-manabi-200 hover:text-white hover:bg-manabi-800 flex items-center gap-2">
+                                        <i class="fas fa-balance-scale"></i> Cuadre de Caja
+                                    </button>
                                     <button onclick="switchTab('spreadsheet')" id="nav-spreadsheet" class="px-3 py-2 rounded-md text-sm font-semibold transition-colors text-manabi-200 hover:text-white hover:bg-manabi-800 flex items-center gap-2">
-                                        <i class="fas fa-table"></i> Hoja de Cálculo
+                                        <i class="fas fa-table"></i> Planilla Histórica
                                     </button>
                                     <button onclick="switchTab('sync')" id="nav-sync" class="px-3 py-2 rounded-md text-sm font-semibold transition-colors text-manabi-200 hover:text-white hover:bg-manabi-800 flex items-center gap-2">
-                                        <i class="fas fa-sync-alt"></i> Sincronizar Sheets
+                                        <i class="fas fa-sync-alt"></i> Sincronización Web
                                     </button>
                                 </div>
                             </div>
@@ -184,13 +183,13 @@
                                 </div>
                             </div>
                             <button onclick="handleLogout()" class="bg-manabi-800 p-2 rounded-lg text-manabi-200 hover:text-white hover:bg-red-600 transition-all duration-200 shadow-inner" title="Cerrar sesión">
-                                <i class="fas fa-sign-out-alt"></i> Terminar
+                                <i class="fas fa-sign-out-alt"></i>
                             </button>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Mobile Navigation Menu for Supervisor (Hidden for Cajeros) -->
+                <!-- Mobile Navigation Menu -->
                 <div id="supervisor-mobile-tabs" class="hidden md:hidden bg-manabi-950 px-2 pt-2 pb-3 space-y-1 flex justify-around border-t border-manabi-800">
                     <button onclick="switchTab('dashboard')" id="nav-mobile-dashboard" class="flex-1 py-2 text-xs font-medium rounded-md text-center text-white bg-manabi-800 flex flex-col items-center gap-1">
                         <i class="fas fa-chart-line text-base"></i> Dashboard
@@ -198,24 +197,37 @@
                     <button onclick="switchTab('transaction')" id="nav-mobile-transaction" class="flex-1 py-2 text-xs font-medium rounded-md text-center text-manabi-300 hover:text-white flex flex-col items-center gap-1">
                         <i class="fas fa-plus-circle text-base"></i> Registrar
                     </button>
-                    <button onclick="switchTab('spreadsheet')" id="nav-mobile-spreadsheet" class="flex-1 py-2 text-xs font-medium rounded-md text-center text-manabi-300 hover:text-white flex flex-col items-center gap-1">
-                        <i class="fas fa-table text-base"></i> Hoja
+                    <button onclick="switchTab('reconcile')" id="nav-mobile-reconcile" class="flex-1 py-2 text-xs font-medium rounded-md text-center text-manabi-300 hover:text-white flex flex-col items-center gap-1">
+                        <i class="fas fa-balance-scale text-base"></i> Cuadre
                     </button>
-                    <button onclick="switchTab('sync')" id="nav-mobile-sync" class="flex-1 py-2 text-xs font-medium rounded-md text-center text-manabi-300 hover:text-white flex flex-col items-center gap-1">
-                        <i class="fas fa-sync-alt text-base"></i> Sincronizar
+                    <button onclick="switchTab('spreadsheet')" id="nav-mobile-spreadsheet" class="flex-1 py-2 text-xs font-medium rounded-md text-center text-manabi-300 hover:text-white flex flex-col items-center gap-1">
+                        <i class="fas fa-table text-base"></i> Planilla
                     </button>
                 </div>
             </nav>
 
-            <!-- Alert Toast Message container -->
             <div id="toast-container" class="fixed top-4 right-4 z-50 pointer-events-none flex flex-col gap-2"></div>
 
-            <!-- Content Container -->
             <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1">
                 
+                <!-- ================= TAB: DASHBOARD ================= -->
                 <div id="tab-content-dashboard" class="space-y-6">
+                    <!-- Security Sandbox Environment Notice -->
+                    <div id="sandbox-notice" class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl shadow-sm flex items-start gap-3">
+                        <div class="flex-shrink-0 text-amber-500 mt-0.5">
+                            <i class="fas fa-shield-alt text-lg"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-amber-900 uppercase">Aviso de Entorno de Pruebas (Offline-First Activado)</h4>
+                            <p class="text-[11px] text-amber-700 mt-1 leading-relaxed">
+                                Si visualizas este portal desde un panel simulado, tu navegador podría restringir la comunicación directa con Google Sheets debido a políticas de Sandbox (CORS). El portal ha activado el <strong>Modo Local Inteligente</strong>; todas tus operaciones se guardarán localmente para que puedas simular el comportamiento sin fallas.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- KPI Cards Grid -->
                     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                        <!-- Card 1: Saldo Neto -->
+                        <!-- Card 1: Saldo Neto de Bóveda (Excluyendo Supervisoras) -->
                         <div class="bg-white overflow-hidden shadow-md rounded-xl border border-slate-200">
                             <div class="p-5">
                                 <div class="flex items-center">
@@ -224,21 +236,17 @@
                                     </div>
                                     <div class="ml-5 w-0 flex-1">
                                         <dl>
-                                            <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                                Saldo Diario en Bóveda
-                                            </dt>
+                                            <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Saldo Diario Operativo</dt>
                                             <dd class="flex items-baseline">
-                                                <div id="kpi-balance" class="text-2xl font-bold text-slate-950">
-                                                    $0.00
-                                                </div>
+                                                <div id="kpi-balance" class="text-2xl font-bold text-slate-950">$0.00</div>
                                             </dd>
                                         </dl>
                                     </div>
                                 </div>
                             </div>
                             <div class="bg-slate-50 px-5 py-3 border-t border-slate-100 flex items-center justify-between">
-                                <span class="text-xs text-slate-500 font-medium">Flujo contable consolidado</span>
-                                <i class="fas fa-info-circle text-slate-400 text-xs" title="Total de depósitos menos retiros procesados hoy."></i>
+                                <span class="text-xs text-slate-500 font-medium">Bóveda Operativa (Cajeras)</span>
+                                <i class="fas fa-info-circle text-slate-400 text-xs" title="Total neto recaudado por las cajeras autorizadas el día de hoy."></i>
                             </div>
                         </div>
 
@@ -251,13 +259,9 @@
                                     </div>
                                     <div class="ml-5 w-0 flex-1">
                                         <dl>
-                                            <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                                Ingresos de Caja
-                                            </dt>
+                                            <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ingresos Recaudados</dt>
                                             <dd class="flex items-baseline">
-                                                <div id="kpi-deposits" class="text-2xl font-bold text-emerald-600">
-                                                    $0.00
-                                                </div>
+                                                <div id="kpi-deposits" class="text-2xl font-bold text-emerald-600">$0.00</div>
                                             </dd>
                                         </dl>
                                     </div>
@@ -278,13 +282,9 @@
                                     </div>
                                     <div class="ml-5 w-0 flex-1">
                                         <dl>
-                                            <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                                Egresos de Caja
-                                            </dt>
+                                            <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Egresos Pagados</dt>
                                             <dd class="flex items-baseline">
-                                                <div id="kpi-withdrawals" class="text-2xl font-bold text-rose-600">
-                                                    $0.00
-                                                </div>
+                                                <div id="kpi-withdrawals" class="text-2xl font-bold text-rose-600">$0.00</div>
                                             </dd>
                                         </dl>
                                     </div>
@@ -296,98 +296,80 @@
                             </div>
                         </div>
 
-                        <!-- Card 4: Sincronización -->
+                        <!-- Card 4: Sincronización Google Sheets -->
                         <div class="bg-white overflow-hidden shadow-md rounded-xl border border-slate-200">
                             <div class="p-5">
                                 <div class="flex items-center">
                                     <div id="sync-status-icon-bg" class="flex-shrink-0 bg-amber-100 rounded-lg p-3 text-amber-600">
-                                        <i id="sync-status-icon" class="fas fa-unlink text-2xl"></i>
+                                        <i id="sync-status-icon" class="fas fa-sync text-2xl animate-spin"></i>
                                     </div>
                                     <div class="ml-5 w-0 flex-1">
                                         <dl>
-                                            <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                                Google Sheets
-                                            </dt>
+                                            <dt class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Servidor de Hojas</dt>
                                             <dd class="flex items-baseline">
-                                                <div id="sync-status-text" class="text-base font-bold text-slate-800 truncate">
-                                                    No Vinculado
-                                                </div>
+                                                <div id="sync-status-text" class="text-sm font-bold text-slate-800 truncate">Consultando...</div>
                                             </dd>
                                         </dl>
                                     </div>
                                 </div>
                             </div>
                             <div class="bg-slate-50 px-5 py-3 border-t border-slate-100 flex items-center justify-between">
-                                <button onclick="switchTab('sync')" class="text-xs text-manabi-600 hover:text-manabi-800 font-bold flex items-center gap-1">
-                                    Configurar Red <i class="fas fa-plug text-[10px]"></i>
+                                <button onclick="pullLatestData()" class="text-xs text-manabi-600 hover:text-manabi-800 font-bold flex items-center gap-1">
+                                    <i class="fas fa-cloud-download-alt"></i> Forzar Sincronización
                                 </button>
-                                <span id="sync-last-time" class="text-[10px] text-slate-400 font-mono">Sin historial</span>
+                                <span id="sync-last-time" class="text-[9px] text-slate-400 font-mono">Sin sincronizar</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Charts and Recent Logs -->
+                    <!-- Charts & Recent Activity -->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- Chart Card -->
                         <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 lg:col-span-2">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                                    <i class="fas fa-chart-line text-manabi-600"></i> Flujo Diario de Operaciones de Caja
+                                    <i class="fas fa-chart-bar text-manabi-600"></i> Balance Diario por Cajero
                                 </h3>
-                                <span class="text-xs text-slate-400 italic font-mono">Operaciones en tiempo real</span>
+                                <span class="text-xs text-slate-400 italic">Flujo diario consolidado</span>
                             </div>
                             <div class="h-80 w-full relative">
                                 <canvas id="chart-daily-flow"></canvas>
                             </div>
                         </div>
 
-                        <!-- Quick Overview -->
                         <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 flex flex-col justify-between">
                             <div>
                                 <h3 class="text-base font-bold text-slate-900 mb-2 flex items-center gap-2">
-                                    <i class="fas fa-list-ol text-manabi-600"></i> Auditoría de Últimos Movimientos
+                                    <i class="fas fa-shield-halved text-manabi-600"></i> Actividad de Cajeras
                                 </h3>
-                                <p class="text-xs text-slate-500 mb-4">Últimas transacciones reportadas en la red de cajeros.</p>
-                                
+                                <p class="text-xs text-slate-500 mb-4">Movimientos recientes ingresados por cajeras habilitadas.</p>
                                 <div id="dashboard-recent-list" class="space-y-3 overflow-y-auto max-h-[220px] pr-1 custom-scrollbar">
-                                    <div class="text-center py-8 text-slate-400 text-sm">
-                                        <i class="fas fa-info-circle text-2xl mb-2 block"></i> Sin movimientos hoy
-                                    </div>
+                                    <div class="text-center py-8 text-slate-400 text-sm">Cargando flujos...</div>
                                 </div>
                             </div>
-
                             <div class="mt-6 pt-4 border-t border-slate-100 flex gap-2">
-                                <button onclick="switchTab('transaction')" class="flex-1 bg-manabi-700 hover:bg-manabi-800 text-white font-bold py-2.5 px-3 rounded-lg text-xs transition-all text-center">
-                                    <i class="fas fa-plus mr-1"></i> Nueva Transacción
-                                </button>
-                                <button onclick="switchTab('spreadsheet')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-3 rounded-lg text-xs transition-all text-center">
-                                    <i class="fas fa-table mr-1"></i> Ir a Planilla
-                                </button>
+                                <button onclick="switchTab('transaction')" class="flex-1 bg-manabi-700 hover:bg-manabi-800 text-white font-bold py-2.5 px-3 rounded-lg text-xs transition-all text-center">Registrar Caja</button>
+                                <button onclick="switchTab('reconcile')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-3 rounded-lg text-xs transition-all text-center">Cuadre Rápido</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Transaction Registry Tab View -->
+                <!-- ================= TAB: REGISTRAR TRANSACCION ================= -->
                 <div id="tab-content-transaction" class="hidden">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        
-                        <!-- Form Area -->
                         <div class="lg:col-span-2 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
                             <div class="bg-manabi-900 text-white p-6 relative">
                                 <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-15">
                                     <i class="fas fa-university text-7xl"></i>
                                 </div>
                                 <h2 class="text-xl font-bold flex items-center gap-2">
-                                    <i class="fas fa-cash-register text-accent-gold"></i>
-                                    Formulario de Registro de Caja
+                                    <i class="fas fa-cash-register text-accent-gold"></i> Registro de Caja Diario
                                 </h2>
-                                <p class="text-xs text-manabi-200">Ingrese cada depósito o retiro de efectivo al instante.</p>
+                                <p class="text-xs text-manabi-200">Asignación directa a la planilla centralizada.</p>
                             </div>
                             
                             <form id="transaction-form" class="p-6 sm:p-8 space-y-6">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <!-- Transaction Type -->
                                     <div class="col-span-1 md:col-span-2">
                                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Tipo de Movimiento</label>
                                         <div class="grid grid-cols-2 gap-4">
@@ -396,7 +378,7 @@
                                                 <div class="text-center">
                                                     <i class="fas fa-arrow-circle-down text-3xl text-emerald-600 mb-2"></i>
                                                     <div class="font-bold text-emerald-900 text-sm">DEPÓSITO (Ingreso)</div>
-                                                    <div class="text-[10px] text-emerald-600 mt-0.5">Suma saldo a caja</div>
+                                                    <div class="text-[10px] text-emerald-600 mt-0.5">Suma saldo de caja</div>
                                                 </div>
                                                 <div class="absolute top-2 right-2 text-emerald-600" id="check-deposit">
                                                     <i class="fas fa-check-circle text-lg"></i>
@@ -408,7 +390,7 @@
                                                 <div class="text-center">
                                                     <i class="fas fa-arrow-circle-up text-3xl text-rose-600 mb-2"></i>
                                                     <div class="font-bold text-rose-900 text-sm">RETIRO (Egreso)</div>
-                                                    <div class="text-[10px] text-rose-600 mt-0.5">Resta saldo a caja</div>
+                                                    <div class="text-[10px] text-rose-600 mt-0.5">Resta saldo de caja</div>
                                                 </div>
                                                 <div class="absolute top-2 right-2 text-rose-600 hidden" id="check-withdrawal">
                                                     <i class="fas fa-check-circle text-lg"></i>
@@ -417,23 +399,18 @@
                                         </div>
                                     </div>
 
-                                    <!-- Amount (Monto) -->
                                     <div>
                                         <label for="amount" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Monto de la Transacción ($) *</label>
                                         <div class="mt-1 relative rounded-md shadow-sm">
-                                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold text-lg">
-                                                $
-                                            </div>
+                                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold text-lg">$</div>
                                             <input type="number" step="0.01" min="0.01" required name="amount" id="amount" 
                                                    placeholder="0.00" 
                                                    class="block w-full pl-9 pr-3 py-3.5 border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 focus:border-manabi-500 text-xl font-bold tracking-tight bg-slate-50/50">
                                         </div>
-                                        <p class="mt-1.5 text-[10px] text-slate-400">Ingrese el monto completo con sus decimales.</p>
                                     </div>
 
-                                    <!-- Movement Number -->
                                     <div>
-                                        <label for="movement_number" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nº de Papeleta / Movimiento <span class="text-slate-400 font-normal italic">(Opcional)</span></label>
+                                        <label for="movement_number" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nº de Papeleta / Comprobante</label>
                                         <div class="mt-1 relative rounded-md shadow-sm">
                                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                                                 <i class="fas fa-receipt"></i>
@@ -442,25 +419,21 @@
                                                    placeholder="Ej. DP-987456" 
                                                    class="block w-full pl-9 pr-3 py-3.5 border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 focus:border-manabi-500 sm:text-sm bg-slate-50/50">
                                         </div>
-                                        <p class="mt-1.5 text-[10px] text-slate-400">Número de referencia del comprobante físico.</p>
                                     </div>
 
-                                    <!-- Date and Time Selection (LOCKED & DYNAMIC) -->
                                     <div>
-                                        <label for="trans_date" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Fecha y Hora de Registro (Inmutable)</label>
+                                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Fecha y Hora de Operación</label>
                                         <div class="mt-1 relative rounded-md shadow-sm">
                                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                                                 <i class="fas fa-clock"></i>
                                             </div>
-                                            <input type="text" readonly disabled name="trans_date" id="trans_date" 
-                                                   class="block w-full pl-9 pr-3 py-3.5 border-2 border-slate-200 rounded-lg bg-slate-100 text-slate-500 sm:text-sm font-semibold cursor-not-allowed">
+                                            <input type="text" id="live-clock" readonly disabled
+                                                   class="block w-full pl-9 pr-3 py-3.5 border-2 border-slate-200 rounded-lg bg-slate-100 sm:text-sm font-mono text-slate-550 cursor-not-allowed">
                                         </div>
-                                        <p class="mt-1.5 text-[10px] text-slate-400">La hora exacta se estampa automáticamente al procesar la firma digital.</p>
                                     </div>
 
-                                    <!-- Concept / Description -->
                                     <div>
-                                        <label for="concept" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Concepto o Detalle <span class="text-slate-400 font-normal italic">(Opcional)</span></label>
+                                        <label for="concept" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Concepto o Detalle de Operación</label>
                                         <div class="mt-1 relative rounded-md shadow-sm">
                                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                                                 <i class="fas fa-align-left"></i>
@@ -472,18 +445,15 @@
                                     </div>
                                 </div>
 
-                                <!-- User audit alert card -->
                                 <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-center gap-3">
                                     <i class="fas fa-user-shield text-manabi-600 text-lg"></i>
                                     <div class="text-[11px] text-slate-500 leading-relaxed">
-                                        Firma digital activa. Esta transacción será auditada y guardada bajo el registro irrevocable de: <span id="form-user-audit" class="font-bold text-slate-800">Cajero Principal</span>.
+                                        Firma digital activa y autorizada de: <span id="form-user-audit" class="font-bold text-slate-800">Cajera Principal</span>.
                                     </div>
                                 </div>
 
                                 <div class="flex gap-4">
-                                    <button type="button" onclick="resetForm()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-lg text-xs transition-all text-center">
-                                        Limpiar Campos
-                                    </button>
+                                    <button type="button" onclick="resetForm()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-lg text-xs transition-all text-center">Limpiar Campos</button>
                                     <button type="submit" class="flex-1 bg-manabi-700 hover:bg-manabi-800 text-white font-bold py-3 px-4 rounded-lg text-xs shadow-md transition-all text-center transform active:scale-95 flex items-center justify-center gap-2">
                                         <i class="fas fa-check-double text-accent-gold"></i> Registrar Transacción
                                     </button>
@@ -491,63 +461,183 @@
                             </form>
                         </div>
 
-                        <!-- Side helper panel (Especially for Cajeros) -->
+                        <!-- Side helper panel -->
                         <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 flex flex-col justify-between">
                             <div>
                                 <h3 class="text-base font-bold text-slate-900 mb-3 flex items-center gap-2 pb-2 border-b border-slate-100">
-                                    <i class="fas fa-history text-slate-500"></i> Mis Registros Recientes
+                                    <i class="fas fa-history text-slate-500"></i> Últimos Registros Propios
                                 </h3>
-                                <p class="text-[11px] text-slate-500 mb-4 leading-relaxed">
-                                    Se listan las últimas transacciones ingresadas hoy bajo tu firma digital en este navegador.
-                                </p>
-                                
                                 <div id="cajero-recent-list" class="space-y-3 overflow-y-auto max-h-[350px] pr-1 custom-scrollbar">
                                     <!-- Dynamic content inject here -->
                                 </div>
                             </div>
-                            
                             <div class="mt-6 p-4 bg-manabi-50 border border-manabi-100 rounded-xl">
-                                <span class="block text-xs font-bold text-manabi-800 mb-1"><i class="fas fa-info-circle mr-1 text-accent-gold"></i> Ayuda al Cajero</span>
-                                <p class="text-[10px] text-manabi-900 leading-relaxed">
-                                    Si cometió un error en un registro, por favor notifique inmediatamente al Supervisor para que proceda con la anulación desde su consola de control.
-                                </p>
+                                <span class="block text-xs font-bold text-manabi-800 mb-1"><i class="fas fa-info-circle mr-1 text-accent-gold"></i> Canal Operativo</span>
+                                <p class="text-[10px] text-manabi-900 leading-relaxed">Las transacciones del supervisor se mantendrán aisladas de la bóveda operativa habitual.</p>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
-                <!-- Spreadsheet Tab View (Restricted/Privileged View) -->
+                <!-- ================= TAB: CUADRE DE CAJA ================= -->
+                <div id="tab-content-reconcile" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Denominations Calculator & Submit -->
+                        <div class="lg:col-span-2 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                            <div class="bg-manabi-900 text-white p-6 relative">
+                                <h2 class="text-xl font-bold flex items-center gap-2">
+                                    <i class="fas fa-coins text-accent-gold"></i> Arqueo de Caja y Balanceo Físico
+                                </h2>
+                                <p class="text-xs text-manabi-200">Arqueo diario mandatorio de efectivo de cajeros.</p>
+                            </div>
+
+                            <div class="p-6 space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                    <div>
+                                        <span class="block text-xs text-slate-500 uppercase font-semibold">Saldo Contable Esperado:</span>
+                                        <span id="reconcile-expected-view" class="text-2xl font-extrabold text-manabi-900">$0.00</span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-xs text-slate-500 uppercase font-semibold">Total Efectivo Físico:</span>
+                                        <span id="reconcile-physical-view" class="text-2xl font-extrabold text-slate-900">$0.00</span>
+                                    </div>
+                                </div>
+
+                                <!-- Denominations Multipliers -->
+                                <div class="space-y-4">
+                                    <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider pb-1 border-b">Desglose de Efectivo Físico</h3>
+                                    
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <!-- Billetes -->
+                                        <div class="space-y-3 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                                            <span class="block text-xs font-bold text-manabi-800 uppercase tracking-widest mb-2"><i class="fas fa-money-bill-wave mr-1"></i> Billetes</span>
+                                            
+                                            <div class="flex items-center justify-between gap-2">
+                                                <label class="w-20 text-xs font-bold text-slate-600">$100.00</label>
+                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="100">
+                                            </div>
+                                            <div class="flex items-center justify-between gap-2">
+                                                <label class="w-20 text-xs font-bold text-slate-600">$50.00</label>
+                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="50">
+                                            </div>
+                                            <div class="flex items-center justify-between gap-2">
+                                                <label class="w-20 text-xs font-bold text-slate-600">$20.00</label>
+                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="20">
+                                            </div>
+                                            <div class="flex items-center justify-between gap-2">
+                                                <label class="w-20 text-xs font-bold text-slate-600">$10.00</label>
+                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="10">
+                                            </div>
+                                            <div class="flex items-center justify-between gap-2">
+                                                <label class="w-20 text-xs font-bold text-slate-600">$5.00</label>
+                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="5">
+                                            </div>
+                                            <div class="flex items-center justify-between gap-2">
+                                                <label class="w-20 text-xs font-bold text-slate-600">$2.00</label>
+                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="2">
+                                            </div>
+                                            <div class="flex items-center justify-between gap-2">
+                                                <label class="w-20 text-xs font-bold text-slate-600">$1.00</label>
+                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="1">
+                                            </div>
+                                        </div>
+
+                                        <!-- Monedas -->
+                                        <div class="space-y-3 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                                            <span class="block text-xs font-bold text-manabi-800 uppercase tracking-widest mb-2"><i class="fas fa-coins mr-1"></i> Monedas</span>
+                                            
+                                            <div class="flex items-center justify-between gap-2">
+                                                <label class="w-20 text-xs font-bold text-slate-600">$1.00</label>
+                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="1.00">
+                                            </div>
+                                            <div class="flex items-center justify-between gap-2">
+                                                <label class="w-20 text-xs font-bold text-slate-600">$0.50</label>
+                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="0.50">
+                                            </div>
+                                            <div class="flex items-center justify-between gap-2">
+                                                <label class="w-20 text-xs font-bold text-slate-600">$0.25</label>
+                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="0.25">
+                                            </div>
+                                            <div class="flex items-center justify-between gap-2">
+                                                <label class="w-20 text-xs font-bold text-slate-600">$0.10</label>
+                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="0.10">
+                                            </div>
+                                            <div class="flex items-center justify-between gap-2">
+                                                <label class="w-20 text-xs font-bold text-slate-600">$0.05</label>
+                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="0.05">
+                                            </div>
+                                            <div class="flex items-center justify-between gap-2">
+                                                <label class="w-20 text-xs font-bold text-slate-600">$0.01</label>
+                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="0.01">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <span class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Diferencia Detectada</span>
+                                        <div id="reconcile-diff-box" class="p-3 rounded-lg text-center font-bold text-sm bg-slate-100 text-slate-700 border">
+                                            Balanceado ($0.00)
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="reconcile-obs" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Observaciones / Declaración</label>
+                                        <textarea id="reconcile-obs" rows="2" placeholder="Ingrese cualquier justificación o novedad de arqueo..." class="block w-full text-xs p-2.5 border rounded-lg bg-slate-50/50"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-4">
+                                    <button onclick="clearReconcileForm()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-lg text-xs transition-all text-center">Limpiar Todo</button>
+                                    <button onclick="submitReconciliation()" class="flex-1 bg-manabi-700 hover:bg-manabi-800 text-white font-bold py-3 px-4 rounded-lg text-xs shadow-md transition-all text-center transform active:scale-95 flex items-center justify-center gap-2">
+                                        <i class="fas fa-file-signature text-accent-gold"></i> Firmar y Guardar Cuadre
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Audit Panel of Reconciliations (Supervisor View) -->
+                        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900 mb-3 flex items-center gap-2 pb-2 border-b border-slate-100">
+                                    <i class="fas fa-clipboard-check text-manabi-600"></i> Consola de Control de Cuadres
+                                </h3>
+                                <p class="text-[11px] text-slate-500 mb-4 leading-relaxed">
+                                    Supervisores y auditores pueden auditar, validar y modificar el estado de los arqueos reportados hoy.
+                                </p>
+                                <div id="admin-reconcile-list" class="space-y-3 overflow-y-auto max-h-[350px] pr-1 custom-scrollbar">
+                                    <!-- Dynamic items inject here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= TAB: PLANILLA HISTORICA ================= -->
                 <div id="tab-content-spreadsheet" class="hidden space-y-4">
                     <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
-                        
-                        <!-- Filter & Header controls -->
                         <div class="p-6 border-b border-slate-100 space-y-4">
                             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                 <div>
                                     <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                                        <i class="fas fa-table text-emerald-600"></i> Consola Planilla Interactiva (Hoja de Cálculo)
+                                        <i class="fas fa-table text-emerald-600"></i> Planilla General de Transacciones (Bóveda)
                                     </h3>
-                                    <p class="text-xs text-slate-500">Administre y filtre los registros de transacciones. Sincronización offline/online.</p>
+                                    <p class="text-xs text-slate-500">Módulo seguro de visualización e impresión para auditoría.</p>
                                 </div>
                                 <div class="flex flex-wrap items-center gap-2">
-                                    <!-- Date Export Action -->
-                                    <button onclick="exportFilteredDayCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-3 rounded flex items-center gap-1.5 transition-colors shadow">
-                                        <i class="fas fa-calendar-day text-accent-gold"></i> Exportar Día Filtrado (CSV)
+                                    <!-- EXPORT ONLY EXCEL FORMAT -->
+                                    <button onclick="exportToStyledExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-3 rounded flex items-center gap-1.5 transition-colors shadow">
+                                        <i class="fas fa-file-excel text-accent-gold"></i> Exportar Planilla a Excel
                                     </button>
-                                    <button onclick="exportAllToCSV()" class="bg-slate-700 hover:bg-slate-850 text-white text-xs font-bold py-2 px-3 rounded flex items-center gap-1.5 transition-colors shadow">
-                                        <i class="fas fa-file-excel"></i> Exportar Todo a CSV
-                                    </button>
-                                    <button id="btn-clear-table" onclick="clearAllTransactionsConfirm()" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-bold py-2 px-3 rounded flex items-center gap-1.5 transition-colors">
-                                        <i class="fas fa-trash-alt"></i> Limpiar Tabla
+                                    <button onclick="clearAllTransactionsConfirm()" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-bold py-2 px-3 rounded flex items-center gap-1.5 transition-colors">
+                                        <i class="fas fa-trash-alt"></i> Limpiar Local
                                     </button>
                                 </div>
                             </div>
 
-                            <!-- Filter inputs Grid -->
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
                                 <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Filtrar por Día Específico</label>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Filtrar por Fecha</label>
                                     <input type="date" id="filter-date" onchange="applyFilters()" class="block w-full text-xs border border-slate-300 rounded-md p-2 bg-white">
                                 </div>
                                 <div>
@@ -564,14 +654,12 @@
                                         <option value="all">Todos los cajeros</option>
                                         <option value="cajero1@bcmanabi.com">María Auxiliadora (Principal)</option>
                                         <option value="cajero2@bcmanabi.com">José Delgado (Auxiliar)</option>
-                                        <option value="supervisor@bcmanabi.com">Ing. Supervisor Manabí</option>
+                                        <option value="supervisor@bcmanabi.com">Andrea Vera (Supervisor)</option>
                                         <option value="admin@bcmanabi.com">Administrador General</option>
                                     </select>
                                 </div>
                                 <div class="flex items-end gap-2">
-                                    <button onclick="resetFilters()" class="flex-1 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold py-2 px-3 rounded border border-slate-200 transition-colors">
-                                        <i class="fas fa-undo-alt mr-1"></i> Limpiar Filtros
-                                    </button>
+                                    <button onclick="resetFilters()" class="flex-1 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold py-2 px-3 rounded border border-slate-200 transition-colors">Limpiar Filtros</button>
                                 </div>
                             </div>
                         </div>
@@ -583,16 +671,16 @@
                                     <tr>
                                         <th scope="col" class="w-12 px-3 py-2 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider bg-slate-100 border-r border-slate-200">Fila</th>
                                         <th scope="col" class="w-36 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Código ID</th>
-                                        <th scope="col" class="w-44 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Fecha y Hora</th>
+                                        <th scope="col" class="w-32 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Fecha y Hora</th>
                                         <th scope="col" class="w-28 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Tipo</th>
                                         <th scope="col" class="w-40 px-4 py-2 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Monto</th>
                                         <th scope="col" class="w-36 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Nº Movimiento</th>
                                         <th scope="col" class="w-48 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Concepto de Operación</th>
                                         <th scope="col" class="w-44 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Registrado Por</th>
-                                        <th scope="col" class="w-24 px-4 py-2 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Anulación</th>
+                                        <th scope="col" class="w-24 px-4 py-2 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody id="spreadsheet-tbody" class="bg-white divide-y divide-slate-100">
+                                <tbody id="spreadsheet-tbody" class="bg-white divide-y divide-slate-100 text-slate-700">
                                     <!-- Table Rows populated here -->
                                 </tbody>
                             </table>
@@ -600,125 +688,192 @@
                     </div>
                 </div>
 
-                <!-- Synchronization Console View -->
+                <!-- ================= TAB: SINCRONIZACION WEB ================= -->
                 <div id="tab-content-sync" class="hidden space-y-6">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- Setup Form & Status Card -->
-                        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 lg:col-span-1 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
-                                    <i class="fas fa-link text-manabi-600"></i> Enlace con Google Sheets
-                                </h3>
-                                <p class="text-xs text-slate-500 mb-4">La conexión a su script del Banco está preconfigurada.</p>
+                        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 lg:col-span-1">
+                            <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+                                <i class="fas fa-link text-manabi-600"></i> Enlace con Google Sheets
+                            </h3>
+                            <p class="text-xs text-slate-500 mb-4">La conexión con la base del Banco está completamente configurada.</p>
 
-                                <div class="space-y-4">
-                                    <div class="p-3 bg-manabi-50 rounded-lg border border-manabi-150">
-                                        <span class="block text-xs font-bold text-manabi-800">Hoja de Destino:</span>
-                                        <a href="https://docs.google.com/spreadsheets/d/11bMDArYonIgdrjxLofx9BiwNoEeKPvuEuQY0EO7D1CM/edit?usp=sharing" target="_blank" class="text-[10px] text-manabi-600 hover:text-manabi-800 break-words font-semibold underline">
-                                            <i class="fas fa-file-invoice-dollar mr-1"></i> Abrir Google Sheet Oficial BC Manabí
-                                        </a>
-                                    </div>
+                            <div class="space-y-4">
+                                <div class="p-3 bg-manabi-50 rounded-lg border border-manabi-150">
+                                    <span class="block text-xs font-bold text-manabi-800">Hoja de Sincronización Destino:</span>
+                                    <span class="text-[10px] text-manabi-600 break-words font-mono block select-all font-semibold mt-1">
+                                        Pestaña 1: "Transacciones"<br>Pestaña 2: "Cuadres"
+                                    </span>
+                                </div>
 
-                                    <div>
-                                    <label for="apps-script-url" class="block text-xs font-bold text-slate-700 mb-1">URL de Apps Script Web App *</label>
-                                    <input type="url" id="apps-script-url" value="https://script.google.com/macros/s/AKfycbzUZfgM1hzkKWg7tSoAkwGTH6oIX2AxJM1M5c5jr0liz42xF9790AehYOEFnxgPEB3Pug/exec"
+                                <div>
+                                    <label for="apps-script-url" class="block text-xs font-bold text-slate-700 mb-1">URL de Apps Script Web App</label>
+                                    <input type="url" id="apps-script-url" value="https://script.google.com/macros/s/AKfycbwTfArZrGQmg0iqcfKMKlWIS79p46g2IlcB94jK0PEnYigFqzGluXWTSFo47uLioTXLYw/exec"
                                            class="mt-1 block w-full text-xs border border-slate-300 rounded-lg p-2.5 focus:ring-manabi-500 focus:border-manabi-500 bg-slate-50" readonly>
                                 </div>
 
                                 <div class="flex items-center">
-                                        <input type="checkbox" id="autosync-toggle" checked class="h-4 w-4 text-manabi-600 focus:ring-manabi-500 border-slate-300 rounded">
-                                        <label for="autosync-toggle" class="ml-2 block text-xs font-semibold text-slate-755">Sincronizar automáticamente en cada registro</label>
-                                    </div>
+                                    <input type="checkbox" id="autosync-toggle" checked class="h-4 w-4 text-manabi-600 focus:ring-manabi-500 border-slate-300 rounded animate-pulse">
+                                    <label for="autosync-toggle" class="ml-2 block text-xs font-semibold text-slate-750">Auto-Sincronización automática de registros</label>
                                 </div>
-                            </div>
 
-                            <div class="pt-4 border-t border-slate-100 space-y-2 mt-4">
-                                <button onclick="saveSyncSettings()" class="w-full bg-manabi-700 hover:bg-manabi-800 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-1.5">
-                                    <i class="fas fa-save text-accent-gold"></i> Guardar Enlace
-                                </button>
-                                <button id="btn-sync-now" onclick="triggerManualSync()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-1.5">
-                                    <i class="fas fa-sync"></i> Enviar Todo el Historial Ahora
-                                </button>
+                                <div class="pt-4 border-t border-slate-100 space-y-2">
+                                    <button onclick="pullLatestData()" class="w-full bg-manabi-700 hover:bg-manabi-800 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow">
+                                        <i class="fas fa-cloud-download-alt text-accent-gold"></i> Descargar Datos Actuales
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Guide and Instructions -->
                         <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 lg:col-span-2 space-y-4">
-                            <div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-4 flex gap-3 items-start">
-                                <i class="fas fa-exclamation-triangle text-lg text-amber-600 mt-0.5"></i>
-                                <div class="text-xs space-y-1">
-                                    <p class="font-bold">⚠️ ¿Sigue sin escribir datos en tu hoja?</p>
-                                    <p>Por políticas de seguridad, Google bloquea la escritura si no configuras el script correctamente. Asegúrate de que al **Implementar como Aplicación Web** hayas elegido:</p>
-                                    <ul class="list-disc list-inside mt-1 font-semibold space-y-0.5">
-                                        <li>Ejecutar como: <span class="underline">Yo (tu correo)</span></li>
-                                        <li>Quién tiene acceso: <span class="underline text-emerald-700">Cualquiera (Anyone)</span> <span class="text-[10px] font-normal text-amber-800">(¡OBLIGATORIO!)</span></li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                                <i class="fas fa-check-circle text-emerald-600"></i> Su App Script está configurado
+                            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2 text-emerald-600">
+                                <i class="fas fa-check-circle"></i> Sincronización Bidireccional Activa
                             </h3>
-                            <p class="text-xs text-slate-600 leading-relaxed">
-                                Hemos vinculado exitosamente el sistema con el ID de despliegue <code class="bg-slate-100 px-1 py-0.5 rounded font-bold">AKfycbzUZf...</code>. Si necesita volver a implementar el código en el futuro, use la siguiente plantilla de JavaScript.
+                            <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                                Esta plantilla de Apps Script está diseñada para mantener en sincronía la información de Transacciones y Arqueos de Caja en Google Sheets. Si es eliminado un registro en la hoja Excel o el portal web, el sistema reajustará las bases automáticamente.
                             </p>
 
                             <!-- Script Preview Card -->
-                            <div class="mt-2">
+                            <div class="mt-4">
                                 <div class="flex items-center justify-between bg-slate-800 text-slate-300 px-4 py-2 rounded-t-lg">
-                                    <span class="text-xs font-semibold font-mono">GoogleAppsScript.js</span>
+                                    <span class="text-xs font-semibold font-mono">Código Apps Script Requerido</span>
                                     <button onclick="copyAppsScriptCode()" class="text-xs text-manabi-300 hover:text-white flex items-center gap-1.5 font-bold transition-colors">
                                         <i class="fas fa-copy"></i> Copiar Código
                                     </button>
                                 </div>
-                                <pre id="apps-script-code-block" class="bg-slate-900 text-slate-100 p-4 rounded-b-lg text-[11px] font-mono overflow-x-auto max-h-48 custom-scrollbar leading-relaxed">
+                                <pre id="apps-script-code-block" class="bg-slate-900 text-slate-100 p-4 rounded-b-lg text-[10px] font-mono overflow-x-auto max-h-56 custom-scrollbar leading-relaxed">
 function doPost(e) {
   try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
     var payload = JSON.parse(e.postData.contents);
+    var type = payload.type;
+    var data = payload.data;
     
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow(["ID Transacción", "Fecha", "Tipo", "Monto", "Movimiento Nº", "Concepto", "Usuario Cajero", "Fecha de Sincronización"]);
-    }
-    
-    if (Array.isArray(payload)) {
-      payload.forEach(function(item) {
-        sheet.appendRow([
-          item.id,
-          item.date,
-          item.type,
-          item.amount,
-          item.movementNumber || "S/N",
-          item.concept || "Sin detalle",
-          item.user,
-          new Date()
-        ]);
-      });
-    } else {
+    if (type === 'transaction') {
+      var sheet = ss.getSheetByName("Transacciones");
+      if (!sheet) return createResponse({ status: "error", msg: "Hoja Transacciones no existe" });
+      var amt = parseFloat(data.amount);
+      if (data.type === 'retiro') {
+        amt = -Math.abs(amt);
+      } else {
+        amt = Math.abs(amt);
+      }
       sheet.appendRow([
-        payload.id,
-        payload.date,
-        payload.type,
-        payload.amount,
-        payload.movementNumber || "S/N",
-        payload.concept || "Sin detalle",
-        payload.user,
+        data.id,
+        data.date,
+        data.type,
+        amt,
+        data.movementNumber || "S/N",
+        data.concept || "Sin detalle",
+        data.user,
         new Date()
       ]);
+      return createResponse({ status: "success", msg: "Transacción guardada" });
     }
     
-    return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "Sincronizado" }))
-      .setMimeType(ContentService.MimeType.JSON);
+    if (type === 'reconcile') {
+      var sheet = ss.getSheetByName("Cuadres");
+      if (!sheet) return createResponse({ status: "error", msg: "Hoja Cuadres no existe" });
+      sheet.appendRow([
+        data.id,
+        data.date,
+        data.user,
+        data.expected,
+        data.physical,
+        data.difference,
+        data.observations || "",
+        data.status || "Pendiente",
+        data.auditedBy || "N/A"
+      ]);
+      return createResponse({ status: "success", msg: "Cuadre guardado" });
+    }
+    
+    if (type === 'delete') {
+      var idToDelete = payload.id;
+      var sheetT = ss.getSheetByName("Transacciones");
+      var sheetC = ss.getSheetByName("Cuadres");
+      var deleted = false;
       
-  } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", error: error.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
+      if (sheetT) {
+        var rowsT = sheetT.getDataRange().getValues();
+        for (var i = 1; i < rowsT.length; i++) {
+          if (rowsT[i][0] === idToDelete) {
+            sheetT.deleteRow(i + 1);
+            deleted = true;
+            break;
+          }
+        }
+      }
+      if (!deleted && sheetC) {
+        var rowsC = sheetC.getDataRange().getValues();
+        for (var j = 1; j < rowsC.length; j++) {
+          if (rowsC[j][0] === idToDelete) {
+            sheetC.deleteRow(j + 1);
+            deleted = true;
+            break;
+          }
+        }
+      }
+      return createResponse({ status: "success", msg: deleted ? "Eliminado" : "No encontrado" });
+    }
+  } catch (err) {
+    return createResponse({ status: "error", msg: err.toString() });
   }
 }
 
 function doGet() {
-  return ContentService.createTextOutput(JSON.stringify({ status: "online", active: true }))
-    .setMimeType(ContentService.MimeType.JSON);
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheetT = ss.getSheetByName("Transacciones");
+    var sheetC = ss.getSheetByName("Cuadres");
+    var tx = [];
+    var rec = [];
+    
+    if (sheetT) {
+      var dataT = sheetT.getDataRange().getValues();
+      for (var i = 1; i < dataT.length; i++) {
+        var amt = parseFloat(dataT[i][3]);
+        var type = dataT[i][2];
+        if (amt < 0) {
+          type = 'retiro';
+          amt = Math.abs(amt);
+        }
+        tx.push({
+          id: dataT[i][0],
+          date: dataT[i][1],
+          type: type,
+          amount: amt,
+          movementNumber: dataT[i][4],
+          concept: dataT[i][5],
+          user: dataT[i][6]
+        });
+      }
+    }
+    
+    if (sheetC) {
+      var dataC = sheetC.getDataRange().getValues();
+      for (var j = 1; j < dataC.length; j++) {
+        rec.push({
+          id: dataC[j][0],
+          date: dataC[j][1],
+          user: dataC[j][2],
+          expected: parseFloat(dataC[j][3]),
+          physical: parseFloat(dataC[j][4]),
+          difference: parseFloat(dataC[j][5]),
+          observations: dataC[j][6],
+          status: dataC[j][7],
+          auditedBy: dataC[j][8]
+        });
+      }
+    }
+    return createResponse({ status: "success", transactions: tx, reconciliations: rec });
+  } catch (err) {
+    return createResponse({ status: "error", msg: err.toString() });
+  }
+}
+
+function createResponse(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
                                 </pre>
                             </div>
@@ -739,14 +894,13 @@ function doGet() {
                         </div>
                     </div>
                     <div class="text-center sm:text-right">
-                        <p class="text-xs text-manabi-300">Portal de Operaciones de Caja v4.6</p>
-                        <p class="text-[10px] text-slate-500">Módulo seguro de control local encriptado y volcado remoto</p>
+                        <p class="text-xs text-manabi-300">Portal Operativo de Caja de Bóveda Sincronizado v5.0</p>
                     </div>
                 </div>
             </footer>
         </div>
 
-        <!-- Custom Warning Modal (instead of alerts) -->
+        <!-- Custom Warning Modal -->
         <div id="custom-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div class="fixed inset-0 bg-slate-900/75 transition-opacity" aria-hidden="true" onclick="closeModal()"></div>
@@ -758,24 +912,16 @@ function doGet() {
                                 <i id="modal-icon" class="fas fa-exclamation-triangle"></i>
                             </div>
                             <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                <h3 class="text-lg leading-6 font-bold text-slate-950" id="modal-title">
-                                    Confirmar Acción
-                                </h3>
+                                <h3 class="text-lg leading-6 font-bold text-slate-950" id="modal-title">Confirmar Acción</h3>
                                 <div class="mt-2">
-                                    <p class="text-sm text-slate-500" id="modal-message">
-                                        ¿Está seguro de proceder con esta acción?
-                                    </p>
+                                    <p class="text-sm text-slate-500" id="modal-message">¿Está seguro de proceder con esta acción?</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="bg-slate-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
-                        <button type="button" id="modal-btn-confirm" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-semibold text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            Confirmar
-                        </button>
-                        <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-lg border border-slate-300 shadow-sm px-4 py-2 bg-white text-base font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-manabi-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                            Cancelar
-                        </button>
+                        <button type="button" id="modal-btn-confirm" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-semibold text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">Confirmar</button>
+                        <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-lg border border-slate-300 shadow-sm px-4 py-2 bg-white text-base font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-manabi-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancelar</button>
                     </div>
                 </div>
             </div>
@@ -799,8 +945,7 @@ function doGet() {
                                 <select id="reset-username" class="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 text-sm bg-slate-50">
                                     <option value="cajero1@bcmanabi.com">Cajera Principal (María Auxiliadora)</option>
                                     <option value="cajero2@bcmanabi.com">Cajero Auxiliar (José Delgado)</option>
-                                    <option value="supervisor@bcmanabi.com">Supervisor (Ing. Supervisor Manabí)</option>
-                                    <option value="admin@bcmanabi.com">Administrador General (Auditor)</option>
+                                    <option value="supervisor@bcmanabi.com">Supervisor (Andrea Vera)</option>
                                 </select>
                             </div>
                             <div>
@@ -808,21 +953,15 @@ function doGet() {
                                 <input type="password" id="reset-master-code" placeholder="Ingrese el código maestro" class="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 text-sm">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Nueva Contraseña *</label>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Nueva Contraseña de Firma *</label>
                                 <input type="password" id="reset-new-password" placeholder="Min. 6 caracteres" class="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 text-sm">
                             </div>
-                            <div id="reset-error" class="hidden text-xs text-rose-600 bg-rose-50 p-2 rounded-lg border border-rose-200">
-                                <!-- Error message -->
-                            </div>
+                            <div id="reset-error" class="hidden text-xs text-rose-600 bg-rose-50 p-2 rounded-lg border border-rose-200"></div>
                         </div>
                     </div>
                     <div class="bg-slate-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
-                        <button type="button" onclick="executePasswordReset()" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-manabi-700 text-base font-semibold text-white hover:bg-manabi-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-manabi-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            Cambiar Contraseña
-                        </button>
-                        <button type="button" onclick="closeResetPasswordModal()" class="mt-3 w-full inline-flex justify-center rounded-lg border border-slate-300 shadow-sm px-4 py-2 bg-white text-base font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-manabi-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                            Cancelar
-                        </button>
+                        <button type="button" onclick="executePasswordReset()" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-manabi-700 text-base font-semibold text-white hover:bg-manabi-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-manabi-500 sm:ml-3 sm:w-auto sm:text-sm">Cambiar Contraseña</button>
+                        <button type="button" onclick="closeResetPasswordModal()" class="mt-3 w-full inline-flex justify-center rounded-lg border border-slate-300 shadow-sm px-4 py-2 bg-white text-base font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-manabi-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancelar</button>
                     </div>
                 </div>
             </div>
@@ -831,38 +970,35 @@ function doGet() {
     </div>
 
     <script>
-        // Bancario User Database
+        // Bancario User Database - Modified Supervisor Name
         const USER_DATABASE = {
             "cajero1@bcmanabi.com": { pass: "cajero_bc1", name: "María Auxiliadora", role: "Cajera Principal" },
             "cajero2@bcmanabi.com": { pass: "cajero_bc2", name: "José Delgado", role: "Cajero Auxiliar" },
-            "supervisor@bcmanabi.com": { pass: "super_manabi", name: "Ing. Supervisor Manabí", role: "Supervisor de Operaciones" },
+            "supervisor@bcmanabi.com": { pass: "super_manabi", name: "Economista Andrea Vera", role: "Supervisor de Operaciones" },
             "admin@bcmanabi.com": { pass: "admin_manabi", name: "Auditor General", role: "Administrador" }
         };
 
-        // Master Code for password resets
         const MASTER_CODE = "BCMASTER2026";
 
-        // Application State
         let currentUser = null;
         let transactions = [];
+        let reconciliations = [];
         let trendChart = null;
 
-        // Sync Configuration State (Pre-filled with user's specific endpoint)
+        // Sync State Configuration
         let syncSettings = {
-            url: 'https://script.google.com/macros/s/AKfycbzUZfgM1hzkKWg7tSoAkwGTH6oIX2AxJM1M5c5jr0liz42xF9790AehYOEFnxgPEB3Pug/exec',
+            url: 'https://script.google.com/macros/s/AKfycbwTfArZrGQmg0iqcfKMKlWIS79p46g2IlcB94jK0PEnYigFqzGluXWTSFo47uLioTXLYw/exec',
             autoSync: true,
             lastSynced: null
         };
 
-        // Bootstrapper on DOM Load
         window.onload = function() {
-            // Load state from local memory safely
             const savedUser = localStorage.getItem('bc_current_user');
             const savedTx = localStorage.getItem('bc_transactions');
+            const savedRec = localStorage.getItem('bc_reconciliations');
             const savedSettings = localStorage.getItem('bc_sync_settings');
             const savedPasswords = localStorage.getItem('bc_user_passwords');
 
-            // Load saved passwords if they exist (overrides defaults)
             if (savedPasswords) {
                 const parsedPasswords = JSON.parse(savedPasswords);
                 for (const email in parsedPasswords) {
@@ -872,29 +1008,13 @@ function doGet() {
                 }
             }
 
-            if (savedTx) {
-                transactions = JSON.parse(savedTx);
-                // Si existía información de las semillas de prueba anteriores, forzamos la limpieza a 0
-                if (transactions.some(tx => tx.id === 'TX-7491-912' || tx.id === 'TX-8910-441')) {
-                    transactions = [];
-                    localStorage.setItem('bc_transactions', JSON.stringify([]));
-                }
-            } else {
-                transactions = [];
-                localStorage.setItem('bc_transactions', JSON.stringify([]));
-            }
+            // Start empty with $0.00 if no data saved
+            transactions = savedTx ? JSON.parse(savedTx) : [];
+            reconciliations = savedRec ? JSON.parse(savedRec) : [];
 
             if (savedSettings) {
                 syncSettings = JSON.parse(savedSettings);
-                // Aseguramos que se use la nueva URL por defecto si estaba configurada una anterior
-                if (!syncSettings.url || syncSettings.url.includes("AKfycbyjcCh")) {
-                    syncSettings.url = 'https://script.google.com/macros/s/AKfycbzUZfgM1hzkKWg7tSoAkwGTH6oIX2AxJM1M5c5jr0liz42xF9790AehYOEFnxgPEB3Pug/exec';
-                }
-                document.getElementById('apps-script-url').value = syncSettings.url;
                 document.getElementById('autosync-toggle').checked = syncSettings.autoSync;
-            } else {
-                // Forzar guardado inicial de ajustes
-                localStorage.setItem('bc_sync_settings', JSON.stringify(syncSettings));
             }
 
             if (savedUser && USER_DATABASE[savedUser]) {
@@ -903,18 +1023,11 @@ function doGet() {
                 showScreen('login');
             }
 
-            // Set input date default text value immediately
-            document.getElementById('trans_date').value = getCurrentDateTimeString();
+            // Realtime dynamic clock
+            setInterval(updateLiveClock, 1000);
+            updateLiveClock();
 
-            // Real-time dynamic clock update for the locked date & time field
-            setInterval(function() {
-                const clockEl = document.getElementById('trans_date');
-                if (clockEl) {
-                    clockEl.value = getCurrentDateTimeString();
-                }
-            }, 1000);
-
-            // Handle Login process
+            // Handle Login form
             document.getElementById('login-form').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const usernameSelect = document.getElementById('username');
@@ -927,36 +1040,49 @@ function doGet() {
                 if (USER_DATABASE[selectedUser] && USER_DATABASE[selectedUser].pass === typedPassword) {
                     errorDiv.classList.add('hidden');
                     loginUser(selectedUser);
-                    showToast('Firma digital verificada. ¡Acceso concedido!', 'success');
+                    showToast("Firma digital verificada. Acceso concedido.", "success");
                     passwordInput.value = '';
                 } else {
                     errorDiv.classList.remove('hidden');
-                    document.getElementById('login-error-text').innerText = 'Contraseña digital incorrecta. Por favor intente de nuevo.';
+                    document.getElementById('login-error-text').innerText = 'Contraseña incorrecta. Por favor intente de nuevo.';
                 }
             });
 
-            // Handle transaction submission
+            // Handle transaction form
             document.getElementById('transaction-form').addEventListener('submit', handleTransactionSubmit);
+
+            // Pull latest state from Sheets automatically on startup
+            pullLatestData();
         };
 
-        // Utility: Verify if current logged in account has superior privileges
+        function updateLiveClock() {
+            const clockEl = document.getElementById('live-clock');
+            if (clockEl) {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                clockEl.value = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            }
+        }
+
         function isSupervisorOrAdmin(email) {
             return email === 'supervisor@bcmanabi.com' || email === 'admin@bcmanabi.com';
         }
 
-        // Login Actions
         function loginUser(email) {
             currentUser = email;
             localStorage.setItem('bc_current_user', email);
             
-            // UI elements population
             document.getElementById('display-user-name').innerText = USER_DATABASE[email].name;
             document.getElementById('display-user-role').innerText = USER_DATABASE[email].role;
             document.getElementById('form-user-audit').innerText = USER_DATABASE[email].name;
 
             showScreen('dashboard');
 
-            // Apply Role Restrictions!
             const isSuperior = isSupervisorOrAdmin(email);
             const supTabs = document.getElementById('supervisor-tabs');
             const supMobileTabs = document.getElementById('supervisor-mobile-tabs');
@@ -964,12 +1090,10 @@ function doGet() {
             if (isSuperior) {
                 supTabs.classList.remove('hidden');
                 supMobileTabs.classList.remove('hidden');
-                // Supervisors land on the dashboard
                 switchTab('dashboard');
             } else {
                 supTabs.classList.add('hidden');
                 supMobileTabs.classList.add('hidden');
-                // Cajeros are forced to the simple transaction tab immediately!
                 switchTab('transaction');
             }
 
@@ -980,10 +1104,9 @@ function doGet() {
             currentUser = null;
             localStorage.removeItem('bc_current_user');
             showScreen('login');
-            showToast('Firma digital desvinculada. Sesión segura terminada.', 'info');
+            showToast("Firma desvinculada. Sesión segura terminada.", "info");
         }
 
-        // Display Toggling
         function showScreen(screen) {
             const login = document.getElementById('login-screen');
             const dashboard = document.getElementById('dashboard-screen');
@@ -998,12 +1121,11 @@ function doGet() {
         }
 
         function switchTab(tabId) {
-            // Guard against unauthorized Cajero manual tab switching
-            if (!isSupervisorOrAdmin(currentUser) && tabId !== 'transaction') {
+            if (!isSupervisorOrAdmin(currentUser) && tabId !== 'transaction' && tabId !== 'reconcile') {
                 tabId = 'transaction';
             }
 
-            const tabs = ['dashboard', 'transaction', 'spreadsheet', 'sync'];
+            const tabs = ['dashboard', 'transaction', 'reconcile', 'spreadsheet', 'sync'];
             tabs.forEach(t => {
                 const navBtn = document.getElementById(`nav-${t}`);
                 const mobileBtn = document.getElementById(`nav-mobile-${t}`);
@@ -1018,25 +1140,21 @@ function doGet() {
                                           (t === tabId ? "bg-manabi-800 text-white" : "text-manabi-300 hover:text-white");
                 }
                 if (content) {
-                    if (t === tabId) {
-                        content.classList.remove('hidden');
-                    } else {
-                        content.classList.add('hidden');
-                    }
+                    content.classList.toggle('hidden', t !== tabId);
                 }
             });
 
-            // View refresh triggers
             if (tabId === 'spreadsheet') {
                 renderSpreadsheet();
             } else if (tabId === 'dashboard') {
                 updateUI();
+            } else if (tabId === 'reconcile') {
+                initReconcileView();
             } else if (tabId === 'transaction') {
                 renderCajeroRecentLogs();
             }
         }
 
-        // Toggle visual style for Deposit vs Withdrawal buttons
         function toggleTypeUI(type) {
             const labelDeposit = document.getElementById('label-type-deposit');
             const labelWithdrawal = document.getElementById('label-type-withdrawal');
@@ -1056,17 +1174,19 @@ function doGet() {
             }
         }
 
-        // Calculate Vault Balance & Stats
         function updateUI() {
             let totalDeposits = 0;
             let countDeposits = 0;
             let totalWithdrawals = 0;
             let countWithdrawals = 0;
 
-            // Date sort descending (recent first)
+            // Sort transactions descending
             transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            transactions.forEach(tx => {
+            // CRITICAL: Filter out transactions created by supervisors from the main KPIs/vault balances
+            const operativeTx = transactions.filter(tx => !isSupervisorOrAdmin(tx.user));
+
+            operativeTx.forEach(tx => {
                 const amt = parseFloat(tx.amount);
                 if (tx.type === 'deposito') {
                     totalDeposits += amt;
@@ -1079,66 +1199,60 @@ function doGet() {
 
             const netBalance = totalDeposits - totalWithdrawals;
 
-            // Only update supervisor widgets if they exist in DOM & user is privileged
-            if (isSupervisorOrAdmin(currentUser)) {
-                const kpiBalanceEl = document.getElementById('kpi-balance');
-                if (kpiBalanceEl) {
-                    kpiBalanceEl.innerText = formatCurrency(netBalance);
-                    if (netBalance >= 0) {
-                        kpiBalanceEl.className = "text-2xl font-bold text-slate-900";
-                    } else {
-                        kpiBalanceEl.className = "text-2xl font-bold text-rose-600";
-                    }
-                }
-
-                if (document.getElementById('kpi-deposits')) {
-                    document.getElementById('kpi-deposits').innerText = formatCurrency(totalDeposits);
-                    document.getElementById('kpi-deposits-count').innerText = `${countDeposits} depósitos`;
-                }
-
-                if (document.getElementById('kpi-withdrawals')) {
-                    document.getElementById('kpi-withdrawals').innerText = formatCurrency(totalWithdrawals);
-                    document.getElementById('kpi-withdrawals-count').innerText = `${countWithdrawals} retiros`;
-                }
-
-                // Update sync status indicator
-                const statusText = document.getElementById('sync-status-text');
-                const statusIcon = document.getElementById('sync-status-icon');
-                const statusIconBg = document.getElementById('sync-status-icon-bg');
-                const statusLastTime = document.getElementById('sync-last-time');
-
-                if (statusText && syncSettings.url) {
-                    statusText.innerText = "Sincronizado";
-                    statusIcon.className = "fas fa-link text-2xl";
-                    statusIconBg.className = "flex-shrink-0 bg-emerald-100 rounded-lg p-3 text-emerald-600";
-                    statusLastTime.innerText = syncSettings.lastSynced ? `Activo: ${syncSettings.lastSynced}` : "Listo";
-                } else if (statusText) {
-                    statusText.innerText = "No Vinculado";
-                    statusIcon.className = "fas fa-unlink text-2xl";
-                    statusIconBg.className = "flex-shrink-0 bg-amber-100 rounded-lg p-3 text-amber-600";
-                    statusLastTime.innerText = "Sin conectar";
-                }
-
-                renderRecentActivity();
-                renderCharts();
+            // Update main counters
+            const balanceEl = document.getElementById('kpi-balance');
+            if (balanceEl) {
+                balanceEl.innerText = formatCurrency(netBalance);
+                balanceEl.className = netBalance >= 0 ? "text-2xl font-bold text-slate-900" : "text-2xl font-bold text-rose-600";
             }
 
+            const kpiDep = document.getElementById('kpi-deposits');
+            if (kpiDep) kpiDep.innerText = formatCurrency(totalDeposits);
+            const kpiDepCount = document.getElementById('kpi-deposits-count');
+            if (kpiDepCount) kpiDepCount.innerText = `${countDeposits} depósitos`;
+
+            const kpiWith = document.getElementById('kpi-withdrawals');
+            if (kpiWith) kpiWith.innerText = formatCurrency(totalWithdrawals);
+            const kpiWithCount = document.getElementById('kpi-withdrawals-count');
+            if (kpiWithCount) kpiWithCount.innerText = `${countWithdrawals} retiros`;
+
+            // Server Indicator Status
+            const statusText = document.getElementById('sync-status-text');
+            const statusIcon = document.getElementById('sync-status-icon');
+            const statusIconBg = document.getElementById('sync-status-icon-bg');
+            const statusLastTime = document.getElementById('sync-last-time');
+
+            if (syncSettings.url) {
+                statusText.innerText = "Enlazado Activo";
+                statusIcon.className = "fas fa-cloud-sun text-2xl";
+                statusIconBg.className = "flex-shrink-0 bg-emerald-100 rounded-lg p-3 text-emerald-600";
+                statusLastTime.innerText = syncSettings.lastSynced ? `${syncSettings.lastSynced}` : "Listo";
+            } else {
+                statusText.innerText = "No Vinculado";
+                statusIcon.className = "fas fa-unlink text-2xl animate-pulse";
+                statusIconBg.className = "flex-shrink-0 bg-amber-100 rounded-lg p-3 text-amber-600";
+                statusLastTime.innerText = "Sin conexión";
+            }
+
+            renderRecentActivity();
+            renderCharts();
             renderCajeroRecentLogs();
         }
 
-        // Render recent activities for supervisor dashboard
         function renderRecentActivity() {
             const listContainer = document.getElementById('dashboard-recent-list');
             if (!listContainer) return;
             
             listContainer.innerHTML = '';
 
-            const recent = transactions.slice(0, 5); // top 5 recent entries
+            // Filter out supervisors to show only cashier flows
+            const operativeTx = transactions.filter(tx => !isSupervisorOrAdmin(tx.user));
+            const recent = operativeTx.slice(0, 5);
 
             if (recent.length === 0) {
                 listContainer.innerHTML = `
                     <div class="text-center py-8 text-slate-400 text-xs">
-                        <i class="fas fa-folder-open text-2xl mb-2 block"></i> No hay registros el día de hoy
+                        <i class="fas fa-folder-open text-2xl mb-2 block"></i> Sin operaciones hoy
                     </div>`;
                 return;
             }
@@ -1156,8 +1270,8 @@ function doGet() {
                         <span class="p-1.5 rounded-full ${badgeColor}">
                             <i class="fas ${icon} text-[10px]"></i>
                         </span>
-                        <div class="min-w-0">
-                            <span class="block font-bold text-xs text-slate-900 truncate max-w-[150px]">${tx.concept}</span>
+                        <div>
+                            <span class="block font-bold text-xs text-slate-900 truncate max-w-[150px]">${tx.concept || 'Operación general'}</span>
                             <span class="text-[10px] text-slate-400 block">${tx.date} • <span class="font-semibold text-slate-600">${shortUser}</span></span>
                         </div>
                     </div>
@@ -1169,21 +1283,18 @@ function doGet() {
             });
         }
 
-        // Render Cajero recent log history (Side Panel / Mobile view helper)
         function renderCajeroRecentLogs() {
             const container = document.getElementById('cajero-recent-list');
             if (!container) return;
 
             container.innerHTML = '';
 
-            // Filter only this user's transactions
             const myTx = transactions.filter(tx => tx.user === currentUser).slice(0, 6);
 
             if (myTx.length === 0) {
                 container.innerHTML = `
                     <div class="text-center py-10 text-slate-400 text-xs bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl">
-                        <i class="fas fa-pen-nib text-xl mb-1.5 text-slate-300 block"></i>
-                        Aún no registra movimientos hoy.
+                        <i class="fas fa-pen-nib text-xl mb-1.5 text-slate-300 block"></i> No has registrado movimientos hoy.
                     </div>`;
                 return;
             }
@@ -1196,7 +1307,7 @@ function doGet() {
                 div.className = `p-3 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center justify-between ${borderLeft} transition-all`;
                 div.innerHTML = `
                     <div class="min-w-0 flex-1 pr-2">
-                        <span class="block text-xs font-bold text-slate-950 truncate">${tx.concept}</span>
+                        <span class="block text-xs font-bold text-slate-950 truncate">${tx.concept || 'Operación de Ventanilla'}</span>
                         <div class="flex items-center gap-2 mt-0.5 text-[10px] text-slate-400">
                             <span class="font-mono bg-slate-100 px-1 py-0.5 rounded text-slate-600 font-semibold">${tx.movementNumber || 'S/N'}</span>
                             <span>${tx.date}</span>
@@ -1206,149 +1317,106 @@ function doGet() {
                         <span class="text-xs font-black block ${isDeposit ? 'text-emerald-600' : 'text-rose-600'}">
                             ${isDeposit ? '+' : '-'}${formatCurrency(tx.amount)}
                         </span>
-                        <span class="text-[9px] uppercase font-bold text-slate-400">${tx.type}</span>
+                        <span class="text-[8px] uppercase font-bold text-slate-400">${tx.type}</span>
                     </div>
                 `;
                 container.appendChild(div);
             });
         }
 
-        // Render dynamic Chart.js
         function renderCharts() {
             const canvasEl = document.getElementById('chart-daily-flow');
             if (!canvasEl) return;
             const ctx = canvasEl.getContext('2d');
             
-            // Map operations (grouping by date only, omitting the hour/minutes part)
-            const dateMap = {};
-            transactions.forEach(tx => {
-                const dateOnly = tx.date.split(' ')[0]; // Extract YYYY-MM-DD from YYYY-MM-DD HH:MM:SS
-                if (!dateMap[dateOnly]) {
-                    dateMap[dateOnly] = { deposito: 0, retiro: 0 };
-                }
-                dateMap[dateOnly][tx.type] += parseFloat(tx.amount);
+            // Filter out supervisor operations to analyze cajero metrics only
+            const operativeTx = transactions.filter(tx => !isSupervisorOrAdmin(tx.user));
+
+            const dates = [...new Set(operativeTx.map(t => t.date.split(' ')[0]))].sort().slice(-7);
+            
+            const userTotals = {};
+            dates.forEach(d => {
+                userTotals[d] = {};
             });
 
-            // Extract last 7 unique days sorted chronologically
-            const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(a) - new Date(b)).slice(-7);
-
-            // Handle empty trends gracefully
-            if (sortedDates.length === 0) {
-                if (trendChart) {
-                    trendChart.destroy();
-                    trendChart = null;
+            operativeTx.forEach(tx => {
+                const d = tx.date.split(' ')[0];
+                if (dates.includes(d)) {
+                    const u = USER_DATABASE[tx.user] ? USER_DATABASE[tx.user].name : tx.user;
+                    if (!userTotals[d][u]) userTotals[d][u] = 0;
+                    userTotals[d][u] += (tx.type === 'deposito' ? tx.amount : -tx.amount);
                 }
-                // Draw simple placeholder text on canvas
-                ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-                ctx.fillStyle = "#94a3b8";
-                ctx.font = "14px Inter";
-                ctx.textAlign = "center";
-                ctx.fillText("Sin transacciones registradas para graficar.", canvasEl.width / 2, canvasEl.height / 2);
-                return;
-            }
+            });
 
-            const depositsData = sortedDates.map(date => dateMap[date].deposito);
-            const withdrawalsData = sortedDates.map(date => dateMap[date].retiro);
+            const uniqueUsers = [...new Set(operativeTx.map(t => USER_DATABASE[t.user] ? USER_DATABASE[t.user].name : t.user))];
+            const colors = ['#0a8be3', '#10b981', '#f43f5e', '#f59e0b'];
 
-            if (trendChart) {
-                trendChart.destroy();
-            }
+            const datasets = uniqueUsers.map((user, idx) => {
+                return {
+                    label: user,
+                    data: dates.map(d => userTotals[d][user] || 0),
+                    backgroundColor: colors[idx % colors.length],
+                    borderRadius: 4
+                };
+            });
+
+            if (trendChart) trendChart.destroy();
 
             trendChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: sortedDates,
-                    datasets: [
-                        {
-                            label: 'Depósitos (+)',
-                            data: depositsData,
-                            backgroundColor: 'rgba(16, 185, 129, 0.85)',
-                            borderColor: 'rgb(16, 185, 129)',
-                            borderWidth: 1.5,
-                            borderRadius: 6
-                        },
-                        {
-                            label: 'Retiros (-)',
-                            data: withdrawalsData,
-                            backgroundColor: 'rgba(244, 63, 94, 0.85)',
-                            borderColor: 'rgb(244, 63, 94)',
-                            borderWidth: 1.5,
-                            borderRadius: 6
-                        }
-                    ]
+                    labels: dates,
+                    datasets: datasets
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    family: 'Inter',
-                                    size: 11,
-                                    weight: 600
-                                }
-                            }
-                        }
+                        legend: { position: 'top', labels: { font: { family: 'Inter', size: 10 } } }
                     },
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return '$' + value;
-                                }
-                            }
-                        }
+                        y: { ticks: { callback: v => '$' + v } }
                     }
                 }
             });
         }
 
-        // Transaction Submit Action
         function handleTransactionSubmit(e) {
             e.preventDefault();
 
             const amountVal = parseFloat(document.getElementById('amount').value);
             const movNum = document.getElementById('movement_number').value.trim();
+            const dateVal = document.getElementById('live-clock').value;
             const conceptVal = document.getElementById('concept').value.trim();
             const checkedRadio = document.querySelector('input[name="trans_type"]:checked');
 
-            if (!checkedRadio || isNaN(amountVal) || amountVal <= 0) {
+            if (isNaN(amountVal) || amountVal <= 0 || !dateVal) {
                 showToast("Por favor complete el Monto de la operación", "warning");
                 return;
             }
 
-            // Capture exact current local datetime timestamp!
-            const exactDateTime = getCurrentDateTimeString();
-
             const newTx = {
                 id: 'TX-' + Math.floor(1000 + Math.random() * 9000) + '-' + Date.now().toString().slice(-4),
-                date: exactDateTime, // Immutable server-like date and time
+                date: dateVal,
                 type: checkedRadio.value,
                 amount: amountVal,
-                movementNumber: movNum || 'S/N', 
-                concept: conceptVal || 'Sin detalle', 
-                user: currentUser 
+                movementNumber: movNum || 'S/N',
+                concept: conceptVal || 'Sin detalle',
+                user: currentUser
             };
 
-            // Save inside local storage
             transactions.unshift(newTx);
             localStorage.setItem('bc_transactions', JSON.stringify(transactions));
 
-            showToast("Transacción registrada correctamente en base local.", "success");
+            showToast("Transacción registrada localmente.", "success");
             
-            // Auto-Sincronización check
             if (syncSettings.url && syncSettings.autoSync) {
                 syncSingleToSheets(newTx);
             }
 
-            // Clean up and refresh UI views
             resetForm();
             updateUI();
 
-            // Land supervisor on dashboard, but keep cajeros strictly inside the registry page
             if (isSupervisorOrAdmin(currentUser)) {
                 switchTab('dashboard');
             } else {
@@ -1358,23 +1426,283 @@ function doGet() {
 
         function resetForm() {
             document.getElementById('transaction-form').reset();
-            document.getElementById('trans_date').value = getCurrentDateTimeString();
             toggleTypeUI('deposito');
+            updateLiveClock();
         }
 
-        // Spreadsheet Populator
+        function initReconcileView() {
+            calculateExpectedCash();
+            calculateReconcile();
+            renderAdminReconcileList();
+        }
+
+        function calculateExpectedCash() {
+            // Find current user expected cash: Deposits - Withdrawals of the current user
+            const myTx = transactions.filter(tx => tx.user === currentUser);
+            let expected = 0;
+            myTx.forEach(tx => {
+                if (tx.type === 'deposito') {
+                    expected += tx.amount;
+                } else {
+                    expected -= tx.amount;
+                }
+            });
+            document.getElementById('reconcile-expected-view').innerText = formatCurrency(expected);
+            document.getElementById('reconcile-expected-view').dataset.expected = expected;
+        }
+
+        function calculateReconcile() {
+            const denomInputs = document.querySelectorAll('.denom-input');
+            let physicalTotal = 0;
+
+            denomInputs.forEach(input => {
+                const count = parseInt(input.value) || 0;
+                const value = parseFloat(input.dataset.value);
+                physicalTotal += (count * value);
+            });
+
+            document.getElementById('reconcile-physical-view').innerText = formatCurrency(physicalTotal);
+            document.getElementById('reconcile-physical-view').dataset.physical = physicalTotal;
+
+            const expected = parseFloat(document.getElementById('reconcile-expected-view').dataset.expected) || 0;
+            const difference = physicalTotal - expected;
+
+            const diffBox = document.getElementById('reconcile-diff-box');
+            if (Math.abs(difference) < 0.009) {
+                diffBox.innerText = `Caja Balanceda ($0.00)`;
+                diffBox.className = "p-3 rounded-lg text-center font-bold text-sm bg-emerald-50 text-emerald-700 border border-emerald-200";
+            } else if (difference > 0) {
+                diffBox.innerText = `Sobrante (+${formatCurrency(difference)})`;
+                diffBox.className = "p-3 rounded-lg text-center font-bold text-sm bg-amber-50 text-amber-700 border border-amber-200";
+            } else {
+                diffBox.innerText = `Faltante (${formatCurrency(difference)})`;
+                diffBox.className = "p-3 rounded-lg text-center font-bold text-sm bg-rose-50 text-rose-700 border border-rose-200";
+            }
+        }
+
+        function clearReconcileForm() {
+            document.querySelectorAll('.denom-input').forEach(i => i.value = 0);
+            document.getElementById('reconcile-obs').value = '';
+            calculateReconcile();
+        }
+
+        function submitReconciliation() {
+            const expected = parseFloat(document.getElementById('reconcile-expected-view').dataset.expected) || 0;
+            const physical = parseFloat(document.getElementById('reconcile-physical-view').dataset.physical) || 0;
+            const difference = physical - expected;
+            const observations = document.getElementById('reconcile-obs').value.trim();
+
+            const newRec = {
+                id: 'REC-' + Math.floor(1000 + Math.random() * 9000) + '-' + Date.now().toString().slice(-4),
+                date: document.getElementById('live-clock').value,
+                user: currentUser,
+                expected: expected,
+                physical: physical,
+                difference: difference,
+                observations: observations || "Sin novedad",
+                status: "Pendiente",
+                auditedBy: "N/A"
+            };
+
+            reconciliations.unshift(newRec);
+            localStorage.setItem('bc_reconciliations', JSON.stringify(reconciliations));
+
+            showToast("Cuadre guardado localmente.", "success");
+
+            if (syncSettings.url && syncSettings.autoSync) {
+                syncReconciliationToSheets(newRec);
+            }
+
+            clearReconcileForm();
+            initReconcileView();
+        }
+
+        function renderAdminReconcileList() {
+            const container = document.getElementById('admin-reconcile-list');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            if (reconciliations.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-400 text-xs">
+                        <i class="fas fa-folder-open text-2xl mb-2 block"></i> No hay arqueos registrados hoy
+                    </div>`;
+                return;
+            }
+
+            reconciliations.forEach(rec => {
+                const shortUser = USER_DATABASE[rec.user] ? USER_DATABASE[rec.user].name : rec.user.split('@')[0];
+                const isBalanced = Math.abs(rec.difference) < 0.01;
+                const statusBadgeColor = rec.status === 'Aprobado' ? 'bg-emerald-100 text-emerald-800' : 
+                                         (rec.status === 'Rechazado' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800');
+
+                const isSuper = isSupervisorOrAdmin(currentUser);
+
+                const div = document.createElement('div');
+                div.className = "p-4 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 transition-all space-y-3";
+                div.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="block font-bold text-xs text-slate-900">${shortUser}</span>
+                            <span class="text-[10px] text-slate-400 block">${rec.date}</span>
+                        </div>
+                        <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusBadgeColor}">${rec.status}</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-center bg-white p-2.5 rounded-lg border text-[11px]">
+                        <div>
+                            <span class="block text-slate-400">Esperado</span>
+                            <span class="font-bold text-slate-700">${formatCurrency(rec.expected)}</span>
+                        </div>
+                        <div>
+                            <span class="block text-slate-400">Físico</span>
+                            <span class="font-bold text-slate-700">${formatCurrency(rec.physical)}</span>
+                        </div>
+                        <div>
+                            <span class="block text-slate-400">Diferencia</span>
+                            <span class="font-bold ${isBalanced ? 'text-emerald-600' : 'text-rose-600'}">${formatCurrency(rec.difference)}</span>
+                        </div>
+                    </div>
+                    <div class="text-[10px] text-slate-500 italic bg-white p-2 rounded border">
+                        <span class="font-bold block text-[9px] uppercase text-slate-400">Observaciones de la Cajera:</span>
+                        "${rec.observations}"
+                    </div>
+                    ${rec.auditedBy !== 'N/A' ? `<div class="text-[9px] text-slate-500 font-bold"><i class="fas fa-user-check"></i> Auditado por: ${rec.auditedBy}</div>` : ''}
+                    
+                    ${(isSuper && rec.status === 'Pendiente') ? `
+                        <div class="flex gap-2 pt-1">
+                            <button onclick="auditReconciliation('${rec.id}', 'Aprobado')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] py-1 px-2 rounded font-bold transition-colors">Aprobar</button>
+                            <button onclick="auditReconciliation('${rec.id}', 'Rechazado')" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white text-[10px] py-1 px-2 rounded font-bold transition-colors">Rechazar</button>
+                        </div>
+                    ` : ''}
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function auditReconciliation(id, status) {
+            const recIndex = reconciliations.findIndex(r => r.id === id);
+            if (recIndex > -1) {
+                reconciliations[recIndex].status = status;
+                reconciliations[recIndex].auditedBy = USER_DATABASE[currentUser].name;
+                localStorage.setItem('bc_reconciliations', JSON.stringify(reconciliations));
+                showToast(`Cuadre ${status.toLowerCase()} correctamente.`, "success");
+                
+                if (syncSettings.url) {
+                    syncReconciliationToSheets(reconciliations[recIndex]);
+                }
+                initReconcileView();
+            }
+        }
+
+        function exportToStyledExcel() {
+            const filteredData = applyFilters(true);
+            if (filteredData.length === 0) {
+                showToast("No existen registros bajo los filtros actuales para exportar.", "warning");
+                return;
+            }
+
+            const excelFileName = `Planilla_BC_Manabi_${new Date().toISOString().slice(0,10)}.xls`;
+
+            // Compile high quality Office SpreadsheetML Styles & Layout
+            let excelTemplate = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+                <head>
+                <meta http-equiv="content-type" content="text/plain; charset=UTF-8">
+                <!--[if gte mso 9]>
+                <xml>
+                  <x:ExcelWorkbook>
+                    <x:ExcelWorksheets>
+                      <x:ExcelWorksheet>
+                        <x:Name>Planilla BC Manabí</x:Name>
+                        <x:WorksheetOptions>
+                          <x:DisplayGridlines/>
+                        </WorksheetOptions>
+                      </x:ExcelWorksheet>
+                    </x:ExcelWorksheets>
+                  </x:ExcelWorkbook>
+                </xml>
+                <![endif]-->
+                <style>
+                  table { border-collapse: collapse; font-family: 'Inter', sans-serif; }
+                  td { border: 1px solid #cbd5e1; padding: 6px; font-size: 11px; }
+                  th { border: 1px solid #072848; padding: 10px; font-size: 12px; background-color: #0a3f6c; color: white; font-weight: bold; }
+                  .title-row { font-size: 16px; font-weight: bold; color: #072848; text-align: center; }
+                  .subtitle-row { font-size: 11px; color: #64748b; text-align: center; font-style: italic; }
+                  .deposit-style { color: #059669; font-weight: bold; }
+                  .withdrawal-style { color: #dc2626; font-weight: bold; }
+                  .caja-header { background-color: #0a3f6c; color: #ffffff; }
+                </style>
+                </head>
+                <body>
+                <table>
+                  <tr><td colspan="7" class="title-row">BANCO COMERCIAL DE MANABÍ S.A.</td></tr>
+                  <tr><td colspan="7" class="subtitle-row">REPORTE OFICIAL DE MOVIMIENTOS DE CAJA - EXPORTADO EN ${new Date().toLocaleString()}</td></tr>
+                  <tr><td colspan="7"></td></tr>
+                  <thead>
+                    <tr>
+                      <th>Código ID</th>
+                      <th>Fecha y Hora</th>
+                      <th>Tipo</th>
+                      <th style="text-align: right;">Monto ($)</th>
+                      <th>Nº Movimiento</th>
+                      <th>Concepto de Operación</th>
+                      <th>Registrado Por</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+            `;
+
+            filteredData.forEach(tx => {
+                const isDep = tx.type === 'deposito';
+                const signedAmt = isDep ? tx.amount : -tx.amount;
+                const amtClass = isDep ? 'deposit-style' : 'withdrawal-style';
+                const cashierName = USER_DATABASE[tx.user] ? USER_DATABASE[tx.user].name : tx.user;
+
+                excelTemplate += `
+                    <tr>
+                      <td style="font-family: monospace;">${tx.id}</td>
+                      <td>${tx.date}</td>
+                      <td style="text-align: center; font-weight: bold; font-size: 10px;">${tx.type.toUpperCase()}</td>
+                      <td class="${amtClass}" style="text-align: right;">${signedAmt.toFixed(2)}</td>
+                      <td style="font-family: monospace;">${tx.movementNumber || 'S/N'}</td>
+                      <td>${tx.concept}</td>
+                      <td>${cashierName}</td>
+                    </tr>
+                `;
+            });
+
+            excelTemplate += `
+                  </tbody>
+                </table>
+                </body>
+                </html>
+            `;
+
+            // Blob compilation
+            const blob = new Blob([excelTemplate], { type: "application/vnd.ms-excel;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = excelFileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast("Exportación de Planilla Excel completada.", "success");
+        }
+
         function renderSpreadsheet() {
             const tbody = document.getElementById('spreadsheet-tbody');
             if (!tbody) return;
             
             tbody.innerHTML = '';
 
-            const filteredData = applyFilters(true); // Fetch filtered database arrays
+            const filteredData = applyFilters(true);
 
             if (filteredData.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="9" class="px-6 py-12 text-center text-sm text-slate-400 font-sans">
+                        <td colspan="9" class="px-6 py-12 text-center text-sm text-slate-400">
                             <i class="fas fa-folder-open text-3xl mb-2 block"></i> No se encontraron movimientos en este día / filtros aplicados.
                         </td>
                     </tr>`;
@@ -1390,10 +1718,10 @@ function doGet() {
                 tr.className = "hover:bg-slate-50 transition-colors font-mono text-xs";
                 tr.innerHTML = `
                     <td class="px-3 py-2.5 text-center font-bold text-slate-400 bg-slate-50 border-r border-slate-200">${rowNum}</td>
-                    <td class="px-4 py-2.5 font-semibold text-slate-500 border-r border-slate-200" title="${tx.id}">${tx.id}</td>
+                    <td class="px-4 py-2.5 font-semibold text-slate-500 border-r border-slate-200">${tx.id}</td>
                     <td class="px-4 py-2.5 whitespace-nowrap text-slate-700 border-r border-slate-200">${tx.date}</td>
                     <td class="px-4 py-2.5 whitespace-nowrap border-r border-slate-200">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wide uppercase ${isDeposit ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold tracking-wide uppercase ${isDeposit ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
                             ${tx.type}
                         </span>
                     </td>
@@ -1404,8 +1732,8 @@ function doGet() {
                     <td class="px-4 py-2.5 text-slate-700 border-r border-slate-200 truncate font-sans max-w-[200px]" title="${tx.concept}">${tx.concept}</td>
                     <td class="px-4 py-2.5 text-slate-500 font-sans truncate border-r border-slate-200" title="${tx.user}">${userName}</td>
                     <td class="px-4 py-2.5 text-center whitespace-nowrap">
-                        <button onclick="deleteTransaction('${tx.id}')" class="text-rose-600 hover:text-rose-800 transition-colors font-sans font-bold px-2 py-1" title="Anular transacción">
-                            <i class="fas fa-trash-alt"></i> Anular
+                        <button onclick="deleteTransaction('${tx.id}')" class="text-rose-600 hover:text-rose-800 font-sans font-bold px-2 py-1 flex items-center gap-1 mx-auto" title="Anular transacción de Google Sheets">
+                            <i class="fas fa-trash-alt text-[10px]"></i> Anular
                         </button>
                     </td>
                 `;
@@ -1413,26 +1741,20 @@ function doGet() {
             });
         }
 
-        // Filtering engine
         function applyFilters(returnArrayOnly = false) {
             const filterDate = document.getElementById('filter-date') ? document.getElementById('filter-date').value : '';
             const typeVal = document.getElementById('filter-type') ? document.getElementById('filter-type').value : 'all';
             const userVal = document.getElementById('filter-user') ? document.getElementById('filter-user').value : 'all';
 
             const filtered = transactions.filter(tx => {
-                // Match prefix of date because date now contains time (starts with YYYY-MM-DD)
-                const matchesDate = !filterDate || tx.date.startsWith(filterDate);
+                const matchesDate = !filterDate || tx.date.split(' ')[0] === filterDate;
                 const matchesType = typeVal === 'all' || tx.type === typeVal;
                 const matchesUser = userVal === 'all' || tx.user === userVal;
 
                 return matchesDate && matchesType && matchesUser;
             });
 
-            if (returnArrayOnly) {
-                return filtered;
-            }
-
-            // Direct rendering side effect trigger
+            if (returnArrayOnly) return filtered;
             renderSpreadsheet();
         }
 
@@ -1443,186 +1765,146 @@ function doGet() {
             applyFilters();
         }
 
-        // Save Google Sheet URL Sincronizador settings (Supervisor Protected)
-        function saveSyncSettings() {
-            if (!isSupervisorOrAdmin(currentUser)) {
-                showToast("Acceso denegado. Solo el supervisor puede modificar el enlace.", "error");
-                return;
-            }
-
-            const url = document.getElementById('apps-script-url').value.trim();
-            const autoSync = document.getElementById('autosync-toggle').checked;
-
-            syncSettings.url = url;
-            syncSettings.autoSync = autoSync;
-
-            localStorage.setItem('bc_sync_settings', JSON.stringify(syncSettings));
-            showToast("Conexión de sincronización actualizada.", "success");
-            updateUI();
-        }
-
-        // Delete Row (Supervisor only action)
         function deleteTransaction(id) {
-            if (!isSupervisorOrAdmin(currentUser)) {
-                showToast("Acceso denegado. Solo el supervisor puede anular transacciones.", "error");
-                return;
-            }
-
             showModal(
-                "¿Anular esta Transacción?",
-                `Está a punto de anular permanentemente el registro bancario ${id} del almacenamiento local del dispositivo.`,
-                "Sí, Anular",
+                "¿Anular transacción bancaria?",
+                `Esta acción eliminará el registro contable de la base local y desencadenará un borrado inmediato en la hoja de cálculo Google Sheets.`,
+                "Proceder a Anulación",
                 function() {
+                    // Send delete action to Sheets
+                    if (syncSettings.url) {
+                        deleteRowFromSheets(id);
+                    }
+                    
+                    // Delete locally
                     transactions = transactions.filter(tx => tx.id !== id);
                     localStorage.setItem('bc_transactions', JSON.stringify(transactions));
-                    showToast("Registro bancario anulado.", "info");
+                    showToast("Registro contable anulado.", "info");
                     renderSpreadsheet();
                     updateUI();
                 }
             );
         }
 
-        // Clear All Database local (Supervisor only action)
         function clearAllTransactionsConfirm() {
-            if (!isSupervisorOrAdmin(currentUser)) {
-                showToast("Acceso denegado. Solo el supervisor puede vaciar la planilla.", "error");
-                return;
-            }
-
             showModal(
-                "¿Limpiar Toda la Planilla Local?",
-                "Esta acción vaciará por completo todo el historial de transacciones local. ¡Asegúrese de haber exportado sus datos a CSV primero!",
-                "Proceder a Limpiar",
+                "¿Desea limpiar el historial local?",
+                "Elimina el rastro local para forzar una sincronización limpia desde Google Sheets. La información remota se conservará intacta.",
+                "Vaciar Local",
                 function() {
                     transactions = [];
                     localStorage.setItem('bc_transactions', JSON.stringify([]));
-                    showToast("La planilla local se encuentra vacía.", "info");
+                    showToast("Planilla local vaciada.", "info");
                     renderSpreadsheet();
                     updateUI();
                 }
             );
         }
 
-        // Manual Sincronización (Optimized for CORS simple request text/plain)
-        function triggerManualSync() {
-            if (!isSupervisorOrAdmin(currentUser)) {
-                showToast("Acceso denegado. Solo el supervisor puede sincronizar manual.", "error");
-                return;
-            }
-
-            if (!syncSettings.url) {
-                showToast("Por favor configure la URL de Apps Script del Banco primero.", "warning");
-                return;
-            }
-
-            const btn = document.getElementById('btn-sync-now');
-            const orig = btn.innerHTML;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-1.5"></i> Volcando datos en nube...`;
-            btn.disabled = true;
-
-            // Enforcing Content-Type: text/plain to classify as a CORS simple-request bypasses CORS errors
-            fetch(syncSettings.url, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-                body: JSON.stringify(transactions)
-            })
-            .then(() => {
-                syncSettings.lastSynced = new Date().toLocaleTimeString();
-                localStorage.setItem('bc_sync_settings', JSON.stringify(syncSettings));
-                showToast("Planilla sincronizada con éxito (Verifica tu Google Sheets).", "success");
-                updateUI();
-            })
-            .catch(error => {
-                showToast("Falla de red al conectar con Google Sheets.", "error");
-                console.error("Sheets connection error:", error);
-            })
-            .finally(() => {
-                btn.innerHTML = orig;
-                btn.disabled = false;
-            });
-        }
-
-        // Auto Sync Single helper background trigger (uses Simple Request bypass for zero preflights)
         function syncSingleToSheets(tx) {
-            fetch(syncSettings.url, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-                body: JSON.stringify(tx)
-            })
-            .then(() => {
-                syncSettings.lastSynced = new Date().toLocaleTimeString();
-                localStorage.setItem('bc_sync_settings', JSON.stringify(syncSettings));
-                showToast("Movimiento sincronizado con la nube.", "info");
+            try {
+                fetch(syncSettings.url, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ type: 'transaction', data: tx })
+                })
+                .then(() => {
+                    syncSettings.lastSynced = "Sincronizado: " + new Date().toLocaleTimeString();
+                    localStorage.setItem('bc_sync_settings', JSON.stringify(syncSettings));
+                    showToast("Transacción registrada en Google Sheets.", "info");
+                    updateUI();
+                })
+                .catch(err => {
+                    console.warn("Falla de red background (CORS / Sandbox): ", err);
+                    showToast("Sincronización retenida en cola local por restricciones de red.", "warning");
+                });
+            } catch (err) {
+                console.error("Excepción síncrona capturada en fetch sync: ", err);
+            }
+        }
+
+        function syncReconciliationToSheets(rec) {
+            try {
+                fetch(syncSettings.url, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ type: 'reconcile', data: rec })
+                })
+                .then(() => {
+                    showToast("Arqueo enviado a Google Sheets (Cuadres).", "success");
+                })
+                .catch(err => {
+                    console.warn("Falla de red background reconcile (CORS / Sandbox): ", err);
+                    showToast("Cuadre guardado localmente (Falla de red externa).", "info");
+                });
+            } catch (err) {
+                console.error("Excepción síncrona en reconcile sync: ", err);
+            }
+        }
+
+        function deleteRowFromSheets(id) {
+            try {
+                fetch(syncSettings.url, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ type: 'delete', id: id })
+                })
+                .then(() => {
+                    showToast("Registro eliminado de Google Sheets.", "info");
+                })
+                .catch(err => console.warn("Falla de eliminación remota (CORS / Sandbox): ", err));
+            } catch (err) {
+                console.error("Excepción síncrona en delete sync: ", err);
+            }
+        }
+
+        function pullLatestData() {
+            if (!syncSettings.url) return;
+
+            const icon = document.getElementById('sync-status-icon');
+            if (icon) icon.className = "fas fa-sync text-2xl animate-spin";
+
+            try {
+                fetch(syncSettings.url)
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error("HTTP Status blocked: " + res.status);
+                    }
+                    return res.json();
+                })
+                .then(res => {
+                    if (res && res.status === 'success') {
+                        if (res.transactions) {
+                            transactions = res.transactions;
+                            localStorage.setItem('bc_transactions', JSON.stringify(transactions));
+                        }
+                        if (res.reconciliations) {
+                            reconciliations = res.reconciliations;
+                            localStorage.setItem('bc_reconciliations', JSON.stringify(reconciliations));
+                        }
+                        syncSettings.lastSynced = "Sincronizado: " + new Date().toLocaleTimeString();
+                        localStorage.setItem('bc_sync_settings', JSON.stringify(syncSettings));
+                        showToast("Sincronización completa con Google Sheets.", "success");
+                    }
+                })
+                .catch(err => {
+                    showToast("Falla de conexión externa con Google Sheets. Operando en Modo Local Seguro.", "warning");
+                    console.warn("Sync error (CORS o Sandbox bloqueado por navegador): ", err);
+                })
+                .finally(() => {
+                    updateUI();
+                    initReconcileView();
+                });
+            } catch (err) {
+                console.error("Excepción síncrona en pull sync: ", err);
                 updateUI();
-            })
-            .catch(err => {
-                console.warn("Background sheet sync failed: ", err);
-            });
-        }
-
-        // Export only matching filtered day to CSV
-        function exportFilteredDayCSV() {
-            const filterDate = document.getElementById('filter-date').value;
-            if (!filterDate) {
-                showToast("Por favor, seleccione un día específico en el filtro de arriba antes de exportar.", "warning");
-                return;
+                initReconcileView();
             }
-
-            const dayData = transactions.filter(tx => tx.date.startsWith(filterDate));
-            if (dayData.length === 0) {
-                showToast(`No existen movimientos registrados para el día ${filterDate}.`, "warning");
-                return;
-            }
-
-            generateAndDownloadCSV(dayData, `BC_Manabi_Caja_${filterDate}.csv`);
         }
 
-        // Export Entire Database to CSV
-        function exportAllToCSV() {
-            if (transactions.length === 0) {
-                showToast("No existen registros contables para exportar.", "warning");
-                return;
-            }
-            generateAndDownloadCSV(transactions, `BC_Manabi_Caja_TOTAL_Completo.csv`);
-        }
-
-        // CSV compiler and downloader helper
-        function generateAndDownloadCSV(dataList, filename) {
-            let csvContent = "data:text/csv;charset=utf-8,";
-            // Column Headers
-            csvContent += "ID,Fecha y Hora,Tipo,Monto,Movimiento N,Concepto,Usuario Cajero\n";
-
-            dataList.forEach(tx => {
-                const cashierName = USER_DATABASE[tx.user] ? USER_DATABASE[tx.user].name : tx.user;
-                const row = [
-                    `"${tx.id}"`,
-                    `"${tx.date}"`,
-                    `"${tx.type}"`,
-                    tx.amount,
-                    `"${tx.movementNumber || ''}"`,
-                    `"${tx.concept.replace(/"/g, '""')}"`,
-                    `"${cashierName}"`
-                ].join(",");
-                csvContent += row + "\n";
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", filename);
-            document.body.appendChild(link); // Firefox standard compliance
-            link.click();
-            document.body.removeChild(link);
-            showToast("Descarga de archivo CSV completada.", "success");
-        }
-
-        // Apps Script Copy Clipboard Utility
         function copyAppsScriptCode() {
             const codeText = document.getElementById('apps-script-code-block').innerText;
             const textarea = document.createElement('textarea');
@@ -1634,7 +1916,6 @@ function doGet() {
             showToast("Código copiado al portapapeles.", "success");
         }
 
-        // Format tools
         function formatCurrency(value) {
             return new Intl.NumberFormat('en-US', {
                 style: 'currency',
@@ -1642,42 +1923,20 @@ function doGet() {
             }).format(value);
         }
 
-        function getFormattedDate(offsetDays = 0) {
-            const date = new Date();
-            date.setDate(date.getDate() + offsetDays);
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        // Custom timestamp string generator (YYYY-MM-DD HH:MM:SS)
-        function getCurrentDateTimeString() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-        }
-
-        // Custom Toast Notifications
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             
-            let bgClass = "bg-slate-900";
-            let icon = "fa-info-circle";
-            if (type === 'success') { bgClass = "bg-emerald-600"; icon = "fa-check-circle"; }
-            else if (type === 'warning') { bgClass = "bg-amber-600"; icon = "fa-exclamation-triangle"; }
-            else if (type === 'error') { bgClass = "bg-rose-600"; icon = "fa-times-circle"; }
+            let bgClass = "bg-slate-950 border border-slate-800";
+            let icon = "fa-info-circle text-sky-400";
+            if (type === 'success') { bgClass = "bg-emerald-950 border border-emerald-800"; icon = "fa-check-circle text-emerald-400"; }
+            else if (type === 'warning') { bgClass = "bg-amber-950 border border-amber-800"; icon = "fa-exclamation-triangle text-amber-400"; }
+            else if (type === 'error') { bgClass = "bg-rose-950 border border-rose-800"; icon = "fa-times-circle text-rose-400"; }
 
-            toast.className = `${bgClass} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 transition-all duration-300 opacity-0 transform translate-y-2 pointer-events-auto max-w-sm`;
+            toast.className = `${bgClass} text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 opacity-0 transform translate-y-2 pointer-events-auto max-w-sm`;
             toast.innerHTML = `
                 <i class="fas ${icon}"></i>
-                <span class="text-xs font-semibold">${message}</span>
+                <span class="text-xs font-semibold leading-relaxed">${message}</span>
             `;
 
             container.appendChild(toast);
@@ -1691,10 +1950,9 @@ function doGet() {
                 setTimeout(() => {
                     toast.remove();
                 }, 300);
-            }, 4000);
+            }, 5000);
         }
 
-        // Modal triggers
         let modalConfirmCallback = null;
 
         function showModal(title, msg, confirmText, callback) {
@@ -1722,9 +1980,7 @@ function doGet() {
             modalConfirmCallback = null;
         }
 
-        // Password Reset Modal Logic
         function showResetPasswordModal() {
-            // Pre-select the currently chosen username in the login dropdown
             const loginUsername = document.getElementById('username').value;
             document.getElementById('reset-username').value = loginUsername;
             
@@ -1751,23 +2007,21 @@ function doGet() {
             }
 
             if (newPassword.length < 6) {
-                errorDiv.innerText = "La nueva contraseña debe tener al menos 6 caracteres.";
+                errorDiv.innerText = "La contraseña debe poseer al menos 6 dígitos.";
                 errorDiv.classList.remove('hidden');
                 return;
             }
 
-            // Update password in runtime database
             if (USER_DATABASE[email]) {
                 USER_DATABASE[email].pass = newPassword;
                 
-                // Save custom passwords to localStorage so they persist
                 const customPasswords = {};
                 for (const key in USER_DATABASE) {
                     customPasswords[key] = USER_DATABASE[key].pass;
                 }
                 localStorage.setItem('bc_user_passwords', JSON.stringify(customPasswords));
 
-                showToast(`Contraseña actualizada exitosamente para ${USER_DATABASE[email].name}`, "success");
+                showToast(`Contraseña actualizada para ${USER_DATABASE[email].name}`, "success");
                 closeResetPasswordModal();
             }
         }
