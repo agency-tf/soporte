@@ -2,604 +2,758 @@
 <html lang="es" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma Premium de Control de Saldos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        manabi: {
-                            50: '#f0f7ff',
-                            100: '#e0effe',
-                            200: '#bbdffd',
-                            300: '#7cc4fa',
-                            400: '#33a7f5',
-                            500: '#0a8be3',
-                            600: '#006ec1',
-                            700: '#00589d',
-                            800: '#054b81',
-                            900: '#0a3f6c',
-                            950: '#072848',
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9', // Premium Light Blue
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                            950: '#082f49',
                         },
-                        accent: {
-                            gold: '#D4AF37',
-                            goldHover: '#C5A028'
+                        corp: {
+                            900: '#0f172a', // Deep slate for dark mode aesthetics
+                            800: '#1e293b',
                         }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
     <style>
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;der-t border-slate-100 flex items-center justify-between">
-                                <button onclick="pullLatestData()" class="text-xs text-manabi-600 hover:text-manabi-800 font-bold flex items-center gap-1">
-                                    <i class="fas fa-cloud-download-alt"></i> Forzar Sincronización
-                                </button>
-                                <span id="sync-last-time" class="text-[9px] text-slate-400 font-mono">Sin sincronizar</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Charts & Recent Activity -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 lg:col-span-2">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                                    <i class="fas fa-chart-bar text-manabi-600"></i> Balance Diario por Cajero
-                                </h3>
-                                <span class="text-xs text-slate-400 italic">Flujo diario consolidado</span>
-                            </div>
-                            <div class="h-80 w-full relative">
-                                <canvas id="chart-daily-flow"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-base font-bold text-slate-900 mb-2 flex items-center gap-2">
-                                    <i class="fas fa-shield-halved text-manabi-600"></i> Actividad de Cajeras
-                                </h3>
-                                <p class="text-xs text-slate-500 mb-4">Movimientos recientes ingresados por cajeras habilitadas.</p>
-                                <div id="dashboard-recent-list" class="space-y-3 overflow-y-auto max-h-[220px] pr-1 custom-scrollbar">
-                                    <div class="text-center py-8 text-slate-400 text-sm">Cargando flujos...</div>
-                                </div>
-                            </div>
-                            <div class="mt-6 pt-4 border-t border-slate-100 flex gap-2">
-                                <button onclick="switchTab('transaction')" class="flex-1 bg-manabi-700 hover:bg-manabi-800 text-white font-bold py-2.5 px-3 rounded-lg text-xs transition-all text-center">Registrar Caja</button>
-                                <button onclick="switchTab('reconcile')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-3 rounded-lg text-xs transition-all text-center">Cuadre Rápido</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ================= TAB: REGISTRAR TRANSACCION ================= -->
-                <div id="tab-content-transaction" class="hidden">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-                            <div class="bg-manabi-900 text-white p-6 relative">
-                                <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-15">
-                                    <i class="fas fa-university text-7xl"></i>
-                                </div>
-                                <h2 class="text-xl font-bold flex items-center gap-2">
-                                    <i class="fas fa-cash-register text-accent-gold"></i> Registro de Caja Diario
-                                </h2>
-                                <p class="text-xs text-manabi-200">Asignación directa a la planilla centralizada.</p>
-                            </div>
-                            
-                                    </div>
-
-                                    <div>
-                                        <label for="movement_number" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nº de Papeleta / Comprobante</label>
-                                        <div class="mt-1 relative rounded-md shadow-sm">
-                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                                                <i class="fas fa-receipt"></i>
-                                            </div>
-                                            <input type="text" name="movement_number" id="movement_number" 
-                                                   placeholder="Ej. DP-987456" 
-                                                   class="block w-full pl-9 pr-3 py-3.5 border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 focus:border-manabi-500 sm:text-sm bg-slate-50/50">
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Fecha y Hora de Operación</label>
-                                        <div class="mt-1 relative rounded-md shadow-sm">
-                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                                                <i class="fas fa-clock"></i>
-                                            </div>
-                                            <input type="text" id="live-clock" readonly disabled
-                                                   class="block w-full pl-9 pr-3 py-3.5 border-2 border-slate-200 rounded-lg bg-slate-100 sm:text-sm font-mono text-slate-500 cursor-not-allowed">
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label for="concept" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Concepto o Detalle de Operación</label>
-                                        <div class="mt-1 relative rounded-md shadow-sm">
-                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                                                <i class="fas fa-align-left"></i>
-                                            </div>
-                                            <input type="text" name="concept" id="concept"
-                                                   placeholder="Ej. Depósito cuenta de ahorros cliente" 
-                                                   class="block w-full pl-9 pr-3 py-3.5 border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 focus:border-manabi-500 sm:text-sm bg-slate-50/50">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-center gap-3">
-                                    <i class="fas fa-user-shield text-manabi-600 text-lg"></i>
-                                    <div class="text-[11px] text-slate-500 leading-relaxed">
-                                        Firma digital activa y autorizada de: <span id="form-user-audit" class="font-bold text-slate-800">Cajera Principal</span>.
-                                    </div>
-                                </div>
-
-                                <div class="flex gap-4">
-                                    <button type="button" onclick="resetForm()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-lg text-xs transition-all text-center">Limpiar Campos</button>
-                                    <button type="submit" class="flex-1 bg-manabi-700 hover:bg-manabi-800 text-white font-bold py-3 px-4 rounded-lg text-xs shadow-md transition-all text-center transform active:scale-95 flex items-center justify-center gap-2">
-                                        <i class="fas fa-check-double text-accent-gold"></i> Registrar Transacción
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Side helper panel -->
-                        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-base font-bold text-slate-900 mb-3 flex items-center gap-2 pb-2 border-b border-slate-100">
-                                    <i class="fas fa-history text-slate-500"></i> Últimos Registros Propios
-                                </h3>
-                                <div id="cajero-recent-list" class="space-y-3 overflow-y-auto max-h-[350px] pr-1 custom-scrollbar">
-                                    <!-- Dynamic content inject here -->
-                                </div>
-                            </div>
-                            <div class="mt-6 p-4 bg-manabi-50 border border-manabi-100 rounded-xl">
-                                <span class="block text-xs font-bold text-manabi-800 mb-1"><i class="fas fa-info-circle mr-1 text-accent-gold"></i> Canal Operativo</span>
-                                <p class="text-[10px] text-manabi-900 leading-relaxed">Las transacciones del supervisor se mantendrán aisladas de la bóveda operativa habitual en el Dashboard general.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ================= TAB: CUADRE DE CAJA ================= -->
-                <div id="tab-content-reconcile" class="hidden space-y-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- Denominations Calculator & Submit -->
-                        <div class="lg:col-span-2 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-                            <div class="bg-manabi-900 text-white p-6 relative">
-                                <h2 class="text-xl font-bold flex items-center gap-2">
-                                    <i class="fas fa-coins text-accent-gold"></i> Arqueo de Caja y Balanceo Físico
-                                </h2>
-                                <p class="text-xs text-manabi-200">Arqueo diario mandatorio de efectivo de cajeros.</p>
-                            </div>
-
-                            <div class="p-6 space-y-6">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                    <div>
-                                        <span class="block text-xs text-slate-500 uppercase font-semibold">Saldo Contable Esperado:</span>
-                                        <span id="reconcile-expected-view" class="text-2xl font-extrabold text-manabi-900">$0.00</span>
-                                    </div>
-                                    <div>
-                                        <span class="block text-xs text-slate-500 uppercase font-semibold">Total Efectivo Físico:</span>
-                                        <span id="reconcile-physical-view" class="text-2xl font-extrabold text-slate-900">$0.00</span>
-                                    </div>
-                                </div>
-
-                                <!-- Denominations Multipliers -->
-                                <div class="space-y-4">
-                                    <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider pb-1 border-b">Desglose de Efectivo Físico</h3>
-                                    
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <!-- Billetes -->
-                                        <div class="space-y-3 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
-                                            <span class="block text-xs font-bold text-manabi-800 uppercase tracking-widest mb-2"><i class="fas fa-money-bill-wave mr-1"></i> Billetes</span>
-                                            
-                                            <div class="flex items-center justify-between gap-2">
-                                                <label class="w-20 text-xs font-bold text-slate-600">$100.00</label>
-                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="100">
-                                            </div>
-                                            <div class="flex items-center justify-between gap-2">
-                                                <label class="w-20 text-xs font-bold text-slate-600">$50.00</label>
-                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="50">
-                                            </div>
-                                            <div class="flex items-center justify-between gap-2">
-                                                <label class="w-20 text-xs font-bold text-slate-600">$20.00</label>
-                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="20">
-                                            </div>
-                                            <div class="flex items-center justify-between gap-2">
-                                                <label class="w-20 text-xs font-bold text-slate-600">$10.00</label>
-                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="10">
-                                            </div>
-                                            <div class="flex items-center justify-between gap-2">
-                                                <label class="w-20 text-xs font-bold text-slate-600">$5.00</label>
-                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="5">
-                                            </div>
-                                            <div class="flex items-center justify-between gap-2">
-                                                <label class="w-20 text-xs font-bold text-slate-600">$2.00</label>
-                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="2">
-                                            </div>
-                                            <div class="flex items-center justify-between gap-2">
-                                                <label class="w-20 text-xs font-bold text-slate-600">$1.00</label>
-                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="1">
-                                            </div>
-                                        </div>
-
-                                        <!-- Monedas -->
-                                        <div class="space-y-3 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
-                                            <span class="block text-xs font-bold text-manabi-800 uppercase tracking-widest mb-2"><i class="fas fa-coins mr-1"></i> Monedas</span>
-                                            
-                                            <div class="flex items-center justify-between gap-2">
-                                                <label class="w-20 text-xs font-bold text-slate-600">$1.00</label>
-                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="1.00">
-                                            </div>
-                                            <div class="flex items-center justify-between gap-2">
-                                                <label class="w-20 text-xs font-bold text-slate-600">$0.50</label>
-                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="0.50">
-                                            </div>
-                                            <div class="flex items-center justify-between gap-2">
-                                                <label class="w-20 text-xs font-bold text-slate-600">$0.25</label>
-                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="0.25">
-                                            </div>
-                                            <div class="flex items-center justify-between gap-2">
-                                                <label class="w-20 text-xs font-bold text-slate-600">$0.10</label>
-                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="0.10">
-                                            </div>
-                                            <div class="flex items-center justify-between gap-2">
-                                                <label class="w-20 text-xs font-bold text-slate-600">$0.05</label>
-                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="0.05">
-                                            </div>
-                                            <div class="flex items-center justify-between gap-2">
-                                                <label class="w-20 text-xs font-bold text-slate-600">$0.01</label>
-                                                <input type="number" min="0" value="0" oninput="calculateReconcile()" class="denom-input block w-24 p-1.5 text-right border rounded-lg text-xs" data-value="0.01">
-                                          
-                                    Supervisores y auditores pueden auditar, validar y modificar el estado de los arqueos reportados hoy.
-                                </p>
-                                <div id="admin-reconcile-list" class="space-y-3 overflow-y-auto max-h-[350px] pr-1 custom-scrollbar">
-                                    <!-- Dynamic items inject here -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ================= TAB: PLANILLA HISTORICA ================= -->
-                <div id="tab-content-spreadsheet" class="hidden space-y-4">
-                    <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
-                        <div class="p-6 border-b border-slate-100 space-y-4">
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                                <div>
-                                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                                        <i class="fas fa-table text-emerald-600"></i> Planilla General de Transacciones (Bóveda)
-                                    </h3>
-                                    <p class="text-xs text-slate-500">Módulo seguro de visualización e impresión para auditoría.</p>
-                                </div>
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <!-- EXPORT ONLY EXCEL FORMAT -->
-                                    <button onclick="exportToStyledExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-3 rounded flex items-center gap-1.5 transition-colors shadow">
-                                        <i class="fas fa-file-excel text-accent-gold"></i> Exportar Planilla a Excel
-                                    </button>
-                                    <button onclick="clearAllTransactionsConfirm()" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-bold py-2 px-3 rounded flex items-center gap-1.5 transition-colors">
-                                        <i class="fas fa-trash-alt"></i> Limpiar Local
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Filtrar por Fecha</label>
-                                    <input type="date" id="filter-date" onchange="applyFilters()" class="block w-full text-xs border border-slate-300 rounded-md p-2 bg-white">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Tipo de Operación</label>
-                                    <select id="filter-type" onchange="applyFilters()" class="block w-full text-xs border border-slate-300 rounded-md p-2 bg-white">
-                                        <option value="all">Todas las transacciones</option>
-                                        <option value="deposito">Depósitos (+)</option>
-                                        <option value="retiro">Retiros (-)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Filtrar por Cajero</label>
-                                    <select id="filter-user" onchange="applyFilters()" class="block w-full text-xs border border-slate-300 rounded-md p-2 bg-white">
-                                        <option value="all">Todos los cajeros</option>
-                                        <option value="cajero1@bcmanabi.com">María Auxiliadora (Principal)</option>
-                                        <option value="cajero2@bcmanabi.com">José Delgado (Auxiliar)</option>
-                                        <option value="supervisor@bcmanabi.com">Andrea Vera (Supervisor)</option>
-                                        <option value="admin@bcmanabi.com">Administrador General</option>
-                                    </select>
-                                </div>
-                                <div class="flex items-end gap-2">
-                                    <button onclick="resetFilters()" class="flex-1 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold py-2 px-3 rounded border border-slate-200 transition-colors">Limpiar Filtros</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Spreadsheet View -->
-                        <div class="overflow-x-auto custom-scrollbar">
-                            <table class="min-w-full divide-y divide-slate-200 table-fixed">
-                                <thead class="bg-slate-50 border-b border-slate-200">
-                                    <tr>
-                                        <th scope="col" class="w-12 px-3 py-2 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider bg-slate-100 border-r border-slate-200">Fila</th>
-                                        <th scope="col" class="w-36 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Código ID</th>
-                                        <th scope="col" class="w-32 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Fecha y Hora</th>
-                                        <th scope="col" class="w-28 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Tipo</th>
-                                        <th scope="col" class="w-40 px-4 py-2 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Monto</th>
-                                        <th scope="col" class="w-36 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Nº Movimiento</th>
-                                        <th scope="col" class="w-48 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Concepto de Operación</th>
-                                        <th scope="col" class="w-44 px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-r border-slate-200">Registrado Por</th>
-                                        <th scope="col" class="w-24 px-4 py-2 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="spreadsheet-tbody" class="bg-white divide-y divide-slate-100 text-slate-700">
-                                    <!-- Table Rows populated here -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ================= TAB: SINCRONIZACION WEB ================= -->
-                <div id="tab-content-sync" class="hidden space-y-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 lg:col-span-1">
-                            <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
-                                <i class="fas fa-link text-manabi-600"></i> Enlace con Google Sheets
-                            </h3>
-                            <p class="text-xs text-slate-500 mb-4">La conexión con la base del Banco está completamente configurada.</p>
-
-                            <div class="space-y-4">
-                                <div class="p-3 bg-manabi-50 rounded-lg border border-manabi-150">
-                                    <span class="block text-xs font-bold text-manabi-800">Hoja de Sincronización Destino:</span>
-                                    <span class="text-[10px] text-manabi-600 break-words font-mono block select-all font-semibold mt-1">
-                                        Pestaña 1: "Transacciones"<br>Pestaña 2: "Cuadres"
-                                    </span>
-                                </div>
-
-                                <div>
-                                    <label for="apps-script-url" class="block text-xs font-bold text-slate-700 mb-1">URL de Apps Script Web App</label>
-                                    <input type="url" id="apps-script-url" value="https://script.google.com/macros/s/AKfycbxwiqsBwubvxqTFP11Q6Og5tR9i1ZLKsgGRkwJpSLVJ0tA3xFvTY12F7M1WqiR-HfWq5Q/exec"
-                                           class="mt-1 block w-full text-xs border border-slate-300 rounded-lg p-2.5 focus:ring-manabi-500 focus:border-manabi-500 bg-slate-50" readonly>
-                                </div>
-
-                                <div class="flex items-center">
-              
-    var payload = JSON.parse(e.postData.contents);
-    var type = payload.type;
-    var data = payload.data;
-    
-    if (type === 'transaction') {
-      var sheet = ss.getSheetByName("Transacciones");
-      if (!sheet) return createResponse({ status: "error", msg: "Hoja Transacciones no existe" });
-      var amt = parseFloat(data.amount);
-      if (data.type === 'retiro') {
-        amt = -Math.abs(amt);
-      } else {
-        amt = Math.abs(amt);
-      }
-      sheet.appendRow([
-        data.id,
-        data.date,
-        data.type,
-        amt,
-        data.movementNumber || "S/N",
-        data.concept || "Sin detalle",
-        data.user,
-        new Date()
-      ]);
-      return createResponse({ status: "success", msg: "Transacción guardada" });
-    }
-    
-    if (type === 'reconcile') {
-      var sheet = ss.getSheetByName("Cuadres");
-      if (!sheet) return createResponse({ status: "error", msg: "Hoja Cuadres no existe" });
-      sheet.appendRow([
-        data.id,
-        data.date,
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
-      if (sheetT) {
-        var rowsT = sheetT.getDataRange().getValues();
-        for (var i = 1; i < rowsT.length; i++) {
-          if (rowsT[i][0] === idToDelete) {
-            sheetT.deleteRow(i + 1);
-            deleted = true;
-            break;
-          }
+        .glass-dark { 
+            background: rgba(15, 23, 42, 0.85); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1); 
         }
-      }
-      if (!deleted && sheetC) {
-        var rowsC = sheetC.getDataRange().getValues();
-        for (var j = 1; j < rowsC.length; j++) {
-          if (rowsC[j][0] === idToDelete) {
-            sheetC.deleteRow(j + 1);
-            deleted = true;
-            break;
-          }
+        .glass-light {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
         }
-      }
-      return createResponse({ status: "success", msg: deleted ? "Eliminado" : "No encontrado" });
-    }
-  } catch (err) {
-    return createResponse({ status: "error", msg: err.toString() });
-  }
-}
+        
+        .ambient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.4;
+            animation: float 12s infinite alternate ease-in-out;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-30px) scale(1.1); }
+        }
 
-function doGet() {
-  try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheetT = ss.getSheetByName("Transacciones");
-    var sheetC = ss.getSheetByName("Cuadres");
-    var tx = [];
-    var rec = [];
-    
-    if (sheetT) {
-      var dataT = sheetT.getDataRange().getValues();
-      for (var i = 1; i < dataT.length; i++) {
-        var amt = parseFloat(dataT[i][3]);
-        var type = dataT[i][2];
-        if (amt < 0) {
-          type = 'retiro';
-    
-          date: dataC[j][1],
-          user: dataC[j][2],
-          expected: parseFloat(dataC[j][3]),
-          physical: parseFloat(dataC[j][4]),
-          difference: parseFloat(dataC[j][5]),
-          observations: dataC[j][6],
-          status: dataC[j][7],
-          auditedBy: dataC[j][8]
-        });
-      }
-    }
-    return createResponse({ status: "success", transactions: tx, reconciliations: rec });
-  } catch (err) {
-    return createResponse({ status: "error", msg: err.toString() });
-  }
-}
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="h-full font-sans antialiased text-slate-800 flex flex-col overflow-hidden bg-slate-50">
 
-function createResponse(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
-}
-                                </pre>
-                            </div>
+    <div id="toast-container" class="fixed top-4 right-4 z-[100] pointer-events-none flex flex-col gap-2"></div>
+
+    <div id="login-screen" class="min-h-screen flex items-center justify-center bg-corp-900 relative px-4 overflow-hidden">
+        <div class="ambient-orb bg-brand-600 w-[500px] h-[500px] top-[-20%] left-[-10%]"></div>
+        <div class="ambient-orb bg-indigo-600 w-[400px] h-[400px] bottom-[-20%] right-[-10%]" style="animation-delay: -5s;"></div>
+        
+        <div class="max-w-md w-full glass-dark rounded-3xl shadow-2xl p-10 relative z-10">
+            <div class="text-center mb-10">
+                <div class="mx-auto w-20 h-20 bg-gradient-to-br from-brand-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(14,165,233,0.4)] border border-white/20">
+                    <i class="fas fa-fingerprint text-4xl text-white"></i>
+                </div>
+                <h2 class="text-3xl font-black text-white tracking-tight">Acceso Seguro</h2>
+                <p class="text-sm text-slate-400 mt-2 font-medium">Plataforma de Control de Saldos</p>
+            </div>
+            
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">Identidad Autorizada</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-400 transition-colors">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <select id="login-user" class="block w-full pl-11 pr-4 py-3.5 border border-slate-700/50 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-slate-800/80 text-white font-medium appearance-none transition-all outline-none">
+                            <option value="michelle">Michelle (Supervisión & Admin)</option>
+                            <option value="jesus">Jesús (Titular Operativo)</option>
+                            <option value="tito">Tito (Titular Operativo)</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+                            <i class="fas fa-chevron-down text-xs"></i>
                         </div>
                     </div>
                 </div>
-
-            </main>
-
-            <!-- Bottom Footer Area -->
-            <footer class="bg-manabi-950 text-white border-t border-manabi-900 py-6">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <img class="h-8 w-auto bg-white rounded p-0.5" src="https://www.bcmanabi.com/img/LOGOP2.jpg" onerror="this.src='https://placehold.co/100x40/ffffff/054b81?text=BCM'" alt="Logo">
-                        <div>
-                            <span class="block text-xs font-semibold text-slate-400">Banco Comercial de Manabí S.A.</span>
-                            <span class="block text-[11px] text-slate-500">Portoviejo - Manabí, Ecuador &copy; 2026</span>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">Clave Criptográfica</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-400 transition-colors">
+                            <i class="fas fa-lock"></i>
                         </div>
-                    </div>
-                    <div class="text-center sm:text-right">
-                        <p class="text-xs text-manabi-300">Portal Operativo de Caja de Bóveda Sincronizado v5.0</p>
+                        <input type="password" id="login-pass" required placeholder="••••••••••••" class="block w-full pl-11 pr-4 py-3.5 border border-slate-700/50 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-slate-800/80 text-white font-medium transition-all outline-none placeholder-slate-500">
                     </div>
                 </div>
-            </footer>
+                <div id="login-error" class="hidden text-xs font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl text-center fade-in">
+                    <i class="fas fa-shield-alt mr-1"></i> Credenciales de seguridad denegadas.
+                </div>
+                <button type="submit" class="w-full py-4 px-4 rounded-xl shadow-lg shadow-brand-500/30 text-sm font-bold text-white bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all transform active:scale-[0.98]">
+                    Autenticar Ingreso
+                </button>
+            </form>
         </div>
+    </div>
 
-        <!-- Custom Warning Modal -->
-        <div id="custom-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 bg-slate-900/75 transition-opacity" aria-hidden="true" onclick="closeModal()"></div>
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                <d20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 bg-slate-900/75 transition-opacity" aria-hidden="true" onclick="closeResetPasswordModal()"></div>
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                <div class="relative inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full border border-slate-200">
-                    <div class="bg-manabi-900 px-4 py-4 sm:px-6">
-                        <h3 class="text-lg leading-6 font-bold text-white flex items-center gap-2" id="reset-modal-title">
-                            <i class="fas fa-key text-accent-gold"></i> Restablecer Contraseña
-                        </h3>
-                    </div>
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Usuario a restablecer</label>
-                                <select id="reset-username" class="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 text-sm bg-slate-50">
-                                    <option value="cajero1@bcmanabi.com">Cajera Principal (María Auxiliadora)</option>
-                                    <option value="cajero2@bcmanabi.com">Cajero Auxiliar (José Delgado)</option>
-                                    <option value="supervisor@bcmanabi.com">Supervisor (Economista Andrea Vera)</option>
-                                </select>
+    <div id="app-screen" class="hidden flex-1 flex flex-col h-screen">
+        
+        <!-- Header Superior -->
+        <header class="bg-white z-40 sticky top-0 relative">
+            <div class="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8 border-b border-slate-200">
+                <div class="flex justify-between items-center h-20">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-corp-900 text-white p-2.5 rounded-xl shadow-md flex items-center justify-center">
+                            <i class="fas fa-chart-network text-xl text-brand-400"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-black text-slate-900 leading-tight tracking-tight">Sync<span class="text-brand-600">Balance</span></h1>
+                            <div class="flex items-center gap-2 text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">
+                                <span class="relative flex h-2 w-2">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
+                                Enlace Red Activa
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Código Maestro de Autorización *</label>
-                                <input type="password" id="reset-master-code" placeholder="Ingrese el código maestro" class="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Nueva Contraseña de Firma *</label>
-                                <input type="password" id="reset-new-password" placeholder="Min. 6 caracteres" class="block w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-manabi-500 text-sm">
-                            </div>
-                            <div id="reset-error" class="hidden text-xs text-rose-600 bg-rose-50 p-2 rounded-lg border border-rose-200"></div>
                         </div>
                     </div>
-                    <div class="bg-slate-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
-                        <button type="button" onclick="executePasswordReset()" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-manabi-700 text-base font-semibold text-white hover:bg-manabi-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-manabi-500 sm:ml-3 sm:w-auto sm:text-sm">Cambiar Contraseña</button>
-                        <button type="button" onclick="closeResetPasswordModal()" class="mt-3 w-full inline-flex justify-center rounded-lg border border-slate-300 shadow-sm px-4 py-2 bg-white text-base font-semibold text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-manabi-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancelar</button>
+                    
+                    <div class="flex items-center gap-4 sm:gap-6">
+                        <button onclick="forceSync()" class="flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-brand-600 transition-colors bg-slate-50 border border-slate-200 hover:border-brand-300 shadow-sm px-4 py-2.5 rounded-xl">
+                            <i class="fas fa-sync-alt"></i> <span class="hidden sm:inline">Actualizar Nube</span>
+                        </button>
+                        <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
+                        <div class="text-right hidden sm:block">
+                            <div id="user-display-name" class="text-sm font-bold text-slate-900">Usuario</div>
+                            <div id="user-display-role" class="text-[10px] font-bold text-brand-600 uppercase tracking-wider">Rol</div>
+                        </div>
+                        <div class="relative cursor-pointer group" title="Tu Sesión Activa">
+                            <div class="w-10 h-10 rounded-xl bg-corp-900 flex items-center justify-center text-white font-bold shadow-md group-hover:bg-brand-600 transition-colors" id="user-avatar">
+                                U
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></div>
+                        </div>
+                        <button onclick="logout()" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-rose-600 bg-white border border-slate-200 hover:border-rose-200 hover:bg-rose-50 transition-all rounded-xl shadow-sm" title="Desconectar">
+                            <i class="fas fa-power-off"></i>
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
 
+            <div class="glass-light shadow-sm z-30">
+                <div class="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8">
+                    <nav class="flex space-x-6 sm:space-x-10" aria-label="Tabs">
+                        <button id="tab-btn-dashboard" onclick="switchTab('dashboard')" class="border-brand-500 text-brand-600 whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm flex items-center gap-2 transition-colors">
+                            <i class="fas fa-layer-group"></i> Panel & Auditoría
+                        </button>
+                        <button id="tab-btn-register" onclick="switchTab('register')" class="border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors">
+                            <i class="fas fa-wallet"></i> Registrar Nuevo Saldo
+                        </button>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 max-w-[95rem] w-full mx-auto p-4 sm:p-6 lg:p-8 overflow-y-auto custom-scrollbar">
+            
+            <!-- VISTA 1: Panel y Auditoría -->
+            <div id="view-dashboard" class="space-y-8 fade-in block">
+                
+                <!-- Dashboard Michelle (Oculto para Jesús/Tito) -->
+                <div id="admin-dashboard" class="hidden">
+                    <div class="mb-4">
+                        <h2 class="text-lg font-black text-slate-900 tracking-tight">Resumen Ejecutivo de Bóveda</h2>
+                        <p class="text-xs text-slate-500 mt-1">Supervisión en tiempo real de saldos confirmados y pendientes por verificación.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Tarjeta Jesús -->
+                        <div class="bg-white rounded-3xl p-1.5 shadow-md shadow-slate-200/50 border border-slate-200 overflow-hidden group hover:shadow-xl hover:border-sky-300 transition-all duration-300">
+                            <div class="bg-gradient-to-br from-sky-50 to-white rounded-[22px] p-6 sm:p-8 h-full relative overflow-hidden">
+                                <div class="absolute -top-4 -right-4 p-6 opacity-5 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 pointer-events-none">
+                                    <i class="fas fa-wallet text-9xl text-sky-900"></i>
+                                </div>
+                                
+                                <div class="flex justify-between items-start relative z-10 mb-6">
+                                    <div class="w-14 h-14 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center text-2xl shadow-sm border border-sky-200">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <span class="bg-sky-100 text-sky-700 text-[10px] font-black uppercase px-3 py-1.5 rounded-lg tracking-widest border border-sky-200/50">Cuenta 01</span>
+                                </div>
+                                
+                                <div class="relative z-10">
+                                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Saldo Confirmado: Jesús</p>
+                                    <p id="dash-total-jesus" class="text-5xl font-black text-slate-900 tracking-tighter">$0.00</p>
+                                </div>
+                                
+                                <div class="mt-8 pt-5 border-t border-sky-100 relative z-10 min-h-[50px]">
+                                    <div id="dash-pend-jesus" class="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm">
+                                        <i class="fas fa-clock animate-pulse text-amber-500"></i>
+                                        <span>$0.00 en validación</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tarjeta Tito -->
+                        <div class="bg-white rounded-3xl p-1.5 shadow-md shadow-slate-200/50 border border-slate-200 overflow-hidden group hover:shadow-xl hover:border-emerald-300 transition-all duration-300">
+                            <div class="bg-gradient-to-br from-emerald-50 to-white rounded-[22px] p-6 sm:p-8 h-full relative overflow-hidden">
+                                <div class="absolute -top-4 -right-4 p-6 opacity-5 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 pointer-events-none">
+                                    <i class="fas fa-piggy-bank text-9xl text-emerald-900"></i>
+                                </div>
+                                
+                                <div class="flex justify-between items-start relative z-10 mb-6">
+                                    <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl shadow-sm border border-emerald-200">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <span class="bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase px-3 py-1.5 rounded-lg tracking-widest border border-emerald-200/50">Cuenta 02</span>
+                                </div>
+                                
+                                <div class="relative z-10">
+                                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Saldo Confirmado: Tito</p>
+                                    <p id="dash-total-tito" class="text-5xl font-black text-slate-900 tracking-tighter">$0.00</p>
+                                </div>
+                                
+                                <div class="mt-8 pt-5 border-t border-emerald-100 relative z-10 min-h-[50px]">
+                                    <div id="dash-pend-tito" class="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm">
+                                        <i class="fas fa-clock animate-pulse text-amber-500"></i>
+                                        <span>$0.00 en validación</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-lg shadow-slate-200/40 border border-slate-200 flex flex-col overflow-hidden">
+                    <div class="p-6 sm:p-8 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50">
+                        <div>
+                            <h3 class="text-xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
+                                <i class="fas fa-list-check text-indigo-600"></i> Auditoría de Movimientos
+                            </h3>
+                            <p class="text-xs text-slate-500 font-medium mt-1">Historial completo y gestión de aprobaciones cruzadas</p>
+                        </div>
+                        <span class="text-[10px] bg-white text-slate-600 py-2.5 px-4 rounded-xl font-bold uppercase tracking-wider border border-slate-200 shadow-sm flex items-center gap-2" id="current-month-display">
+                            <i class="fas fa-calendar-alt text-brand-500"></i> Mes actual
+                        </span>
+                    </div>
+                    
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-100/80 border-b border-slate-200">
+                                <tr>
+                                    <th scope="col" class="px-8 py-5 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Fecha / Código ID</th>
+                                    <th scope="col" class="px-8 py-5 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Destinatario Asignado</th>
+                                    <th scope="col" class="px-8 py-5 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Detalle de Operación</th>
+                                    <th scope="col" class="px-8 py-5 text-right text-[10px] font-black text-slate-500 uppercase tracking-widest">Monto</th>
+                                    <th scope="col" class="px-8 py-5 text-center text-[10px] font-black text-slate-500 uppercase tracking-widest">Estado Actual</th>
+                                    <th scope="col" class="px-8 py-5 text-center text-[10px] font-black text-slate-500 uppercase tracking-widest">Acciones Requeridas</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body" class="bg-white divide-y divide-slate-100">
+                                <!-- Filas dinámicas -->
+                            </tbody>
+                        </table>
+                        
+                        <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 px-4 text-center">
+                            <div class="w-24 h-24 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mb-5 border-2 border-dashed border-slate-200">
+                                <i class="fas fa-inbox text-4xl"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 tracking-tight">Bandeja Vacía</h4>
+                            <p class="text-sm text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">No hay movimientos registrados para mostrar en esta vista. Los nuevos datos aparecerán aquí y se sincronizarán automáticamente.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-register" class="hidden fade-in py-6">
+                <div class="max-w-3xl mx-auto w-full">
+                    <div class="bg-white rounded-3xl shadow-2xl shadow-slate-200/50 border border-slate-200 overflow-hidden relative">
+                        
+                        <!-- Header del Formulario -->
+                        <div class="bg-corp-900 px-8 py-10 relative overflow-hidden">
+                            <!-- Patrón decorativo -->
+                            <div class="absolute top-0 left-0 w-full h-full opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
+                            
+                            <div class="relative z-10 flex items-center gap-5">
+                                <div class="w-14 h-14 rounded-2xl bg-brand-500/20 text-brand-400 flex items-center justify-center border border-brand-500/30 shadow-[0_0_20px_rgba(14,165,233,0.2)]">
+                                    <i class="fas fa-plus text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-2xl font-black text-white tracking-tight">Registrar Nuevo Saldo</h2>
+                                    <p class="text-sm text-slate-400 mt-1 font-medium">Complete los datos de la transacción para emitir el registro.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form id="add-form" class="p-8 sm:p-10 space-y-8">
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <!-- Fecha Criptográfica -->
+                                <div>
+                                    <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                        <i class="fas fa-shield-alt text-brand-500"></i> Sello de Tiempo
+                                    </label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-brand-500">
+                                            <i class="fas fa-clock text-sm"></i>
+                                        </div>
+                                        <input type="text" id="trans-date" readonly class="block w-full pl-11 pr-4 py-4 border border-slate-200 rounded-xl bg-slate-50 text-slate-600 text-sm font-mono font-bold cursor-not-allowed outline-none focus:ring-0" value="Calculando en tiempo real...">
+                                    </div>
+                                    <p class="text-[10px] text-slate-400 mt-2 font-medium">Sincronizado inalterable de red.</p>
+                                </div>
+
+                                <!-- Monto -->
+                                <div>
+                                    <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-2">Monto de Operación *</label>
+                                    <div class="relative group">
+                                        <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-500 transition-colors font-bold text-2xl">$</div>
+                                        <input type="number" id="trans-amount" step="0.01" min="0.01" required placeholder="0.00" class="block w-full pl-12 pr-4 py-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-white text-3xl font-black text-slate-900 transition-all outline-none placeholder-slate-300 shadow-inner">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Asignar A (Solo Michelle) -->
+                            <div id="assign-container" class="hidden border-t border-slate-100 pt-8">
+                                <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4">Destino de los Fondos (Asignación)</label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <label class="cursor-pointer group">
+                                        <input type="radio" name="assignedTo" value="jesus" class="peer sr-only" checked>
+                                        <div class="text-center py-6 px-4 border-2 border-slate-200 rounded-2xl peer-checked:border-sky-500 peer-checked:bg-sky-50 peer-checked:shadow-md hover:bg-slate-50 transition-all duration-300 relative overflow-hidden">
+                                            <div class="absolute top-2 right-2 opacity-0 peer-checked:opacity-100 text-sky-500 transition-opacity"><i class="fas fa-check-circle"></i></div>
+                                            <i class="fas fa-user-tie text-sky-600 text-4xl mb-3 group-hover:scale-110 transition-transform"></i>
+                                            <div class="text-sm font-black text-slate-800">Cuenta Jesús</div>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer group">
+                                        <input type="radio" name="assignedTo" value="tito" class="peer sr-only">
+                                        <div class="text-center py-6 px-4 border-2 border-slate-200 rounded-2xl peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:shadow-md hover:bg-slate-50 transition-all duration-300 relative overflow-hidden">
+                                            <div class="absolute top-2 right-2 opacity-0 peer-checked:opacity-100 text-emerald-500 transition-opacity"><i class="fas fa-check-circle"></i></div>
+                                            <i class="fas fa-user text-emerald-600 text-4xl mb-3 group-hover:scale-110 transition-transform"></i>
+                                            <div class="text-sm font-black text-slate-800">Cuenta Tito</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Concepto (Opcional) -->
+                            <div class="border-t border-slate-100 pt-8">
+                                <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-between">
+                                    <span>Referencia / Detalle</span>
+                                    <span class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[9px]">Opcional</span>
+                                </label>
+                                <textarea id="trans-concept" rows="2" placeholder="Motivo o referencia de la transacción..." class="block w-full px-5 py-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-white text-base transition-all resize-none outline-none placeholder-slate-400 font-medium"></textarea>
+                            </div>
+
+                            <div class="pt-4">
+                                <button type="submit" class="w-full bg-corp-900 hover:bg-black text-white font-bold py-5 px-6 rounded-xl transition-all shadow-xl shadow-corp-900/30 flex items-center justify-center gap-3 transform active:scale-[0.98] group text-lg">
+                                    <i class="fas fa-paper-plane text-brand-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i> Transmitir Registro a Base
+                                </button>
+                                <p class="text-center text-[11px] text-slate-400 font-medium mt-4">
+                                    Al transmitir, la transacción quedará en estado <span class="text-amber-500">Pendiente de Verificación</span> de la contraparte.
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </main>
     </div>
 
-    <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
-        const USER_DATABASE = {
-            "cajero1@bcmanabi.com": { pass: "cajero_bc1", name: "María Auxiliadora", role: "Cajera Principal" },
-            "cajero2@bcmanabi.com": { pass: "cajero_bc2", name: "José Delgado", role: "Cajero Auxiliar" },
-            "supervisor@bcmanabi.com": { pass: "super_manabi", name: "Economista Andrea Vera", role: "Supervisor de Operaciones" },
-            "admin@bcmanabi.com": { pass: "admin_manabi", name: "Auditor General", role: "Administrador" }
+        // Configuración de Seguridad Interna (Predefinida)
+        const USERS = {
+            'michelle': { name: 'Michelle', pass: 'Michi2026*', role: 'admin' },
+            'jesus': { name: 'Jesús', pass: 'JesusVentas88', role: 'user' },
+            'tito': { name: 'Tito', pass: 'TitoPagos99', role: 'user' }
         };
-
-        const MASTER_CODE = "BCMASTER2026";
 
         let currentUser = null;
         let transactions = [];
-        let reconciliations = [];
-        let trendChart = null;
+        
+        // URL de Google Apps Script Oficial
+        const syncUrl = "https://script.google.com/macros/s/AKfycbzUFfMn6AwIcKqQ-f4etsqPxNPMxaXJbW9NyxO1xQjw9NHrNCS3m0EK3Z4I1V8oRQJdlw/exec";
 
-        // Sync State Configuration
-        let syncSettings = {
-            url: 'https://script.google.com/macros/s/AKfycbxwiqsBwubvxqTFP11Q6Og5tR9i1ZLKsgGRkwJpSLVJ0tA3xFvTY12F7M1WqiR-HfWq5Q/exec',
-            autoSync: true,
-            lastSynced: null
+        // Reloj de Sistema Inalterable
+        setInterval(() => {
+            const dateInput = document.getElementById('trans-date');
+            if(dateInput) {
+                const now = new Date();
+                dateInput.value = now.toLocaleString('es-EC', { 
+                    year: 'numeric', month: '2-digit', day: '2-digit', 
+                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false 
+                });
+            }
+        }, 1000);
+
+        window.onload = () => {
+            const savedUser = localStorage.getItem('cs_user_v2');
+            const savedData = localStorage.getItem('cs_tx_v2');
+            
+            if (savedData) {
+                try { transactions = JSON.parse(savedData); } catch(e){}
+            }
+            
+            if (savedUser && USERS[savedUser]) {
+                login(savedUser);
+            } else {
+                showScreen('login');
+            }
+
+            document.getElementById('login-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const u = document.getElementById('login-user').value;
+                const p = document.getElementById('login-pass').value;
+                if (USERS[u] && USERS[u].pass === p) {
+                    document.getElementById('login-error').classList.add('hidden');
+                    login(u);
+                    document.getElementById('login-pass').value = ''; 
+                } else {
+                    document.getElementById('login-error').classList.remove('hidden');
+                }
+            });
+
+            document.getElementById('add-form').addEventListener('submit', handleAdd);
         };
 
-        window.onload = function() {
-            const savedUser = localStorage.getItem('bc_current_user');
-            const savedTx = localStorage.getItem('bc_transactions');
-            const savedRec = localStorage.getItem('bc_reconciliations');
-            const savedSettings = localStorage.getItem('bc_sync_settings');
-            const savedPasswords = localStorage.getItem('bc_user_passwords');
+        function switchTab(tabId) {
+            const btnDash = document.getElementById('tab-btn-dashboard');
+            const btnReg = document.getElementById('tab-btn-register');
+            const viewDash = document.getElementById('view-dashboard');
+            const viewReg = document.getElementById('view-register');
+            
+            const activeClass = "border-brand-500 text-brand-600 whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm flex items-center gap-2 transition-colors";
+            const inactiveClass = "border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors";
 
-            if (savedPasswords) {
-                const parsedPasswords = JSON.parse(savedPasswords);
-                for (const email in parsedPasswords) {
-                    if (USER_DATABASE[email]) {
-                        USER_DATABASE[email].pass = parsedPasswords[email];
-                    }
-                }
-            }
-
-            // Start empty with $0.00 if no data saved
-            transactions = savedTx ? JSON.parse(savedTx) : [];
-            reconciliations = savedRec ? JSON.parse(savedRec) : [];
-
-            if (savedSettings) {
-                syncSettings = JSON.parse(savedSettings);
-                document.getElementById('autosync-toggle').checked = syncSettings.autoSync;
-            }
-
-            if (savedUser && USER_DATABASE[savedUser]) {
-                loginUser(savedUser);
+            if (tabId === 'dashboard') {
+                btnDash.className = activeClass;
+                btnReg.className = inactiveClass;
+                viewDash.classList.remove('hidden');
+                viewReg.classList.add('hidden');
+                // Al volver al dashboard, refrescar la vista por si acaso
+                updateView();
             } else {
-
-                const customPasswords = {};
-                for (const key in USER_DATABASE) {
-                    customPasswords[key] = USER_DATABASE[key].pass;
-                }
-                localStorage.setItem('bc_user_passwords', JSON.stringify(customPasswords));
-
-                showToast(`Contraseña actualizada para ${USER_DATABASE[email].name}`, "success");
-                closeResetPasswordModal();
+                btnReg.className = activeClass;
+                btnDash.className = inactiveClass;
+                viewDash.classList.add('hidden');
+                viewReg.classList.remove('hidden');
             }
+        }
+
+        function login(username) {
+            currentUser = username;
+            localStorage.setItem('cs_user_v2', username);
+            
+            document.getElementById('user-display-name').innerText = USERS[username].name;
+            document.getElementById('user-display-role').innerText = USERS[username].role === 'admin' ? 'Administradora' : 'Titular Operativo';
+            document.getElementById('user-avatar').innerText = USERS[username].name.charAt(0);
+            
+            const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            const currentMonth = monthNames[new Date().getMonth()] + " " + new Date().getFullYear();
+            document.getElementById('current-month-display').innerHTML = `<i class="fas fa-calendar-check text-brand-500"></i> ${currentMonth}`;
+
+            const assignContainer = document.getElementById('assign-container');
+            const adminDash = document.getElementById('admin-dashboard');
+
+            if (currentUser === 'michelle') {
+                assignContainer.classList.remove('hidden');
+                adminDash.classList.remove('hidden');
+            } else {
+                assignContainer.classList.add('hidden');
+                adminDash.classList.add('hidden');
+            }
+
+            showScreen('app');
+            switchTab('dashboard'); // Entrar por defecto al Dashboard
+            showToast(`Bienvenida/o, ${USERS[username].name}. Firmado y Asegurado.`, 'success');
+            
+            forceSync();
+            updateView();
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('cs_user_v2');
+            showScreen('login');
+        }
+
+        function showScreen(scr) {
+            document.getElementById('login-screen').classList.toggle('hidden', scr !== 'login');
+            document.getElementById('app-screen').classList.toggle('hidden', scr !== 'app');
+        }
+
+        function saveLocal() {
+            localStorage.setItem('cs_tx_v2', JSON.stringify(transactions));
+        }
+
+        async function forceSync() {
+            try {
+                const res = await fetch(syncUrl);
+                const result = await res.json();
+                if (result.status === 'success') {
+                    transactions = result.data;
+                    transactions.sort((a, b) => b.id.localeCompare(a.id));
+                    saveLocal();
+                    updateView();
+                    showToast("Datos actualizados desde Google Sheets.", "success");
+                }
+            } catch (err) {
+                console.warn("Offline:", err);
+                showToast("Falla de red. Trabajando con caché local.", "warning");
+            }
+        }
+
+        function pushData(action, dataObj) {
+            fetch(syncUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: action, data: dataObj })
+            })
+            .then(r => r.json())
+            .then(res => {
+                if(res.status === 'success') console.log(`SYNC OK: ${action}`);
+            })
+            .catch(err => console.error("Error Sincronizando:", err));
+        }
+
+        function handleAdd(e) {
+            e.preventDefault();
+            
+            const dateVal = document.getElementById('trans-date').value;
+            const amount = parseFloat(document.getElementById('trans-amount').value);
+            const conceptRaw = document.getElementById('trans-concept').value.trim();
+            const concept = conceptRaw === "" ? "Sin detalle" : conceptRaw;
+            
+            let assignedTo = currentUser; 
+            if (currentUser === 'michelle') {
+                assignedTo = document.querySelector('input[name="assignedTo"]:checked').value;
+            }
+
+            if (isNaN(amount) || amount <= 0) return;
+
+            const newTx = {
+                id: 'TX' + Date.now().toString(36).toUpperCase() + Math.floor(Math.random()*100),
+                date: dateVal,
+                amount: amount,
+                concept: concept,
+                assignedTo: assignedTo,
+                createdBy: currentUser,
+                status: 'Pendiente'
+            };
+
+            transactions.unshift(newTx);
+            saveLocal();
+            updateView(); // Actualizamos la tabla invisible
+            
+            showToast("Registro guardado exitosamente. Esperando verificación cruzada.", "success");
+            pushData('add', newTx);
+            
+            // Limpieza y mantenimiento en la misma pestaña
+            document.getElementById('trans-amount').value = '';
+            document.getElementById('trans-concept').value = '';
+            // NO llamamos switchTab('dashboard') para que el usuario pueda seguir registrando.
+        }
+
+        // Permisos Creador vs Asignado
+        function canAction(tx) {
+            if (tx.status !== 'Pendiente') return false;
+            if (currentUser === 'michelle') return tx.createdBy !== 'michelle';
+            else return tx.assignedTo === currentUser && tx.createdBy === 'michelle';
+        }
+
+        function verifyTransaction(id) {
+            const idx = transactions.findIndex(t => t.id === id);
+            if (idx > -1) {
+                transactions[idx].status = 'Verificado';
+                saveLocal();
+                updateView();
+                showToast("Transacción Verificada y Aprobada.", "success");
+                pushData('verify', { id: id });
+            }
+        }
+
+        function denyTransaction(id) {
+            if (confirm("⚠️ ¿DENEGAR movimiento? Este valor no sumará al total.")) {
+                const idx = transactions.findIndex(t => t.id === id);
+                if (idx > -1) {
+                    transactions[idx].status = 'Denegado';
+                    saveLocal();
+                    updateView();
+                    showToast("Movimiento Rechazado formalmente.", "error");
+                    pushData('deny', { id: id });
+                }
+            }
+        }
+
+        function deleteTransaction(id) {
+            if (confirm("🚨 BORRAR de la base de datos permanentemente. ¿Continuar?")) {
+                transactions = transactions.filter(t => t.id !== id);
+                saveLocal();
+                updateView();
+                showToast("Registro eliminado de Google Sheets.", "info");
+                pushData('delete', { id: id });
+            }
+        }
+
+        function updateView() {
+            renderTable();
+            if(currentUser === 'michelle') renderDashboard();
+        }
+
+        const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v);
+
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            const emptyState = document.getElementById('empty-state');
+            tbody.innerHTML = '';
+
+            let displayTx = transactions;
+            if (currentUser !== 'michelle') {
+                displayTx = transactions.filter(t => t.assignedTo === currentUser);
+            }
+
+            if(displayTx.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            displayTx.forEach(tx => {
+                const showActions = canAction(tx);
+                const isJesus = tx.assignedTo === 'jesus';
+                
+                const assignedName = USERS[tx.assignedTo] ? USERS[tx.assignedTo].name : tx.assignedTo;
+                const authorName = USERS[tx.createdBy] ? USERS[tx.createdBy].name : tx.createdBy;
+                const formatAmt = fmt(tx.amount);
+                
+                let statusBadge = `<span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest"><i class="fas fa-clock"></i> Pendiente</span>`;
+                let rowStyle = "hover:bg-slate-50";
+                let amtStyle = "text-slate-900";
+
+                if (tx.status === 'Verificado') {
+                    statusBadge = `<span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest"><i class="fas fa-check-circle"></i> Verificado</span>`;
+                    amtStyle = isJesus ? "text-sky-600" : "text-emerald-600";
+                } else if (tx.status === 'Denegado') {
+                    statusBadge = `<span class="inline-flex items-center gap-1.5 bg-rose-50 text-rose-700 border border-rose-200 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest"><i class="fas fa-times-circle"></i> Denegado</span>`;
+                    rowStyle = "bg-slate-50/40 opacity-70";
+                    amtStyle = "text-slate-400 line-through";
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = `${rowStyle} transition-colors group`;
+                tr.innerHTML = `
+                    <td class="px-8 py-5">
+                        <span class="block text-sm font-bold text-slate-800">${tx.date.split(' ')[0]}</span>
+                        <span class="block text-[11px] text-slate-400 font-mono mt-1">${tx.id}</span>
+                    </td>
+                    <td class="px-8 py-5">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-${isJesus?'sky':'emerald'}-100 flex items-center justify-center text-${isJesus?'sky':'emerald'}-600 border border-${isJesus?'sky':'emerald'}-200">
+                                <i class="fas fa-user${isJesus?'-tie':''}"></i>
+                            </div>
+                            <span class="text-sm font-bold text-slate-800">${assignedName}</span>
+                        </div>
+                    </td>
+                    <td class="px-8 py-5">
+                        <div class="text-sm text-slate-800 font-medium max-w-[280px] truncate" title="${tx.concept}">${tx.concept}</div>
+                        <div class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest font-bold">Por: <span class="text-brand-600">${authorName}</span></div>
+                    </td>
+                    <td class="px-8 py-5 text-right">
+                        <span class="text-lg font-black tracking-tight ${amtStyle}">${formatAmt}</span>
+                    </td>
+                    <td class="px-8 py-5 text-center">
+                        ${statusBadge}
+                    </td>
+                    <td class="px-8 py-5 text-center whitespace-nowrap">
+                        <div class="flex items-center justify-center gap-2">
+                            ${showActions ? `
+                                <button onclick="verifyTransaction('${tx.id}')" class="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5"><i class="fas fa-check"></i> Aprobar</button>
+                                <button onclick="denyTransaction('${tx.id}')" class="px-3.5 py-2 bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5"><i class="fas fa-times"></i> Denegar</button>
+                            ` : ''}
+                            ${currentUser === 'michelle' ? `
+                                <button onclick="deleteTransaction('${tx.id}')" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-white hover:bg-rose-600 rounded-xl transition-colors ml-1" title="Eliminar fila"><i class="fas fa-trash-alt text-xs"></i></button>
+                            ` : ''}
+                            ${!showActions && currentUser !== 'michelle' ? `<span class="text-[10px] text-slate-300 font-bold"><i class="fas fa-lock"></i> RESTRINGIDO</span>` : ''}
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderDashboard() {
+            let jTotal = 0, jPend = 0;
+            let tTotal = 0, tPend = 0;
+
+            transactions.forEach(tx => {
+                if (tx.status === 'Denegado') return;
+                
+                const amt = parseFloat(tx.amount);
+                if (tx.assignedTo === 'jesus') {
+                    if (tx.status === 'Verificado') jTotal += amt;
+                    else jPend += amt;
+                } else if (tx.assignedTo === 'tito') {
+                    if (tx.status === 'Verificado') tTotal += amt;
+                    else tPend += amt;
+                }
+            });
+
+            document.getElementById('dash-total-jesus').innerText = fmt(jTotal);
+            const pendJesusEl = document.getElementById('dash-pend-jesus');
+            pendJesusEl.innerHTML = `<i class="fas fa-clock animate-pulse text-amber-500"></i><span>${fmt(jPend)} en verificación</span>`;
+            pendJesusEl.className = jPend > 0 ? "inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm fade-in" : "hidden";
+            
+            document.getElementById('dash-total-tito').innerText = fmt(tTotal);
+            const pendTitoEl = document.getElementById('dash-pend-tito');
+            pendTitoEl.innerHTML = `<i class="fas fa-clock animate-pulse text-amber-500"></i><span>${fmt(tPend)} en verificación</span>`;
+            pendTitoEl.className = tPend > 0 ? "inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm fade-in" : "hidden";
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let config = { bg: "bg-corp-900", text: "text-white", border: "border-slate-700", icon: "fa-info-circle text-brand-400" };
+            if (type === 'success') config = { bg: "bg-emerald-600", text: "text-white", border: "border-emerald-700", icon: "fa-check-circle text-emerald-100" };
+            if (type === 'warning') config = { bg: "bg-amber-500", text: "text-white", border: "border-amber-600", icon: "fa-exclamation-triangle text-amber-100" };
+            if (type === 'error') config = { bg: "bg-rose-600", text: "text-white", border: "border-rose-700", icon: "fa-times-circle text-rose-100" };
+
+            toast.className = `border ${config.border} ${config.bg} ${config.text} px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-x-full opacity-0 max-w-sm`;
+            toast.innerHTML = `<i class="fas ${config.icon} text-xl"></i> <span class="text-sm font-bold leading-snug">${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            requestAnimationFrame(() => toast.classList.remove('translate-x-full', 'opacity-0'));
+            
+            setTimeout(() => {
+                toast.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
         }
     </script>
 </body>
