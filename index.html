@@ -13,6 +13,7 @@
         .glass-dark { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); }
         .login-bg { background: radial-gradient(circle at top right, #1e1b4b, #0f172a 40%, #020617); }
         
+        /* Ocultar barra de desplazamiento manteniendo funcionalidad */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -99,7 +100,7 @@
                             <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                             <span class="text-[10px] font-black text-emerald-600 uppercase tracking-wider hidden sm:inline">En Línea</span>
                         </div>
-                        <button onclick="logout()" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 flex items-center justify-center transition-colors" title="Cerrar sesión">
+                        <button onclick="logout()" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 flex items-center justify-center transition-colors">
                             <i class="fas fa-sign-out-alt"></i>
                         </button>
                     </div>
@@ -132,12 +133,25 @@
             <!-- LOADER INICIAL -->
             <div id="global-loader" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#f8fafc] rounded-2xl">
                 <div class="w-12 h-12 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
-                <p class="text-sm font-bold text-slate-500 animate-pulse">Sincronizando Sepybet...</p>
+                <p class="text-sm font-bold text-slate-500 animate-pulse">Sincronizando base de datos...</p>
             </div>
 
             <!-- TAB: PANEL GLOBAL & AUDITORÍA -->
             <div id="tab-dashboard" class="fade-in space-y-6">
                 
+                <!-- DASHBOARD USUARIO (Visible para Jesús y Tito) -->
+                <div id="panel-user" class="hidden mb-6">
+                    <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 p-6 rounded-2xl shadow-sm relative overflow-hidden">
+                        <div class="absolute -right-6 -top-6 text-indigo-500/10 text-9xl"><i class="fas fa-wallet"></i></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl shadow-inner"><i class="fas fa-calendar-check"></i></div>
+                            <span class="bg-indigo-100 text-indigo-800 text-[10px] font-black px-3 py-1.5 rounded-lg tracking-widest border border-indigo-200">MI BALANCE</span>
+                        </div>
+                        <p class="text-indigo-700 text-[10px] font-black uppercase tracking-widest mb-1 relative z-10">TOTAL VERIFICADO ESTE MES</p>
+                        <h3 class="text-4xl font-black text-slate-800 tracking-tight relative z-10" id="dash-user-total">$0.00</h3>
+                    </div>
+                </div>
+
                 <!-- DASHBOARD (Visible para Michelle y Gussepy) -->
                 <div id="panel-admin" class="hidden">
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
@@ -162,18 +176,29 @@
                             <p class="text-[#15803d] text-[10px] font-black uppercase tracking-widest mb-1 relative z-10">SALDO CONFIRMADO: TITO</p>
                             <h3 class="text-4xl font-black text-slate-900 tracking-tight relative z-10" id="dash-tito">$0.00</h3>
                         </div>
-                    </div> <!-- Cierre del Grid -->
-                </div> <!-- Cierre de Panel Admin -->
 
-                <!-- Panel de Filtros (Movido afuera para que Jesús y Tito lo vean) -->
-                <div id="filters-panel" class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm mb-6 flex flex-col sm:flex-row gap-4 items-end hidden">
+                        <!-- Tarjeta Adelantos Gussepy -->
+                        <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 p-6 rounded-2xl shadow-sm relative overflow-hidden">
+                            <div class="absolute -right-6 -top-6 text-amber-500/10 text-9xl"><i class="fas fa-hand-holding-usd"></i></div>
+                            <div class="flex justify-between items-start mb-4 relative z-10">
+                                <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl shadow-inner"><i class="fas fa-star"></i></div>
+                                <span class="bg-amber-100 text-amber-800 text-[10px] font-black px-3 py-1.5 rounded-lg tracking-widest">COMISIONES</span>
+                            </div>
+                            <p class="text-amber-700 text-[10px] font-black uppercase tracking-widest mb-1 relative z-10">TOTAL ADELANTOS GUSSEPY</p>
+                            <h3 class="text-4xl font-black text-slate-800 tracking-tight relative z-10" id="dash-gussepy">$0.00</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de Filtros -->
+                <div id="filters-panel" class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm mb-6 flex flex-col sm:flex-row gap-4 items-end">
                     <div class="w-full sm:w-1/4">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
-                        <input type="date" id="filter-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 cursor-pointer">
+                        <input type="date" id="filter-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
                     </div>
                     <div class="w-full sm:w-1/4" id="filter-account-container">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta</label>
-                        <select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 cursor-pointer">
+                        <select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
                             <option value="all">Todas las cuentas</option>
                             <option value="jesus">Jesús</option>
                             <option value="tito">Tito</option>
@@ -181,7 +206,7 @@
                     </div>
                     <div class="w-full sm:w-1/4">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Estado</label>
-                        <select id="filter-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 cursor-pointer">
+                        <select id="filter-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
                             <option value="all">Todos</option>
                             <option value="Pendiente">Pendientes</option>
                             <option value="Verificado">Verificados</option>
@@ -266,6 +291,29 @@
                                 </div>
                             </div>
 
+                            <!-- Tipo de Registro (Ingreso o Débito) -->
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 ml-1">Tipo de Movimiento *</label>
+                                <div class="flex gap-4">
+                                    <label class="flex-1 relative cursor-pointer group">
+                                        <input type="radio" name="reg-type" value="ingreso" class="peer sr-only" checked>
+                                        <div class="absolute inset-0 rounded-xl border-2 border-slate-200 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 transition-all"></div>
+                                        <div class="relative p-4 text-center">
+                                            <i class="fas fa-arrow-down text-slate-400 peer-checked:text-emerald-600 text-xl mb-2 transition-colors"></i>
+                                            <div class="text-sm font-bold text-slate-600 peer-checked:text-emerald-800 transition-colors">Ingreso (Suma)</div>
+                                        </div>
+                                    </label>
+                                    <label class="flex-1 relative cursor-pointer group">
+                                        <input type="radio" name="reg-type" value="debito" class="peer sr-only">
+                                        <div class="absolute inset-0 rounded-xl border-2 border-slate-200 peer-checked:border-rose-500 peer-checked:bg-rose-50 transition-all"></div>
+                                        <div class="relative p-4 text-center">
+                                            <i class="fas fa-arrow-up text-slate-400 peer-checked:text-rose-600 text-xl mb-2 transition-colors"></i>
+                                            <div class="text-sm font-bold text-slate-600 peer-checked:text-rose-800 transition-colors">Débito (Resta)</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Fecha de Registro</label>
@@ -287,7 +335,7 @@
                                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Concepto / Detalle <span class="text-slate-400 lowercase font-semibold">(Opcional)</span></label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-align-left"></i></div>
-                                    <input type="text" id="reg-concept" placeholder="Ej. Depósito Banco Pichincha" class="block w-full pl-10 pr-4 py-3.5 border-2 border-slate-200 rounded-xl text-sm font-medium text-slate-800 outline-none focus:border-indigo-500 transition-colors">
+                                    <input type="text" id="reg-concept" placeholder="Ej. Adelanto o Depósito Banco" class="block w-full pl-10 pr-4 py-3.5 border-2 border-slate-200 rounded-xl text-sm font-medium text-slate-800 outline-none focus:border-indigo-500 transition-colors">
                                 </div>
                             </div>
 
@@ -299,11 +347,11 @@
                 </div>
             </div>
 
-            <!-- TAB: ADELANTOS GUSSEPY -->
+            <!-- TAB: ADELANTOS GUSSEPY (Solo Michelle) -->
             <div id="tab-gussepy" class="hidden fade-in">
                 <div class="max-w-5xl mx-auto space-y-6">
-                    <!-- Formulario de Adelanto (Oculto para Gussepy, solo visible para Michelle) -->
-                    <div id="form-gussepy-container" class="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden">
+                    <!-- Formulario de Adelanto -->
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden">
                         <div class="px-6 py-5 border-b border-slate-100 bg-amber-50/50 flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center"><i class="fas fa-hand-holding-usd"></i></div>
                             <div>
@@ -370,7 +418,7 @@
             <!-- TAB: BONOS MARÍA EMILIA -->
             <div id="tab-bonos" class="hidden fade-in theme-maria">
                 <div class="max-w-5xl mx-auto space-y-6">
-                    <!-- Formulario de Bonos (Oculto para Gussepy) -->
+                    <!-- Formulario de Bonos -->
                     <div id="form-bonos-container" class="bg-white border border-rose-100 rounded-2xl shadow-md overflow-hidden">
                         <div class="px-6 py-5 border-b border-rose-50 bg-rose-50/50 flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center"><i class="fas fa-gift"></i></div>
@@ -421,7 +469,7 @@
 
                     <!-- Tabla de Bonos y Filtros -->
                     <div class="bg-white border border-rose-100 rounded-2xl shadow-sm overflow-hidden">
-                        <div class="px-6 py-4 border-b border-rose-50 bg-rose-50/30 flex justify-between items-center">
+                        <div class="px-6 py-4 border-b border-rose-50 bg-rose-50/30">
                             <h3 class="text-sm font-black text-rose-900">Historial de Bonos Emitidos</h3>
                         </div>
                         
@@ -515,7 +563,7 @@
 
     <script>
         // CONFIGURACIÓN DE URL DEL WEB APP DE APPS SCRIPT
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxaCgzGJ6EAZkTFU2vRNlRCPBCrYPZfaANrKCrwRxjfB528FozA9JuRFsboQ8H8IoKCDA/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbybFpPdyHAKpttIaAfnMLNQAsu0v098ZkIpvhiiOrjsPiwapmsnruEvZttLeV9_7QtLwA/exec';
 
         // BASE DE USUARIOS
         const USERS = {
@@ -532,7 +580,6 @@
         let advances = [];
         let bonos = [];
         
-        // FILTROS
         let filters = { date: '', user: 'all', status: 'all' };
         let filtersBonos = { date: '', dest: '', amount: '' };
         
@@ -544,7 +591,7 @@
             if (savedUser && USERS[savedUser]) login(savedUser);
             else showScreen('login');
 
-            // Cargar fecha actual por defecto
+            // Cargar fecha actual por defecto en todos los formularios
             const todayStr = new Date().toISOString().split('T')[0];
             if(document.getElementById('reg-date')) document.getElementById('reg-date').value = todayStr;
             if(document.getElementById('gus-date')) document.getElementById('gus-date').value = todayStr;
@@ -594,18 +641,20 @@
             // Configurar UI según rol
             document.getElementById('admin-select-user').classList.toggle('hidden', user.type !== 'admin');
             
-            // Mostrar panel de filtros para admin y user (Jesús/Tito)
-            document.getElementById('filters-panel').classList.toggle('hidden', user.type !== 'admin' && user.type !== 'user');
-            
-            // Ocultar selector de cuenta si no es admin
+            // Ocultar selector de cuenta si no es admin, pero mostrar resto de filtros a todos menos Bonos
             const filterAccountContainer = document.getElementById('filter-account-container');
             if (filterAccountContainer) filterAccountContainer.classList.toggle('hidden', user.type !== 'admin');
             
-            // Ocultar formularios de ingreso para Gussepy
-            const gusContainer = document.getElementById('form-gussepy-container');
-            if(gusContainer) gusContainer.classList.toggle('hidden', user.type === 'master');
-            const bonosContainer = document.getElementById('form-bonos-container');
-            if(bonosContainer) bonosContainer.classList.toggle('hidden', user.type === 'master');
+            // Panel de Saldo Total del Mes (Solo para Jesús y Tito)
+            document.getElementById('panel-user').classList.toggle('hidden', user.type !== 'user');
+
+            // Gussepy: Ocultar formularios, solo ve tablas
+            if (user.type === 'master') {
+                const gusContainer = document.querySelector('#tab-gussepy .bg-white.border.border-slate-200');
+                if (gusContainer) gusContainer.classList.add('hidden');
+                const bonosContainer = document.getElementById('form-bonos-container');
+                if (bonosContainer) bonosContainer.classList.add('hidden');
+            }
 
             // Ocultar todas las pestañas por defecto
             document.getElementById('btn-tab-dashboard').classList.add('hidden');
@@ -622,8 +671,8 @@
             } else if (user.type === 'master') {
                 document.getElementById('btn-tab-dashboard').classList.remove('hidden');
                 document.getElementById('btn-tab-gussepy').classList.remove('hidden');
-                document.getElementById('btn-tab-bonos').classList.remove('hidden'); // Gussepy puede ver Bonos
-                document.getElementById('panel-admin').classList.remove('hidden');
+                document.getElementById('btn-tab-bonos').classList.remove('hidden');
+                document.getElementById('panel-admin').classList.remove('hidden'); // Gussepy ve el dashboard general
                 switchTab('tab-dashboard');
             } else if (user.type === 'bonos') {
                 document.getElementById('btn-tab-bonos').classList.remove('hidden');
@@ -719,8 +768,18 @@
             btn.disabled = true;
 
             const dateVal = document.getElementById('reg-date').value;
-            const amt = parseFloat(document.getElementById('reg-amount').value);
-            const conc = document.getElementById('reg-concept').value.trim();
+            const typeVal = document.querySelector('input[name="reg-type"]:checked').value;
+            let amt = parseFloat(document.getElementById('reg-amount').value);
+            let conc = document.getElementById('reg-concept').value.trim();
+            
+            // Asignación de signos (Positivo para Ingreso, Negativo para Débito)
+            if (typeVal === 'debito') {
+                amt = -Math.abs(amt);
+                if (conc) conc = "[DÉBITO] " + conc;
+                else conc = "[DÉBITO] Sin detalle";
+            } else {
+                amt = Math.abs(amt);
+            }
             
             let assigned = currentUser;
             let status = 'Pendiente';
@@ -730,16 +789,20 @@
 
             const newTx = { id: 'TX' + Date.now(), date: dateVal, amount: amt, concept: conc, assignedTo: assigned, createdBy: currentUser, status: status, receipt: '' };
             
-            // ACTUALIZACIÓN OPTIMISTA
+            // ACTUALIZACIÓN OPTIMISTA: Refresco instantáneo de pantalla a 0ms
             records.unshift(newTx); 
             updateAllViews(); 
-            showToast('Información grabada exitosamente', 'success');
             
+            showToast('Información grabada exitosamente', 'success');
+
             document.getElementById('reg-amount').value = ''; 
             document.getElementById('reg-concept').value = '';
+            // Resetear type a ingreso
+            document.querySelector('input[name="reg-type"][value="ingreso"]').checked = true;
             btn.innerHTML = orig; 
             btn.disabled = false;
             
+            // Sincronización transparente en segundo plano
             pushData('add', newTx).then(res => {
                 if (!res.success) { 
                     records.shift(); updateAllViews(); 
@@ -759,10 +822,12 @@
             const conc = document.getElementById('gus-concept').value.trim() || 'Sin detalle';
             const newAdv = { id: 'ADV' + Date.now(), date: dateVal, amount: amt, concept: conc, createdBy: currentUser, status: 'Pendiente', detail: '' };
             
+            // ACTUALIZACIÓN OPTIMISTA
             advances.unshift(newAdv); 
             updateAllViews();
-            showToast('Adelanto grabado exitosamente', 'success');
             
+            showToast('Adelanto grabado exitosamente', 'success');
+
             document.getElementById('form-gussepy').reset();
             document.getElementById('gus-date').value = new Date().toISOString().split('T')[0];
             btn.innerHTML = orig; btn.disabled = false;
@@ -787,10 +852,12 @@
             const conc = document.getElementById('bono-concept').value.trim() || 'Sin detalle';
             const newBono = { id: 'BN' + Date.now(), date: dateVal, amount: amt, assignedTo: dest, concept: conc, createdBy: currentUser };
             
+            // ACTUALIZACIÓN OPTIMISTA
             bonos.unshift(newBono); 
             updateAllViews(); updateBonoDatalist();
-            showToast('Bono grabado exitosamente', 'success');
             
+            showToast('Bono grabado exitosamente', 'success');
+
             document.getElementById('form-bonos').reset();
             document.getElementById('bono-date').value = new Date().toISOString().split('T')[0];
             btn.innerHTML = orig; btn.disabled = false;
@@ -813,26 +880,28 @@
         function closeModal() {
             document.getElementById('modal-comprobante').classList.add('hidden');
             document.getElementById('modal-comprobante').classList.remove('flex');
-            // No limpiar pendingVerifyId aquí para evitar fallos si la red es lenta
+            // NO limpiar pendingVerifyId aquí para que confirmVerify() tenga el ID
         }
 
         async function confirmVerify() {
             if (!pendingVerifyId) return;
-            const currentId = pendingVerifyId; // Bloqueo seguro del ID
-            
             const receipt = document.getElementById('input-receipt').value.trim();
             const btn = document.getElementById('btn-verify-confirm');
             const orig = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
 
-            const tx = records.find(r => String(r.id) === String(currentId));
+            const tx = records.find(r => r.id === pendingVerifyId);
             if (tx) {
                 const oldStatus = tx.status; const oldReceipt = tx.receipt;
                 
+                // ACTUALIZACIÓN OPTIMISTA: Aprueba en pantalla al instante
                 tx.status = 'Verificado'; tx.receipt = receipt; 
                 updateAllViews();
+                
+                const currentId = pendingVerifyId; // Guardar ID antes de limpiar
                 closeModal();
-                pendingVerifyId = null; // Limpieza post cierre
+                pendingVerifyId = null; // Limpiar después de guardar
+                
                 showToast('Verificación aprobada', 'success');
                 
                 pushData('verify', { id: String(currentId), receipt: receipt }).then(res => {
@@ -842,18 +911,19 @@
                     }
                 });
             } else {
-                showToast("Error: Registro no encontrado en memoria.", "error");
                 closeModal();
+                pendingVerifyId = null;
             }
             btn.innerHTML = orig; btn.disabled = false; 
         }
 
         async function actionDeny(id) {
             if (confirm("¿DENEGAR esta transacción?\nSe marcará en rojo y NO sumará a las cuentas.")) {
-                const tx = records.find(r => String(r.id) === String(id));
+                const tx = records.find(r => r.id === id);
                 if (tx) { 
                     const oldStatus = tx.status; 
                     
+                    // ACTUALIZACIÓN OPTIMISTA
                     tx.status = 'Denegado'; 
                     updateAllViews(); 
                     showToast('Transacción denegada', 'success');
@@ -882,21 +952,23 @@
 
         async function confirmGussepyAuth() {
             if (!pendingAuthId) return;
-            const currentId = pendingAuthId;
-            
             const detail = document.getElementById('input-gussepy-detail').value.trim() || 'Aprobado sin detalle';
             const btn = document.getElementById('btn-gussepy-confirm');
             const orig = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
 
-            const adv = advances.find(r => String(r.id) === String(currentId));
+            const adv = advances.find(r => r.id === pendingAuthId);
             if (adv) {
                 const oldStatus = adv.status; const oldDetail = adv.detail;
                 
+                // ACTUALIZACIÓN OPTIMISTA
                 adv.status = 'Autorizado'; adv.detail = detail; 
                 updateAllViews();
+                
+                const currentId = pendingAuthId; // Guardar ID
                 closeGussepyModal();
-                pendingAuthId = null;
+                pendingAuthId = null; // Limpiar
+                
                 showToast('Autorización exitosa', 'success');
                 
                 pushData('authorize_advance', { id: String(currentId), detail: detail }).then(res => {
@@ -905,6 +977,9 @@
                         showToast("Fallo al sincronizar autorización: " + res.msg, "error"); 
                     }
                 });
+            } else {
+                closeGussepyModal();
+                pendingAuthId = null;
             }
             btn.innerHTML = orig; btn.disabled = false; 
         }
@@ -915,6 +990,7 @@
                 if(type === 'advance') actionStr = 'delete_advance';
                 if(type === 'bono') actionStr = 'delete_bono';
 
+                // ACTUALIZACIÓN OPTIMISTA (Borrado en 0ms de la pantalla)
                 let backupRecords = [...records], backupAdvances = [...advances], backupBonos = [...bonos];
 
                 if(type === 'bono') {
@@ -930,6 +1006,7 @@
                 
                 showToast('Registro eliminado exitosamente', 'success');
 
+                // Borrado en segundo plano en Google Sheets
                 pushData(actionStr, {id: String(id)}).then(res => {
                     if(!res.success) {
                         if(type === 'bono') bonos = backupBonos;
@@ -947,13 +1024,13 @@
         const fmtDate = dStr => {
             if(!dStr) return '';
             const d = new Date(dStr);
-            d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
+            d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); // Fix timezone shift
             return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
         };
 
         function applyFilters() {
             filters.date = document.getElementById('filter-date').value;
-            filters.user = document.getElementById('filter-user').value;
+            if(document.getElementById('filter-user')) filters.user = document.getElementById('filter-user').value;
             filters.status = document.getElementById('filter-status').value;
             updateAllViews();
         }
@@ -961,7 +1038,7 @@
         function clearFilters() {
             filters = { date: '', user: 'all', status: 'all' };
             document.getElementById('filter-date').value = '';
-            document.getElementById('filter-user').value = 'all';
+            if(document.getElementById('filter-user')) document.getElementById('filter-user').value = 'all';
             document.getElementById('filter-status').value = 'all';
             updateAllViews();
         }
@@ -985,23 +1062,52 @@
             const user = USERS[currentUser];
             if (!user) return;
 
-            // 1. CÁLCULO DE DASHBOARDS
+            // 1. CÁLCULO DE DASHBOARDS GLOBALES (Michelle y Gussepy)
             if (user.type === 'admin' || user.type === 'master') {
-                const totalJesus = records.reduce((sum, r) => sum + (r.assignedTo === 'jesus' && r.status === 'Verificado' ? r.amount : 0), 0);
-                const totalTito = records.reduce((sum, r) => sum + (r.assignedTo === 'tito' && r.status === 'Verificado' ? r.amount : 0), 0);
+                const isGussepy = user.type === 'master';
+                // Gussepy no ve débitos (montos negativos)
+                const totalJesus = records.reduce((sum, r) => sum + (r.assignedTo === 'jesus' && r.status === 'Verificado' && (!isGussepy || r.amount >= 0) ? r.amount : 0), 0);
+                const totalTito = records.reduce((sum, r) => sum + (r.assignedTo === 'tito' && r.status === 'Verificado' && (!isGussepy || r.amount >= 0) ? r.amount : 0), 0);
+                
+                // Gussepy suma todos sus adelantos
+                const totalAdelantos = advances.reduce((sum, a) => sum + (a.amount || 0), 0);
                 
                 if(document.getElementById('dash-jesus')) document.getElementById('dash-jesus').innerText = fmt(totalJesus);
                 if(document.getElementById('dash-tito')) document.getElementById('dash-tito').innerText = fmt(totalTito);
+                if(document.getElementById('dash-gussepy')) document.getElementById('dash-gussepy').innerText = fmt(totalAdelantos);
             }
 
-            // 2. RENDERIZADO TABLA REGISTROS
-            let displayRecords = [...records];
-            
+            // 2. DASHBOARD INDIVIDUAL DEL MES (Para Jesús y Tito)
             if (user.type === 'user') {
-                displayRecords = displayRecords.filter(r => r.assignedTo === currentUser);
+                const currentMonth = new Date().getMonth();
+                const currentYear = new Date().getFullYear();
+                
+                const userMonthlyTotal = records.reduce((sum, r) => {
+                    if (r.assignedTo === currentUser && r.status === 'Verificado') {
+                        const rDate = new Date(r.date);
+                        rDate.setMinutes(rDate.getMinutes() + rDate.getTimezoneOffset());
+                        if (rDate.getMonth() === currentMonth && rDate.getFullYear() === currentYear) {
+                            return sum + r.amount;
+                        }
+                    }
+                    return sum;
+                }, 0);
+                
+                if(document.getElementById('dash-user-total')) {
+                    document.getElementById('dash-user-total').innerText = fmt(userMonthlyTotal);
+                    if(userMonthlyTotal < 0) document.getElementById('dash-user-total').className = "text-4xl font-black text-rose-600 tracking-tight relative z-10";
+                    else document.getElementById('dash-user-total').className = "text-4xl font-black text-slate-800 tracking-tight relative z-10";
+                }
+            }
+
+            // 3. RENDERIZADO TABLA REGISTROS
+            let displayRecords = records;
+            
+            // Filtros y Títulos
+            if (user.type === 'user') {
+                displayRecords = records.filter(r => r.assignedTo === currentUser);
                 document.getElementById('table-title').innerText = `Tus Movimientos (${user.name})`;
                 
-                // Aplicar filtros de fecha y estado para Jesús y Tito
                 if (filters.date) {
                     displayRecords = displayRecords.filter(r => {
                         const recDate = new Date(r.date); recDate.setMinutes(recDate.getMinutes() + recDate.getTimezoneOffset());
@@ -1023,9 +1129,12 @@
                 if (filters.user !== 'all') displayRecords = displayRecords.filter(r => r.assignedTo === filters.user);
                 if (filters.status !== 'all') displayRecords = displayRecords.filter(r => r.status === filters.status);
             } else if (user.type === 'master') {
+                // Gussepy no ve débitos
+                displayRecords = displayRecords.filter(r => r.amount >= 0);
                 document.getElementById('table-title').innerText = "Supervisión Global";
             }
 
+            // Evitar duplicados visuales asegurando que estén ordenados por fecha/ID inverso
             displayRecords.sort((a,b) => String(b.id).localeCompare(String(a.id)));
 
             const tbody = document.getElementById('table-body');
@@ -1033,68 +1142,72 @@
             
             if (user.type !== 'bonos') {
                 if (displayRecords.length === 0) {
-                    if(tbody) tbody.innerHTML = '';
-                    if(emptyState) { emptyState.classList.remove('hidden'); emptyState.classList.add('flex'); }
+                    tbody.innerHTML = '';
+                    emptyState.classList.remove('hidden');
+                    emptyState.classList.add('flex');
                 } else {
-                    if(emptyState) { emptyState.classList.add('hidden'); emptyState.classList.remove('flex'); }
-                    if(tbody) {
-                        tbody.innerHTML = displayRecords.map(r => {
-                            let badge = `<span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-amber-200">Pendiente</span>`;
-                            if (r.status === 'Verificado') badge = `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-emerald-200"><i class="fas fa-check mr-1"></i>Verificado</span>`;
-                            if (r.status === 'Denegado') badge = `<span class="bg-rose-100 text-rose-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-rose-200"><i class="fas fa-times mr-1"></i>Denegado</span>`;
-                            
-                            let actions = '';
-                            if (r.status === 'Pendiente') {
-                                // JESUS/TITO
-                                if (user.type === 'user' && r.assignedTo === currentUser) {
-                                    if (r.createdBy === 'michelle') {
-                                        actions = `<div class="flex justify-center gap-2">
-                                            <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors" title="Aprobar"><i class="fas fa-check"></i></button>
-                                            <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white rounded-lg transition-colors" title="Denegar"><i class="fas fa-times"></i></button>
-                                        </div>`;
-                                    } else {
-                                        actions = `<span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-center block w-full mt-1">Espera Admin</span>`;
-                                    }
+                    emptyState.classList.add('hidden');
+                    emptyState.classList.remove('flex');
+                    tbody.innerHTML = displayRecords.map(r => {
+                        let badge = `<span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-amber-200">Pendiente</span>`;
+                        if (r.status === 'Verificado') badge = `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-emerald-200"><i class="fas fa-check mr-1"></i>Verificado</span>`;
+                        if (r.status === 'Denegado') badge = `<span class="bg-rose-100 text-rose-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-rose-200"><i class="fas fa-times mr-1"></i>Denegado</span>`;
+                        
+                        let actions = '';
+                        if (r.status === 'Pendiente') {
+                            // Lógica Cruzada: Si lo crea Admin, lo aprueba el Usuario. Si lo crea el Usuario, lo aprueba el Admin.
+                            if (user.type === 'user' && r.assignedTo === currentUser) {
+                                if (r.createdBy === 'michelle') {
+                                    actions = `<div class="flex justify-center gap-2">
+                                        <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors" title="Aprobar"><i class="fas fa-check"></i></button>
+                                        <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white rounded-lg transition-colors" title="Denegar"><i class="fas fa-times"></i></button>
+                                    </div>`;
+                                } else {
+                                    actions = `<span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-center block w-full mt-1">Espera Admin</span>`;
                                 }
-                                // MICHELLE
-                                if (user.type === 'admin') {
-                                    if (r.createdBy !== 'michelle') {
-                                        actions = `<div class="flex justify-center gap-2">
-                                            <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors" title="Aprobar Ingreso Adicional"><i class="fas fa-check"></i></button>
-                                            <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white rounded-lg transition-colors" title="Denegar Ingreso"><i class="fas fa-times"></i></button>
-                                            <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar Permanente"><i class="fas fa-trash"></i></button>
-                                        </div>`;
-                                    } else {
-                                        actions = `<div class="flex justify-center">
-                                            <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar Permanente"><i class="fas fa-trash"></i></button>
-                                        </div>`;
-                                    }
-                                }
-                            } else if (user.type === 'admin') {
-                                actions = `<div class="flex justify-center">
-                                    <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar Permanente"><i class="fas fa-trash"></i></button>
-                                </div>`;
                             }
+                            if (user.type === 'admin') {
+                                if (r.createdBy !== 'michelle') {
+                                    actions = `<div class="flex justify-center gap-2">
+                                        <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors" title="Aprobar (Adicional)"><i class="fas fa-check"></i></button>
+                                        <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white rounded-lg transition-colors" title="Denegar"><i class="fas fa-times"></i></button>
+                                        <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar Permanente"><i class="fas fa-trash"></i></button>
+                                    </div>`;
+                                } else {
+                                    actions = `<div class="flex justify-center">
+                                        <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar Permanente"><i class="fas fa-trash"></i></button>
+                                    </div>`;
+                                }
+                            }
+                        } else if (user.type === 'admin') {
+                            actions = `<div class="flex justify-center">
+                                <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar Permanente"><i class="fas fa-trash"></i></button>
+                            </div>`;
+                        }
 
-                            const opacity = r.status === 'Denegado' ? 'opacity-60 bg-slate-50' : 'hover:bg-slate-50 transition-colors';
-                            const strike = r.status === 'Denegado' ? 'line-through text-slate-400' : 'text-slate-800';
+                        const opacity = r.status === 'Denegado' ? 'opacity-60 bg-slate-50' : 'hover:bg-slate-50 transition-colors';
+                        
+                        // Estilo para Débitos
+                        const amountDisplay = fmt(Math.abs(r.amount));
+                        const amountPrefix = r.amount < 0 ? '-' : '';
+                        const amountColor = r.amount < 0 ? 'text-rose-600' : 'text-slate-800';
+                        const strike = r.status === 'Denegado' ? 'line-through opacity-50 text-slate-400' : amountColor;
 
-                            return `
-                            <tr class="${opacity} border-b border-slate-50">
-                                <td class="p-4 pl-6 text-xs font-bold text-slate-600 whitespace-nowrap">${fmtDate(r.date)}</td>
-                                <td class="p-4 text-sm font-black ${strike}">${fmt(r.amount)}</td>
-                                <td class="p-4 text-xs font-medium text-slate-600">${r.concept}</td>
-                                <td class="p-4 text-xs font-bold text-indigo-600 uppercase tracking-wide">${USERS[r.assignedTo]?.name || r.assignedTo}</td>
-                                <td class="p-4">${badge}</td>
-                                <td class="p-4 text-[10px] font-mono text-slate-400 font-bold">${r.receipt || '-'}</td>
-                                <td class="p-4 pr-6">${actions}</td>
-                            </tr>`;
-                        }).join('');
-                    }
+                        return `
+                        <tr class="${opacity} border-b border-slate-50">
+                            <td class="p-4 pl-6 text-xs font-bold text-slate-600 whitespace-nowrap">${fmtDate(r.date)}</td>
+                            <td class="p-4 text-sm font-black ${strike}">${amountPrefix}${amountDisplay}</td>
+                            <td class="p-4 text-xs font-medium text-slate-600">${r.concept}</td>
+                            <td class="p-4 text-xs font-bold text-indigo-600 uppercase tracking-wide">${USERS[r.assignedTo]?.name || r.assignedTo}</td>
+                            <td class="p-4">${badge}</td>
+                            <td class="p-4 text-[10px] font-mono text-slate-400 font-bold">${r.receipt || '-'}</td>
+                            <td class="p-4 pr-6">${actions}</td>
+                        </tr>`;
+                    }).join('');
                 }
             }
 
-            // 3. RENDERIZADO ADELANTOS (Solo Admin y Gussepy)
+            // 4. RENDERIZADO ADELANTOS (Solo Admin y Gussepy)
             if (user.type === 'admin' || user.type === 'master') {
                 const tbodyGus = document.getElementById('table-gussepy');
                 let displayAdvances = [...advances];
@@ -1126,12 +1239,12 @@
                 }
             }
 
-            // 4. RENDERIZADO BONOS (María Emilia, Master, Admin)
-            if (user.type === 'bonos' || user.type === 'master' || user.type === 'admin') {
+            // 5. RENDERIZADO BONOS (María Emilia, Michelle, Gussepy)
+            if (user.type === 'bonos' || user.type === 'admin' || user.type === 'master') {
                 const tbodyBonos = document.getElementById('table-bonos');
                 let displayBonos = [...bonos];
                 
-                // Aplicar Filtros de Bonos
+                // Filtros de Bonos
                 if (filtersBonos.date) {
                     displayBonos = displayBonos.filter(b => {
                         const bDate = new Date(b.date); bDate.setMinutes(bDate.getMinutes() + bDate.getTimezoneOffset());
@@ -1147,7 +1260,7 @@
                 if(tbodyBonos) {
                     tbodyBonos.innerHTML = displayBonos.map(b => {
                         let actions = '';
-                        if (user.type === 'bonos' || user.type === 'admin') {
+                        if (user.type === 'admin' || user.type === 'bonos') {
                             actions = `<button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
                         }
                         
