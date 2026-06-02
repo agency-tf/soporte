@@ -1041,18 +1041,30 @@
                             
                             let actions = '';
                             if (r.status === 'Pendiente') {
-                                // JESUS/TITO pueden APROBAR o DENEGAR sus movimientos
+                                // JESUS/TITO
                                 if (user.type === 'user' && r.assignedTo === currentUser) {
-                                    actions = `<div class="flex justify-center gap-2">
-                                        <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors" title="Aprobar"><i class="fas fa-check"></i></button>
-                                        <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white rounded-lg transition-colors" title="Denegar"><i class="fas fa-times"></i></button>
-                                    </div>`;
+                                    if (r.createdBy === 'michelle') {
+                                        actions = `<div class="flex justify-center gap-2">
+                                            <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors" title="Aprobar"><i class="fas fa-check"></i></button>
+                                            <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white rounded-lg transition-colors" title="Denegar"><i class="fas fa-times"></i></button>
+                                        </div>`;
+                                    } else {
+                                        actions = `<span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-center block w-full mt-1">Espera Admin</span>`;
+                                    }
                                 }
-                                // MICHELLE solo elimina
+                                // MICHELLE
                                 if (user.type === 'admin') {
-                                    actions = `<div class="flex justify-center">
-                                        <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar Permanente"><i class="fas fa-trash"></i></button>
-                                    </div>`;
+                                    if (r.createdBy !== 'michelle') {
+                                        actions = `<div class="flex justify-center gap-2">
+                                            <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors" title="Aprobar Ingreso Adicional"><i class="fas fa-check"></i></button>
+                                            <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white rounded-lg transition-colors" title="Denegar Ingreso"><i class="fas fa-times"></i></button>
+                                            <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar Permanente"><i class="fas fa-trash"></i></button>
+                                        </div>`;
+                                    } else {
+                                        actions = `<div class="flex justify-center">
+                                            <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar Permanente"><i class="fas fa-trash"></i></button>
+                                        </div>`;
+                                    }
                                 }
                             } else if (user.type === 'admin') {
                                 actions = `<div class="flex justify-center">
