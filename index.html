@@ -163,13 +163,25 @@
                             <h3 class="text-4xl font-black text-slate-900 tracking-tight relative z-10" id="dash-tito">$0.00</h3>
                         </div>
 
-                    <!-- Panel de Filtros -->
+                        <!-- Tarjeta Adelantos Gussepy -->
+                        <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 p-6 rounded-2xl shadow-sm relative overflow-hidden">
+                            <div class="absolute -right-6 -top-6 text-amber-500/10 text-9xl"><i class="fas fa-hand-holding-usd"></i></div>
+                            <div class="flex justify-between items-start mb-4 relative z-10">
+                                <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl shadow-inner"><i class="fas fa-star"></i></div>
+                                <span class="bg-amber-100 text-amber-800 text-[10px] font-black px-3 py-1.5 rounded-lg tracking-widest">COMISIONES</span>
+                            </div>
+                            <p class="text-amber-700 text-[10px] font-black uppercase tracking-widest mb-1 relative z-10">TOTAL ADELANTOS GUSSEPY</p>
+                            <h3 class="text-4xl font-black text-slate-800 tracking-tight relative z-10" id="dash-gussepy">$0.00</h3>
+                        </div>
+                    </div>
+
+                    <!-- Panel de Filtros (Solo Michelle) -->
                     <div id="filters-panel" class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm mb-6 flex flex-col sm:flex-row gap-4 items-end hidden">
                         <div class="w-full sm:w-1/4">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
                             <input type="date" id="filter-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 cursor-pointer">
                         </div>
-                        <div class="w-full sm:w-1/4" id="filter-account-container">
+                        <div class="w-full sm:w-1/4">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta</label>
                             <select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 cursor-pointer">
                                 <option value="all">Todas las cuentas</option>
@@ -592,13 +604,7 @@
             
             // Configurar UI según rol
             document.getElementById('admin-select-user').classList.toggle('hidden', user.type !== 'admin');
-            
-            // Mostrar panel de filtros para admin y user (Jesús/Tito)
-            document.getElementById('filters-panel').classList.toggle('hidden', user.type !== 'admin' && user.type !== 'user');
-            
-            // Ocultar selector de cuenta si no es admin
-            const filterAccountContainer = document.getElementById('filter-account-container');
-            if (filterAccountContainer) filterAccountContainer.classList.toggle('hidden', user.type !== 'admin');
+            document.getElementById('filters-panel').classList.toggle('hidden', user.type !== 'admin');
             
             // Ocultar formularios de ingreso para Gussepy
             const gusContainer = document.getElementById('form-gussepy-container');
@@ -1001,17 +1007,6 @@
             if (user.type === 'user') {
                 displayRecords = displayRecords.filter(r => r.assignedTo === currentUser);
                 document.getElementById('table-title').innerText = `Tus Movimientos (${user.name})`;
-                
-                // Aplicar filtros de fecha y estado para Jesús y Tito
-                if (filters.date) {
-                    displayRecords = displayRecords.filter(r => {
-                        const recDate = new Date(r.date); recDate.setMinutes(recDate.getMinutes() + recDate.getTimezoneOffset());
-                        const filtDate = new Date(filters.date); filtDate.setMinutes(filtDate.getMinutes() + filtDate.getTimezoneOffset());
-                        return recDate.toDateString() === filtDate.toDateString();
-                    });
-                }
-                if (filters.status !== 'all') displayRecords = displayRecords.filter(r => r.status === filters.status);
-
             } else if (user.type === 'admin') {
                 document.getElementById('table-title').innerText = "Auditoría General";
                 if (filters.date) {
