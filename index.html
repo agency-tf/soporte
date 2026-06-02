@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Control de Saldos Corporativo</title>
+    <title>Sepybet - Control de Saldos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -13,7 +13,6 @@
         .glass-dark { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); }
         .login-bg { background: radial-gradient(circle at top right, #1e1b4b, #0f172a 40%, #020617); }
         
-        /* Ocultar barra de desplazamiento manteniendo funcionalidad */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -49,8 +48,8 @@
                 <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-5">
                     <i class="fas fa-fingerprint text-4xl text-white"></i>
                 </div>
-                <h1 class="text-2xl font-black text-white tracking-tight mb-1">Acceso Seguro</h1>
-                <p class="text-slate-400 text-xs font-medium uppercase tracking-widest">Plataforma de Control de Saldos</p>
+                <h1 class="text-2xl font-black text-white tracking-tight mb-1">Sepybet</h1>
+                <p class="text-slate-400 text-xs font-medium uppercase tracking-widest">Control de Saldos</p>
             </div>
             
             <form id="login-form" class="space-y-5">
@@ -91,7 +90,7 @@
                     <div class="flex items-center gap-3">
                         <div id="nav-icon" class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-lg shadow-md"><i class="fas fa-shield-alt"></i></div>
                         <div>
-                            <h1 class="text-base font-black text-slate-800 leading-tight">Control BCM</h1>
+                            <h1 class="text-base font-black text-slate-800 leading-tight">Sepybet</h1>
                             <p id="user-display" class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Admin</p>
                         </div>
                     </div>
@@ -100,7 +99,7 @@
                             <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                             <span class="text-[10px] font-black text-emerald-600 uppercase tracking-wider hidden sm:inline">En Línea</span>
                         </div>
-                        <button onclick="logout()" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 flex items-center justify-center transition-colors">
+                        <button onclick="logout()" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 flex items-center justify-center transition-colors" title="Cerrar sesión">
                             <i class="fas fa-sign-out-alt"></i>
                         </button>
                     </div>
@@ -133,7 +132,7 @@
             <!-- LOADER INICIAL -->
             <div id="global-loader" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#f8fafc] rounded-2xl">
                 <div class="w-12 h-12 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
-                <p class="text-sm font-bold text-slate-500 animate-pulse">Sincronizando base de datos...</p>
+                <p class="text-sm font-bold text-slate-500 animate-pulse">Sincronizando Sepybet...</p>
             </div>
 
             <!-- TAB: PANEL GLOBAL & AUDITORÍA -->
@@ -180,11 +179,11 @@
                     <div id="filters-panel" class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm mb-6 flex flex-col sm:flex-row gap-4 items-end hidden">
                         <div class="w-full sm:w-1/4">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
-                            <input type="date" id="filter-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
+                            <input type="date" id="filter-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 cursor-pointer">
                         </div>
                         <div class="w-full sm:w-1/4">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta</label>
-                            <select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
+                            <select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 cursor-pointer">
                                 <option value="all">Todas las cuentas</option>
                                 <option value="jesus">Jesús</option>
                                 <option value="tito">Tito</option>
@@ -192,7 +191,7 @@
                         </div>
                         <div class="w-full sm:w-1/4">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Estado</label>
-                            <select id="filter-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
+                            <select id="filter-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 cursor-pointer">
                                 <option value="all">Todos</option>
                                 <option value="Pendiente">Pendientes</option>
                                 <option value="Verificado">Verificados</option>
@@ -311,11 +310,11 @@
                 </div>
             </div>
 
-            <!-- TAB: ADELANTOS GUSSEPY (Solo Michelle) -->
+            <!-- TAB: ADELANTOS GUSSEPY (Solo Michelle y Gussepy) -->
             <div id="tab-gussepy" class="hidden fade-in">
                 <div class="max-w-5xl mx-auto space-y-6">
-                    <!-- Formulario de Adelanto -->
-                    <div class="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden">
+                    <!-- Formulario de Adelanto (Oculto para Gussepy, solo visible para Michelle) -->
+                    <div id="form-gussepy-container" class="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden">
                         <div class="px-6 py-5 border-b border-slate-100 bg-amber-50/50 flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center"><i class="fas fa-hand-holding-usd"></i></div>
                             <div>
@@ -340,10 +339,10 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Concepto / Motivo *</label>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Concepto / Motivo <span class="text-slate-400 lowercase font-semibold">(Opcional)</span></label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-comment-dots"></i></div>
-                                        <input type="text" id="gus-concept" required placeholder="Motivo..." class="block w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-amber-500 text-sm font-medium outline-none transition-colors">
+                                        <input type="text" id="gus-concept" placeholder="Motivo..." class="block w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-amber-500 text-sm font-medium outline-none transition-colors">
                                     </div>
                                 </div>
                             </div>
@@ -382,8 +381,8 @@
             <!-- TAB: BONOS MARÍA EMILIA -->
             <div id="tab-bonos" class="hidden fade-in theme-maria">
                 <div class="max-w-5xl mx-auto space-y-6">
-                    <!-- Formulario de Bonos -->
-                    <div class="bg-white border border-rose-100 rounded-2xl shadow-md overflow-hidden">
+                    <!-- Formulario de Bonos (Oculto para Gussepy) -->
+                    <div id="form-bonos-container" class="bg-white border border-rose-100 rounded-2xl shadow-md overflow-hidden">
                         <div class="px-6 py-5 border-b border-rose-50 bg-rose-50/50 flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center"><i class="fas fa-gift"></i></div>
                             <div>
@@ -431,11 +430,32 @@
                         </form>
                     </div>
 
-                    <!-- Tabla de Bonos -->
+                    <!-- Tabla de Bonos y Filtros -->
                     <div class="bg-white border border-rose-100 rounded-2xl shadow-sm overflow-hidden">
-                        <div class="px-6 py-4 border-b border-rose-50 bg-rose-50/30">
+                        <div class="px-6 py-4 border-b border-rose-50 bg-rose-50/30 flex justify-between items-center">
                             <h3 class="text-sm font-black text-rose-900">Historial de Bonos Emitidos</h3>
                         </div>
+                        
+                        <!-- Panel de Filtros Bonos -->
+                        <div class="bg-white border-b border-rose-50 p-4 flex flex-col sm:flex-row gap-4 items-end">
+                            <div class="w-full sm:w-1/4">
+                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Fecha</label>
+                                <input type="date" id="filter-bono-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-rose-500 cursor-pointer">
+                            </div>
+                            <div class="w-full sm:w-1/4">
+                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Usuario (Destinatario)</label>
+                                <input type="text" id="filter-bono-dest" placeholder="Nombre..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-rose-500">
+                            </div>
+                            <div class="w-full sm:w-1/4">
+                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto Exacto</label>
+                                <input type="number" id="filter-bono-amount" placeholder="Ej. 50" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-rose-500">
+                            </div>
+                            <div class="w-full sm:w-1/4 flex gap-2">
+                                <button onclick="applyBonoFilters()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white rounded-xl py-2 text-sm font-bold transition-colors">Filtrar</button>
+                                <button onclick="clearBonoFilters()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2 text-sm font-bold transition-colors">Limpiar</button>
+                            </div>
+                        </div>
+
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
@@ -522,7 +542,10 @@
         let records = [];
         let advances = [];
         let bonos = [];
+        
+        // FILTROS
         let filters = { date: '', user: 'all', status: 'all' };
+        let filtersBonos = { date: '', dest: '', amount: '' };
         
         let pendingVerifyId = null;
         let pendingAuthId = null;
@@ -532,7 +555,7 @@
             if (savedUser && USERS[savedUser]) login(savedUser);
             else showScreen('login');
 
-            // Cargar fecha actual por defecto en todos los formularios
+            // Cargar fecha actual por defecto
             const todayStr = new Date().toISOString().split('T')[0];
             if(document.getElementById('reg-date')) document.getElementById('reg-date').value = todayStr;
             if(document.getElementById('gus-date')) document.getElementById('gus-date').value = todayStr;
@@ -583,6 +606,12 @@
             document.getElementById('admin-select-user').classList.toggle('hidden', user.type !== 'admin');
             document.getElementById('filters-panel').classList.toggle('hidden', user.type !== 'admin');
             
+            // Ocultar formularios de ingreso para Gussepy
+            const gusContainer = document.getElementById('form-gussepy-container');
+            if(gusContainer) gusContainer.classList.toggle('hidden', user.type === 'master');
+            const bonosContainer = document.getElementById('form-bonos-container');
+            if(bonosContainer) bonosContainer.classList.toggle('hidden', user.type === 'master');
+
             // Ocultar todas las pestañas por defecto
             document.getElementById('btn-tab-dashboard').classList.add('hidden');
             document.getElementById('btn-tab-register').classList.add('hidden');
@@ -598,7 +627,8 @@
             } else if (user.type === 'master') {
                 document.getElementById('btn-tab-dashboard').classList.remove('hidden');
                 document.getElementById('btn-tab-gussepy').classList.remove('hidden');
-                document.getElementById('panel-admin').classList.remove('hidden'); // Gussepy ve el dashboard general
+                document.getElementById('btn-tab-bonos').classList.remove('hidden'); // Gussepy puede ver Bonos
+                document.getElementById('panel-admin').classList.remove('hidden');
                 switchTab('tab-dashboard');
             } else if (user.type === 'bonos') {
                 document.getElementById('btn-tab-bonos').classList.remove('hidden');
@@ -673,9 +703,9 @@
                     body: JSON.stringify({ action, data })
                 });
                 const result = await res.json();
-                return result.status === 'success';
+                return { success: result.status === 'success', msg: result.msg || 'Error en el servidor' };
             } catch (err) {
-                return false;
+                return { success: false, msg: 'Error de conexión a internet' };
             }
         }
 
@@ -705,20 +735,20 @@
 
             const newTx = { id: 'TX' + Date.now(), date: dateVal, amount: amt, concept: conc, assignedTo: assigned, createdBy: currentUser, status: status, receipt: '' };
             
-            // ACTUALIZACIÓN OPTIMISTA: Refresco instantáneo de pantalla a 0ms
+            // ACTUALIZACIÓN OPTIMISTA
             records.unshift(newTx); 
             updateAllViews(); 
+            showToast('Información grabada exitosamente', 'success');
             
             document.getElementById('reg-amount').value = ''; 
             document.getElementById('reg-concept').value = '';
             btn.innerHTML = orig; 
             btn.disabled = false;
             
-            // Sincronización transparente en segundo plano
-            pushData('add', newTx).then(success => {
-                if (!success) { 
+            pushData('add', newTx).then(res => {
+                if (!res.success) { 
                     records.shift(); updateAllViews(); 
-                    showToast("Fallo de red. Registro revertido de pantalla.", "error");
+                    showToast("Fallo de red: " + res.msg, "error");
                 }
             });
         }
@@ -731,21 +761,21 @@
             
             const dateVal = document.getElementById('gus-date').value;
             const amt = parseFloat(document.getElementById('gus-amount').value);
-            const conc = document.getElementById('gus-concept').value.trim();
+            const conc = document.getElementById('gus-concept').value.trim() || 'Sin detalle';
             const newAdv = { id: 'ADV' + Date.now(), date: dateVal, amount: amt, concept: conc, createdBy: currentUser, status: 'Pendiente', detail: '' };
             
-            // ACTUALIZACIÓN OPTIMISTA
             advances.unshift(newAdv); 
             updateAllViews();
+            showToast('Adelanto grabado exitosamente', 'success');
             
             document.getElementById('form-gussepy').reset();
             document.getElementById('gus-date').value = new Date().toISOString().split('T')[0];
             btn.innerHTML = orig; btn.disabled = false;
 
-            pushData('add_advance', newAdv).then(success => {
-                if(!success) { 
+            pushData('add_advance', newAdv).then(res => {
+                if(!res.success) { 
                     advances.shift(); updateAllViews(); 
-                    showToast("Error al conectar con servidor. Revertido.", "error"); 
+                    showToast("Error al conectar con servidor: " + res.msg, "error"); 
                 }
             });
         }
@@ -762,18 +792,18 @@
             const conc = document.getElementById('bono-concept').value.trim() || 'Sin detalle';
             const newBono = { id: 'BN' + Date.now(), date: dateVal, amount: amt, assignedTo: dest, concept: conc, createdBy: currentUser };
             
-            // ACTUALIZACIÓN OPTIMISTA
             bonos.unshift(newBono); 
             updateAllViews(); updateBonoDatalist();
+            showToast('Bono grabado exitosamente', 'success');
             
             document.getElementById('form-bonos').reset();
             document.getElementById('bono-date').value = new Date().toISOString().split('T')[0];
             btn.innerHTML = orig; btn.disabled = false;
 
-            pushData('add_bono', newBono).then(success => {
-                if(!success) { 
+            pushData('add_bono', newBono).then(res => {
+                if(!res.success) { 
                     bonos.shift(); updateAllViews(); 
-                    showToast("Falla de red al emitir bono.", "error"); 
+                    showToast("Falla de red al emitir bono: " + res.msg, "error"); 
                 }
             });
         }
@@ -788,49 +818,55 @@
         function closeModal() {
             document.getElementById('modal-comprobante').classList.add('hidden');
             document.getElementById('modal-comprobante').classList.remove('flex');
-            pendingVerifyId = null;
+            // No limpiar pendingVerifyId aquí para evitar fallos si la red es lenta
         }
 
         async function confirmVerify() {
             if (!pendingVerifyId) return;
+            const currentId = pendingVerifyId; // Bloqueo seguro del ID
+            
             const receipt = document.getElementById('input-receipt').value.trim();
             const btn = document.getElementById('btn-verify-confirm');
             const orig = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
 
-            const tx = records.find(r => r.id === pendingVerifyId);
+            const tx = records.find(r => String(r.id) === String(currentId));
             if (tx) {
                 const oldStatus = tx.status; const oldReceipt = tx.receipt;
                 
-                // ACTUALIZACIÓN OPTIMISTA: Aprueba en pantalla al instante
                 tx.status = 'Verificado'; tx.receipt = receipt; 
                 updateAllViews();
                 closeModal();
+                pendingVerifyId = null; // Limpieza post cierre
+                showToast('Verificación aprobada', 'success');
                 
-                pushData('verify', { id: String(pendingVerifyId), receipt: receipt }).then(success => {
-                    if (!success) { 
+                pushData('verify', { id: String(currentId), receipt: receipt }).then(res => {
+                    if (!res.success) { 
                         tx.status = oldStatus; tx.receipt = oldReceipt; updateAllViews(); 
-                        showToast("Fallo en sincronizar verificación.", "error"); 
+                        showToast("Fallo en sincronizar verificación: " + res.msg, "error"); 
                     }
                 });
+            } else {
+                showToast("Error: Registro no encontrado en memoria.", "error");
+                closeModal();
             }
             btn.innerHTML = orig; btn.disabled = false; 
         }
 
         async function actionDeny(id) {
             if (confirm("¿DENEGAR esta transacción?\nSe marcará en rojo y NO sumará a las cuentas.")) {
-                const tx = records.find(r => r.id === id);
+                const tx = records.find(r => String(r.id) === String(id));
                 if (tx) { 
                     const oldStatus = tx.status; 
                     
-                    // ACTUALIZACIÓN OPTIMISTA
                     tx.status = 'Denegado'; 
                     updateAllViews(); 
+                    showToast('Transacción denegada', 'success');
                     
-                    pushData('deny', { id: String(id) }).then(success => {
-                        if(!success) { 
+                    pushData('deny', { id: String(id) }).then(res => {
+                        if(!res.success) { 
                             tx.status = oldStatus; updateAllViews(); 
-                            showToast("Error de red al denegar.", "error"); 
+                            showToast("Error de red al denegar: " + res.msg, "error"); 
                         }
                     });
                 }
@@ -845,29 +881,33 @@
         }
 
         function closeGussepyModal() {
-            document.getElementById('modal-gussepy').classList.add('hidden'); document.getElementById('modal-gussepy').classList.remove('flex'); pendingAuthId = null;
+            document.getElementById('modal-gussepy').classList.add('hidden'); 
+            document.getElementById('modal-gussepy').classList.remove('flex'); 
         }
 
         async function confirmGussepyAuth() {
             if (!pendingAuthId) return;
+            const currentId = pendingAuthId;
+            
             const detail = document.getElementById('input-gussepy-detail').value.trim() || 'Aprobado sin detalle';
             const btn = document.getElementById('btn-gussepy-confirm');
             const orig = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
 
-            const adv = advances.find(r => r.id === pendingAuthId);
+            const adv = advances.find(r => String(r.id) === String(currentId));
             if (adv) {
                 const oldStatus = adv.status; const oldDetail = adv.detail;
                 
-                // ACTUALIZACIÓN OPTIMISTA
                 adv.status = 'Autorizado'; adv.detail = detail; 
                 updateAllViews();
                 closeGussepyModal();
+                pendingAuthId = null;
+                showToast('Autorización exitosa', 'success');
                 
-                pushData('authorize_advance', { id: String(pendingAuthId), detail: detail }).then(success => {
-                    if (!success) { 
+                pushData('authorize_advance', { id: String(currentId), detail: detail }).then(res => {
+                    if (!res.success) { 
                         adv.status = oldStatus; adv.detail = oldDetail; updateAllViews(); 
-                        showToast("Fallo al sincronizar autorización.", "error"); 
+                        showToast("Fallo al sincronizar autorización: " + res.msg, "error"); 
                     }
                 });
             }
@@ -880,7 +920,6 @@
                 if(type === 'advance') actionStr = 'delete_advance';
                 if(type === 'bono') actionStr = 'delete_bono';
 
-                // ACTUALIZACIÓN OPTIMISTA (Borrado en 0ms de la pantalla)
                 let backupRecords = [...records], backupAdvances = [...advances], backupBonos = [...bonos];
 
                 if(type === 'bono') {
@@ -893,16 +932,17 @@
                 
                 updateAllViews();
                 if(type === 'bono') updateBonoDatalist();
+                
+                showToast('Registro eliminado exitosamente', 'success');
 
-                // Borrado en segundo plano en Google Sheets
-                pushData(actionStr, {id: String(id)}).then(success => {
-                    if(!success) {
+                pushData(actionStr, {id: String(id)}).then(res => {
+                    if(!res.success) {
                         if(type === 'bono') bonos = backupBonos;
                         else if(type === 'advance') advances = backupAdvances;
                         else records = backupRecords;
                         updateAllViews();
                         if(type === 'bono') updateBonoDatalist();
-                        showToast("Fallo de red. Registro restaurado en pantalla.", "error");
+                        showToast("Fallo de red: " + res.msg, "error");
                     }
                 });
             }
@@ -912,7 +952,7 @@
         const fmtDate = dStr => {
             if(!dStr) return '';
             const d = new Date(dStr);
-            d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); // Fix timezone shift
+            d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
             return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
         };
 
@@ -931,15 +971,29 @@
             updateAllViews();
         }
 
+        function applyBonoFilters() {
+            filtersBonos.date = document.getElementById('filter-bono-date').value;
+            filtersBonos.dest = document.getElementById('filter-bono-dest').value.toLowerCase().trim();
+            filtersBonos.amount = document.getElementById('filter-bono-amount').value;
+            updateAllViews();
+        }
+
+        function clearBonoFilters() {
+            filtersBonos = { date: '', dest: '', amount: '' };
+            document.getElementById('filter-bono-date').value = '';
+            document.getElementById('filter-bono-dest').value = '';
+            document.getElementById('filter-bono-amount').value = '';
+            updateAllViews();
+        }
+
         function updateAllViews() {
             const user = USERS[currentUser];
             if (!user) return;
 
-            // 1. CÁLCULO DE DASHBOARDS (Suma de los saldos Confirmados y Adelantos)
+            // 1. CÁLCULO DE DASHBOARDS
             if (user.type === 'admin' || user.type === 'master') {
                 const totalJesus = records.reduce((sum, r) => sum + (r.assignedTo === 'jesus' && r.status === 'Verificado' ? r.amount : 0), 0);
                 const totalTito = records.reduce((sum, r) => sum + (r.assignedTo === 'tito' && r.status === 'Verificado' ? r.amount : 0), 0);
-                // Gussepy suma todos sus adelantos
                 const totalAdelantos = advances.reduce((sum, a) => sum + (a.amount || 0), 0);
                 
                 if(document.getElementById('dash-jesus')) document.getElementById('dash-jesus').innerText = fmt(totalJesus);
@@ -948,15 +1002,13 @@
             }
 
             // 2. RENDERIZADO TABLA REGISTROS
-            let displayRecords = records;
+            let displayRecords = [...records];
             
-            // Filtros de Rol
             if (user.type === 'user') {
-                displayRecords = records.filter(r => r.assignedTo === currentUser);
+                displayRecords = displayRecords.filter(r => r.assignedTo === currentUser);
                 document.getElementById('table-title').innerText = `Tus Movimientos (${user.name})`;
             } else if (user.type === 'admin') {
                 document.getElementById('table-title').innerText = "Auditoría General";
-                // Aplicar filtros de Michelle
                 if (filters.date) {
                     displayRecords = displayRecords.filter(r => {
                         const recDate = new Date(r.date); recDate.setMinutes(recDate.getMinutes() + recDate.getTimezoneOffset());
@@ -970,7 +1022,6 @@
                 document.getElementById('table-title').innerText = "Supervisión Global";
             }
 
-            // Evitar duplicados visuales asegurando que estén ordenados por fecha/ID inverso
             displayRecords.sort((a,b) => String(b.id).localeCompare(String(a.id)));
 
             const tbody = document.getElementById('table-body');
@@ -978,51 +1029,52 @@
             
             if (user.type !== 'bonos') {
                 if (displayRecords.length === 0) {
-                    tbody.innerHTML = '';
-                    emptyState.classList.remove('hidden');
-                    emptyState.classList.add('flex');
+                    if(tbody) tbody.innerHTML = '';
+                    if(emptyState) { emptyState.classList.remove('hidden'); emptyState.classList.add('flex'); }
                 } else {
-                    emptyState.classList.add('hidden');
-                    emptyState.classList.remove('flex');
-                    tbody.innerHTML = displayRecords.map(r => {
-                        let badge = `<span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-amber-200">Pendiente</span>`;
-                        if (r.status === 'Verificado') badge = `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-emerald-200"><i class="fas fa-check mr-1"></i>Verificado</span>`;
-                        if (r.status === 'Denegado') badge = `<span class="bg-rose-100 text-rose-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-rose-200"><i class="fas fa-times mr-1"></i>Denegado</span>`;
-                        
-                        let actions = '';
-                        if (r.status === 'Pendiente') {
-                            if (user.type === 'user' && r.assignedTo === currentUser) {
-                                actions = `<div class="flex justify-center gap-2">
-                                    <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors" title="Aprobar"><i class="fas fa-check"></i></button>
-                                </div>`;
-                            }
-                            if (user.type === 'admin') {
-                                actions = `<div class="flex justify-center gap-2">
-                                    <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors" title="Aprobar (Forzado)"><i class="fas fa-check"></i></button>
-                                    <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white rounded-lg transition-colors" title="Denegar"><i class="fas fa-times"></i></button>
+                    if(emptyState) { emptyState.classList.add('hidden'); emptyState.classList.remove('flex'); }
+                    if(tbody) {
+                        tbody.innerHTML = displayRecords.map(r => {
+                            let badge = `<span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-amber-200">Pendiente</span>`;
+                            if (r.status === 'Verificado') badge = `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-emerald-200"><i class="fas fa-check mr-1"></i>Verificado</span>`;
+                            if (r.status === 'Denegado') badge = `<span class="bg-rose-100 text-rose-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-rose-200"><i class="fas fa-times mr-1"></i>Denegado</span>`;
+                            
+                            let actions = '';
+                            if (r.status === 'Pendiente') {
+                                // JESUS/TITO pueden APROBAR o DENEGAR sus movimientos
+                                if (user.type === 'user' && r.assignedTo === currentUser) {
+                                    actions = `<div class="flex justify-center gap-2">
+                                        <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors" title="Aprobar"><i class="fas fa-check"></i></button>
+                                        <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white rounded-lg transition-colors" title="Denegar"><i class="fas fa-times"></i></button>
+                                    </div>`;
+                                }
+                                // MICHELLE solo elimina
+                                if (user.type === 'admin') {
+                                    actions = `<div class="flex justify-center">
+                                        <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar Permanente"><i class="fas fa-trash"></i></button>
+                                    </div>`;
+                                }
+                            } else if (user.type === 'admin') {
+                                actions = `<div class="flex justify-center">
                                     <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar Permanente"><i class="fas fa-trash"></i></button>
                                 </div>`;
                             }
-                        } else if (user.type === 'admin') {
-                            actions = `<div class="flex justify-center">
-                                <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar Permanente"><i class="fas fa-trash"></i></button>
-                            </div>`;
-                        }
 
-                        const opacity = r.status === 'Denegado' ? 'opacity-60 bg-slate-50' : 'hover:bg-slate-50 transition-colors';
-                        const strike = r.status === 'Denegado' ? 'line-through text-slate-400' : 'text-slate-800';
+                            const opacity = r.status === 'Denegado' ? 'opacity-60 bg-slate-50' : 'hover:bg-slate-50 transition-colors';
+                            const strike = r.status === 'Denegado' ? 'line-through text-slate-400' : 'text-slate-800';
 
-                        return `
-                        <tr class="${opacity} border-b border-slate-50">
-                            <td class="p-4 pl-6 text-xs font-bold text-slate-600 whitespace-nowrap">${fmtDate(r.date)}</td>
-                            <td class="p-4 text-sm font-black ${strike}">${fmt(r.amount)}</td>
-                            <td class="p-4 text-xs font-medium text-slate-600">${r.concept}</td>
-                            <td class="p-4 text-xs font-bold text-indigo-600 uppercase tracking-wide">${USERS[r.assignedTo]?.name || r.assignedTo}</td>
-                            <td class="p-4">${badge}</td>
-                            <td class="p-4 text-[10px] font-mono text-slate-400 font-bold">${r.receipt || '-'}</td>
-                            <td class="p-4 pr-6">${actions}</td>
-                        </tr>`;
-                    }).join('');
+                            return `
+                            <tr class="${opacity} border-b border-slate-50">
+                                <td class="p-4 pl-6 text-xs font-bold text-slate-600 whitespace-nowrap">${fmtDate(r.date)}</td>
+                                <td class="p-4 text-sm font-black ${strike}">${fmt(r.amount)}</td>
+                                <td class="p-4 text-xs font-medium text-slate-600">${r.concept}</td>
+                                <td class="p-4 text-xs font-bold text-indigo-600 uppercase tracking-wide">${USERS[r.assignedTo]?.name || r.assignedTo}</td>
+                                <td class="p-4">${badge}</td>
+                                <td class="p-4 text-[10px] font-mono text-slate-400 font-bold">${r.receipt || '-'}</td>
+                                <td class="p-4 pr-6">${actions}</td>
+                            </tr>`;
+                        }).join('');
+                    }
                 }
             }
 
@@ -1032,40 +1084,54 @@
                 let displayAdvances = [...advances];
                 displayAdvances.sort((a,b) => String(b.id).localeCompare(String(a.id)));
 
-                tbodyGus.innerHTML = displayAdvances.map(a => {
-                    let badge = a.status === 'Autorizado' 
-                        ? `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-crown mr-1"></i>Autorizado</span>`
-                        : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Pendiente</span>`;
-                    
-                    let actions = '';
-                    if (user.type === 'master' && a.status === 'Pendiente') {
-                        actions = `<button onclick="actionAuthorizeAdvance('${a.id}')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-colors">Autorizar</button>`;
-                    } else if (user.type === 'admin') {
-                        actions = `<button onclick="actionDelete('${a.id}', 'advance')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
-                    }
+                if(tbodyGus) {
+                    tbodyGus.innerHTML = displayAdvances.map(a => {
+                        let badge = a.status === 'Autorizado' 
+                            ? `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-crown mr-1"></i>Autorizado</span>`
+                            : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Pendiente</span>`;
+                        
+                        let actions = '';
+                        if (user.type === 'master' && a.status === 'Pendiente') {
+                            actions = `<button onclick="actionAuthorizeAdvance('${a.id}')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-colors">Autorizar</button>`;
+                        } else if (user.type === 'admin') {
+                            actions = `<button onclick="actionDelete('${a.id}', 'advance')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
+                        }
 
-                    return `
-                    <tr class="hover:bg-slate-50 transition-colors border-b border-slate-50">
-                        <td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(a.date)}</td>
-                        <td class="p-4 text-sm font-black text-amber-600">${fmt(a.amount)}</td>
-                        <td class="p-4 text-xs font-medium text-slate-600">${a.concept}</td>
-                        <td class="p-4">${badge}</td>
-                        <td class="p-4 text-[10px] font-bold text-slate-400 italic">${a.detail || '-'}</td>
-                        <td class="p-4 pr-6 text-center">${actions}</td>
-                    </tr>`;
-                }).join('');
+                        return `
+                        <tr class="hover:bg-slate-50 transition-colors border-b border-slate-50">
+                            <td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(a.date)}</td>
+                            <td class="p-4 text-sm font-black text-amber-600">${fmt(a.amount)}</td>
+                            <td class="p-4 text-xs font-medium text-slate-600">${a.concept}</td>
+                            <td class="p-4">${badge}</td>
+                            <td class="p-4 text-[10px] font-bold text-slate-400 italic">${a.detail || '-'}</td>
+                            <td class="p-4 pr-6 text-center">${actions}</td>
+                        </tr>`;
+                    }).join('');
+                }
             }
 
-            // 4. RENDERIZADO BONOS (María Emilia, Michelle, Gussepy)
-            if (user.type === 'bonos' || user.type === 'admin' || user.type === 'master') {
+            // 4. RENDERIZADO BONOS (María Emilia, Master, Admin)
+            if (user.type === 'bonos' || user.type === 'master' || user.type === 'admin') {
                 const tbodyBonos = document.getElementById('table-bonos');
                 let displayBonos = [...bonos];
+                
+                // Aplicar Filtros de Bonos
+                if (filtersBonos.date) {
+                    displayBonos = displayBonos.filter(b => {
+                        const bDate = new Date(b.date); bDate.setMinutes(bDate.getMinutes() + bDate.getTimezoneOffset());
+                        const fDate = new Date(filtersBonos.date); fDate.setMinutes(fDate.getMinutes() + fDate.getTimezoneOffset());
+                        return bDate.toDateString() === fDate.toDateString();
+                    });
+                }
+                if (filtersBonos.dest) displayBonos = displayBonos.filter(b => b.assignedTo.toLowerCase().includes(filtersBonos.dest));
+                if (filtersBonos.amount) displayBonos = displayBonos.filter(b => b.amount === parseFloat(filtersBonos.amount));
+
                 displayBonos.sort((a,b) => String(b.id).localeCompare(String(a.id)));
 
                 if(tbodyBonos) {
                     tbodyBonos.innerHTML = displayBonos.map(b => {
                         let actions = '';
-                        if (user.type === 'admin' || user.type === 'bonos') {
+                        if (user.type === 'bonos' || user.type === 'admin') {
                             actions = `<button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
                         }
                         
