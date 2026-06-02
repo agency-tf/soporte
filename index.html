@@ -1,759 +1,1054 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-50">
+<html lang="es" class="h-full bg-[#0b1121]">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma Premium de Control de Saldos</title>
+    <title>SyncBalance | Control Operativo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0ea5e9', // Premium Light Blue
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            900: '#0c4a6e',
-                            950: '#082f49',
-                        },
-                        corp: {
-                            900: '#0f172a', // Deep slate for dark mode aesthetics
-                            800: '#1e293b',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
+        :root { --color-bg-main: #0f172a; }
+        body { font-family: 'Inter', sans-serif; }
+        
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         
-        .glass-dark { 
-            background: rgba(15, 23, 42, 0.85); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1); 
+        .login-bg { background: linear-gradient(to bottom right, #0f172a, #1e1b4b); }
+        .login-card {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-        .glass-light {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-        }
+        .login-input { background-color: #1e293b; border: 1px solid #334155; color: #f8fafc; }
+        .login-input:focus { border-color: #6366f1; outline: none; box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2); }
+        .login-label { color: #94a3b8; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
         
-        .ambient-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(90px);
-            opacity: 0.4;
-            animation: float 12s infinite alternate ease-in-out;
-        }
-        @keyframes float {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-30px) scale(1.1); }
+        .icon-glow {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
         }
 
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Themed Backgrounds */
+        .bg-app-maria { background-color: #fff1f2; }
+        .bg-app-master { background-color: #f8fafc; }
+        .bg-app-default { background-color: #f8fafc; }
     </style>
 </head>
-<body class="h-full font-sans antialiased text-slate-800 flex flex-col overflow-hidden bg-slate-50">
+<body class="h-full antialiased login-bg overflow-hidden transition-colors duration-500" id="body-main">
 
-    <div id="toast-container" class="fixed top-4 right-4 z-[100] pointer-events-none flex flex-col gap-2"></div>
+    <!-- Notificaciones Flotantes -->
+    <div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col gap-3 pointer-events-none"></div>
 
-    <div id="login-screen" class="min-h-screen flex items-center justify-center bg-corp-900 relative px-4 overflow-hidden">
-        <div class="ambient-orb bg-brand-600 w-[500px] h-[500px] top-[-20%] left-[-10%]"></div>
-        <div class="ambient-orb bg-indigo-600 w-[400px] h-[400px] bottom-[-20%] right-[-10%]" style="animation-delay: -5s;"></div>
-        
-        <div class="max-w-md w-full glass-dark rounded-3xl shadow-2xl p-10 relative z-10">
-            <div class="text-center mb-10">
-                <div class="mx-auto w-20 h-20 bg-gradient-to-br from-brand-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(14,165,233,0.4)] border border-white/20">
-                    <i class="fas fa-fingerprint text-4xl text-white"></i>
-                </div>
-                <h2 class="text-3xl font-black text-white tracking-tight">Acceso Seguro</h2>
-                <p class="text-sm text-slate-400 mt-2 font-medium">Plataforma de Control de Saldos</p>
+    <!-- Modal Comprobante (Jesus/Tito) -->
+    <div id="modal-comprobante" class="fixed inset-0 z-50 hidden items-center justify-center">
+        <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+        <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative z-10 mx-4 fade-in border border-slate-200">
+            <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-inner"><i class="fas fa-check-double"></i></div>
+            <h3 class="text-xl font-black text-slate-900 tracking-tight">Dar Visto Bueno</h3>
+            <p class="text-sm text-slate-500 mt-2 mb-6">¿Desea agregar un número de comprobante o referencia? (Opcional).</p>
+            
+            <div class="mb-6 relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400"><i class="fas fa-receipt"></i></div>
+                <input type="text" id="input-receipt" placeholder="Ej. REF-99482..." class="block w-full pl-11 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-emerald-500 bg-slate-50 text-slate-800 font-bold outline-none transition-colors">
             </div>
             
-            <form id="login-form" class="space-y-6">
+            <div class="flex gap-3">
+                <button onclick="closeModal()" class="flex-1 py-3.5 px-4 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">Cancelar</button>
+                <button id="btn-verify-confirm" onclick="confirmVerify()" class="flex-1 py-3.5 px-4 rounded-xl font-bold text-white bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/30 transition-all active:scale-95">Aprobar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Gussepy (Autorizar Adelanto) -->
+    <div id="modal-gussepy" class="fixed inset-0 z-50 hidden items-center justify-center">
+        <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm transition-opacity" onclick="closeGussepyModal()"></div>
+        <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative z-10 mx-4 fade-in border border-slate-200">
+            <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-inner"><i class="fas fa-stamp"></i></div>
+            <h3 class="text-xl font-black text-slate-900 tracking-tight">Autorizar Adelanto</h3>
+            <p class="text-sm text-slate-500 mt-2 mb-6">Puede agregar un detalle o justificación para esta aprobación (Opcional).</p>
+            
+            <div class="mb-6 relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400"><i class="fas fa-comment-dots"></i></div>
+                <input type="text" id="input-gussepy-detail" placeholder="Ej. Aprobado vía WhatsApp..." class="block w-full pl-11 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-indigo-500 bg-slate-50 text-slate-800 font-bold outline-none transition-colors">
+            </div>
+            
+            <div class="flex gap-3">
+                <button onclick="closeGussepyModal()" class="flex-1 py-3.5 px-4 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">Cancelar</button>
+                <button id="btn-gussepy-confirm" onclick="confirmGussepyAuth()" class="flex-1 py-3.5 px-4 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/30 transition-all active:scale-95">Autorizar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE LOGIN -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center relative px-4 z-10">
+        <div class="login-card rounded-3xl p-8 sm:p-10 max-w-[400px] w-full">
+            <div class="text-center mb-8">
+                <div class="mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-4 icon-glow">
+                    <i class="fas fa-fingerprint text-3xl text-white"></i>
+                </div>
+                <h2 class="text-2xl font-black text-white tracking-tight">Acceso Seguro</h2>
+                <p class="text-xs text-slate-400 mt-1">Plataforma de Control de Saldos</p>
+            </div>
+            
+            <form id="login-form" class="space-y-5">
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">Identidad Autorizada</label>
-                    <div class="relative group">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-400 transition-colors">
-                            <i class="fas fa-user-shield"></i>
-                        </div>
-                        <select id="login-user" class="block w-full pl-11 pr-4 py-3.5 border border-slate-700/50 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-slate-800/80 text-white font-medium appearance-none transition-all outline-none">
-                            <option value="michelle">Michelle (Supervisión & Admin)</option>
+                    <label class="block login-label mb-2">Identidad Autorizada</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-user-shield"></i></div>
+                        <select id="login-user" class="block w-full pl-10 pr-4 py-3.5 login-input rounded-xl appearance-none font-semibold text-sm">
+                            <option value="michelle">Michelle (Administración)</option>
                             <option value="jesus">Jesús (Titular Operativo)</option>
                             <option value="tito">Tito (Titular Operativo)</option>
+                            <option value="maria">María Emilia (Gestión Bonos)</option>
+                            <option value="gussepy">Gussepy (Dirección General)</option>
                         </select>
-                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
-                            <i class="fas fa-chevron-down text-xs"></i>
-                        </div>
+                        <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-chevron-down text-xs"></i></div>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">Clave Criptográfica</label>
-                    <div class="relative group">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-400 transition-colors">
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <input type="password" id="login-pass" required placeholder="••••••••••••" class="block w-full pl-11 pr-4 py-3.5 border border-slate-700/50 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-slate-800/80 text-white font-medium transition-all outline-none placeholder-slate-500">
+                    <label class="block login-label mb-2">Clave Criptográfica</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-lock"></i></div>
+                        <input type="password" id="login-pass" required placeholder="••••••••••••" class="block w-full pl-10 pr-4 py-3.5 login-input rounded-xl text-sm tracking-widest placeholder:tracking-normal font-bold">
                     </div>
                 </div>
-                <div id="login-error" class="hidden text-xs font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl text-center fade-in">
-                    <i class="fas fa-shield-alt mr-1"></i> Credenciales de seguridad denegadas.
+                
+                <div id="login-error" class="hidden text-xs font-bold text-rose-400 bg-rose-500/10 border border-rose-500/20 p-3 rounded-lg text-center fade-in">
+                    <i class="fas fa-shield-alt mr-1"></i> Credenciales denegadas.
                 </div>
-                <button type="submit" class="w-full py-4 px-4 rounded-xl shadow-lg shadow-brand-500/30 text-sm font-bold text-white bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all transform active:scale-[0.98]">
-                    Autenticar Ingreso
-                </button>
+                
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-4 px-4 rounded-xl text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/30 transition-all active:scale-95">
+                        Autenticar Ingreso
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 
-    <div id="app-screen" class="hidden flex-1 flex flex-col h-screen">
+    <!-- PANTALLA PRINCIPAL DE LA APP -->
+    <div id="app-screen" class="hidden flex-1 flex flex-col h-screen relative bg-app-default">
         
-        <!-- Header Superior -->
-        <header class="bg-white z-40 sticky top-0 relative">
-            <div class="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8 border-b border-slate-200">
-                <div class="flex justify-between items-center h-20">
-                    <div class="flex items-center gap-4">
-                        <div class="bg-corp-900 text-white p-2.5 rounded-xl shadow-md flex items-center justify-center">
-                            <i class="fas fa-chart-network text-xl text-brand-400"></i>
+        <!-- Header -->
+        <header class="bg-white z-40 border-b border-slate-200 shadow-sm relative shrink-0">
+            <div class="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-indigo-600 text-white p-2 rounded-lg shadow-sm flex items-center justify-center">
+                            <i class="fas fa-chart-line text-lg"></i>
                         </div>
                         <div>
-                            <h1 class="text-xl font-black text-slate-900 leading-tight tracking-tight">Sync<span class="text-brand-600">Balance</span></h1>
-                            <div class="flex items-center gap-2 text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">
-                                <span class="relative flex h-2 w-2">
-                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                </span>
-                                Enlace Red Activa
+                            <h1 class="text-lg font-black text-slate-900 tracking-tight leading-none">Sync<span class="text-indigo-600">Balance</span></h1>
+                            <div class="flex items-center gap-1.5 text-[8px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">
+                                <span class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span></span>
+                                Sistema En Línea
                             </div>
                         </div>
                     </div>
                     
-                    <div class="flex items-center gap-4 sm:gap-6">
-                        <button onclick="forceSync()" class="flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-brand-600 transition-colors bg-slate-50 border border-slate-200 hover:border-brand-300 shadow-sm px-4 py-2.5 rounded-xl">
-                            <i class="fas fa-sync-alt"></i> <span class="hidden sm:inline">Actualizar Nube</span>
+                    <div class="flex items-center gap-3">
+                        <button onclick="forceSync()" class="flex items-center gap-1.5 text-[10px] font-bold text-slate-600 hover:text-indigo-600 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-colors border border-slate-200">
+                            <i class="fas fa-sync-alt" id="sync-icon"></i> <span class="hidden sm:inline">Actualizar</span>
                         </button>
-                        <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
+                        <div class="h-6 w-px bg-slate-200 hidden sm:block"></div>
                         <div class="text-right hidden sm:block">
-                            <div id="user-display-name" class="text-sm font-bold text-slate-900">Usuario</div>
-                            <div id="user-display-role" class="text-[10px] font-bold text-brand-600 uppercase tracking-wider">Rol</div>
+                            <div id="user-display-name" class="text-xs font-bold text-slate-900 leading-tight">Usuario</div>
+                            <div id="user-display-role" class="text-[9px] font-bold text-indigo-600 uppercase tracking-wider">Rol</div>
                         </div>
-                        <div class="relative cursor-pointer group" title="Tu Sesión Activa">
-                            <div class="w-10 h-10 rounded-xl bg-corp-900 flex items-center justify-center text-white font-bold shadow-md group-hover:bg-brand-600 transition-colors" id="user-avatar">
-                                U
-                            </div>
-                            <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></div>
-                        </div>
-                        <button onclick="logout()" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-rose-600 bg-white border border-slate-200 hover:border-rose-200 hover:bg-rose-50 transition-all rounded-xl shadow-sm" title="Desconectar">
-                            <i class="fas fa-power-off"></i>
+                        <div id="user-avatar" class="w-8 h-8 rounded-lg bg-slate-800 text-white font-bold flex items-center justify-center shadow-sm relative text-sm">U</div>
+                        <button onclick="logout()" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors border border-transparent hover:border-rose-100" title="Cerrar Sesión">
+                            <i class="fas fa-power-off text-sm"></i>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-light shadow-sm z-30">
+            <!-- Navegación de Pestañas -->
+            <div class="bg-white border-t border-slate-200">
                 <div class="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8">
-                    <nav class="flex space-x-6 sm:space-x-10" aria-label="Tabs">
-                        <button id="tab-btn-dashboard" onclick="switchTab('dashboard')" class="border-brand-500 text-brand-600 whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm flex items-center gap-2 transition-colors">
-                            <i class="fas fa-layer-group"></i> Panel & Auditoría
-                        </button>
-                        <button id="tab-btn-register" onclick="switchTab('register')" class="border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors">
-                            <i class="fas fa-wallet"></i> Registrar Nuevo Saldo
-                        </button>
-                    </nav>
+                    <nav class="flex space-x-6 overflow-x-auto custom-scrollbar" id="nav-tabs"></nav>
                 </div>
             </div>
         </header>
 
-        <main class="flex-1 max-w-[95rem] w-full mx-auto p-4 sm:p-6 lg:p-8 overflow-y-auto custom-scrollbar">
+        <!-- Contenido Principal Desplazable -->
+        <main class="flex-1 max-w-[95rem] w-full mx-auto p-4 sm:p-6 lg:p-8 overflow-y-auto custom-scrollbar relative z-10">
             
-            <!-- VISTA 1: Panel y Auditoría -->
-            <div id="view-dashboard" class="space-y-8 fade-in block">
+            <!-- VISTA 1: PANEL GLOBAL Y AUDITORÍA (Michelle, Jesus, Tito, Gussepy) -->
+            <div id="view-main" class="hidden fade-in flex-col h-full gap-6">
                 
-                <!-- Dashboard Michelle (Oculto para Jesús/Tito) -->
-                <div id="admin-dashboard" class="hidden">
-                    <div class="mb-4">
-                        <h2 class="text-lg font-black text-slate-900 tracking-tight">Resumen Ejecutivo de Bóveda</h2>
-                        <p class="text-xs text-slate-500 mt-1">Supervisión en tiempo real de saldos confirmados y pendientes por verificación.</p>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Tarjeta Jesús -->
-                        <div class="bg-white rounded-3xl p-1.5 shadow-md shadow-slate-200/50 border border-slate-200 overflow-hidden group hover:shadow-xl hover:border-sky-300 transition-all duration-300">
-                            <div class="bg-gradient-to-br from-sky-50 to-white rounded-[22px] p-6 sm:p-8 h-full relative overflow-hidden">
-                                <div class="absolute -top-4 -right-4 p-6 opacity-5 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 pointer-events-none">
-                                    <i class="fas fa-wallet text-9xl text-sky-900"></i>
-                                </div>
-                                
-                                <div class="flex justify-between items-start relative z-10 mb-6">
-                                    <div class="w-14 h-14 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center text-2xl shadow-sm border border-sky-200">
-                                        <i class="fas fa-user-tie"></i>
-                                    </div>
-                                    <span class="bg-sky-100 text-sky-700 text-[10px] font-black uppercase px-3 py-1.5 rounded-lg tracking-widest border border-sky-200/50">Cuenta 01</span>
-                                </div>
-                                
-                                <div class="relative z-10">
-                                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Saldo Confirmado: Jesús</p>
-                                    <p id="dash-total-jesus" class="text-5xl font-black text-slate-900 tracking-tighter">$0.00</p>
-                                </div>
-                                
-                                <div class="mt-8 pt-5 border-t border-sky-100 relative z-10 min-h-[50px]">
-                                    <div id="dash-pend-jesus" class="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm">
-                                        <i class="fas fa-clock animate-pulse text-amber-500"></i>
-                                        <span>$0.00 en validación</span>
-                                    </div>
-                                </div>
+                <!-- Dashboard Widgets Exactos (Michelle & Gussepy) -->
+                <div id="widget-container" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6 shrink-0">
+                    <!-- Widget Jesús -->
+                    <div class="rounded-[20px] p-6 relative overflow-hidden border border-slate-100 shadow-sm" style="background-color: #f6fbff;">
+                        <div class="absolute -right-4 top-4 opacity-50" style="color: #e5f2fb;"><i class="fas fa-wallet" style="font-size: 140px;"></i></div>
+                        <div class="flex justify-between items-start relative z-10 mb-6">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center border" style="background-color: #e3f2fd; color: #0284c7; border-color: #bae6fd;">
+                                <i class="fas fa-user-tie text-xl"></i>
+                            </div>
+                            <div class="px-3 py-1.5 text-[10px] font-black tracking-wider rounded-lg border" style="background-color: #e3f2fd; color: #0284c7; border-color: #bae6fd;">
+                                CUENTA 01
                             </div>
                         </div>
-                        
-                        <!-- Tarjeta Tito -->
-                        <div class="bg-white rounded-3xl p-1.5 shadow-md shadow-slate-200/50 border border-slate-200 overflow-hidden group hover:shadow-xl hover:border-emerald-300 transition-all duration-300">
-                            <div class="bg-gradient-to-br from-emerald-50 to-white rounded-[22px] p-6 sm:p-8 h-full relative overflow-hidden">
-                                <div class="absolute -top-4 -right-4 p-6 opacity-5 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 pointer-events-none">
-                                    <i class="fas fa-piggy-bank text-9xl text-emerald-900"></i>
-                                </div>
-                                
-                                <div class="flex justify-between items-start relative z-10 mb-6">
-                                    <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl shadow-sm border border-emerald-200">
-                                        <i class="fas fa-user"></i>
-                                    </div>
-                                    <span class="bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase px-3 py-1.5 rounded-lg tracking-widest border border-emerald-200/50">Cuenta 02</span>
-                                </div>
-                                
-                                <div class="relative z-10">
-                                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Saldo Confirmado: Tito</p>
-                                    <p id="dash-total-tito" class="text-5xl font-black text-slate-900 tracking-tighter">$0.00</p>
-                                </div>
-                                
-                                <div class="mt-8 pt-5 border-t border-emerald-100 relative z-10 min-h-[50px]">
-                                    <div id="dash-pend-tito" class="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm">
-                                        <i class="fas fa-clock animate-pulse text-amber-500"></i>
-                                        <span>$0.00 en validación</span>
-                                    </div>
-                                </div>
+                        <div class="relative z-10">
+                            <h3 class="text-[11px] font-bold text-slate-500 tracking-widest uppercase mb-1">Saldo Confirmado: Jesús</h3>
+                            <p id="dash-jesus-total" class="text-4xl font-black tracking-tighter" style="color: #0f172a;">$0.00</p>
+                            <div class="h-px w-full mt-5 opacity-60" style="background-color: #bae6fd;"></div>
+                            <div id="dash-jesus-pend" class="hidden mt-3 items-center gap-1.5 text-[10px] font-bold" style="color: #ea580c;">
+                                <i class="fas fa-clock"></i> Pendiente por confirmar: <span class="amt font-black">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Widget Tito -->
+                    <div class="rounded-[20px] p-6 relative overflow-hidden border border-slate-100 shadow-sm" style="background-color: #f4fdf6;">
+                        <div class="absolute -right-4 top-4 opacity-50" style="color: #e5f8ec;"><i class="fas fa-piggy-bank" style="font-size: 140px;"></i></div>
+                        <div class="flex justify-between items-start relative z-10 mb-6">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center border" style="background-color: #dcfce7; color: #16a34a; border-color: #bbf7d0;">
+                                <i class="fas fa-user text-xl"></i>
+                            </div>
+                            <div class="px-3 py-1.5 text-[10px] font-black tracking-wider rounded-lg border" style="background-color: #dcfce7; color: #16a34a; border-color: #bbf7d0;">
+                                CUENTA 02
+                            </div>
+                        </div>
+                        <div class="relative z-10">
+                            <h3 class="text-[11px] font-bold text-slate-500 tracking-widest uppercase mb-1">Saldo Confirmado: Tito</h3>
+                            <p id="dash-tito-total" class="text-4xl font-black tracking-tighter" style="color: #0f172a;">$0.00</p>
+                            <div class="h-px w-full mt-5 opacity-60" style="background-color: #bbf7d0;"></div>
+                            <div id="dash-tito-pend" class="hidden mt-3 items-center gap-1.5 text-[10px] font-bold" style="color: #ea580c;">
+                                <i class="fas fa-clock"></i> Pendiente por confirmar: <span class="amt font-black">$0.00</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-3xl shadow-lg shadow-slate-200/40 border border-slate-200 flex flex-col overflow-hidden">
-                    <div class="p-6 sm:p-8 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50">
-                        <div>
-                            <h3 class="text-xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
-                                <i class="fas fa-list-check text-indigo-600"></i> Auditoría de Movimientos
-                            </h3>
-                            <p class="text-xs text-slate-500 font-medium mt-1">Historial completo y gestión de aprobaciones cruzadas</p>
-                        </div>
-                        <span class="text-[10px] bg-white text-slate-600 py-2.5 px-4 rounded-xl font-bold uppercase tracking-wider border border-slate-200 shadow-sm flex items-center gap-2" id="current-month-display">
-                            <i class="fas fa-calendar-alt text-brand-500"></i> Mes actual
-                        </span>
-                    </div>
+                <!-- Tabla e Historial -->
+                <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/40 border border-slate-200 flex-1 flex flex-col min-h-[400px] overflow-hidden">
                     
-                    <div class="overflow-x-auto custom-scrollbar">
-                        <table class="min-w-full divide-y divide-slate-200">
-                            <thead class="bg-slate-100/80 border-b border-slate-200">
+                    <!-- Filtros (Solo Michelle) -->
+                    <div id="filter-panel" class="hidden bg-white border-b border-slate-100 p-4 shrink-0">
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <div class="flex-1">
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-calendar-day text-xs"></i></div>
+                                    <input type="date" id="filter-date" onchange="renderTable()" class="block w-full pl-9 pr-3 py-2.5 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-users text-xs"></i></div>
+                                    <select id="filter-account" onchange="renderTable()" class="block w-full pl-9 pr-8 py-2.5 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl appearance-none outline-none">
+                                        <option value="all">Todas las Cuentas</option>
+                                        <option value="jesus">Jesús</option>
+                                        <option value="tito">Tito</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-chevron-down text-[10px]"></i></div>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-tag text-xs"></i></div>
+                                    <select id="filter-status" onchange="renderTable()" class="block w-full pl-9 pr-8 py-2.5 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl appearance-none outline-none">
+                                        <option value="all">Todos los Estados</option>
+                                        <option value="Pendiente">Pendientes</option>
+                                        <option value="Verificado">Verificados</option>
+                                        <option value="Denegado">Denegados</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-chevron-down text-[10px]"></i></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <button onclick="clearFilters()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl transition-colors flex items-center gap-1.5 w-full justify-center sm:w-auto">
+                                    <i class="fas fa-eraser"></i> Limpiar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-5 py-3 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
+                        <h2 class="text-sm font-bold text-slate-800"><i class="fas fa-list-ul text-indigo-500 mr-2"></i>Historial de Operaciones</h2>
+                        <span class="text-[10px] text-slate-400 font-mono font-semibold" id="table-count">0 registros</span>
+                    </div>
+
+                    <div class="overflow-auto custom-scrollbar flex-1 bg-white relative">
+                        <table class="min-w-full divide-y divide-slate-100">
+                            <thead class="bg-slate-50 sticky top-0 z-10 shadow-sm">
                                 <tr>
-                                    <th scope="col" class="px-8 py-5 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Fecha / Código ID</th>
-                                    <th scope="col" class="px-8 py-5 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Destinatario Asignado</th>
-                                    <th scope="col" class="px-8 py-5 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Detalle de Operación</th>
-                                    <th scope="col" class="px-8 py-5 text-right text-[10px] font-black text-slate-500 uppercase tracking-widest">Monto</th>
-                                    <th scope="col" class="px-8 py-5 text-center text-[10px] font-black text-slate-500 uppercase tracking-widest">Estado Actual</th>
-                                    <th scope="col" class="px-8 py-5 text-center text-[10px] font-black text-slate-500 uppercase tracking-widest">Acciones Requeridas</th>
+                                    <th class="px-5 py-3.5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Fecha / ID</th>
+                                    <th class="px-5 py-3.5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Cuenta</th>
+                                    <th class="px-5 py-3.5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">Detalle y Concepto</th>
+                                    <th class="px-5 py-3.5 text-right text-[9px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Monto</th>
+                                    <th class="px-5 py-3.5 text-center text-[9px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Estado</th>
+                                    <th class="px-5 py-3.5 text-center text-[9px] font-black text-slate-400 uppercase tracking-widest">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="table-body" class="bg-white divide-y divide-slate-100">
-                                <!-- Filas dinámicas -->
-                            </tbody>
+                            <tbody id="table-records" class="divide-y divide-slate-50"></tbody>
                         </table>
-                        
-                        <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 px-4 text-center">
-                            <div class="w-24 h-24 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mb-5 border-2 border-dashed border-slate-200">
-                                <i class="fas fa-inbox text-4xl"></i>
-                            </div>
-                            <h4 class="text-lg font-bold text-slate-800 tracking-tight">Bandeja Vacía</h4>
-                            <p class="text-sm text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">No hay movimientos registrados para mostrar en esta vista. Los nuevos datos aparecerán aquí y se sincronizarán automáticamente.</p>
+                        <div id="table-empty" class="hidden absolute inset-0 flex-col items-center justify-center bg-white z-0">
+                            <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 text-2xl mb-3"><i class="fas fa-inbox"></i></div>
+                            <p class="text-xs font-bold text-slate-400">No hay registros para mostrar</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="view-register" class="hidden fade-in py-6">
-                <div class="max-w-3xl mx-auto w-full">
-                    <div class="bg-white rounded-3xl shadow-2xl shadow-slate-200/50 border border-slate-200 overflow-hidden relative">
-                        
-                        <!-- Header del Formulario -->
-                        <div class="bg-corp-900 px-8 py-10 relative overflow-hidden">
-                            <!-- Patrón decorativo -->
-                            <div class="absolute top-0 left-0 w-full h-full opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
-                            
-                            <div class="relative z-10 flex items-center gap-5">
-                                <div class="w-14 h-14 rounded-2xl bg-brand-500/20 text-brand-400 flex items-center justify-center border border-brand-500/30 shadow-[0_0_20px_rgba(14,165,233,0.2)]">
-                                    <i class="fas fa-plus text-2xl"></i>
+            <!-- VISTA 2: NUEVO REGISTRO (Michelle, Jesus, Tito) -->
+            <div id="view-register" class="hidden fade-in py-4 max-w-2xl mx-auto w-full">
+                <div class="bg-white rounded-[20px] shadow-2xl shadow-slate-200/60 border border-slate-100 overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-700 to-indigo-800 p-8 text-white relative">
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-10"><i class="fas fa-paper-plane text-7xl"></i></div>
+                        <h2 class="text-xl font-black tracking-tight relative z-10 flex items-center gap-2">Registrar Movimiento</h2>
+                        <p class="text-indigo-100 text-xs mt-1.5 relative z-10 font-medium">Ingreso de saldos a las cuentas operativas locales.</p>
+                    </div>
+                    
+                    <form id="form-register" class="p-8 space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Fecha de Registro</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-clock"></i></div>
+                                    <input type="text" id="reg-date" readonly class="block w-full pl-10 pr-3 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-bold text-slate-500 outline-none cursor-not-allowed">
                                 </div>
-                                <div>
-                                    <h2 class="text-2xl font-black text-white tracking-tight">Registrar Nuevo Saldo</h2>
-                                    <p class="text-sm text-slate-400 mt-1 font-medium">Complete los datos de la transacción para emitir el registro.</p>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Monto ($) *</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
+                                    <input type="number" id="reg-amount" step="0.01" min="0.01" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 text-lg font-black text-slate-800 outline-none transition-colors">
                                 </div>
                             </div>
                         </div>
-                        
-                        <form id="add-form" class="p-8 sm:p-10 space-y-8">
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <!-- Fecha Criptográfica -->
-                                <div>
-                                    <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
-                                        <i class="fas fa-shield-alt text-brand-500"></i> Sello de Tiempo
-                                    </label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-brand-500">
-                                            <i class="fas fa-clock text-sm"></i>
-                                        </div>
-                                        <input type="text" id="trans-date" readonly class="block w-full pl-11 pr-4 py-4 border border-slate-200 rounded-xl bg-slate-50 text-slate-600 text-sm font-mono font-bold cursor-not-allowed outline-none focus:ring-0" value="Calculando en tiempo real...">
+
+                        <!-- Asignación (Solo Michelle) -->
+                        <div id="container-assign" class="hidden pt-2">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 ml-1">Acreditar a Cuenta *</label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <label class="cursor-pointer group relative">
+                                    <input type="radio" name="reg-assign" value="jesus" class="peer sr-only" checked>
+                                    <div class="p-4 border-2 border-slate-200 rounded-xl text-center peer-checked:border-sky-500 peer-checked:bg-sky-50 transition-all flex flex-col items-center justify-center gap-2">
+                                        <i class="fas fa-user-tie text-2xl text-slate-400 peer-checked:text-sky-600 transition-colors"></i>
+                                        <div class="font-bold text-xs text-slate-600 peer-checked:text-sky-700">Cuenta Jesús</div>
                                     </div>
-                                    <p class="text-[10px] text-slate-400 mt-2 font-medium">Sincronizado inalterable de red.</p>
-                                </div>
-
-                                <!-- Monto -->
-                                <div>
-                                    <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-2">Monto de Operación *</label>
-                                    <div class="relative group">
-                                        <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-500 transition-colors font-bold text-2xl">$</div>
-                                        <input type="number" id="trans-amount" step="0.01" min="0.01" required placeholder="0.00" class="block w-full pl-12 pr-4 py-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-white text-3xl font-black text-slate-900 transition-all outline-none placeholder-slate-300 shadow-inner">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Asignar A (Solo Michelle) -->
-                            <div id="assign-container" class="hidden border-t border-slate-100 pt-8">
-                                <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4">Destino de los Fondos (Asignación)</label>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <label class="cursor-pointer group">
-                                        <input type="radio" name="assignedTo" value="jesus" class="peer sr-only" checked>
-                                        <div class="text-center py-6 px-4 border-2 border-slate-200 rounded-2xl peer-checked:border-sky-500 peer-checked:bg-sky-50 peer-checked:shadow-md hover:bg-slate-50 transition-all duration-300 relative overflow-hidden">
-                                            <div class="absolute top-2 right-2 opacity-0 peer-checked:opacity-100 text-sky-500 transition-opacity"><i class="fas fa-check-circle"></i></div>
-                                            <i class="fas fa-user-tie text-sky-600 text-4xl mb-3 group-hover:scale-110 transition-transform"></i>
-                                            <div class="text-sm font-black text-slate-800">Cuenta Jesús</div>
-                                        </div>
-                                    </label>
-                                    <label class="cursor-pointer group">
-                                        <input type="radio" name="assignedTo" value="tito" class="peer sr-only">
-                                        <div class="text-center py-6 px-4 border-2 border-slate-200 rounded-2xl peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:shadow-md hover:bg-slate-50 transition-all duration-300 relative overflow-hidden">
-                                            <div class="absolute top-2 right-2 opacity-0 peer-checked:opacity-100 text-emerald-500 transition-opacity"><i class="fas fa-check-circle"></i></div>
-                                            <i class="fas fa-user text-emerald-600 text-4xl mb-3 group-hover:scale-110 transition-transform"></i>
-                                            <div class="text-sm font-black text-slate-800">Cuenta Tito</div>
-                                        </div>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Concepto (Opcional) -->
-                            <div class="border-t border-slate-100 pt-8">
-                                <label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-between">
-                                    <span>Referencia / Detalle</span>
-                                    <span class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[9px]">Opcional</span>
+                                    <div class="absolute top-2 right-2 opacity-0 peer-checked:opacity-100 text-sky-600 transition-opacity"><i class="fas fa-check-circle text-sm"></i></div>
                                 </label>
-                                <textarea id="trans-concept" rows="2" placeholder="Motivo o referencia de la transacción..." class="block w-full px-5 py-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-white text-base transition-all resize-none outline-none placeholder-slate-400 font-medium"></textarea>
+                                <label class="cursor-pointer group relative">
+                                    <input type="radio" name="reg-assign" value="tito" class="peer sr-only">
+                                    <div class="p-4 border-2 border-slate-200 rounded-xl text-center peer-checked:border-emerald-500 peer-checked:bg-emerald-50 transition-all flex flex-col items-center justify-center gap-2">
+                                        <i class="fas fa-user text-2xl text-slate-400 peer-checked:text-emerald-600 transition-colors"></i>
+                                        <div class="font-bold text-xs text-slate-600 peer-checked:text-emerald-700">Cuenta Tito</div>
+                                    </div>
+                                    <div class="absolute top-2 right-2 opacity-0 peer-checked:opacity-100 text-emerald-600 transition-opacity"><i class="fas fa-check-circle text-sm"></i></div>
+                                </label>
                             </div>
+                        </div>
 
-                            <div class="pt-4">
-                                <button type="submit" class="w-full bg-corp-900 hover:bg-black text-white font-bold py-5 px-6 rounded-xl transition-all shadow-xl shadow-corp-900/30 flex items-center justify-center gap-3 transform active:scale-[0.98] group text-lg">
-                                    <i class="fas fa-paper-plane text-brand-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i> Transmitir Registro a Base
-                                </button>
-                                <p class="text-center text-[11px] text-slate-400 font-medium mt-4">
-                                    Al transmitir, la transacción quedará en estado <span class="text-amber-500">Pendiente de Verificación</span> de la contraparte.
-                                </p>
+                        <div class="pt-2">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Concepto / Detalle <span class="text-slate-400 font-semibold lowercase">(Opcional)</span></label>
+                            <input type="text" id="reg-concept" placeholder="Ej. Depósito cliente X..." class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-indigo-500 bg-white text-sm font-medium outline-none transition-colors">
+                        </div>
+
+                        <div class="pt-6 border-t border-slate-100">
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-indigo-600/30 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 text-sm">
+                                <i class="fas fa-upload"></i> Subir Registro al Sistema
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- VISTA 3: ADELANTOS GUSSEPY (Michelle, Gussepy) -->
+            <div id="view-gussepy" class="hidden fade-in flex-col gap-6 max-w-4xl mx-auto">
+                
+                <!-- Formulario Premium de Adelantos (Solo Michelle) -->
+                <div id="gussepy-form-container" class="bg-white rounded-[20px] shadow-2xl shadow-slate-200/60 border border-slate-100 overflow-hidden shrink-0">
+                    <div class="bg-gradient-to-r from-slate-800 to-slate-900 p-6 sm:p-8 text-white relative">
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-10 text-amber-400"><i class="fas fa-hand-holding-usd text-7xl"></i></div>
+                        <h2 class="text-xl font-black tracking-tight relative z-10 flex items-center gap-2"><i class="fas fa-bolt text-amber-400"></i> Registrar Adelanto de Comisión</h2>
+                        <p class="text-slate-300 text-xs mt-1.5 relative z-10 font-medium">Retiros de comisión del titular de agencia.</p>
+                    </div>
+                    <form id="form-gussepy" class="p-6 sm:p-8 space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Monto Retirado ($) *</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
+                                    <input type="number" id="gus-amount" step="0.01" min="0.01" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-amber-500 text-lg font-black text-slate-800 outline-none transition-colors">
+                                </div>
                             </div>
-                        </form>
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Concepto / Motivo *</label>
+                                <input type="text" id="gus-concept" required placeholder="Motivo del adelanto..." class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-amber-500 text-sm font-medium outline-none transition-colors">
+                            </div>
+                        </div>
+                        <div class="pt-2 border-t border-slate-100">
+                            <button type="submit" class="w-full py-4 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-lg shadow-amber-500/30 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm">
+                                Registrar Adelanto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Tabla de Adelantos -->
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-100 flex flex-col overflow-hidden min-h-[300px]">
+                    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center gap-2 shrink-0">
+                        <i class="fas fa-history text-slate-400"></i>
+                        <h3 class="text-sm font-bold text-slate-800">Historial de Adelantos</h3>
+                    </div>
+                    <div class="overflow-auto custom-scrollbar flex-1 relative">
+                        <table class="min-w-full divide-y divide-slate-100">
+                            <thead class="bg-white sticky top-0 z-10">
+                                <tr>
+                                    <th class="px-6 py-3.5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Fecha / ID</th>
+                                    <th class="px-6 py-3.5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">Concepto</th>
+                                    <th class="px-6 py-3.5 text-right text-[9px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Monto</th>
+                                    <th class="px-6 py-3.5 text-center text-[9px] font-black text-slate-400 uppercase tracking-widest">Estado/Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-gussepy" class="divide-y divide-slate-50"></tbody>
+                        </table>
+                        <div id="gussepy-empty" class="hidden absolute inset-0 flex-col items-center justify-center bg-white z-0">
+                            <i class="fas fa-box-open text-3xl text-slate-200 mb-3"></i>
+                            <p class="text-xs font-bold text-slate-400">No hay adelantos registrados.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA 4: BONOS (Maria Emilia, Gussepy) -->
+            <div id="view-bonos" class="hidden fade-in max-w-4xl mx-auto w-full flex-col h-full gap-6">
+                
+                <!-- Formulario Emisión (Solo Maria) -->
+                <div id="bonos-form-container" class="bg-white rounded-[20px] shadow-2xl shadow-rose-100 border border-rose-100 overflow-hidden shrink-0">
+                    <div class="bg-gradient-to-r from-rose-600 to-pink-700 p-6 sm:p-8 text-white relative">
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-15"><i class="fas fa-gift text-7xl"></i></div>
+                        <h2 class="text-xl font-black tracking-tight relative z-10 flex items-center gap-2">Módulo de Bonificaciones</h2>
+                        <p class="text-rose-100 text-xs mt-1.5 relative z-10 font-medium">Registro oficial de entrega de bonos.</p>
+                    </div>
+                    <form id="form-bonos" class="p-6 sm:p-8 space-y-6 bg-white">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Entregado a (Destinatario) *</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-user-check"></i></div>
+                                    <input type="text" id="bono-dest" list="bonos-destinatarios" required placeholder="Escriba o seleccione un nombre..." class="block w-full pl-10 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-rose-500 text-sm font-bold text-slate-800 outline-none transition-colors">
+                                    <datalist id="bonos-destinatarios"></datalist>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Monto Bono ($) *</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
+                                    <input type="number" id="bono-amount" step="0.01" min="0.01" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-rose-500 text-lg font-black text-slate-800 outline-none transition-colors">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Concepto <span class="text-slate-400 lowercase font-semibold">(Opcional)</span></label>
+                            <input type="text" id="bono-concept" placeholder="Detalle del bono..." class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-rose-500 text-sm font-medium outline-none transition-colors">
+                        </div>
+                        <div class="pt-2 border-t border-slate-100">
+                            <button type="submit" class="w-full py-4 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl shadow-lg shadow-rose-500/30 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm">
+                                <i class="fas fa-check-circle"></i> Guardar Bono
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tabla Bonos -->
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-100 flex-1 flex flex-col min-h-[300px] overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100 flex items-center gap-2 bg-white shrink-0">
+                        <i class="fas fa-list-alt text-slate-400"></i>
+                        <h2 class="text-sm font-bold text-slate-800">Historial de Bonos Entregados</h2>
+                    </div>
+                    <div class="overflow-auto custom-scrollbar flex-1 relative">
+                        <table class="min-w-full divide-y divide-slate-100">
+                            <thead class="bg-slate-50 sticky top-0 z-10">
+                                <tr>
+                                    <th class="px-6 py-3.5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Fecha / ID</th>
+                                    <th class="px-6 py-3.5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">Destinatario</th>
+                                    <th class="px-6 py-3.5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">Concepto</th>
+                                    <th class="px-6 py-3.5 text-right text-[9px] font-black text-slate-400 uppercase tracking-widest">Monto</th>
+                                    <th class="px-6 py-3.5 text-center text-[9px] font-black text-slate-400 uppercase tracking-widest">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-bonos" class="divide-y divide-slate-50"></tbody>
+                        </table>
+                        <div id="bonos-empty" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-white z-0">
+                            <i class="fas fa-receipt text-3xl text-slate-200 mb-3"></i>
+                            <p class="text-xs text-slate-400 font-bold">No hay bonos emitidos.</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
         </main>
+        
+        <!-- Footer -->
+        <footer class="bg-white border-t border-slate-200 py-3 px-4 text-center shrink-0">
+            <p class="text-[10px] font-bold text-slate-400 tracking-wide flex items-center justify-center gap-1.5">
+                <i class="fas fa-code text-slate-300"></i> Sistema creado por Tito Feijoo &copy; 2026
+            </p>
+        </footer>
     </div>
 
     <script>
-        // Configuración de Seguridad Interna (Predefinida)
+        const SYNC_URL = "https://script.google.com/macros/s/AKfycbxaCgzGJ6EAZkTFU2vRNlRCPBCrYPZfaANrKCrwRxjfB528FozA9JuRFsboQ8H8IoKCDA/exec";
+        
         const USERS = {
-            'michelle': { name: 'Michelle', pass: 'Michi2026*', role: 'admin' },
-            'jesus': { name: 'Jesús', pass: 'JesusVentas88', role: 'user' },
-            'tito': { name: 'Tito', pass: 'TitoPagos99', role: 'user' }
+            'michelle': { name: 'Michelle', pass: 'Michi2026*', role: 'Administración', type: 'admin' },
+            'jesus': { name: 'Jesús', pass: 'JesusVentas88', role: 'Titular Operativo', type: 'titular' },
+            'tito': { name: 'Tito', pass: 'TitoPagos99', role: 'Titular Operativo', type: 'titular' },
+            'maria': { name: 'María Emilia', pass: 'MariaBonos2026', role: 'Gestión Bonos', type: 'bonos' },
+            'gussepy': { name: 'Gussepy', pass: 'GussepyMaster', role: 'Dirección General', type: 'master' }
         };
 
         let currentUser = null;
-        let transactions = [];
-        
-        // URL de Google Apps Script Oficial
-        const syncUrl = "https://script.google.com/macros/s/AKfycbzUFfMn6AwIcKqQ-f4etsqPxNPMxaXJbW9NyxO1xQjw9NHrNCS3m0EK3Z4I1V8oRQJdlw/exec";
+        let records = [], advances = [], bonos = [];
+        let pendingVerifyId = null;
+        let pendingAuthId = null;
 
-        // Reloj de Sistema Inalterable
+        // Reloj Real
         setInterval(() => {
-            const dateInput = document.getElementById('trans-date');
-            if(dateInput) {
-                const now = new Date();
-                dateInput.value = now.toLocaleString('es-EC', { 
-                    year: 'numeric', month: '2-digit', day: '2-digit', 
-                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false 
-                });
+            const inputDate = document.getElementById('reg-date');
+            if (inputDate) {
+                const d = new Date();
+                const yr = d.getFullYear(), mo = String(d.getMonth()+1).padStart(2,'0'), da = String(d.getDate()).padStart(2,'0');
+                const hr = String(d.getHours()).padStart(2,'0'), mi = String(d.getMinutes()).padStart(2,'0'), sec = String(d.getSeconds()).padStart(2,'0');
+                const isoStr = `${yr}-${mo}-${da} ${hr}:${mi}:${sec}`;
+                inputDate.dataset.iso = isoStr; 
+                inputDate.value = isoStr;
             }
         }, 1000);
 
         window.onload = () => {
-            const savedUser = localStorage.getItem('cs_user_v2');
-            const savedData = localStorage.getItem('cs_tx_v2');
-            
-            if (savedData) {
-                try { transactions = JSON.parse(savedData); } catch(e){}
-            }
-            
-            if (savedUser && USERS[savedUser]) {
-                login(savedUser);
-            } else {
-                showScreen('login');
-            }
+            const savedUser = localStorage.getItem('sb_user');
+            if (savedUser && USERS[savedUser]) login(savedUser);
+            else showScreen('login');
 
-            document.getElementById('login-form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                const u = document.getElementById('login-user').value;
-                const p = document.getElementById('login-pass').value;
-                if (USERS[u] && USERS[u].pass === p) {
-                    document.getElementById('login-error').classList.add('hidden');
-                    login(u);
-                    document.getElementById('login-pass').value = ''; 
-                } else {
-                    document.getElementById('login-error').classList.remove('hidden');
-                }
-            });
-
-            document.getElementById('add-form').addEventListener('submit', handleAdd);
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+            document.getElementById('form-register').addEventListener('submit', handleRegister);
+            document.getElementById('form-gussepy').addEventListener('submit', handleGussepy);
+            document.getElementById('form-bonos').addEventListener('submit', handleBono);
         };
 
-        function switchTab(tabId) {
-            const btnDash = document.getElementById('tab-btn-dashboard');
-            const btnReg = document.getElementById('tab-btn-register');
-            const viewDash = document.getElementById('view-dashboard');
-            const viewReg = document.getElementById('view-register');
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('login-user').value;
+            const p = document.getElementById('login-pass').value;
+            const err = document.getElementById('login-error');
             
-            const activeClass = "border-brand-500 text-brand-600 whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm flex items-center gap-2 transition-colors";
-            const inactiveClass = "border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors";
-
-            if (tabId === 'dashboard') {
-                btnDash.className = activeClass;
-                btnReg.className = inactiveClass;
-                viewDash.classList.remove('hidden');
-                viewReg.classList.add('hidden');
-                // Al volver al dashboard, refrescar la vista por si acaso
-                updateView();
-            } else {
-                btnReg.className = activeClass;
-                btnDash.className = inactiveClass;
-                viewDash.classList.add('hidden');
-                viewReg.classList.remove('hidden');
-            }
+            if (USERS[u] && USERS[u].pass === p) {
+                err.classList.add('hidden');
+                document.getElementById('login-pass').value = '';
+                login(u);
+            } else { err.classList.remove('hidden'); }
         }
 
         function login(username) {
             currentUser = username;
-            localStorage.setItem('cs_user_v2', username);
+            localStorage.setItem('sb_user', username);
+            const user = USERS[username];
             
-            document.getElementById('user-display-name').innerText = USERS[username].name;
-            document.getElementById('user-display-role').innerText = USERS[username].role === 'admin' ? 'Administradora' : 'Titular Operativo';
-            document.getElementById('user-avatar').innerText = USERS[username].name.charAt(0);
+            const bodyMain = document.getElementById('body-main');
+            const appScreen = document.getElementById('app-screen');
+            bodyMain.className = "h-full antialiased overflow-hidden transition-colors duration-500";
             
-            const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-            const currentMonth = monthNames[new Date().getMonth()] + " " + new Date().getFullYear();
-            document.getElementById('current-month-display').innerHTML = `<i class="fas fa-calendar-check text-brand-500"></i> ${currentMonth}`;
+            if (user.type === 'bonos') appScreen.className = "hidden flex-1 flex flex-col h-screen relative bg-app-maria";
+            else if (user.type === 'master') appScreen.className = "hidden flex-1 flex flex-col h-screen relative bg-app-master";
+            else appScreen.className = "hidden flex-1 flex flex-col h-screen relative bg-app-default";
 
-            const assignContainer = document.getElementById('assign-container');
-            const adminDash = document.getElementById('admin-dashboard');
+            document.getElementById('user-display-name').innerText = user.name;
+            document.getElementById('user-display-role').innerText = user.role;
+            document.getElementById('user-avatar').innerText = user.name.charAt(0);
+            
+            if(user.type === 'bonos') document.getElementById('user-avatar').className = "w-8 h-8 rounded-lg bg-rose-600 text-white font-bold flex items-center justify-center shadow-sm relative text-sm";
+            else if(user.type === 'master') document.getElementById('user-avatar').className = "w-8 h-8 rounded-lg bg-amber-500 text-white font-bold flex items-center justify-center shadow-sm relative text-sm";
+            else document.getElementById('user-avatar').className = "w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center shadow-sm relative text-sm";
 
-            if (currentUser === 'michelle') {
-                assignContainer.classList.remove('hidden');
-                adminDash.classList.remove('hidden');
-            } else {
-                assignContainer.classList.add('hidden');
-                adminDash.classList.add('hidden');
-            }
-
+            buildNavigation(user);
+            applyConstraints(user);
             showScreen('app');
-            switchTab('dashboard'); // Entrar por defecto al Dashboard
-            showToast(`Bienvenida/o, ${USERS[username].name}. Firmado y Asegurado.`, 'success');
             
+            if (user.type === 'bonos') switchTab('bonos');
+            else if (user.type === 'master') switchTab('main');
+            else switchTab('main'); 
+            
+            showToast(`Bienvenido(a) ${user.name}.`, 'success');
             forceSync();
-            updateView();
         }
 
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem('cs_user_v2');
-            showScreen('login');
+        function buildNavigation(user) {
+            const nav = document.getElementById('nav-tabs');
+            nav.innerHTML = '';
+            
+            const btnClass = (id, icon, text) => `<button id="tab-${id}" onclick="switchTab('${id}')" class="tab-btn px-4 py-3.5 border-b-2 font-bold text-[11px] whitespace-nowrap transition-colors border-transparent text-slate-500 hover:text-slate-800"><i class="fas ${icon} mr-1.5"></i>${text}</button>`;
+            
+            if (user.type !== 'bonos') {
+                nav.innerHTML += btnClass('main', 'fa-table', 'Panel Global & Auditoría');
+                if (user.type !== 'master') nav.innerHTML += btnClass('register', 'fa-plus-circle', 'Registrar Nuevo Movimiento');
+            }
+            if (user.type === 'admin' || user.type === 'master') {
+                nav.innerHTML += btnClass('gussepy', 'fa-handshake', 'Adelantos Gussepy');
+            }
+            if (user.type === 'bonos' || user.type === 'master') {
+                nav.innerHTML += btnClass('bonos', 'fa-gift', 'Módulo de Bonos');
+            }
         }
 
+        function applyConstraints(user) {
+            document.getElementById('container-assign').classList.toggle('hidden', user.type !== 'admin');
+            document.getElementById('widget-container').classList.toggle('hidden', user.type === 'titular' || user.type === 'bonos');
+            document.getElementById('filter-panel').classList.toggle('hidden', user.type !== 'admin');
+            
+            const gForm = document.getElementById('gussepy-form-container');
+            if(gForm) gForm.classList.toggle('hidden', user.type === 'master');
+            const bForm = document.getElementById('bonos-form-container');
+            if(bForm) bForm.classList.toggle('hidden', user.type === 'master');
+        }
+
+        function logout() { currentUser = null; localStorage.removeItem('sb_user'); showScreen('login'); }
+        
         function showScreen(scr) {
-            document.getElementById('login-screen').classList.toggle('hidden', scr !== 'login');
-            document.getElementById('app-screen').classList.toggle('hidden', scr !== 'app');
+            document.getElementById('login-screen').classList.toggle('hidden', scr === 'app');
+            document.getElementById('app-screen').classList.toggle('hidden', scr === 'login');
+            if (scr === 'login') document.getElementById('body-main').classList.add('login-bg');
+            else document.getElementById('body-main').classList.remove('login-bg');
         }
 
-        function saveLocal() {
-            localStorage.setItem('cs_tx_v2', JSON.stringify(transactions));
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                const isActive = btn.id === `tab-${tabId}`;
+                if (isActive) {
+                    btn.classList.remove('border-transparent', 'text-slate-500');
+                    btn.classList.add('border-indigo-600', 'text-indigo-700');
+                } else {
+                    btn.classList.add('border-transparent', 'text-slate-500');
+                    btn.classList.remove('border-indigo-600', 'text-indigo-700');
+                }
+            });
+
+            ['main', 'register', 'gussepy', 'bonos'].forEach(v => {
+                const el = document.getElementById(`view-${v}`);
+                if (el) el.classList.toggle('hidden', v !== tabId);
+            });
         }
 
         async function forceSync() {
+            const icon = document.getElementById('sync-icon');
+            if(icon) icon.classList.add('fa-spin');
             try {
-                const res = await fetch(syncUrl);
-                const result = await res.json();
-                if (result.status === 'success') {
-                    transactions = result.data;
-                    transactions.sort((a, b) => b.id.localeCompare(a.id));
-                    saveLocal();
-                    updateView();
-                    showToast("Datos actualizados desde Google Sheets.", "success");
+                const res = await fetch(SYNC_URL);
+                const json = await res.json();
+                if (json.status === 'success') {
+                    records = json.data || []; advances = json.advances || []; bonos = json.bonos || [];
+                    records.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    advances.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    bonos.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    updateAllViews();
+                    updateBonoDatalist();
                 }
-            } catch (err) {
-                console.warn("Offline:", err);
-                showToast("Falla de red. Trabajando con caché local.", "warning");
-            }
+            } catch (err) { showToast("Error de conexión. Mostrando datos locales.", "error"); } 
+            finally { if(icon) icon.classList.remove('fa-spin'); }
         }
 
-        function pushData(action, dataObj) {
-            fetch(syncUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: action, data: dataObj })
-            })
-            .then(r => r.json())
-            .then(res => {
-                if(res.status === 'success') console.log(`SYNC OK: ${action}`);
-            })
-            .catch(err => console.error("Error Sincronizando:", err));
+        async function pushData(action, dataObj) {
+            try {
+                const payload = { action: action, data: dataObj };
+                const res = await fetch(SYNC_URL, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload) 
+                });
+                const json = await res.json();
+                if(json.status !== 'success') { console.error(json.msg); return false; }
+                return true;
+            } catch (err) { return false; }
         }
 
-        function handleAdd(e) {
+        function updateBonoDatalist() {
+            const dl = document.getElementById('bonos-destinatarios');
+            if(!dl) return;
+            const uniqueNames = [...new Set(bonos.map(b => b.assignedTo))].filter(Boolean);
+            dl.innerHTML = uniqueNames.map(name => `<option value="${name}">`).join('');
+        }
+
+        async function handleRegister(e) {
             e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const orig = btn.innerHTML; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...'; btn.disabled = true;
+
+            const dateIso = document.getElementById('reg-date').dataset.iso;
+            const amt = parseFloat(document.getElementById('reg-amount').value);
+            const conc = document.getElementById('reg-concept').value.trim();
             
-            const dateVal = document.getElementById('trans-date').value;
-            const amount = parseFloat(document.getElementById('trans-amount').value);
-            const conceptRaw = document.getElementById('trans-concept').value.trim();
-            const concept = conceptRaw === "" ? "Sin detalle" : conceptRaw;
-            
-            let assignedTo = currentUser; 
-            if (currentUser === 'michelle') {
-                assignedTo = document.querySelector('input[name="assignedTo"]:checked').value;
+            let assigned = currentUser;
+            let status = 'Pendiente';
+
+            if (USERS[currentUser].type === 'admin') {
+                assigned = document.querySelector('input[name="reg-assign"]:checked').value;
             }
 
-            if (isNaN(amount) || amount <= 0) return;
-
-            const newTx = {
-                id: 'TX' + Date.now().toString(36).toUpperCase() + Math.floor(Math.random()*100),
-                date: dateVal,
-                amount: amount,
-                concept: concept,
-                assignedTo: assignedTo,
-                createdBy: currentUser,
-                status: 'Pendiente'
+            const newTx = { 
+                id: 'TX' + Date.now(), date: dateIso, amount: amt, 
+                concept: conc, assignedTo: assigned, createdBy: currentUser, status: status, receipt: ''
             };
-
-            transactions.unshift(newTx);
-            saveLocal();
-            updateView(); // Actualizamos la tabla invisible
             
-            showToast("Registro guardado exitosamente. Esperando verificación cruzada.", "success");
-            pushData('add', newTx);
+            records.unshift(newTx);
+            renderTable(); // Update local instantly
             
-            // Limpieza y mantenimiento en la misma pestaña
-            document.getElementById('trans-amount').value = '';
-            document.getElementById('trans-concept').value = '';
-            // NO llamamos switchTab('dashboard') para que el usuario pueda seguir registrando.
+            if (await pushData('add', newTx)) {
+                showToast("Registro guardado exitosamente.", "success");
+                document.getElementById('reg-amount').value = ''; 
+                document.getElementById('reg-concept').value = '';
+                updateAllViews();
+            } else { 
+                records.shift(); renderTable();
+                showToast("Fallo al guardar en la nube.", "error");
+            } 
+            btn.innerHTML = orig; btn.disabled = false;
         }
 
-        // Permisos Creador vs Asignado
-        function canAction(tx) {
-            if (tx.status !== 'Pendiente') return false;
-            if (currentUser === 'michelle') return tx.createdBy !== 'michelle';
-            else return tx.assignedTo === currentUser && tx.createdBy === 'michelle';
-        }
+        async function handleGussepy(e) {
+            e.preventDefault(); 
+            const btn = e.target.querySelector('button'); btn.disabled = true;
+            const dateIso = document.getElementById('reg-date') ? document.getElementById('reg-date').dataset.iso : new Date().toISOString().replace('T',' ').substring(0,19);
+            const amt = parseFloat(document.getElementById('gus-amount').value);
+            const conc = document.getElementById('gus-concept').value.trim();
+            const newAdv = { id: 'ADV' + Date.now(), date: dateIso, amount: amt, concept: conc, createdBy: currentUser, status: 'Pendiente', detail: '' };
+            
+            advances.unshift(newAdv); 
+            renderAdvances(); // Optimistic UI Update
 
-        function verifyTransaction(id) {
-            const idx = transactions.findIndex(t => t.id === id);
-            if (idx > -1) {
-                transactions[idx].status = 'Verificado';
-                saveLocal();
-                updateView();
-                showToast("Transacción Verificada y Aprobada.", "success");
-                pushData('verify', { id: id });
+            if(await pushData('add_advance', newAdv)) {
+                showToast("Adelanto registrado.", "success");
+                document.getElementById('form-gussepy').reset();
+            } else { 
+                advances.shift(); renderAdvances(); 
+                showToast("Error al registrar.", "error"); 
             }
+            btn.disabled = false;
         }
 
-        function denyTransaction(id) {
-            if (confirm("⚠️ ¿DENEGAR movimiento? Este valor no sumará al total.")) {
-                const idx = transactions.findIndex(t => t.id === id);
-                if (idx > -1) {
-                    transactions[idx].status = 'Denegado';
-                    saveLocal();
-                    updateView();
-                    showToast("Movimiento Rechazado formalmente.", "error");
-                    pushData('deny', { id: id });
+        async function handleBono(e) {
+            e.preventDefault(); const btn = e.target.querySelector('button'); btn.disabled = true;
+            const dateIso = document.getElementById('reg-date') ? document.getElementById('reg-date').dataset.iso : new Date().toISOString().replace('T',' ').substring(0,19);
+            const amt = parseFloat(document.getElementById('bono-amount').value);
+            const dest = document.getElementById('bono-dest').value.trim();
+            const conc = document.getElementById('bono-concept').value.trim() || 'Sin detalle';
+            const newBono = { id: 'BN' + Date.now(), date: dateIso, amount: amt, assignedTo: dest, concept: conc, createdBy: currentUser };
+            
+            bonos.unshift(newBono); 
+            renderBonos(); updateBonoDatalist();
+
+            if(await pushData('add_bono', newBono)) {
+                showToast("Bono emitido exitosamente.", "success");
+                document.getElementById('form-bonos').reset();
+            } else { 
+                bonos.shift(); renderBonos(); 
+                showToast("Error al emitir.", "error"); 
+            }
+            btn.disabled = false;
+        }
+
+        function actionVerify(id) {
+            pendingVerifyId = id;
+            document.getElementById('input-receipt').value = '';
+            document.getElementById('modal-comprobante').classList.remove('hidden');
+            document.getElementById('modal-comprobante').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-comprobante').classList.add('hidden');
+            document.getElementById('modal-comprobante').classList.remove('flex');
+            pendingVerifyId = null;
+        }
+
+        async function confirmVerify() {
+            if (!pendingVerifyId) return;
+            const receipt = document.getElementById('input-receipt').value.trim();
+            const btn = document.getElementById('btn-verify-confirm');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
+
+            const tx = records.find(r => r.id === pendingVerifyId);
+            if (tx) {
+                const oldStatus = tx.status;
+                const oldReceipt = tx.receipt;
+                tx.status = 'Verificado'; tx.receipt = receipt;
+                updateAllViews();
+                
+                if (await pushData('verify', { id: String(pendingVerifyId), receipt: receipt })) {
+                    showToast("Saldo Aprobado y Confirmado.", "success");
+                } else {
+                    tx.status = oldStatus; tx.receipt = oldReceipt; updateAllViews();
+                    showToast("Error al verificar en la nube.", "error");
+                }
+            }
+            btn.innerHTML = 'Aprobar'; btn.disabled = false;
+            closeModal();
+        }
+
+        async function actionDeny(id) {
+            if (confirm("¿DENEGAR esta transacción?\nSe marcará en rojo y NO sumará a las cuentas.")) {
+                const tx = records.find(r => r.id === id);
+                if (tx) { 
+                    const oldStatus = tx.status;
+                    tx.status = 'Denegado'; 
+                    updateAllViews(); 
+                    if(await pushData('deny', { id: String(id) })) {
+                        showToast("Transacción Denegada.", "info"); 
+                    } else {
+                        tx.status = oldStatus; updateAllViews();
+                        showToast("Error al denegar.", "error");
+                    }
                 }
             }
         }
 
-        function deleteTransaction(id) {
-            if (confirm("🚨 BORRAR de la base de datos permanentemente. ¿Continuar?")) {
-                transactions = transactions.filter(t => t.id !== id);
-                saveLocal();
-                updateView();
-                showToast("Registro eliminado de Google Sheets.", "info");
-                pushData('delete', { id: id });
-            }
+        /* Gussepy Authorization Logic */
+        function actionAuthorizeAdvance(id) {
+            pendingAuthId = id;
+            document.getElementById('input-gussepy-detail').value = '';
+            document.getElementById('modal-gussepy').classList.remove('hidden');
+            document.getElementById('modal-gussepy').classList.add('flex');
         }
 
-        function updateView() {
-            renderTable();
-            if(currentUser === 'michelle') renderDashboard();
+        function closeGussepyModal() {
+            document.getElementById('modal-gussepy').classList.add('hidden');
+            document.getElementById('modal-gussepy').classList.remove('flex');
+            pendingAuthId = null;
         }
 
-        const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v);
+        async function confirmGussepyAuth() {
+            if (!pendingAuthId) return;
+            const detail = document.getElementById('input-gussepy-detail').value.trim() || 'Aprobado sin detalle';
+            const btn = document.getElementById('btn-gussepy-confirm');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
 
-        function renderTable() {
-            const tbody = document.getElementById('table-body');
-            const emptyState = document.getElementById('empty-state');
-            tbody.innerHTML = '';
+            const adv = advances.find(r => r.id === pendingAuthId);
+            if (adv) {
+                const oldStatus = adv.status;
+                const oldDetail = adv.detail;
+                adv.status = 'Autorizado';
+                adv.detail = detail;
+                renderAdvances();
 
-            let displayTx = transactions;
-            if (currentUser !== 'michelle') {
-                displayTx = transactions.filter(t => t.assignedTo === currentUser);
-            }
-
-            if(displayTx.length === 0) {
-                emptyState.classList.remove('hidden');
-                return;
-            } else {
-                emptyState.classList.add('hidden');
-            }
-
-            displayTx.forEach(tx => {
-                const showActions = canAction(tx);
-                const isJesus = tx.assignedTo === 'jesus';
-                
-                const assignedName = USERS[tx.assignedTo] ? USERS[tx.assignedTo].name : tx.assignedTo;
-                const authorName = USERS[tx.createdBy] ? USERS[tx.createdBy].name : tx.createdBy;
-                const formatAmt = fmt(tx.amount);
-                
-                let statusBadge = `<span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest"><i class="fas fa-clock"></i> Pendiente</span>`;
-                let rowStyle = "hover:bg-slate-50";
-                let amtStyle = "text-slate-900";
-
-                if (tx.status === 'Verificado') {
-                    statusBadge = `<span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest"><i class="fas fa-check-circle"></i> Verificado</span>`;
-                    amtStyle = isJesus ? "text-sky-600" : "text-emerald-600";
-                } else if (tx.status === 'Denegado') {
-                    statusBadge = `<span class="inline-flex items-center gap-1.5 bg-rose-50 text-rose-700 border border-rose-200 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest"><i class="fas fa-times-circle"></i> Denegado</span>`;
-                    rowStyle = "bg-slate-50/40 opacity-70";
-                    amtStyle = "text-slate-400 line-through";
+                if (await pushData('authorize_advance', { id: String(pendingAuthId), detail: detail })) {
+                    showToast("Adelanto Autorizado.", "success");
+                } else {
+                    adv.status = oldStatus; adv.detail = oldDetail; renderAdvances();
+                    showToast("Error al autorizar en la nube.", "error");
                 }
+            }
+            btn.innerHTML = 'Autorizar'; btn.disabled = false;
+            closeGussepyModal();
+        }
 
-                const tr = document.createElement('tr');
-                tr.className = `${rowStyle} transition-colors group`;
-                tr.innerHTML = `
-                    <td class="px-8 py-5">
-                        <span class="block text-sm font-bold text-slate-800">${tx.date.split(' ')[0]}</span>
-                        <span class="block text-[11px] text-slate-400 font-mono mt-1">${tx.id}</span>
-                    </td>
-                    <td class="px-8 py-5">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-${isJesus?'sky':'emerald'}-100 flex items-center justify-center text-${isJesus?'sky':'emerald'}-600 border border-${isJesus?'sky':'emerald'}-200">
-                                <i class="fas fa-user${isJesus?'-tie':''}"></i>
-                            </div>
-                            <span class="text-sm font-bold text-slate-800">${assignedName}</span>
-                        </div>
-                    </td>
-                    <td class="px-8 py-5">
-                        <div class="text-sm text-slate-800 font-medium max-w-[280px] truncate" title="${tx.concept}">${tx.concept}</div>
-                        <div class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest font-bold">Por: <span class="text-brand-600">${authorName}</span></div>
-                    </td>
-                    <td class="px-8 py-5 text-right">
-                        <span class="text-lg font-black tracking-tight ${amtStyle}">${formatAmt}</span>
-                    </td>
-                    <td class="px-8 py-5 text-center">
-                        ${statusBadge}
-                    </td>
-                    <td class="px-8 py-5 text-center whitespace-nowrap">
-                        <div class="flex items-center justify-center gap-2">
-                            ${showActions ? `
-                                <button onclick="verifyTransaction('${tx.id}')" class="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5"><i class="fas fa-check"></i> Aprobar</button>
-                                <button onclick="denyTransaction('${tx.id}')" class="px-3.5 py-2 bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5"><i class="fas fa-times"></i> Denegar</button>
-                            ` : ''}
-                            ${currentUser === 'michelle' ? `
-                                <button onclick="deleteTransaction('${tx.id}')" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-white hover:bg-rose-600 rounded-xl transition-colors ml-1" title="Eliminar fila"><i class="fas fa-trash-alt text-xs"></i></button>
-                            ` : ''}
-                            ${!showActions && currentUser !== 'michelle' ? `<span class="text-[10px] text-slate-300 font-bold"><i class="fas fa-lock"></i> RESTRINGIDO</span>` : ''}
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+        async function actionDelete(id, type = 'record') {
+            if(confirm("🚨 ATENCIÓN: ¿Seguro que desea eliminar este registro permanentemente?")) {
+                let actionStr = 'delete';
+                if(type === 'advance') actionStr = 'delete_advance';
+                if(type === 'bono') actionStr = 'delete_bono';
+
+                if(await pushData(actionStr, {id: String(id)})) {
+                    if(type === 'bono') {
+                        bonos = bonos.filter(r => String(r.id) !== String(id)); renderBonos(); updateBonoDatalist();
+                    } else if(type === 'advance') {
+                        advances = advances.filter(r => String(r.id) !== String(id)); renderAdvances(); 
+                    } else {
+                        records = records.filter(r => String(r.id) !== String(id)); updateAllViews(); 
+                    }
+                    showToast("Registro eliminado con éxito.", "success");
+                } else {
+                    showToast("Fallo al eliminar en la nube.", "error");
+                }
+            }
+        }
+
+        const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
+
+        function updateAllViews() {
+            if (USERS[currentUser].type === 'admin' || USERS[currentUser].type === 'master') renderDashboard();
+            if (USERS[currentUser].type !== 'bonos') renderTable();
+            if (USERS[currentUser].type === 'admin' || USERS[currentUser].type === 'master') renderAdvances();
+            if (USERS[currentUser].type === 'bonos' || USERS[currentUser].type === 'master') renderBonos();
         }
 
         function renderDashboard() {
-            let jTotal = 0, jPend = 0;
-            let tTotal = 0, tPend = 0;
-
-            transactions.forEach(tx => {
-                if (tx.status === 'Denegado') return;
-                
+            let jTot=0, jPen=0, tTot=0, tPen=0;
+            records.forEach(tx => {
+                if (tx.status === 'Denegado') return; 
                 const amt = parseFloat(tx.amount);
-                if (tx.assignedTo === 'jesus') {
-                    if (tx.status === 'Verificado') jTotal += amt;
-                    else jPend += amt;
-                } else if (tx.assignedTo === 'tito') {
-                    if (tx.status === 'Verificado') tTotal += amt;
-                    else tPend += amt;
-                }
+                const isApproved = tx.status === 'Verificado';
+                if (tx.assignedTo === 'jesus') { if (isApproved) jTot += amt; else jPen += amt; } 
+                else if (tx.assignedTo === 'tito') { if (isApproved) tTot += amt; else tPen += amt; }
             });
 
-            document.getElementById('dash-total-jesus').innerText = fmt(jTotal);
-            const pendJesusEl = document.getElementById('dash-pend-jesus');
-            pendJesusEl.innerHTML = `<i class="fas fa-clock animate-pulse text-amber-500"></i><span>${fmt(jPend)} en verificación</span>`;
-            pendJesusEl.className = jPend > 0 ? "inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm fade-in" : "hidden";
-            
-            document.getElementById('dash-total-tito').innerText = fmt(tTotal);
-            const pendTitoEl = document.getElementById('dash-pend-tito');
-            pendTitoEl.innerHTML = `<i class="fas fa-clock animate-pulse text-amber-500"></i><span>${fmt(tPend)} en verificación</span>`;
-            pendTitoEl.className = tPend > 0 ? "inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm fade-in" : "hidden";
+            const dashJ = document.getElementById('dash-jesus-total');
+            if(dashJ) {
+                dashJ.innerText = fmt(jTot);
+                const elJP = document.getElementById('dash-jesus-pend');
+                elJP.querySelector('.amt').innerText = fmt(jPen);
+                elJP.className = jPen > 0 ? "mt-3 flex items-center gap-1.5 text-[10px] font-bold text-orange-600" : "hidden";
+            }
+
+            const dashT = document.getElementById('dash-tito-total');
+            if(dashT) {
+                dashT.innerText = fmt(tTot);
+                const elTP = document.getElementById('dash-tito-pend'); 
+                elTP.querySelector('.amt').innerText = fmt(tPen);
+                elTP.className = tPen > 0 ? "mt-3 flex items-center gap-1.5 text-[10px] font-bold text-orange-600" : "hidden";
+            }
         }
 
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            
-            let config = { bg: "bg-corp-900", text: "text-white", border: "border-slate-700", icon: "fa-info-circle text-brand-400" };
-            if (type === 'success') config = { bg: "bg-emerald-600", text: "text-white", border: "border-emerald-700", icon: "fa-check-circle text-emerald-100" };
-            if (type === 'warning') config = { bg: "bg-amber-500", text: "text-white", border: "border-amber-600", icon: "fa-exclamation-triangle text-amber-100" };
-            if (type === 'error') config = { bg: "bg-rose-600", text: "text-white", border: "border-rose-700", icon: "fa-times-circle text-rose-100" };
+        function clearFilters() {
+            if(document.getElementById('filter-date')) {
+                document.getElementById('filter-date').value = ''; 
+                document.getElementById('filter-account').value = 'all'; 
+                document.getElementById('filter-status').value = 'all';
+                renderTable();
+            }
+        }
 
-            toast.className = `border ${config.border} ${config.bg} ${config.text} px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-x-full opacity-0 max-w-sm`;
-            toast.innerHTML = `<i class="fas ${config.icon} text-xl"></i> <span class="text-sm font-bold leading-snug">${message}</span>`;
+        function renderTable() {
+            const tbody = document.getElementById('table-records');
+            const emptyState = document.getElementById('table-empty');
+            const countEl = document.getElementById('table-count');
+            if(!tbody) return; tbody.innerHTML = '';
+
+            const fDate = document.getElementById('filter-date') ? document.getElementById('filter-date').value : '';
+            const fAcc = document.getElementById('filter-account') ? document.getElementById('filter-account').value : 'all';
+            const fStat = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'all';
+
+            let displayTx = records.filter(tx => {
+                if (USERS[currentUser].type === 'titular' && tx.assignedTo !== currentUser) return false;
+                if (fDate && !tx.date.startsWith(fDate)) return false; 
+                if (fAcc !== 'all' && tx.assignedTo !== fAcc) return false;
+                if (fStat !== 'all' && tx.status !== fStat) return false;
+                return true;
+            });
+
+            if(countEl) countEl.innerText = `${displayTx.length} registros encontrados`;
+
+            if (displayTx.length === 0) { emptyState.classList.replace('hidden','flex'); return; } 
+            else { emptyState.classList.replace('flex','hidden'); }
+
+            displayTx.forEach(tx => {
+                let sBad = `<span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest border border-amber-200">Pendiente</span>`;
+                let rStyle = "", amtStyle = "text-slate-800";
+                
+                if (tx.status === 'Verificado') { 
+                    sBad = `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest border border-emerald-200"><i class="fas fa-check mr-1"></i> Verificado</span>`; 
+                    amtStyle = tx.assignedTo === 'jesus' ? "text-sky-600" : "text-emerald-600"; 
+                } 
+                else if (tx.status === 'Denegado') { 
+                    sBad = `<span class="bg-rose-100 text-rose-700 px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest border border-rose-200"><i class="fas fa-times mr-1"></i> Denegado</span>`; 
+                    rStyle = "opacity-60 bg-slate-50"; amtStyle = "text-slate-400 line-through decoration-rose-400 decoration-2"; 
+                }
+
+                const cName = USERS[tx.createdBy] ? USERS[tx.createdBy].name : tx.createdBy;
+                const dName = USERS[tx.assignedTo] ? USERS[tx.assignedTo].name : tx.assignedTo;
+
+                let actionHtml = '';
+                
+                if (tx.status === 'Pendiente') {
+                    if (USERS[currentUser].type === 'admin' && tx.createdBy !== 'michelle') {
+                        actionHtml = `<div class="flex gap-1.5 justify-center"><button onclick="actionVerify('${tx.id}')" class="bg-emerald-500 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded-lg text-[9px] font-bold shadow-sm transition-colors"><i class="fas fa-check"></i> Aprobar</button><button onclick="actionDeny('${tx.id}')" class="bg-rose-100 hover:bg-rose-200 text-rose-600 px-2.5 py-1.5 rounded-lg text-[9px] font-bold transition-colors"><i class="fas fa-times"></i> Denegar</button></div>`;
+                    } else if (USERS[currentUser].type === 'titular' && tx.createdBy === 'michelle' && tx.assignedTo === currentUser) {
+                        actionHtml = `<div class="flex gap-1.5 justify-center"><button onclick="actionVerify('${tx.id}')" class="bg-emerald-500 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded-lg text-[9px] font-bold shadow-sm transition-colors"><i class="fas fa-check"></i> Verificar</button><button onclick="actionDeny('${tx.id}')" class="bg-rose-100 hover:bg-rose-200 text-rose-600 px-2.5 py-1.5 rounded-lg text-[9px] font-bold transition-colors"><i class="fas fa-times"></i></button></div>`;
+                    } else {
+                        actionHtml = `<span class="text-[9px] font-medium text-slate-400 italic">En revisión</span>`;
+                    }
+                }
+                
+                let delBtn = (USERS[currentUser].type === 'admin') ? `<button onclick="actionDelete('${tx.id}', 'record')" class="ml-3 text-slate-300 hover:text-rose-500 transition-colors" title="Eliminar"><i class="fas fa-trash-alt"></i></button>` : '';
+
+                const finalAction = actionHtml || `<span class="text-slate-300">-</span>`;
+
+                tbody.insertAdjacentHTML('beforeend', `
+                    <tr class="hover:bg-indigo-50/30 transition-colors ${rStyle}">
+                        <td class="px-5 py-3"><span class="block text-[11px] font-bold text-slate-700">${tx.date}</span><span class="block text-[9px] text-slate-400 font-mono mt-0.5">${tx.id.substring(0,8)}</span></td>
+                        <td class="px-5 py-3"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-md bg-slate-100 border border-slate-200 text-slate-500 flex items-center justify-center text-[10px]"><i class="fas fa-user"></i></div><div><span class="block text-[10px] font-black text-slate-700">${dName}</span><span class="block text-[8px] text-slate-400 font-bold uppercase mt-0.5">De: ${cName.split(' ')[0]}</span></div></div></td>
+                        <td class="px-5 py-3"><span class="block text-[11px] font-medium text-slate-600 max-w-[200px] truncate" title="${tx.concept}">${tx.concept}</span>${tx.receipt ? `<span class="inline-block mt-1 bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-md text-[9px] font-mono"><i class="fas fa-receipt mr-1"></i>Ref: ${tx.receipt}</span>` : ''}</td>
+                        <td class="px-5 py-3 text-right"><span class="text-sm font-black ${amtStyle}">${fmt(tx.amount)}</span></td>
+                        <td class="px-5 py-3 text-center">${sBad}</td>
+                        <td class="px-5 py-3 text-center whitespace-nowrap"><div class="flex items-center justify-center">${finalAction}${delBtn}</div></td>
+                    </tr>
+                `);
+            });
+        }
+
+        function renderAdvances() {
+            const tbody = document.getElementById('table-gussepy');
+            const empty = document.getElementById('gussepy-empty');
+            if(!tbody) return; tbody.innerHTML = '';
             
-            container.appendChild(toast);
+            if (advances.length === 0) { empty.classList.replace('hidden','flex'); return; } 
+            else { empty.classList.replace('flex','hidden'); }
+
+            advances.forEach(adv => {
+                let badge = adv.status === 'Autorizado' ? `<span class="text-[9px] font-black text-indigo-700 uppercase bg-indigo-100 border border-indigo-200 px-2 py-1 rounded-md"><i class="fas fa-check-double mr-1"></i>Autorizado</span>` : `<span class="text-[9px] font-bold text-amber-700 uppercase bg-amber-100 border border-amber-200 px-2 py-1 rounded-md">Pendiente</span>`;
+                
+                let authBtn = '';
+                if (USERS[currentUser].type === 'master' && adv.status !== 'Autorizado') {
+                    authBtn = `<button onclick="actionAuthorizeAdvance('${adv.id}')" class="ml-2 bg-indigo-500 hover:bg-indigo-600 text-white px-2.5 py-1 rounded-lg text-[9px] font-bold shadow-sm transition-colors"><i class="fas fa-stamp mr-1"></i> Aprobar</button>`;
+                }
+                
+                let delBtn = (USERS[currentUser].type === 'admin') ? `<button onclick="actionDelete('${adv.id}', 'advance')" class="ml-3 text-slate-300 hover:text-rose-500 transition-colors"><i class="fas fa-trash-alt"></i></button>` : '';
+                
+                tbody.insertAdjacentHTML('beforeend', `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-3.5"><span class="block text-[10px] font-bold text-slate-600">${adv.date}</span><span class="block text-[8px] text-slate-400 font-mono mt-0.5">${adv.id.substring(0,8)}</span></td>
+                        <td class="px-6 py-3.5">
+                            <span class="block text-[11px] font-medium text-slate-700 truncate max-w-[200px]">${adv.concept}</span>
+                            ${adv.detail ? `<span class="block text-[9px] text-indigo-600 mt-1 font-semibold"><i class="fas fa-comment-dots mr-1"></i>${adv.detail}</span>` : ''}
+                        </td>
+                        <td class="px-6 py-3.5 text-right text-sm font-black text-amber-600">${fmt(adv.amount)}</td>
+                        <td class="px-6 py-3.5 text-center flex justify-center items-center">
+                            ${badge} ${authBtn} ${delBtn}
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+
+        function renderBonos() {
+            const tbody = document.getElementById('table-bonos');
+            const empty = document.getElementById('bonos-empty');
+            if(!tbody) return; tbody.innerHTML = '';
             
-            requestAnimationFrame(() => toast.classList.remove('translate-x-full', 'opacity-0'));
-            
-            setTimeout(() => {
-                toast.classList.add('translate-x-full', 'opacity-0');
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
+            if (bonos.length === 0) { empty.classList.replace('hidden','flex'); return; } 
+            else { empty.classList.replace('flex','hidden'); }
+
+            bonos.forEach(b => {
+                let delBtn = (USERS[currentUser].type === 'bonos' || USERS[currentUser].type === 'admin') ? `<button onclick="actionDelete('${b.id}', 'bono')" class="text-slate-300 hover:text-rose-500 transition-colors"><i class="fas fa-trash-alt"></i></button>` : '';
+                
+                tbody.insertAdjacentHTML('beforeend', `
+                    <tr class="hover:bg-rose-50/50 transition-colors">
+                        <td class="px-6 py-3.5"><span class="block text-[10px] font-bold text-slate-600">${b.date}</span><span class="block text-[8px] font-mono text-slate-400 mt-0.5">${b.id.substring(0,8)}</span></td>
+                        <td class="px-6 py-3.5"><span class="bg-rose-100 border border-rose-200 text-rose-700 text-[10px] font-bold uppercase px-2 py-1 rounded-lg"><i class="fas fa-user-circle mr-1"></i> ${b.assignedTo}</span></td>
+                        <td class="px-6 py-3.5 text-[11px] font-medium text-slate-600 max-w-[200px] truncate" title="${b.concept}">${b.concept}</td>
+                        <td class="px-6 py-3.5 text-right text-sm font-black text-rose-600">${fmt(b.amount)}</td>
+                        <td class="px-6 py-3.5 text-center">${delBtn || '-'}</td>
+                    </tr>
+                `);
+            });
+        }
+
+        function showToast(msg, type = 'info') {
+            const cont = document.getElementById('toast-container'); const t = document.createElement('div');
+            let bg = "bg-slate-800", ic = "fa-info-circle text-slate-300";
+            if (type === 'success') { bg = "bg-emerald-600"; ic = "fa-check-circle text-white"; }
+            if (type === 'error') { bg = "bg-rose-600"; ic = "fa-exclamation-circle text-white"; }
+            t.className = `${bg} text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 fade-in text-sm border border-white/10`;
+            t.innerHTML = `<i class="fas ${ic} text-lg"></i><span class="font-semibold tracking-wide">${msg}</span>`;
+            cont.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3500);
         }
     </script>
 </body>
