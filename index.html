@@ -11,10 +11,12 @@
         :root { --color-bg-main: #0f172a; }
         body { font-family: 'Inter', sans-serif; }
         
+        /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         
+        /* Login Theme */
         .login-bg { background: linear-gradient(to bottom right, #0f172a, #1e1b4b); }
         .login-card {
             background: rgba(15, 23, 42, 0.8);
@@ -38,11 +40,20 @@
         .bg-app-maria { background-color: #fff1f2; }
         .bg-app-master { background-color: #f8fafc; }
         .bg-app-default { background-color: #f8fafc; }
+        
+        /* Dashboard Cards Enhancements */
+        .dash-card {
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .dash-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body class="h-full antialiased login-bg overflow-hidden transition-colors duration-500" id="body-main">
 
-    <!-- Notificaciones Flotantes -->
     <div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col gap-3 pointer-events-none"></div>
 
     <!-- Modal Comprobante (Jesus/Tito) -->
@@ -184,45 +195,66 @@
             <div id="view-main" class="hidden fade-in flex-col h-full gap-6">
                 
                 <!-- Dashboard Widgets Exactos (Michelle & Gussepy) -->
-                <div id="widget-container" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6 shrink-0">
+                <div id="widget-container" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 shrink-0">
                     <!-- Widget Jesús -->
-                    <div class="rounded-[20px] p-6 relative overflow-hidden border border-slate-100 shadow-sm" style="background-color: #f6fbff;">
-                        <div class="absolute -right-4 top-4 opacity-50" style="color: #e5f2fb;"><i class="fas fa-wallet" style="font-size: 140px;"></i></div>
+                    <div class="dash-card rounded-[20px] p-6 relative overflow-hidden bg-white shadow-sm">
+                        <div class="absolute -right-4 -bottom-4 opacity-5 text-sky-600"><i class="fas fa-wallet" style="font-size: 140px;"></i></div>
                         <div class="flex justify-between items-start relative z-10 mb-6">
-                            <div class="w-12 h-12 rounded-xl flex items-center justify-center border" style="background-color: #e3f2fd; color: #0284c7; border-color: #bae6fd;">
+                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-sky-50 text-sky-600 border border-sky-100 shadow-sm">
                                 <i class="fas fa-user-tie text-xl"></i>
                             </div>
-                            <div class="px-3 py-1.5 text-[10px] font-black tracking-wider rounded-lg border" style="background-color: #e3f2fd; color: #0284c7; border-color: #bae6fd;">
+                            <div class="px-3 py-1.5 text-[10px] font-black tracking-wider rounded-lg bg-sky-50 text-sky-700 border border-sky-100">
                                 CUENTA 01
                             </div>
                         </div>
                         <div class="relative z-10">
                             <h3 class="text-[11px] font-bold text-slate-500 tracking-widest uppercase mb-1">Saldo Confirmado: Jesús</h3>
-                            <p id="dash-jesus-total" class="text-4xl font-black tracking-tighter" style="color: #0f172a;">$0.00</p>
-                            <div class="h-px w-full mt-5 opacity-60" style="background-color: #bae6fd;"></div>
-                            <div id="dash-jesus-pend" class="hidden mt-3 items-center gap-1.5 text-[10px] font-bold" style="color: #ea580c;">
-                                <i class="fas fa-clock"></i> Pendiente por confirmar: <span class="amt font-black">$0.00</span>
+                            <p id="dash-jesus-total" class="text-4xl font-black tracking-tighter text-slate-900">$0.00</p>
+                            <div class="h-px w-full mt-5 mb-3 bg-slate-100"></div>
+                            <div id="dash-jesus-pend" class="hidden items-center gap-1.5 text-[10px] font-bold text-amber-600 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-100">
+                                <i class="fas fa-clock"></i> Pendiente confirmación: <span class="amt font-black">$0.00</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Widget Tito -->
-                    <div class="rounded-[20px] p-6 relative overflow-hidden border border-slate-100 shadow-sm" style="background-color: #f4fdf6;">
-                        <div class="absolute -right-4 top-4 opacity-50" style="color: #e5f8ec;"><i class="fas fa-piggy-bank" style="font-size: 140px;"></i></div>
+                    <div class="dash-card rounded-[20px] p-6 relative overflow-hidden bg-white shadow-sm">
+                        <div class="absolute -right-4 -bottom-4 opacity-5 text-emerald-600"><i class="fas fa-piggy-bank" style="font-size: 140px;"></i></div>
                         <div class="flex justify-between items-start relative z-10 mb-6">
-                            <div class="w-12 h-12 rounded-xl flex items-center justify-center border" style="background-color: #dcfce7; color: #16a34a; border-color: #bbf7d0;">
+                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm">
                                 <i class="fas fa-user text-xl"></i>
                             </div>
-                            <div class="px-3 py-1.5 text-[10px] font-black tracking-wider rounded-lg border" style="background-color: #dcfce7; color: #16a34a; border-color: #bbf7d0;">
+                            <div class="px-3 py-1.5 text-[10px] font-black tracking-wider rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100">
                                 CUENTA 02
                             </div>
                         </div>
                         <div class="relative z-10">
                             <h3 class="text-[11px] font-bold text-slate-500 tracking-widest uppercase mb-1">Saldo Confirmado: Tito</h3>
-                            <p id="dash-tito-total" class="text-4xl font-black tracking-tighter" style="color: #0f172a;">$0.00</p>
-                            <div class="h-px w-full mt-5 opacity-60" style="background-color: #bbf7d0;"></div>
-                            <div id="dash-tito-pend" class="hidden mt-3 items-center gap-1.5 text-[10px] font-bold" style="color: #ea580c;">
-                                <i class="fas fa-clock"></i> Pendiente por confirmar: <span class="amt font-black">$0.00</span>
+                            <p id="dash-tito-total" class="text-4xl font-black tracking-tighter text-slate-900">$0.00</p>
+                            <div class="h-px w-full mt-5 mb-3 bg-slate-100"></div>
+                            <div id="dash-tito-pend" class="hidden items-center gap-1.5 text-[10px] font-bold text-amber-600 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-100">
+                                <i class="fas fa-clock"></i> Pendiente confirmación: <span class="amt font-black">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Widget Adelantos Gussepy (Nuevo) -->
+                    <div class="dash-card rounded-[20px] p-6 relative overflow-hidden bg-slate-900 shadow-lg border border-slate-800">
+                        <div class="absolute -right-4 -bottom-4 opacity-10 text-amber-400"><i class="fas fa-hand-holding-usd" style="font-size: 140px;"></i></div>
+                        <div class="flex justify-between items-start relative z-10 mb-6">
+                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-slate-800 text-amber-400 border border-slate-700 shadow-sm">
+                                <i class="fas fa-crown text-xl"></i>
+                            </div>
+                            <div class="px-3 py-1.5 text-[10px] font-black tracking-wider rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                                DIRECCIÓN
+                            </div>
+                        </div>
+                        <div class="relative z-10">
+                            <h3 class="text-[11px] font-bold text-slate-400 tracking-widest uppercase mb-1">Total Adelantos (Autorizados)</h3>
+                            <p id="dash-gussepy-total" class="text-4xl font-black tracking-tighter text-white">$0.00</p>
+                            <div class="h-px w-full mt-5 mb-3 bg-slate-800"></div>
+                            <div id="dash-gussepy-pend" class="hidden items-center gap-1.5 text-[10px] font-bold text-amber-300 bg-amber-500/10 px-2.5 py-1.5 rounded-lg border border-amber-500/20">
+                                <i class="fas fa-clock"></i> Pendiente aprobación: <span class="amt font-black">$0.00</span>
                             </div>
                         </div>
                     </div>
@@ -513,7 +545,7 @@
         let pendingVerifyId = null;
         let pendingAuthId = null;
 
-        // Reloj Real
+        // Reloj Real Inalterable
         setInterval(() => {
             const inputDate = document.getElementById('reg-date');
             if (inputDate) {
@@ -568,7 +600,7 @@
             document.getElementById('user-avatar').innerText = user.name.charAt(0);
             
             if(user.type === 'bonos') document.getElementById('user-avatar').className = "w-8 h-8 rounded-lg bg-rose-600 text-white font-bold flex items-center justify-center shadow-sm relative text-sm";
-            else if(user.type === 'master') document.getElementById('user-avatar').className = "w-8 h-8 rounded-lg bg-amber-500 text-white font-bold flex items-center justify-center shadow-sm relative text-sm";
+            else if(user.type === 'master') document.getElementById('user-avatar').className = "w-8 h-8 rounded-lg bg-slate-800 text-white font-bold flex items-center justify-center shadow-sm relative text-sm";
             else document.getElementById('user-avatar').className = "w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center shadow-sm relative text-sm";
 
             buildNavigation(user);
@@ -586,7 +618,6 @@
         function buildNavigation(user) {
             const nav = document.getElementById('nav-tabs');
             nav.innerHTML = '';
-            
             const btnClass = (id, icon, text) => `<button id="tab-${id}" onclick="switchTab('${id}')" class="tab-btn px-4 py-3.5 border-b-2 font-bold text-[11px] whitespace-nowrap transition-colors border-transparent text-slate-500 hover:text-slate-800"><i class="fas ${icon} mr-1.5"></i>${text}</button>`;
             
             if (user.type !== 'bonos') {
@@ -632,7 +663,6 @@
                     btn.classList.remove('border-indigo-600', 'text-indigo-700');
                 }
             });
-
             ['main', 'register', 'gussepy', 'bonos'].forEach(v => {
                 const el = document.getElementById(`view-${v}`);
                 if (el) el.classList.toggle('hidden', v !== tabId);
@@ -650,8 +680,7 @@
                     records.sort((a, b) => new Date(b.date) - new Date(a.date));
                     advances.sort((a, b) => new Date(b.date) - new Date(a.date));
                     bonos.sort((a, b) => new Date(b.date) - new Date(a.date));
-                    updateAllViews();
-                    updateBonoDatalist();
+                    updateAllViews(); updateBonoDatalist();
                 }
             } catch (err) { showToast("Error de conexión. Mostrando datos locales.", "error"); } 
             finally { if(icon) icon.classList.remove('fa-spin'); }
@@ -661,8 +690,7 @@
             try {
                 const payload = { action: action, data: dataObj };
                 const res = await fetch(SYNC_URL, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(payload) 
                 });
                 const json = await res.json();
@@ -689,27 +717,20 @@
             
             let assigned = currentUser;
             let status = 'Pendiente';
-
             if (USERS[currentUser].type === 'admin') {
                 assigned = document.querySelector('input[name="reg-assign"]:checked').value;
             }
 
-            const newTx = { 
-                id: 'TX' + Date.now(), date: dateIso, amount: amt, 
-                concept: conc, assignedTo: assigned, createdBy: currentUser, status: status, receipt: ''
-            };
+            const newTx = { id: 'TX' + Date.now(), date: dateIso, amount: amt, concept: conc, assignedTo: assigned, createdBy: currentUser, status: status, receipt: '' };
             
-            records.unshift(newTx);
-            renderTable(); // Update local instantly
+            records.unshift(newTx); renderTable(); 
             
             if (await pushData('add', newTx)) {
                 showToast("Registro guardado exitosamente.", "success");
-                document.getElementById('reg-amount').value = ''; 
-                document.getElementById('reg-concept').value = '';
+                document.getElementById('reg-amount').value = ''; document.getElementById('reg-concept').value = '';
                 updateAllViews();
             } else { 
-                records.shift(); renderTable();
-                showToast("Fallo al guardar en la nube.", "error");
+                records.shift(); renderTable(); showToast("Fallo al guardar en la nube.", "error");
             } 
             btn.innerHTML = orig; btn.disabled = false;
         }
@@ -722,16 +743,12 @@
             const conc = document.getElementById('gus-concept').value.trim();
             const newAdv = { id: 'ADV' + Date.now(), date: dateIso, amount: amt, concept: conc, createdBy: currentUser, status: 'Pendiente', detail: '' };
             
-            advances.unshift(newAdv); 
-            renderAdvances(); // Optimistic UI Update
+            advances.unshift(newAdv); renderAdvances();
 
             if(await pushData('add_advance', newAdv)) {
                 showToast("Adelanto registrado.", "success");
                 document.getElementById('form-gussepy').reset();
-            } else { 
-                advances.shift(); renderAdvances(); 
-                showToast("Error al registrar.", "error"); 
-            }
+            } else { advances.shift(); renderAdvances(); showToast("Error al registrar.", "error"); }
             btn.disabled = false;
         }
 
@@ -743,16 +760,12 @@
             const conc = document.getElementById('bono-concept').value.trim() || 'Sin detalle';
             const newBono = { id: 'BN' + Date.now(), date: dateIso, amount: amt, assignedTo: dest, concept: conc, createdBy: currentUser };
             
-            bonos.unshift(newBono); 
-            renderBonos(); updateBonoDatalist();
+            bonos.unshift(newBono); renderBonos(); updateBonoDatalist();
 
             if(await pushData('add_bono', newBono)) {
                 showToast("Bono emitido exitosamente.", "success");
                 document.getElementById('form-bonos').reset();
-            } else { 
-                bonos.shift(); renderBonos(); 
-                showToast("Error al emitir.", "error"); 
-            }
+            } else { bonos.shift(); renderBonos(); showToast("Error al emitir.", "error"); }
             btn.disabled = false;
         }
 
@@ -777,51 +790,33 @@
 
             const tx = records.find(r => r.id === pendingVerifyId);
             if (tx) {
-                const oldStatus = tx.status;
-                const oldReceipt = tx.receipt;
-                tx.status = 'Verificado'; tx.receipt = receipt;
-                updateAllViews();
+                const oldStatus = tx.status; const oldReceipt = tx.receipt;
+                tx.status = 'Verificado'; tx.receipt = receipt; updateAllViews();
                 
-                if (await pushData('verify', { id: String(pendingVerifyId), receipt: receipt })) {
-                    showToast("Saldo Aprobado y Confirmado.", "success");
-                } else {
-                    tx.status = oldStatus; tx.receipt = oldReceipt; updateAllViews();
-                    showToast("Error al verificar en la nube.", "error");
-                }
+                if (await pushData('verify', { id: String(pendingVerifyId), receipt: receipt })) { showToast("Saldo Aprobado y Confirmado.", "success"); } 
+                else { tx.status = oldStatus; tx.receipt = oldReceipt; updateAllViews(); showToast("Error al verificar en la nube.", "error"); }
             }
-            btn.innerHTML = 'Aprobar'; btn.disabled = false;
-            closeModal();
+            btn.innerHTML = 'Aprobar'; btn.disabled = false; closeModal();
         }
 
         async function actionDeny(id) {
             if (confirm("¿DENEGAR esta transacción?\nSe marcará en rojo y NO sumará a las cuentas.")) {
                 const tx = records.find(r => r.id === id);
                 if (tx) { 
-                    const oldStatus = tx.status;
-                    tx.status = 'Denegado'; 
-                    updateAllViews(); 
-                    if(await pushData('deny', { id: String(id) })) {
-                        showToast("Transacción Denegada.", "info"); 
-                    } else {
-                        tx.status = oldStatus; updateAllViews();
-                        showToast("Error al denegar.", "error");
-                    }
+                    const oldStatus = tx.status; tx.status = 'Denegado'; updateAllViews(); 
+                    if(await pushData('deny', { id: String(id) })) { showToast("Transacción Denegada.", "info"); } 
+                    else { tx.status = oldStatus; updateAllViews(); showToast("Error al denegar.", "error"); }
                 }
             }
         }
 
-        /* Gussepy Authorization Logic */
         function actionAuthorizeAdvance(id) {
-            pendingAuthId = id;
-            document.getElementById('input-gussepy-detail').value = '';
-            document.getElementById('modal-gussepy').classList.remove('hidden');
-            document.getElementById('modal-gussepy').classList.add('flex');
+            pendingAuthId = id; document.getElementById('input-gussepy-detail').value = '';
+            document.getElementById('modal-gussepy').classList.remove('hidden'); document.getElementById('modal-gussepy').classList.add('flex');
         }
 
         function closeGussepyModal() {
-            document.getElementById('modal-gussepy').classList.add('hidden');
-            document.getElementById('modal-gussepy').classList.remove('flex');
-            pendingAuthId = null;
+            document.getElementById('modal-gussepy').classList.add('hidden'); document.getElementById('modal-gussepy').classList.remove('flex'); pendingAuthId = null;
         }
 
         async function confirmGussepyAuth() {
@@ -832,40 +827,39 @@
 
             const adv = advances.find(r => r.id === pendingAuthId);
             if (adv) {
-                const oldStatus = adv.status;
-                const oldDetail = adv.detail;
-                adv.status = 'Autorizado';
-                adv.detail = detail;
-                renderAdvances();
-
-                if (await pushData('authorize_advance', { id: String(pendingAuthId), detail: detail })) {
-                    showToast("Adelanto Autorizado.", "success");
-                } else {
-                    adv.status = oldStatus; adv.detail = oldDetail; renderAdvances();
-                    showToast("Error al autorizar en la nube.", "error");
-                }
+                const oldStatus = adv.status; const oldDetail = adv.detail;
+                adv.status = 'Autorizado'; adv.detail = detail; renderAdvances();
+                if (await pushData('authorize_advance', { id: String(pendingAuthId), detail: detail })) { showToast("Adelanto Autorizado.", "success"); } 
+                else { adv.status = oldStatus; adv.detail = oldDetail; renderAdvances(); showToast("Error al autorizar en la nube.", "error"); }
             }
-            btn.innerHTML = 'Autorizar'; btn.disabled = false;
-            closeGussepyModal();
+            btn.innerHTML = 'Autorizar'; btn.disabled = false; closeGussepyModal();
         }
 
+        // 🔴🔴🔴 FUNCION DE ELIMINACION REDISEÑADA Y REFORZADA 🔴🔴🔴
         async function actionDelete(id, type = 'record') {
             if(confirm("🚨 ATENCIÓN: ¿Seguro que desea eliminar este registro permanentemente?")) {
                 let actionStr = 'delete';
                 if(type === 'advance') actionStr = 'delete_advance';
                 if(type === 'bono') actionStr = 'delete_bono';
 
+                // Mostrar notificación de carga
+                showToast("Borrando en la nube...", "info");
+
+                // El backend espera el id como texto
                 if(await pushData(actionStr, {id: String(id)})) {
                     if(type === 'bono') {
-                        bonos = bonos.filter(r => String(r.id) !== String(id)); renderBonos(); updateBonoDatalist();
+                        bonos = bonos.filter(r => String(r.id) !== String(id)); 
+                        renderBonos(); updateBonoDatalist();
                     } else if(type === 'advance') {
-                        advances = advances.filter(r => String(r.id) !== String(id)); renderAdvances(); 
+                        advances = advances.filter(r => String(r.id) !== String(id)); 
+                        renderAdvances(); 
                     } else {
-                        records = records.filter(r => String(r.id) !== String(id)); updateAllViews(); 
+                        records = records.filter(r => String(r.id) !== String(id)); 
+                        updateAllViews(); 
                     }
                     showToast("Registro eliminado con éxito.", "success");
                 } else {
-                    showToast("Fallo al eliminar en la nube.", "error");
+                    showToast("Fallo al eliminar en la nube. Verifique conexión.", "error");
                 }
             }
         }
@@ -880,13 +874,19 @@
         }
 
         function renderDashboard() {
-            let jTot=0, jPen=0, tTot=0, tPen=0;
+            let jTot=0, jPen=0, tTot=0, tPen=0, gTot=0, gPen=0;
+            
             records.forEach(tx => {
                 if (tx.status === 'Denegado') return; 
-                const amt = parseFloat(tx.amount);
-                const isApproved = tx.status === 'Verificado';
+                const amt = parseFloat(tx.amount); const isApproved = tx.status === 'Verificado';
                 if (tx.assignedTo === 'jesus') { if (isApproved) jTot += amt; else jPen += amt; } 
                 else if (tx.assignedTo === 'tito') { if (isApproved) tTot += amt; else tPen += amt; }
+            });
+
+            advances.forEach(adv => {
+                const amt = parseFloat(adv.amount);
+                if (adv.status === 'Autorizado') gTot += amt;
+                else gPen += amt;
             });
 
             const dashJ = document.getElementById('dash-jesus-total');
@@ -894,7 +894,8 @@
                 dashJ.innerText = fmt(jTot);
                 const elJP = document.getElementById('dash-jesus-pend');
                 elJP.querySelector('.amt').innerText = fmt(jPen);
-                elJP.className = jPen > 0 ? "mt-3 flex items-center gap-1.5 text-[10px] font-bold text-orange-600" : "hidden";
+                elJP.classList.toggle("hidden", jPen <= 0);
+                elJP.classList.toggle("flex", jPen > 0);
             }
 
             const dashT = document.getElementById('dash-tito-total');
@@ -902,7 +903,17 @@
                 dashT.innerText = fmt(tTot);
                 const elTP = document.getElementById('dash-tito-pend'); 
                 elTP.querySelector('.amt').innerText = fmt(tPen);
-                elTP.className = tPen > 0 ? "mt-3 flex items-center gap-1.5 text-[10px] font-bold text-orange-600" : "hidden";
+                elTP.classList.toggle("hidden", tPen <= 0);
+                elTP.classList.toggle("flex", tPen > 0);
+            }
+
+            const dashG = document.getElementById('dash-gussepy-total');
+            if(dashG) {
+                dashG.innerText = fmt(gTot);
+                const elGP = document.getElementById('dash-gussepy-pend');
+                elGP.querySelector('.amt').innerText = fmt(gPen);
+                elGP.classList.toggle("hidden", gPen <= 0);
+                elGP.classList.toggle("flex", gPen > 0);
             }
         }
 
@@ -934,7 +945,6 @@
             });
 
             if(countEl) countEl.innerText = `${displayTx.length} registros encontrados`;
-
             if (displayTx.length === 0) { emptyState.classList.replace('hidden','flex'); return; } 
             else { emptyState.classList.replace('flex','hidden'); }
 
@@ -953,7 +963,6 @@
 
                 const cName = USERS[tx.createdBy] ? USERS[tx.createdBy].name : tx.createdBy;
                 const dName = USERS[tx.assignedTo] ? USERS[tx.assignedTo].name : tx.assignedTo;
-
                 let actionHtml = '';
                 
                 if (tx.status === 'Pendiente') {
@@ -966,7 +975,8 @@
                     }
                 }
                 
-                let delBtn = (USERS[currentUser].type === 'admin') ? `<button onclick="actionDelete('${tx.id}', 'record')" class="ml-3 text-slate-300 hover:text-rose-500 transition-colors" title="Eliminar"><i class="fas fa-trash-alt"></i></button>` : '';
+                // 🔴 Botón de Borrar muy visible para el Admin (Michelle) 🔴
+                let delBtn = (USERS[currentUser].type === 'admin') ? `<button onclick="actionDelete('${tx.id}', 'record')" class="ml-2 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white px-2 py-1.5 rounded-lg text-[10px] font-bold shadow-sm transition-colors border border-rose-100 hover:border-rose-600" title="Eliminar Definitivamente"><i class="fas fa-trash-alt"></i></button>` : '';
 
                 const finalAction = actionHtml || `<span class="text-slate-300">-</span>`;
 
@@ -999,7 +1009,8 @@
                     authBtn = `<button onclick="actionAuthorizeAdvance('${adv.id}')" class="ml-2 bg-indigo-500 hover:bg-indigo-600 text-white px-2.5 py-1 rounded-lg text-[9px] font-bold shadow-sm transition-colors"><i class="fas fa-stamp mr-1"></i> Aprobar</button>`;
                 }
                 
-                let delBtn = (USERS[currentUser].type === 'admin') ? `<button onclick="actionDelete('${adv.id}', 'advance')" class="ml-3 text-slate-300 hover:text-rose-500 transition-colors"><i class="fas fa-trash-alt"></i></button>` : '';
+                // 🔴 Botón de Borrar muy visible para el Admin (Michelle) 🔴
+                let delBtn = (USERS[currentUser].type === 'admin') ? `<button onclick="actionDelete('${adv.id}', 'advance')" class="ml-2 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white px-2 py-1.5 rounded-lg text-[10px] font-bold shadow-sm transition-colors border border-rose-100 hover:border-rose-600" title="Eliminar Definitivamente"><i class="fas fa-trash-alt"></i></button>` : '';
                 
                 tbody.insertAdjacentHTML('beforeend', `
                     <tr class="hover:bg-slate-50 transition-colors">
@@ -1026,7 +1037,8 @@
             else { empty.classList.replace('flex','hidden'); }
 
             bonos.forEach(b => {
-                let delBtn = (USERS[currentUser].type === 'bonos' || USERS[currentUser].type === 'admin') ? `<button onclick="actionDelete('${b.id}', 'bono')" class="text-slate-300 hover:text-rose-500 transition-colors"><i class="fas fa-trash-alt"></i></button>` : '';
+                // Boton de borrar para bonos
+                let delBtn = (USERS[currentUser].type === 'bonos' || USERS[currentUser].type === 'admin') ? `<button onclick="actionDelete('${b.id}', 'bono')" class="bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white px-2 py-1.5 rounded-lg text-[10px] font-bold shadow-sm transition-colors border border-rose-100 hover:border-rose-600" title="Eliminar Definitivamente"><i class="fas fa-trash-alt"></i></button>` : '';
                 
                 tbody.insertAdjacentHTML('beforeend', `
                     <tr class="hover:bg-rose-50/50 transition-colors">
