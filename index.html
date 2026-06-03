@@ -577,6 +577,10 @@
         let pendingVerifyId = null;
         let pendingAuthId = null;
 
+        // Variables para el temporizador de inactividad
+        let inactivityTimer;
+        const INACTIVITY_LIMIT = 15 * 60 * 1000; // 15 minutos en milisegundos
+
         window.onload = () => {
             const savedUser = localStorage.getItem('sb_user');
             if (savedUser && USERS[savedUser]) login(savedUser);
@@ -591,7 +595,23 @@
             document.getElementById('register-form').addEventListener('submit', handleRegister);
             document.getElementById('form-gussepy').addEventListener('submit', handleGussepy);
             document.getElementById('form-bonos').addEventListener('submit', handleBono);
+
+            // Iniciar detección de inactividad
+            ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(evt => {
+                document.addEventListener(evt, resetInactivityTimer);
+            });
         };
+
+        // Función que reinicia el reloj de inactividad
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            if (currentUser) {
+                inactivityTimer = setTimeout(() => {
+                    logout();
+                    showToast('Sesión cerrada por inactividad de 15 minutos', 'warning');
+                }, INACTIVITY_LIMIT);
+            }
+        }
 
         function showToast(msg, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -665,9 +685,10 @@
                 document.getElementById('btn-tab-dashboard').classList.remove('hidden');
                 document.getElementById('btn-tab-register').classList.remove('hidden');
                 document.getElementById('btn-tab-gussepy').classList.remove('hidden');
-                document.getElementById('btn-tab-bonos').classList.remove('hidden');
+                // Se ocultan los bonos para Michelle
                 document.getElementById('panel-admin').classList.remove('hidden');
                 document.getElementById('filter-user-container').classList.remove('hidden');
+                document.getElementById('panel-add-bonos').classList.add('hidden'); 
                 switchTab('tab-dashboard');
             } else if (user.type === 'master') {
                 document.getElementById('btn-tab-dashboard').classList.remove('hidden');
@@ -1172,8 +1193,8 @@
                 }).join('');
             }
 
-            // 4. RENDERIZADO BONOS (María, Michelle, Gussepy)
-            if (user.type === 'bonos' || user.type === 'admin' || user.type === 'master') {
+            // 4. RENDERIZADO BONOS (María Emilia, Gussepy) - Oculto para Michelle
+            if (user.type === 'bonos' || user.type === 'master') {
                 const tbodyBonos = document.getElementById('table-bonos');
                 let displayBonos = [...bonos];
 
@@ -1194,7 +1215,8 @@
                 if(tbodyBonos) {
                     tbodyBonos.innerHTML = displayBonos.map(b => {
                         let actions = '';
-                        if (user.type === 'admin' || user.type === 'bonos') {
+                        // Solo la creadora de bonos (María) puede eliminarlos
+                        if (user.type === 'bonos') {
                             actions = `<button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
                         }
                         
