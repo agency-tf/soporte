@@ -350,7 +350,7 @@
                                     <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1" id="label-amount">Monto ($) *</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold" id="icon-amount">$</div>
-                                        <input type="number" id="reg-amount" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3 border-2 border-slate-200 rounded-xl text-lg font-black text-slate-800 outline-none focus:border-indigo-500 transition-colors">
+                                        <input type="text" id="reg-amount" inputmode="decimal" pattern="[0-9]+([,\.][0-9]+)?" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3 border-2 border-slate-200 rounded-xl text-lg font-black text-slate-800 outline-none focus:border-indigo-500 transition-colors">
                                     </div>
                                 </div>
                             </div>
@@ -396,7 +396,7 @@
                                     <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Monto Retirado ($) *</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
-                                        <input type="number" id="gus-amount" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-amber-500 text-lg font-black text-slate-800 outline-none transition-colors">
+                                        <input type="text" id="gus-amount" inputmode="decimal" pattern="[0-9]+([,\.][0-9]+)?" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-amber-500 text-lg font-black text-slate-800 outline-none transition-colors">
                                     </div>
                                 </div>
                                 <div>
@@ -471,7 +471,7 @@
                                     <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Monto Bono ($) *</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
-                                        <input type="number" id="bono-amount" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-rose-500 text-lg font-black text-slate-800 outline-none transition-colors">
+                                        <input type="text" id="bono-amount" inputmode="decimal" pattern="[0-9]+([,\.][0-9]+)?" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-rose-500 text-lg font-black text-slate-800 outline-none transition-colors">
                                     </div>
                                 </div>
                             </div>
@@ -815,7 +815,16 @@
             btn.disabled = true;
 
             const dateVal = document.getElementById('reg-date').value;
-            let amt = parseFloat(document.getElementById('reg-amount').value);
+            // Solución iPhone: Reemplazar coma por punto automáticamente
+            let amtStr = document.getElementById('reg-amount').value.replace(',', '.');
+            let amt = parseFloat(amtStr);
+            
+            if (isNaN(amt) || amt <= 0) {
+                showToast('Ingrese un monto válido', 'error');
+                btn.innerHTML = orig; btn.disabled = false;
+                return;
+            }
+
             const conc = document.getElementById('reg-concept').value.trim();
             const isDebit = document.querySelector('input[name="reg-type"]:checked').value === 'debito';
             
@@ -854,7 +863,16 @@
             btn.innerHTML = 'Guardando...'; btn.disabled = true;
             
             const dateVal = document.getElementById('gus-date').value;
-            const amt = parseFloat(document.getElementById('gus-amount').value);
+            // Solución iPhone: Reemplazar coma por punto automáticamente
+            let amtStr = document.getElementById('gus-amount').value.replace(',', '.');
+            const amt = parseFloat(amtStr);
+            
+            if (isNaN(amt) || amt <= 0) {
+                showToast('Ingrese un monto válido', 'error');
+                btn.innerHTML = orig; btn.disabled = false;
+                return;
+            }
+
             const conc = document.getElementById('gus-concept').value.trim() || 'Adelanto';
             const newAdv = { id: 'ADV' + Date.now(), date: dateVal, amount: amt, concept: conc, createdBy: currentUser, status: 'Pendiente', detail: '' };
             
@@ -878,7 +896,16 @@
             btn.innerHTML = 'Guardando...'; btn.disabled = true;
             
             const dateVal = document.getElementById('bono-date').value;
-            const amt = parseFloat(document.getElementById('bono-amount').value);
+            // Solución iPhone: Reemplazar coma por punto automáticamente
+            let amtStr = document.getElementById('bono-amount').value.replace(',', '.');
+            const amt = parseFloat(amtStr);
+            
+            if (isNaN(amt) || amt <= 0) {
+                showToast('Ingrese un monto válido', 'error');
+                btn.innerHTML = orig; btn.disabled = false;
+                return;
+            }
+
             const dest = document.getElementById('bono-dest').value.trim();
             const conc = document.getElementById('bono-concept').value.trim() || 'Bono extra';
             const newBono = { id: 'BN' + Date.now(), date: dateVal, amount: amt, assignedTo: dest, concept: conc, createdBy: currentUser };
