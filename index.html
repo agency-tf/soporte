@@ -44,6 +44,16 @@
             text-align: left;
             margin: 0;
         }
+
+        /* FIX PARA OCULTAR FLECHAS (SPINNERS) EN INPUTS NUMÉRICOS */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield; /* Firefox */
+        }
     </style>
 </head>
 <body class="text-slate-800 antialiased selection:bg-indigo-200 selection:text-indigo-900">
@@ -206,7 +216,6 @@
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
                         <div class="relative w-full">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-calendar"></i></div>
-                            <!-- SE AGREGÓ appearance-none y min-w-0 PARA FIXEAR IPHONE -->
                             <input type="date" id="filter-date" class="block w-full min-w-0 pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 transition-colors appearance-none">
                         </div>
                     </div>
@@ -240,7 +249,7 @@
                             <h2 class="text-lg font-black text-slate-800" id="table-title">Historial de Movimientos</h2>
                             <p class="text-xs font-medium text-slate-500 mt-0.5">Auditoría en tiempo real</p>
                         </div>
-                        <button onclick="fetchData()" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 shadow-sm flex items-center justify-center transition-all" title="Recargar datos">
+                        <button onclick="fetchData(true)" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 shadow-sm flex items-center justify-center transition-all" title="Recargar datos">
                             <i class="fas fa-sync-alt text-xs"></i>
                         </button>
                     </div>
@@ -334,10 +343,11 @@
                                     </div>
                                 </div>
                                 <div>
+                                    <!-- INPUTMODE DECIMAL AGREGADO -->
                                     <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1" id="label-amount">Monto ($) *</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold" id="icon-amount">$</div>
-                                        <input type="number" id="reg-amount" step="0.01" min="0.01" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3 border-2 border-slate-200 rounded-xl text-lg font-black text-slate-800 outline-none focus:border-indigo-500 transition-colors">
+                                        <input type="number" id="reg-amount" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3 border-2 border-slate-200 rounded-xl text-lg font-black text-slate-800 outline-none focus:border-indigo-500 transition-colors">
                                     </div>
                                 </div>
                             </div>
@@ -379,10 +389,11 @@
                                     </div>
                                 </div>
                                 <div>
+                                    <!-- INPUTMODE DECIMAL AGREGADO -->
                                     <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Monto Retirado ($) *</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
-                                        <input type="number" id="gus-amount" step="0.01" min="0.01" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-amber-500 text-lg font-black text-slate-800 outline-none transition-colors">
+                                        <input type="number" id="gus-amount" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-amber-500 text-lg font-black text-slate-800 outline-none transition-colors">
                                     </div>
                                 </div>
                                 <div>
@@ -453,10 +464,11 @@
                                     </div>
                                 </div>
                                 <div>
+                                    <!-- INPUTMODE DECIMAL AGREGADO -->
                                     <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Monto Bono ($) *</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
-                                        <input type="number" id="bono-amount" step="0.01" min="0.01" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-rose-500 text-lg font-black text-slate-800 outline-none transition-colors">
+                                        <input type="number" id="bono-amount" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-rose-500 text-lg font-black text-slate-800 outline-none transition-colors">
                                     </div>
                                 </div>
                             </div>
@@ -577,9 +589,8 @@
         let pendingVerifyId = null;
         let pendingAuthId = null;
 
-        // Variables para el temporizador de inactividad
         let inactivityTimer;
-        const INACTIVITY_LIMIT = 15 * 60 * 1000; // 15 minutos en milisegundos
+        const INACTIVITY_LIMIT = 15 * 60 * 1000;
 
         window.onload = () => {
             const savedUser = localStorage.getItem('sb_user');
@@ -596,13 +607,11 @@
             document.getElementById('form-gussepy').addEventListener('submit', handleGussepy);
             document.getElementById('form-bonos').addEventListener('submit', handleBono);
 
-            // Iniciar detección de inactividad
             ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(evt => {
                 document.addEventListener(evt, resetInactivityTimer);
             });
         };
 
-        // Función que reinicia el reloj de inactividad
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
             if (currentUser) {
@@ -685,7 +694,6 @@
                 document.getElementById('btn-tab-dashboard').classList.remove('hidden');
                 document.getElementById('btn-tab-register').classList.remove('hidden');
                 document.getElementById('btn-tab-gussepy').classList.remove('hidden');
-                // Se ocultan los bonos para Michelle
                 document.getElementById('panel-admin').classList.remove('hidden');
                 document.getElementById('filter-user-container').classList.remove('hidden');
                 document.getElementById('panel-add-bonos').classList.add('hidden'); 
@@ -705,7 +713,6 @@
                 document.getElementById('filters-panel').classList.add('hidden');
                 switchTab('tab-bonos');
             } else {
-                // TITULARES (Jesús/Tito)
                 document.getElementById('btn-tab-dashboard').classList.remove('hidden');
                 document.getElementById('btn-tab-register').classList.remove('hidden');
                 document.getElementById('panel-personal').classList.remove('hidden');
@@ -743,8 +750,14 @@
             }
         }
 
-        async function fetchData() {
-            document.getElementById('global-loader').classList.remove('hidden');
+        async function fetchData(isBackground = false) {
+            if (!isBackground) {
+                document.getElementById('global-loader').classList.remove('hidden');
+            } else {
+                const icon = document.querySelector('button[title="Recargar datos"] i');
+                if (icon) icon.classList.add('fa-spin');
+            }
+            
             document.getElementById('sync-indicator').classList.add('hidden');
             try {
                 const res = await fetch(SCRIPT_URL);
@@ -761,7 +774,12 @@
             } catch (err) {
                 showToast("Fallo de conexión. Modo vista previa.", "error");
             } finally {
-                document.getElementById('global-loader').classList.add('hidden');
+                if (!isBackground) {
+                    document.getElementById('global-loader').classList.add('hidden');
+                } else {
+                    const icon = document.querySelector('button[title="Recargar datos"] i');
+                    if (icon) icon.classList.remove('fa-spin');
+                }
             }
         }
 
@@ -1073,7 +1091,7 @@
                 document.getElementById('table-title').innerText = "Supervisión Global";
             }
 
-            // Aplicar Filtros Globales (Todos los roles usan filtros)
+            // Aplicar Filtros Globales
             if (filters.date) {
                 displayRecords = displayRecords.filter(r => {
                     const recDate = new Date(r.date); recDate.setMinutes(recDate.getMinutes() + recDate.getTimezoneOffset());
@@ -1088,10 +1106,7 @@
                 displayRecords = displayRecords.filter(r => r.status === filters.status);
             }
             
-            // Ocultar débitos a Gussepy
-            if (user.type === 'master') {
-                displayRecords = displayRecords.filter(r => r.amount > 0);
-            }
+            if (user.type === 'master') displayRecords = displayRecords.filter(r => r.amount > 0);
 
             displayRecords.sort((a,b) => String(b.id).localeCompare(String(a.id)));
 
@@ -1111,7 +1126,6 @@
                         
                         let actions = '';
                         if (r.status === 'Pendiente') {
-                            // Lógica de Revisión Cruzada
                             const amICreator = (r.createdBy === currentUser);
                             const amIAdmin = (user.type === 'admin');
                             const amIOwner = (r.assignedTo === currentUser);
@@ -1193,12 +1207,11 @@
                 }).join('');
             }
 
-            // 4. RENDERIZADO BONOS (María Emilia, Gussepy) - Oculto para Michelle
+            // 4. RENDERIZADO BONOS
             if (user.type === 'bonos' || user.type === 'master') {
                 const tbodyBonos = document.getElementById('table-bonos');
                 let displayBonos = [...bonos];
 
-                // Filtros de Bonos
                 if (bonoFilters.date) {
                     displayBonos = displayBonos.filter(b => {
                         const recDate = new Date(b.date); recDate.setMinutes(recDate.getMinutes() + recDate.getTimezoneOffset());
@@ -1215,7 +1228,6 @@
                 if(tbodyBonos) {
                     tbodyBonos.innerHTML = displayBonos.map(b => {
                         let actions = '';
-                        // Solo la creadora de bonos (María) puede eliminarlos
                         if (user.type === 'bonos') {
                             actions = `<button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
                         }
