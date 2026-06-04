@@ -13,10 +13,7 @@
         .glass-dark { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); will-change: transform; transform: translateZ(0); }
         .login-bg { background: radial-gradient(circle at top right, #1e1b4b, #0f172a 40%, #020617); }
 
-        /* Optimizacion tactil para moviles */
         * { -webkit-tap-highlight-color: transparent; }
-        
-        /* Ocultar barra de desplazamiento manteniendo funcionalidad */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -33,35 +30,21 @@
         .theme-maria .bg-indigo-600 { background-color: #e11d48 !important; }
         .theme-maria .text-indigo-600 { color: #e11d48 !important; }
         .theme-maria .border-indigo-600 { border-color: #e11d48 !important; }
+        .theme-maria .hover\:bg-indigo-700:hover { background-color: #be123c !important; }
 
-        /* FIX PARA INPUTS DE FECHA EN IOS (iPhone/Safari) */
         input[type="date"] {
             -webkit-appearance: none !important;
             -moz-appearance: none !important;
             appearance: none !important;
-            min-width: 0;
-            width: 100%;
-            background-color: transparent;
+            min-width: 0; width: 100%; background-color: transparent;
         }
-        input[type="date"]::-webkit-date-and-time-value {
-            text-align: left;
-            margin: 0;
-        }
-
-        /* FIX PARA OCULTAR FLECHAS (SPINNERS) EN INPUTS NUMÉRICOS */
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type="number"] {
-            -moz-appearance: textfield; /* Firefox */
-        }
+        input[type="date"]::-webkit-date-and-time-value { text-align: left; margin: 0; }
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
     </style>
 </head>
 <body class="text-slate-800 antialiased selection:bg-indigo-200 selection:text-indigo-900">
 
-    <!-- TOAST NOTIFICATIONS -->
     <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
     <!-- PANTALLA DE LOGIN -->
@@ -110,7 +93,7 @@
     </div>
 
     <!-- APLICACIÓN PRINCIPAL -->
-    <div id="screen-app" class="hidden min-h-screen flex flex-col">
+    <div id="screen-app" class="hidden min-h-screen flex flex-col transition-colors duration-500" id="app-container">
         <!-- NAVBAR -->
         <nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -137,17 +120,26 @@
             <!-- SUBMENÚ DE PESTAÑAS -->
             <div class="bg-slate-50/80 backdrop-blur border-b border-slate-200 px-4 sm:px-6 overflow-x-auto hide-scrollbar">
                 <div class="max-w-7xl mx-auto flex gap-2 py-2" id="nav-tabs">
-                    <button onclick="switchTab('tab-dashboard')" id="btn-tab-dashboard" class="px-4 py-2 rounded-lg text-xs font-bold transition-colors bg-indigo-600 text-white shadow-sm flex items-center gap-2 whitespace-nowrap">
+                    <!-- Tabs Generales -->
+                    <button onclick="switchTab('tab-dashboard')" id="btn-tab-dashboard" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors bg-indigo-600 text-white shadow-sm flex items-center gap-2 whitespace-nowrap">
                         <i class="fas fa-chart-pie"></i> Panel Global
                     </button>
-                    <button onclick="switchTab('tab-register')" id="btn-tab-register" class="px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap">
+                    <button onclick="switchTab('tab-register')" id="btn-tab-register" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap">
                         <i class="fas fa-plus-circle"></i> Registrar Movimiento
                     </button>
-                    <button onclick="switchTab('tab-gussepy')" id="btn-tab-gussepy" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 items-center gap-2 whitespace-nowrap">
+                    <button onclick="switchTab('tab-gussepy')" id="btn-tab-gussepy" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap">
                         <i class="fas fa-hand-holding-usd"></i> Adelantos (Gussepy)
                     </button>
-                    <button onclick="switchTab('tab-bonos')" id="btn-tab-bonos" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 items-center gap-2 whitespace-nowrap">
-                        <i class="fas fa-gift"></i> Bonos (María)
+                    
+                    <!-- Tabs Bonos (María / Gussepy) -->
+                    <button onclick="switchTab('tab-maria-dash')" id="btn-tab-maria-dash" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap">
+                        <i class="fas fa-trophy"></i> Rendimiento Bonos
+                    </button>
+                    <button onclick="switchTab('tab-maria-add')" id="btn-tab-maria-add" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap">
+                        <i class="fas fa-gift"></i> Emitir Bono
+                    </button>
+                    <button onclick="switchTab('tab-maria-list')" id="btn-tab-maria-list" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap">
+                        <i class="fas fa-list-alt"></i> Historial Bonos
                     </button>
                 </div>
             </div>
@@ -156,16 +148,16 @@
         <!-- ÁREA DE CONTENIDO -->
         <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 relative">
             
-            <!-- LOADER INICIAL -->
             <div id="global-loader" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#f8fafc] rounded-2xl">
                 <div class="w-12 h-12 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
                 <p class="text-sm font-bold text-slate-500 animate-pulse">Sincronizando base de datos...</p>
             </div>
 
-            <!-- TAB: PANEL GLOBAL & AUDITORÍA -->
-            <div id="tab-dashboard" class="fade-in space-y-6">
-                
-                <!-- DASHBOARD GENERAL (Michelle y Gussepy) -->
+            <!-- ========================================== -->
+            <!-- PESTAÑAS GENERALES (Michelle, Jesús, Tito) -->
+            <!-- ========================================== -->
+            <div id="tab-dashboard" class="hidden fade-in space-y-6">
+                <!-- DASHBOARD GENERAL -->
                 <div id="panel-admin" class="hidden mb-6">
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         <div class="bg-gradient-to-br from-[#f0f9ff] to-[#e0f2fe] border border-[#bae6fd] p-6 rounded-2xl shadow-sm relative overflow-hidden">
@@ -177,7 +169,6 @@
                             <p class="text-[#0369a1] text-[10px] font-black uppercase tracking-widest mb-1 relative z-10">SALDO CONFIRMADO: JESÚS</p>
                             <h3 class="text-4xl font-black text-slate-900 tracking-tight relative z-10" id="dash-jesus">$0.00</h3>
                         </div>
-                        
                         <div class="bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7] border border-[#bbf7d0] p-6 rounded-2xl shadow-sm relative overflow-hidden">
                             <div class="absolute -right-6 -top-6 text-[#86efac]/30 text-9xl"><i class="fas fa-piggy-bank"></i></div>
                             <div class="flex justify-between items-start mb-4 relative z-10">
@@ -187,7 +178,6 @@
                             <p class="text-[#15803d] text-[10px] font-black uppercase tracking-widest mb-1 relative z-10">SALDO CONFIRMADO: TITO</p>
                             <h3 class="text-4xl font-black text-slate-900 tracking-tight relative z-10" id="dash-tito">$0.00</h3>
                         </div>
-
                         <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 p-6 rounded-2xl shadow-sm relative overflow-hidden">
                             <div class="absolute -right-6 -top-6 text-amber-500/10 text-9xl"><i class="fas fa-hand-holding-usd"></i></div>
                             <div class="flex justify-between items-start mb-4 relative z-10">
@@ -213,8 +203,8 @@
                     </div>
                 </div>
 
-                <!-- PANEL DE FILTROS (Visible para todos menos María) -->
-                <div id="filters-panel" class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                <!-- PANEL DE FILTROS -->
+                <div class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
                     <div>
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
                         <div class="relative w-full">
@@ -223,7 +213,7 @@
                         </div>
                     </div>
                     <div id="filter-user-container">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Propietario de Cuenta</label>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta</label>
                         <select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
                             <option value="all">Todas las cuentas</option>
                             <option value="jesus">Jesús</option>
@@ -252,7 +242,7 @@
                     </div>
                 </div>
 
-                <!-- TABLA DE HISTORIAL -->
+                <!-- TABLA HISTORIAL -->
                 <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
                     <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                         <div>
@@ -297,8 +287,6 @@
                             <p class="text-sm text-slate-500 font-medium mt-1 relative z-10">Ingresa los detalles del saldo a registrar</p>
                         </div>
                         <form id="register-form" class="p-6 sm:p-10 space-y-8">
-                            
-                            <!-- Tipo de Movimiento (Ingreso vs Débito) -->
                             <div>
                                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 ml-1">Tipo de Movimiento *</label>
                                 <div class="flex gap-4">
@@ -320,8 +308,6 @@
                                     </label>
                                 </div>
                             </div>
-
-                            <!-- Selector Administrador -->
                             <div id="admin-select-user" class="hidden">
                                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 ml-1">Asignar a Cuenta *</label>
                                 <div class="flex gap-4">
@@ -343,7 +329,6 @@
                                     </label>
                                 </div>
                             </div>
-
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Fecha de Registro</label>
@@ -360,7 +345,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div>
                                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Concepto / Detalle <span class="text-slate-400 lowercase font-semibold">(Opcional)</span></label>
                                 <div class="relative">
@@ -368,7 +352,6 @@
                                     <input type="text" id="reg-concept" placeholder="Ej. Depósito Banco" class="block w-full pl-10 pr-4 py-3.5 border-2 border-slate-200 rounded-xl text-sm font-medium text-slate-800 outline-none focus:border-indigo-500 transition-colors">
                                 </div>
                             </div>
-
                             <button type="submit" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex justify-center items-center gap-2">
                                 <i class="fas fa-save"></i> Guardar Registro
                             </button>
@@ -377,7 +360,7 @@
                 </div>
             </div>
 
-            <!-- TAB: ADELANTOS GUSSEPY -->
+            <!-- TAB: ADELANTOS GUSSEPY (Michelle) -->
             <div id="tab-gussepy" class="hidden fade-in">
                 <div class="max-w-5xl mx-auto space-y-6">
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden" id="panel-add-gussepy">
@@ -443,36 +426,85 @@
                 </div>
             </div>
 
-            <!-- TAB: BONOS MARÍA EMILIA -->
-            <div id="tab-bonos" class="hidden fade-in theme-maria">
-                <div class="max-w-5xl mx-auto space-y-6">
-                    <div class="bg-white border border-rose-100 rounded-2xl shadow-md overflow-hidden" id="panel-add-bonos">
-                        <div class="px-6 py-5 border-b border-rose-50 bg-rose-50/50 flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center"><i class="fas fa-gift"></i></div>
-                            <div>
-                                <h2 class="text-lg font-black text-rose-900">Emisión de Bonos</h2>
-                                <p class="text-xs font-medium text-rose-500">Registro de entrega a personal</p>
-                            </div>
+            <!-- ========================================== -->
+            <!-- PESTAÑAS BONOS (María Emilia / Gussepy)    -->
+            <!-- ========================================== -->
+
+            <!-- TAB: MARIA DASHBOARD -->
+            <div id="tab-maria-dash" class="hidden fade-in space-y-6 theme-maria">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-rose-100 relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 text-rose-50 text-7xl"><i class="fas fa-ticket-alt"></i></div>
+                        <div class="relative z-10">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Bonos Entregados</p>
+                            <h3 class="text-3xl font-black text-slate-800" id="maria-dash-qty-entregados">0</h3>
                         </div>
-                        <form id="form-bonos" class="p-6 sm:p-8 space-y-6 bg-white">
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-rose-100 relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 text-rose-50 text-7xl"><i class="fas fa-coins"></i></div>
+                        <div class="relative z-10">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Inversión (Valor $)</p>
+                            <h3 class="text-3xl font-black text-rose-600" id="maria-dash-val-entregados">$0.00</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-emerald-100 relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 text-emerald-50 text-7xl"><i class="fas fa-check-circle"></i></div>
+                        <div class="relative z-10">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Bonos Ganados</p>
+                            <h3 class="text-3xl font-black text-slate-800" id="maria-dash-qty-ganados">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-emerald-100 relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 text-emerald-50 text-7xl"><i class="fas fa-hand-holding-usd"></i></div>
+                        <div class="relative z-10">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Premio Total ($)</p>
+                            <h3 class="text-3xl font-black text-emerald-600" id="maria-dash-val-ganados">$0.00</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TOP JUGADORES -->
+                <div class="bg-white border border-rose-100 rounded-2xl shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-rose-50 bg-rose-50/50 flex justify-between items-center">
+                        <h3 class="text-sm font-black text-rose-900"><i class="fas fa-star text-amber-400 mr-1"></i> Top Jugadores (Más Ganadores)</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                    <th class="p-4 pl-6">Posición</th>
+                                    <th class="p-4">Jugador</th>
+                                    <th class="p-4 text-center">Bonos Recibidos</th>
+                                    <th class="p-4 text-center">Bonos Ganados</th>
+                                    <th class="p-4 pr-6 text-right">Ganancia Total ($)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-maria-top" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: MARIA ADD -->
+            <div id="tab-maria-add" class="hidden fade-in theme-maria">
+                <div class="max-w-3xl mx-auto">
+                    <div class="bg-white border border-rose-100 rounded-2xl shadow-md overflow-hidden">
+                        <div class="px-6 py-8 sm:p-10 border-b border-rose-50 bg-rose-50/30 flex flex-col items-center text-center">
+                            <div class="w-16 h-16 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-3xl mb-4 shadow-inner"><i class="fas fa-gift"></i></div>
+                            <h2 class="text-2xl font-black text-rose-900">Emisión de Bonos</h2>
+                            <p class="text-sm font-medium text-slate-500 mt-1">Registra un nuevo bono entregado a un jugador</p>
+                        </div>
+                        <form id="form-bonos" class="p-6 sm:p-10 space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div>
-                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Fecha</label>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Fecha de Emisión</label>
                                     <div class="relative w-full">
                                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-calendar"></i></div>
                                         <input type="date" id="bono-date" required class="block w-full min-w-0 pl-10 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-rose-500 text-sm font-bold text-slate-700 outline-none transition-colors cursor-pointer appearance-none">
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Destinatario *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-user-check"></i></div>
-                                        <input type="text" id="bono-dest" list="bonos-destinatarios" required placeholder="Nombre..." class="block w-full pl-10 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-rose-500 text-sm font-bold text-slate-800 outline-none transition-colors">
-                                        <datalist id="bonos-destinatarios"></datalist>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Monto Bono ($) *</label>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Monto del Bono ($) *</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
                                         <input type="text" id="bono-amount" inputmode="decimal" pattern="[0-9]+([,\.][0-9]+)?" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-rose-500 text-lg font-black text-slate-800 outline-none transition-colors">
@@ -480,61 +512,79 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Concepto <span class="text-slate-400 lowercase font-semibold">(Opcional)</span></label>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Destinatario (Jugador) *</label>
                                 <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-align-left"></i></div>
-                                    <input type="text" id="bono-concept" placeholder="Motivo del bono..." class="block w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-rose-500 text-sm font-medium text-slate-800 outline-none transition-colors">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-user-check"></i></div>
+                                    <input type="text" id="bono-dest" list="bonos-destinatarios" required placeholder="Nombre del jugador..." class="block w-full pl-10 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-rose-500 text-sm font-bold text-slate-800 outline-none transition-colors">
+                                    <datalist id="bonos-destinatarios"></datalist>
                                 </div>
                             </div>
-                            <div class="pt-2">
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Concepto / Promoción <span class="text-slate-400 lowercase font-semibold">(Opcional)</span></label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-align-left"></i></div>
+                                    <input type="text" id="bono-concept" placeholder="Motivo del bono..." class="block w-full pl-10 pr-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-rose-500 text-sm font-medium text-slate-800 outline-none transition-colors">
+                                </div>
+                            </div>
+                            <div class="pt-4">
                                 <button type="submit" class="w-full py-4 bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-rose-600/20 transition-all flex justify-center items-center gap-2">
-                                    <i class="fas fa-gift"></i> Registrar Bono
+                                    <i class="fas fa-save"></i> Registrar Emisión de Bono
                                 </button>
                             </div>
                         </form>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Filtro Bonos -->
-                    <div class="bg-white border border-rose-100 p-4 rounded-2xl shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end mb-6">
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
-                            <input type="date" id="filter-bono-date" class="w-full min-w-0 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-rose-500 appearance-none">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Destinatario</label>
-                            <input type="text" id="filter-bono-dest" placeholder="Nombre..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-rose-500">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto Exacto ($)</label>
-                            <div class="relative w-full">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
-                                <input type="text" id="filter-bono-amount" inputmode="decimal" placeholder="0.00" class="block w-full min-w-0 pl-7 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-rose-500 transition-colors">
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="applyBonoFilters()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white rounded-xl py-2.5 text-sm font-bold transition-colors">Filtrar</button>
-                            <button onclick="clearBonoFilters()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2.5 text-sm font-bold transition-colors">Limpiar</button>
+            <!-- TAB: MARIA LIST -->
+            <div id="tab-maria-list" class="hidden fade-in theme-maria space-y-6">
+                <!-- Filtro Bonos -->
+                <div class="bg-white border border-rose-100 p-4 rounded-2xl shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
+                        <input type="date" id="filter-bono-date" class="w-full min-w-0 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-rose-500 appearance-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Jugador</label>
+                        <input type="text" id="filter-bono-dest" placeholder="Nombre..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-rose-500">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto Bono ($)</label>
+                        <div class="relative w-full">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
+                            <input type="text" id="filter-bono-amount" inputmode="decimal" placeholder="0.00" class="block w-full min-w-0 pl-7 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-rose-500 transition-colors">
                         </div>
                     </div>
+                    <div class="flex gap-2">
+                        <button onclick="applyBonoFilters()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white rounded-xl py-2.5 text-sm font-bold transition-colors">Filtrar</button>
+                        <button onclick="clearBonoFilters()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2.5 text-sm font-bold transition-colors">Limpiar</button>
+                    </div>
+                </div>
 
-                    <div class="bg-white border border-rose-100 rounded-2xl shadow-sm overflow-hidden">
-                        <div class="px-6 py-4 border-b border-rose-50 bg-rose-50/30">
-                            <h3 class="text-sm font-black text-rose-900">Historial de Bonos Emitidos</h3>
+                <div class="bg-white border border-rose-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                    <div class="px-6 py-5 border-b border-rose-50 bg-rose-50/30 flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-black text-rose-900">Historial de Bonos Emitidos</h3>
                         </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                        <th class="p-4 pl-6">Fecha</th>
-                                        <th class="p-4">Destinatario</th>
-                                        <th class="p-4">Monto</th>
-                                        <th class="p-4">Concepto</th>
-                                        <th class="p-4 pr-6 text-center">Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="table-bonos" class="divide-y divide-slate-100"></tbody>
-                            </table>
-                        </div>
+                        <button onclick="fetchData(true)" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-rose-600 shadow-sm flex items-center justify-center transition-all" title="Recargar datos">
+                            <i class="fas fa-sync-alt text-xs"></i>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                    <th class="p-4 pl-6">Fecha</th>
+                                    <th class="p-4">Destinatario</th>
+                                    <th class="p-4">Monto Bono</th>
+                                    <th class="p-4">Concepto</th>
+                                    <th class="p-4">Estado</th>
+                                    <th class="p-4">Monto Ganado</th>
+                                    <th class="p-4 pr-6 text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-bonos" class="divide-y divide-slate-100"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -589,6 +639,30 @@
         </div>
     </div>
 
+    <!-- MODAL WIN BONO (MARÍA) -->
+    <div id="modal-win-bono" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in">
+            <div class="p-6 text-center border-b border-slate-100 bg-rose-50">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-trophy"></i></div>
+                <h3 class="text-lg font-black text-slate-800">Bono Ganador</h3>
+                <p class="text-xs font-medium text-slate-500 mt-1">Felicidades al jugador. Ingresa el premio.</p>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Monto Ganado ($) *</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
+                        <input type="text" id="input-win-amount" inputmode="decimal" pattern="[0-9]+([,\.][0-9]+)?" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-emerald-500 text-lg font-black text-slate-800 outline-none transition-colors">
+                    </div>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button onclick="closeWinBonoModal()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-bold rounded-xl transition-colors">Cancelar</button>
+                    <button id="btn-win-confirm" onclick="confirmWinBono()" class="flex-1 py-3 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold rounded-xl shadow-md transition-colors">Marcar Ganado</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxaCgzGJ6EAZkTFU2vRNlRCPBCrYPZfaANrKCrwRxjfB528FozA9JuRFsboQ8H8IoKCDA/exec';
 
@@ -607,6 +681,7 @@
         
         let pendingVerifyId = null;
         let pendingAuthId = null;
+        let pendingWinId = null;
 
         let inactivityTimer;
         const INACTIVITY_LIMIT = 15 * 60 * 1000;
@@ -654,6 +729,13 @@
             document.getElementById('screen-login').classList.add('hidden');
             document.getElementById('screen-app').classList.add('hidden');
             document.getElementById(`screen-${screen}`).classList.remove('hidden');
+            
+            // Actualizar color de la app (Nav) según usuario
+            if (screen === 'app' && currentUser === 'maria') {
+                document.getElementById('app-container').classList.add('theme-maria');
+            } else {
+                document.getElementById('app-container').classList.remove('theme-maria');
+            }
         }
 
         function toggleAmountStyle() {
@@ -696,18 +778,8 @@
             
             document.getElementById('admin-select-user').classList.toggle('hidden', user.type !== 'admin');
             
-            document.getElementById('btn-tab-dashboard').classList.add('hidden');
-            document.getElementById('btn-tab-register').classList.add('hidden');
-            document.getElementById('btn-tab-gussepy').classList.add('hidden');
-            document.getElementById('btn-tab-bonos').classList.add('hidden');
-
-            document.getElementById('panel-admin').classList.add('hidden');
-            document.getElementById('panel-personal').classList.add('hidden');
-            document.getElementById('filter-user-container').classList.add('hidden');
-            document.getElementById('filters-panel').classList.remove('hidden');
-
-            document.getElementById('panel-add-gussepy').classList.remove('hidden');
-            document.getElementById('panel-add-bonos').classList.remove('hidden');
+            ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            ['panel-admin', 'panel-personal', 'filter-user-container', 'filters-panel', 'panel-add-gussepy'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
 
             if (user.type === 'admin') {
                 document.getElementById('btn-tab-dashboard').classList.remove('hidden');
@@ -715,26 +787,28 @@
                 document.getElementById('btn-tab-gussepy').classList.remove('hidden');
                 document.getElementById('panel-admin').classList.remove('hidden');
                 document.getElementById('filter-user-container').classList.remove('hidden');
-                document.getElementById('panel-add-bonos').classList.add('hidden'); 
+                document.getElementById('filters-panel').classList.remove('hidden');
+                document.getElementById('panel-add-gussepy').classList.remove('hidden');
                 switchTab('tab-dashboard');
             } else if (user.type === 'master') {
                 document.getElementById('btn-tab-dashboard').classList.remove('hidden');
                 document.getElementById('btn-tab-gussepy').classList.remove('hidden');
-                document.getElementById('btn-tab-bonos').classList.remove('hidden');
+                document.getElementById('btn-tab-maria-dash').classList.remove('hidden');
+                document.getElementById('btn-tab-maria-list').classList.remove('hidden');
                 document.getElementById('panel-admin').classList.remove('hidden');
                 document.getElementById('filter-user-container').classList.remove('hidden');
-                
-                document.getElementById('panel-add-gussepy').classList.add('hidden');
-                document.getElementById('panel-add-bonos').classList.add('hidden');
+                document.getElementById('filters-panel').classList.remove('hidden');
                 switchTab('tab-dashboard');
             } else if (user.type === 'bonos') {
-                document.getElementById('btn-tab-bonos').classList.remove('hidden');
-                document.getElementById('filters-panel').classList.add('hidden');
-                switchTab('tab-bonos');
+                document.getElementById('btn-tab-maria-dash').classList.remove('hidden');
+                document.getElementById('btn-tab-maria-add').classList.remove('hidden');
+                document.getElementById('btn-tab-maria-list').classList.remove('hidden');
+                switchTab('tab-maria-dash');
             } else {
                 document.getElementById('btn-tab-dashboard').classList.remove('hidden');
                 document.getElementById('btn-tab-register').classList.remove('hidden');
                 document.getElementById('panel-personal').classList.remove('hidden');
+                document.getElementById('filters-panel').classList.remove('hidden');
                 switchTab('tab-dashboard');
             }
 
@@ -750,7 +824,7 @@
         }
 
         function switchTab(tabId) {
-            ['tab-dashboard', 'tab-register', 'tab-gussepy', 'tab-bonos'].forEach(id => {
+            ['tab-dashboard', 'tab-register', 'tab-gussepy', 'tab-maria-dash', 'tab-maria-add', 'tab-maria-list'].forEach(id => {
                 const el = document.getElementById(id);
                 if(el) el.classList.add('hidden');
                 const btn = document.getElementById(`btn-${id}`);
@@ -764,7 +838,7 @@
             const activeBtn = document.getElementById(`btn-${tabId}`);
             if(activeBtn) {
                 activeBtn.classList.remove('text-slate-500', 'hover:bg-slate-200');
-                if (tabId === 'tab-bonos') activeBtn.classList.add('bg-rose-600', 'text-white', 'shadow-sm');
+                if (tabId.includes('maria')) activeBtn.classList.add('bg-rose-600', 'text-white', 'shadow-sm');
                 else activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
             }
         }
@@ -842,7 +916,6 @@
 
             const conc = document.getElementById('reg-concept').value.trim();
             const isDebit = document.querySelector('input[name="reg-type"]:checked').value === 'debito';
-            
             if (isDebit) amt = -Math.abs(amt);
 
             let assigned = currentUser;
@@ -899,7 +972,7 @@
             btn.innerHTML = orig; btn.disabled = false;
 
             pushData('add_advance', newAdv).then(res => {
-                if(!res.success) { advances.shift(); updateAllViews(); showToast("Error de red.", "error"); }
+                if(!res.success) { advances.shift(); updateAllViews(); showToast("Error de red: " + res.msg, "error"); }
             });
         }
 
@@ -920,22 +993,23 @@
             }
 
             const dest = document.getElementById('bono-dest').value.trim();
-            const conc = document.getElementById('bono-concept').value.trim() || 'Bono extra';
-            const newBono = { id: 'BN' + Date.now(), date: dateVal, amount: amt, assignedTo: dest, concept: conc, createdBy: currentUser };
+            const conc = document.getElementById('bono-concept').value.trim() || 'Sin detalle';
+            const newBono = { id: 'BN' + Date.now(), date: dateVal, amount: amt, assignedTo: dest, concept: conc, createdBy: currentUser, status: 'Entregado', amountWon: 0 };
             
             bonos.unshift(newBono); 
             updateAllViews(); updateBonoDatalist();
-            showToast('Bono grabado exitosamente', 'success');
+            showToast('Bono emitido exitosamente', 'success');
 
             document.getElementById('form-bonos').reset();
             document.getElementById('bono-date').value = new Date().toISOString().split('T')[0];
             btn.innerHTML = orig; btn.disabled = false;
 
             pushData('add_bono', newBono).then(res => {
-                if(!res.success) { bonos.shift(); updateAllViews(); showToast("Fallo en registro.", "error"); }
+                if(!res.success) { bonos.shift(); updateAllViews(); showToast("Falla de red: " + res.msg, "error"); }
             });
         }
 
+        /* --- VERIFICACIONES JESUS/TITO --- */
         function actionVerify(id) {
             pendingVerifyId = String(id);
             document.getElementById('input-receipt').value = '';
@@ -992,6 +1066,7 @@
             }
         }
 
+        /* --- AUTORIZACIONES GUSSEPY --- */
         function actionAuthorizeAdvance(id) {
             pendingAuthId = String(id);
             document.getElementById('input-gussepy-detail').value = '';
@@ -1006,7 +1081,7 @@
         async function confirmGussepyAuth() {
             if (!pendingAuthId) return;
             const targetId = String(pendingAuthId);
-            const detail = document.getElementById('input-gussepy-detail').value.trim() || 'Aprobado';
+            const detail = document.getElementById('input-gussepy-detail').value.trim() || 'Aprobado sin detalle';
             const btn = document.getElementById('btn-gussepy-confirm');
             const orig = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
@@ -1017,15 +1092,60 @@
                 adv.status = 'Autorizado'; adv.detail = detail; 
                 updateAllViews();
                 closeGussepyModal();
-                showToast('Autorizado', 'success');
+                showToast('Autorizado exitosamente', 'success');
                 
                 pushData('authorize_advance', { id: targetId, detail: detail }).then(res => {
-                    if (!res.success) { adv.status = oldStatus; adv.detail = oldDetail; updateAllViews(); showToast("Error", "error"); }
+                    if (!res.success) { adv.status = oldStatus; adv.detail = oldDetail; updateAllViews(); showToast("Error: " + res.msg, "error"); }
                 });
             } else { closeGussepyModal(); }
             btn.innerHTML = orig; btn.disabled = false; 
         }
 
+        /* --- ACCIONES BONOS MARIA --- */
+        function actionWinBono(id) {
+            pendingWinId = String(id);
+            document.getElementById('input-win-amount').value = '';
+            document.getElementById('modal-win-bono').classList.remove('hidden');
+            document.getElementById('modal-win-bono').classList.add('flex');
+        }
+
+        function closeWinBonoModal() {
+            document.getElementById('modal-win-bono').classList.add('hidden'); document.getElementById('modal-win-bono').classList.remove('flex'); pendingWinId = null;
+        }
+
+        async function confirmWinBono() {
+            if (!pendingWinId) return;
+            const targetId = String(pendingWinId);
+            let amtStr = document.getElementById('input-win-amount').value.replace(',', '.');
+            const amtWon = parseFloat(amtStr);
+            const btn = document.getElementById('btn-win-confirm');
+            const orig = btn.innerHTML;
+            
+            if (isNaN(amtWon) || amtWon <= 0) {
+                showToast('Ingrese un premio válido', 'error'); return;
+            }
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
+
+            const bono = bonos.find(b => String(b.id) === targetId);
+            if (bono) {
+                const oldStatus = bono.status; const oldAmtWon = bono.amountWon;
+                bono.status = 'Ganado'; bono.amountWon = amtWon; 
+                updateAllViews();
+                closeWinBonoModal();
+                showToast('Bono marcado como Ganado', 'success');
+                
+                pushData('win_bono', { id: targetId, amountWon: amtWon }).then(res => {
+                    if (!res.success) { 
+                        bono.status = oldStatus; bono.amountWon = oldAmtWon; updateAllViews(); 
+                        showToast("Error: " + res.msg, "error"); 
+                    }
+                });
+            } else { closeWinBonoModal(); }
+            btn.innerHTML = orig; btn.disabled = false;
+        }
+
+        /* --- ELIMINAR GENERAL --- */
         async function actionDelete(id, type = 'record') {
             if(confirm("🚨 ATENCIÓN: ¿Seguro que desea eliminar este registro permanentemente?")) {
                 const targetId = String(id);
@@ -1099,7 +1219,7 @@
             const user = USERS[currentUser];
             if (!user) return;
 
-            // 1. CÁLCULO DE DASHBOARDS (Global)
+            // 1. CÁLCULO DE DASHBOARDS
             if (user.type === 'admin' || user.type === 'master') {
                 const totalJesus = records.reduce((sum, r) => sum + (r.assignedTo === 'jesus' && r.status === 'Verificado' ? r.amount : 0), 0);
                 const totalTito = records.reduce((sum, r) => sum + (r.assignedTo === 'tito' && r.status === 'Verificado' ? r.amount : 0), 0);
@@ -1110,7 +1230,6 @@
                 if(document.getElementById('dash-gussepy')) document.getElementById('dash-gussepy').innerText = fmt(totalAdelantos);
             }
 
-            // DASHBOARD PERSONAL (Tito/Jesus) - Suma mes actual
             if (user.type === 'user') {
                 const now = new Date();
                 const curMonth = now.getMonth();
@@ -1124,6 +1243,47 @@
                     return sum;
                 }, 0);
                 if(document.getElementById('dash-personal')) document.getElementById('dash-personal').innerText = fmt(totalPersonal);
+            }
+
+            // Dashboard Bonos (Maria & Master)
+            if (user.type === 'bonos' || user.type === 'master') {
+                let qtyEntregados = bonos.length;
+                let valEntregados = bonos.reduce((s, b) => s + b.amount, 0);
+                let ganados = bonos.filter(b => b.status === 'Ganado');
+                let valGanados = ganados.reduce((s, b) => s + (b.amountWon || 0), 0);
+
+                if(document.getElementById('maria-dash-qty-entregados')) document.getElementById('maria-dash-qty-entregados').innerText = qtyEntregados;
+                if(document.getElementById('maria-dash-val-entregados')) document.getElementById('maria-dash-val-entregados').innerText = fmt(valEntregados);
+                if(document.getElementById('maria-dash-qty-ganados')) document.getElementById('maria-dash-qty-ganados').innerText = ganados.length;
+                if(document.getElementById('maria-dash-val-ganados')) document.getElementById('maria-dash-val-ganados').innerText = fmt(valGanados);
+
+                // Top Jugadores
+                const players = {};
+                bonos.forEach(b => {
+                    if (!players[b.assignedTo]) players[b.assignedTo] = { name: b.assignedTo, received: 0, won: 0, totalWon: 0 };
+                    players[b.assignedTo].received++;
+                    if (b.status === 'Ganado') {
+                        players[b.assignedTo].won++;
+                        players[b.assignedTo].totalWon += (b.amountWon || 0);
+                    }
+                });
+                
+                const topPlayers = Object.values(players).sort((a, b) => b.totalWon - a.totalWon).slice(0, 5);
+                const tbodyTop = document.getElementById('table-maria-top');
+                if (tbodyTop) {
+                    if (topPlayers.length === 0) {
+                        tbodyTop.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-xs text-slate-400">Aún no hay datos registrados</td></tr>`;
+                    } else {
+                        tbodyTop.innerHTML = topPlayers.map((p, i) => `
+                        <tr class="border-b border-slate-50 hover:bg-slate-50">
+                            <td class="p-4 pl-6 text-xs font-black text-rose-500">#${i+1}</td>
+                            <td class="p-4 text-xs font-bold text-slate-800 uppercase tracking-wide">${p.name}</td>
+                            <td class="p-4 text-center text-xs text-slate-500">${p.received}</td>
+                            <td class="p-4 text-center text-xs font-bold text-emerald-600">${p.won}</td>
+                            <td class="p-4 pr-6 text-right text-sm font-black text-emerald-600">${fmt(p.totalWon)}</td>
+                        </tr>`).join('');
+                    }
+                }
             }
 
             // 2. RENDERIZADO TABLA REGISTROS
@@ -1160,9 +1320,6 @@
             }
             
             if (user.type === 'master') displayRecords = displayRecords.filter(r => r.amount > 0);
-
-            // Orden Original Restaurado (Por ID/Creación)
-            displayRecords.sort((a,b) => String(b.id).localeCompare(String(a.id)));
 
             const tbody = document.getElementById('table-body');
             const emptyState = document.getElementById('empty-state');
@@ -1235,7 +1392,6 @@
             if (user.type === 'admin' || user.type === 'master') {
                 const tbodyGus = document.getElementById('table-gussepy');
                 let displayAdvances = [...advances];
-                displayAdvances.sort((a,b) => String(b.id).localeCompare(String(a.id)));
 
                 tbodyGus.innerHTML = displayAdvances.map(a => {
                     let badge = a.status === 'Autorizado' 
@@ -1283,24 +1439,37 @@
                     }
                 }
 
-                displayBonos.sort((a,b) => String(b.id).localeCompare(String(a.id)));
-
                 if(tbodyBonos) {
-                    tbodyBonos.innerHTML = displayBonos.map(b => {
-                        let actions = '';
-                        if (user.type === 'bonos') {
-                            actions = `<button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
-                        }
-                        
-                        return `
-                        <tr class="hover:bg-slate-50 transition-colors border-b border-rose-50">
-                            <td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(b.date)}</td>
-                            <td class="p-4 text-xs font-bold text-rose-600 uppercase tracking-wide"><i class="fas fa-user-circle mr-1"></i> ${b.assignedTo}</td>
-                            <td class="p-4 text-sm font-black text-slate-800">${fmt(b.amount)}</td>
-                            <td class="p-4 text-xs font-medium text-slate-600">${b.concept}</td>
-                            <td class="p-4 pr-6 text-center">${actions}</td>
-                        </tr>`;
-                    }).join('');
+                    if(displayBonos.length === 0) {
+                        tbodyBonos.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400 text-sm">No hay registros con esos filtros.</td></tr>`;
+                    } else {
+                        tbodyBonos.innerHTML = displayBonos.map(b => {
+                            let actions = '';
+                            let badge = b.status === 'Ganado' 
+                                ? `<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-trophy mr-1"></i>Ganado</span>`
+                                : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Entregado</span>`;
+                            
+                            if (user.type === 'bonos') {
+                                if (b.status !== 'Ganado') {
+                                    actions += `<button onclick="actionWinBono('${b.id}')" class="w-8 h-8 mr-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors flex items-center justify-center inline-flex" title="Marcar Ganado"><i class="fas fa-check"></i></button>`;
+                                }
+                                actions += `<button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center inline-flex" title="Eliminar"><i class="fas fa-trash"></i></button>`;
+                            }
+                            
+                            const wonAmtStr = b.status === 'Ganado' ? `<span class="font-black text-emerald-600">${fmt(b.amountWon)}</span>` : `<span class="text-slate-300">-</span>`;
+
+                            return `
+                            <tr class="hover:bg-slate-50 transition-colors border-b border-rose-50">
+                                <td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(b.date)}</td>
+                                <td class="p-4 text-xs font-bold text-rose-600 uppercase tracking-wide"><i class="fas fa-user-circle mr-1"></i> ${b.assignedTo}</td>
+                                <td class="p-4 text-sm font-black text-slate-800">${fmt(b.amount)}</td>
+                                <td class="p-4 text-xs font-medium text-slate-600">${b.concept}</td>
+                                <td class="p-4">${badge}</td>
+                                <td class="p-4 text-sm">${wonAmtStr}</td>
+                                <td class="p-4 pr-6 text-center">${actions}</td>
+                            </tr>`;
+                        }).join('');
+                    }
                 }
             }
         }
