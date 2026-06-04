@@ -93,7 +93,7 @@
     </div>
 
     <!-- APLICACIÓN PRINCIPAL -->
-    <div id="screen-app" class="hidden min-h-screen flex flex-col transition-colors duration-500" id="app-container">
+    <div id="screen-app" class="hidden min-h-screen flex flex-col transition-colors duration-500">
         <!-- NAVBAR -->
         <nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -731,10 +731,11 @@
             document.getElementById(`screen-${screen}`).classList.remove('hidden');
             
             // Actualizar color de la app (Nav) según usuario
+            const appContainer = document.getElementById('screen-app');
             if (screen === 'app' && currentUser === 'maria') {
-                document.getElementById('app-container').classList.add('theme-maria');
+                appContainer.classList.add('theme-maria');
             } else {
-                document.getElementById('app-container').classList.remove('theme-maria');
+                appContainer.classList.remove('theme-maria');
             }
         }
 
