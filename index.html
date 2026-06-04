@@ -214,23 +214,23 @@
                 </div>
 
                 <!-- PANEL DE FILTROS (Visible para todos menos María) -->
-                <div id="filters-panel" class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm mb-6 flex flex-col sm:flex-row gap-4 items-end">
-                    <div class="w-full sm:w-1/4">
+                <div id="filters-panel" class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                    <div>
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
                         <div class="relative w-full">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-calendar"></i></div>
                             <input type="date" id="filter-date" class="block w-full min-w-0 pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 transition-colors appearance-none">
                         </div>
                     </div>
-                    <div class="w-full sm:w-1/4" id="filter-user-container">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta</label>
+                    <div id="filter-user-container">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Propietario de Cuenta</label>
                         <select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
                             <option value="all">Todas las cuentas</option>
                             <option value="jesus">Jesús</option>
                             <option value="tito">Tito</option>
                         </select>
                     </div>
-                    <div class="w-full sm:w-1/4">
+                    <div>
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Estado</label>
                         <select id="filter-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
                             <option value="all">Todos</option>
@@ -239,7 +239,14 @@
                             <option value="Denegado">Denegados</option>
                         </select>
                     </div>
-                    <div class="w-full sm:w-1/4 flex gap-2">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto Exacto ($)</label>
+                        <div class="relative w-full">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
+                            <input type="number" id="filter-amount" step="0.01" inputmode="decimal" placeholder="0.00" class="block w-full min-w-0 pl-7 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 transition-colors">
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
                         <button onclick="applyFilters()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-2.5 text-sm font-bold transition-colors">Filtrar</button>
                         <button onclick="clearFilters()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2.5 text-sm font-bold transition-colors">Limpiar</button>
                     </div>
@@ -346,7 +353,6 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <!-- INPUTMODE DECIMAL AGREGADO -->
                                     <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1" id="label-amount">Monto ($) *</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold" id="icon-amount">$</div>
@@ -392,7 +398,6 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <!-- INPUTMODE DECIMAL AGREGADO -->
                                     <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Monto Retirado ($) *</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
@@ -467,7 +472,6 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <!-- INPUTMODE DECIMAL AGREGADO -->
                                     <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Monto Bono ($) *</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
@@ -491,16 +495,23 @@
                     </div>
 
                     <!-- Filtro Bonos -->
-                    <div class="bg-white border border-rose-100 p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row gap-4 items-end">
-                        <div class="w-full sm:w-1/3">
+                    <div class="bg-white border border-rose-100 p-4 rounded-2xl shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end mb-6">
+                        <div>
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
                             <input type="date" id="filter-bono-date" class="w-full min-w-0 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-rose-500 appearance-none">
                         </div>
-                        <div class="w-full sm:w-1/3">
+                        <div>
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Destinatario</label>
                             <input type="text" id="filter-bono-dest" placeholder="Nombre..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-rose-500">
                         </div>
-                        <div class="w-full sm:w-1/3 flex gap-2">
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto Exacto ($)</label>
+                            <div class="relative w-full">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
+                                <input type="number" id="filter-bono-amount" step="0.01" inputmode="decimal" placeholder="0.00" class="block w-full min-w-0 pl-7 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-rose-500 transition-colors">
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
                             <button onclick="applyBonoFilters()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white rounded-xl py-2.5 text-sm font-bold transition-colors">Filtrar</button>
                             <button onclick="clearBonoFilters()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2.5 text-sm font-bold transition-colors">Limpiar</button>
                         </div>
@@ -526,6 +537,11 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Footer Autor -->
+            <div class="mt-12 text-center pb-6">
+                <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">SISTEMA CREADO POR TITO FEIJOO</p>
             </div>
 
         </main>
@@ -586,8 +602,8 @@
 
         let currentUser = null;
         let records = [], advances = [], bonos = [];
-        let filters = { date: '', user: 'all', status: 'all' };
-        let bonoFilters = { date: '', dest: '' };
+        let filters = { date: '', user: 'all', status: 'all', amount: '' };
+        let bonoFilters = { date: '', dest: '', amount: '' };
         
         let pendingVerifyId = null;
         let pendingAuthId = null;
@@ -815,7 +831,6 @@
             btn.disabled = true;
 
             const dateVal = document.getElementById('reg-date').value;
-            // Solución iPhone: Reemplazar coma por punto automáticamente
             let amtStr = document.getElementById('reg-amount').value.replace(',', '.');
             let amt = parseFloat(amtStr);
             
@@ -863,7 +878,6 @@
             btn.innerHTML = 'Guardando...'; btn.disabled = true;
             
             const dateVal = document.getElementById('gus-date').value;
-            // Solución iPhone: Reemplazar coma por punto automáticamente
             let amtStr = document.getElementById('gus-amount').value.replace(',', '.');
             const amt = parseFloat(amtStr);
             
@@ -896,7 +910,6 @@
             btn.innerHTML = 'Guardando...'; btn.disabled = true;
             
             const dateVal = document.getElementById('bono-date').value;
-            // Solución iPhone: Reemplazar coma por punto automáticamente
             let amtStr = document.getElementById('bono-amount').value.replace(',', '.');
             const amt = parseFloat(amtStr);
             
@@ -1054,27 +1067,31 @@
             filters.date = document.getElementById('filter-date').value;
             filters.user = document.getElementById('filter-user').value;
             filters.status = document.getElementById('filter-status').value;
+            filters.amount = document.getElementById('filter-amount').value.replace(',', '.');
             updateAllViews();
         }
 
         function clearFilters() {
-            filters = { date: '', user: 'all', status: 'all' };
+            filters = { date: '', user: 'all', status: 'all', amount: '' };
             document.getElementById('filter-date').value = '';
             document.getElementById('filter-user').value = 'all';
             document.getElementById('filter-status').value = 'all';
+            document.getElementById('filter-amount').value = '';
             updateAllViews();
         }
 
         function applyBonoFilters() {
             bonoFilters.date = document.getElementById('filter-bono-date').value;
             bonoFilters.dest = document.getElementById('filter-bono-dest').value.trim().toLowerCase();
+            bonoFilters.amount = document.getElementById('filter-bono-amount').value.replace(',', '.');
             updateAllViews();
         }
 
         function clearBonoFilters() {
-            bonoFilters = { date: '', dest: '' };
+            bonoFilters = { date: '', dest: '', amount: '' };
             document.getElementById('filter-bono-date').value = '';
             document.getElementById('filter-bono-dest').value = '';
+            document.getElementById('filter-bono-amount').value = '';
             updateAllViews();
         }
 
@@ -1135,9 +1152,16 @@
             if (filters.status !== 'all') {
                 displayRecords = displayRecords.filter(r => r.status === filters.status);
             }
+            if (filters.amount) {
+                const searchAmt = parseFloat(filters.amount);
+                if (!isNaN(searchAmt)) {
+                    displayRecords = displayRecords.filter(r => Math.abs(r.amount) === Math.abs(searchAmt));
+                }
+            }
             
             if (user.type === 'master') displayRecords = displayRecords.filter(r => r.amount > 0);
 
+            // Orden Original Restaurado (Por ID/Creación)
             displayRecords.sort((a,b) => String(b.id).localeCompare(String(a.id)));
 
             const tbody = document.getElementById('table-body');
@@ -1251,6 +1275,12 @@
                 }
                 if (bonoFilters.dest) {
                     displayBonos = displayBonos.filter(b => (b.assignedTo || '').toLowerCase().includes(bonoFilters.dest));
+                }
+                if (bonoFilters.amount) {
+                    const searchAmt = parseFloat(bonoFilters.amount);
+                    if (!isNaN(searchAmt)) {
+                        displayBonos = displayBonos.filter(b => Math.abs(b.amount) === Math.abs(searchAmt));
+                    }
                 }
 
                 displayBonos.sort((a,b) => String(b.id).localeCompare(String(a.id)));
