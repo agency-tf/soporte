@@ -664,7 +664,7 @@
         const USERS = {
             'michelle': { pass: 'Michi2026*', name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600' },
             'jesus': { pass: 'JesusVentas88', name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]' },
-            'tito': { pass: 'TitoPagos99', name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]' },
+            'tito': { pass: '1311397689', name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]' },
             'gussepy': { pass: 'GussepyMaster', name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600' },
             'maria': { pass: 'MariaBonos2026', name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600' }
         };
@@ -1290,7 +1290,7 @@
             }
 
             // 2. RENDERIZADO TABLA REGISTROS
-            let displayRecords = records;
+            let displayRecords = [...records];
             
             if (user.type === 'user') {
                 displayRecords = records.filter(r => r.assignedTo === currentUser);
@@ -1323,6 +1323,9 @@
             }
             
             if (user.type === 'master') displayRecords = displayRecords.filter(r => r.amount > 0);
+
+            // Ordenamiento: Los más recientes arriba
+            displayRecords.sort((a, b) => String(b.id).localeCompare(String(a.id)));
 
             const tbody = document.getElementById('table-body');
             const emptyState = document.getElementById('empty-state');
@@ -1396,6 +1399,9 @@
                 const tbodyGus = document.getElementById('table-gussepy');
                 let displayAdvances = [...advances];
 
+                // Ordenamiento: Los más recientes arriba
+                displayAdvances.sort((a, b) => String(b.id).localeCompare(String(a.id)));
+
                 tbodyGus.innerHTML = displayAdvances.map(a => {
                     let badge = a.status === 'Autorizado' 
                         ? `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-crown mr-1"></i>Autorizado</span>`
@@ -1420,11 +1426,12 @@
                 }).join('');
             }
 
-            // 4. RENDERIZADO BONOS
+            // 4. RENDERIZADO BONOS (María Emilia / Gussepy)
             if (user.type === 'bonos' || user.type === 'master') {
                 const tbodyBonos = document.getElementById('table-bonos');
                 let displayBonos = [...bonos];
 
+                // Filtros
                 if (bonoFilters.date) {
                     displayBonos = displayBonos.filter(b => {
                         const recDate = new Date(b.date); recDate.setMinutes(recDate.getMinutes() + recDate.getTimezoneOffset());
@@ -1441,6 +1448,9 @@
                         displayBonos = displayBonos.filter(b => Math.abs(b.amount) === Math.abs(searchAmt));
                     }
                 }
+
+                // Ordenamiento: Los más recientes arriba
+                displayBonos.sort((a, b) => String(b.id).localeCompare(String(a.id)));
 
                 if(tbodyBonos) {
                     if(displayBonos.length === 0) {
