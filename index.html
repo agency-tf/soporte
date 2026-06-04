@@ -360,7 +360,7 @@
                 </div>
             </div>
 
-            <!-- TAB: ADELANTOS GUSSEPY (Michelle) -->
+            <!-- TAB: ADELANTOS GUSSEPY -->
             <div id="tab-gussepy" class="hidden fade-in">
                 <div class="max-w-5xl mx-auto space-y-6">
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden" id="panel-add-gussepy">
@@ -579,7 +579,7 @@
                                     <th class="p-4">Monto Bono</th>
                                     <th class="p-4">Concepto</th>
                                     <th class="p-4">Estado</th>
-                                    <th class="p-4">Monto Ganado</th>
+                                    <th class="p-4">Ganancia ($)</th>
                                     <th class="p-4 pr-6 text-center">Acción</th>
                                 </tr>
                             </thead>
@@ -587,11 +587,6 @@
                         </table>
                     </div>
                 </div>
-            </div>
-
-            <!-- Footer Autor -->
-            <div class="mt-12 text-center pb-6">
-                <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">SISTEMA CREADO POR TITO FEIJOO</p>
             </div>
 
         </main>
@@ -664,7 +659,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxaCgzGJ6EAZkTFU2vRNlRCPBCrYPZfaANrKCrwRxjfB528FozA9JuRFsboQ8H8IoKCDA/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycV0HwNBzzREBBgYl7PI-qVrNdsVvgQITvnhvkT8qXITxoLlZ47dm-XatyWBAZYalByA/exec';
 
         const USERS = {
             'michelle': { pass: 'Michi2026*', name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600' },
@@ -730,7 +725,6 @@
             document.getElementById('screen-app').classList.add('hidden');
             document.getElementById(`screen-${screen}`).classList.remove('hidden');
             
-            // Actualizar color de la app (Nav) según usuario
             const appContainer = document.getElementById('screen-app');
             if (screen === 'app' && currentUser === 'maria') {
                 appContainer.classList.add('theme-maria');
@@ -780,7 +774,10 @@
             document.getElementById('admin-select-user').classList.toggle('hidden', user.type !== 'admin');
             
             ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            ['panel-admin', 'panel-personal', 'filter-user-container', 'filters-panel', 'panel-add-gussepy'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
+            ['panel-admin', 'panel-personal', 'filter-user-container', 'filters-panel', 'panel-add-gussepy'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
 
             if (user.type === 'admin') {
                 document.getElementById('btn-tab-dashboard').classList.remove('hidden');
@@ -788,7 +785,10 @@
                 document.getElementById('btn-tab-gussepy').classList.remove('hidden');
                 document.getElementById('panel-admin').classList.remove('hidden');
                 document.getElementById('filter-user-container').classList.remove('hidden');
-                document.getElementById('filters-panel').classList.remove('hidden');
+                
+                const filtersPanel = document.getElementById('filters-panel');
+                if (filtersPanel) filtersPanel.classList.remove('hidden');
+                
                 document.getElementById('panel-add-gussepy').classList.remove('hidden');
                 switchTab('tab-dashboard');
             } else if (user.type === 'master') {
@@ -798,7 +798,10 @@
                 document.getElementById('btn-tab-maria-list').classList.remove('hidden');
                 document.getElementById('panel-admin').classList.remove('hidden');
                 document.getElementById('filter-user-container').classList.remove('hidden');
-                document.getElementById('filters-panel').classList.remove('hidden');
+                
+                const filtersPanel = document.getElementById('filters-panel');
+                if (filtersPanel) filtersPanel.classList.remove('hidden');
+                
                 switchTab('tab-dashboard');
             } else if (user.type === 'bonos') {
                 document.getElementById('btn-tab-maria-dash').classList.remove('hidden');
@@ -809,7 +812,10 @@
                 document.getElementById('btn-tab-dashboard').classList.remove('hidden');
                 document.getElementById('btn-tab-register').classList.remove('hidden');
                 document.getElementById('panel-personal').classList.remove('hidden');
-                document.getElementById('filters-panel').classList.remove('hidden');
+                
+                const filtersPanel = document.getElementById('filters-panel');
+                if (filtersPanel) filtersPanel.classList.remove('hidden');
+                
                 switchTab('tab-dashboard');
             }
 
@@ -1010,7 +1016,6 @@
             });
         }
 
-        /* --- VERIFICACIONES JESUS/TITO --- */
         function actionVerify(id) {
             pendingVerifyId = String(id);
             document.getElementById('input-receipt').value = '';
@@ -1067,7 +1072,6 @@
             }
         }
 
-        /* --- AUTORIZACIONES GUSSEPY --- */
         function actionAuthorizeAdvance(id) {
             pendingAuthId = String(id);
             document.getElementById('input-gussepy-detail').value = '';
@@ -1102,7 +1106,6 @@
             btn.innerHTML = orig; btn.disabled = false; 
         }
 
-        /* --- ACCIONES BONOS MARIA --- */
         function actionWinBono(id) {
             pendingWinId = String(id);
             document.getElementById('input-win-amount').value = '';
@@ -1146,7 +1149,6 @@
             btn.innerHTML = orig; btn.disabled = false;
         }
 
-        /* --- ELIMINAR GENERAL --- */
         async function actionDelete(id, type = 'record') {
             if(confirm("🚨 ATENCIÓN: ¿Seguro que desea eliminar este registro permanentemente?")) {
                 const targetId = String(id);
