@@ -6,6 +6,7 @@
     <title>Sepybet - Control de Saldos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
@@ -41,13 +42,15 @@
         input[type="date"]::-webkit-date-and-time-value { text-align: left; margin: 0; }
         input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
+        
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="text-slate-800 antialiased selection:bg-indigo-200 selection:text-indigo-900">
 
     <div id="toast-container" class="fixed bottom-4 right-4 z-[110] flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- NUEVO LOADER GLOBAL CENTRADO (MEJORADO) -->
     <div id="global-loader" class="hidden fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex flex-col items-center justify-center transition-opacity">
         <div class="bg-white p-6 rounded-3xl shadow-2xl flex flex-col items-center gap-4 transform transition-all scale-100">
             <div class="w-12 h-12 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin"></div>
@@ -94,7 +97,6 @@
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500"><i class="fas fa-lock"></i></div>
                         <input type="password" id="login-pass" required placeholder="••••••••••••" class="block w-full pl-10 pr-10 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl text-sm font-bold text-slate-200 outline-none focus:border-indigo-500 focus:bg-slate-800">
-                        <!-- Ojo para ver contraseña -->
                         <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 transition-colors">
                             <i id="login-eye" class="fas fa-eye"></i>
                         </button>
@@ -145,13 +147,19 @@
                         <i class="fas fa-hand-holding-usd"></i> Adelantos (Gussepy)
                     </button>
                     <button onclick="switchTab('tab-maria-dash')" id="btn-tab-maria-dash" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap">
-                        <i class="fas fa-trophy"></i> Rendimiento Bonos
+                        <i class="fas fa-trophy"></i> Dashboard Bonos
                     </button>
                     <button onclick="switchTab('tab-maria-add')" id="btn-tab-maria-add" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap">
                         <i class="fas fa-gift"></i> Emitir Bono
                     </button>
                     <button onclick="switchTab('tab-maria-list')" id="btn-tab-maria-list" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap">
                         <i class="fas fa-list-alt"></i> Historial Bonos
+                    </button>
+                    <button onclick="switchTab('tab-maria-ref-add')" id="btn-tab-maria-ref-add" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap">
+                        <i class="fas fa-user-plus"></i> Registrar Referido
+                    </button>
+                    <button onclick="switchTab('tab-maria-ref-list')" id="btn-tab-maria-ref-list" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap">
+                        <i class="fas fa-users"></i> Historial Referidos
                     </button>
                 </div>
             </div>
@@ -208,76 +216,79 @@
                     </div>
                 </div>
 
-                <!-- PANEL DE FILTROS -->
-                <div class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
-                        <div class="relative w-full">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-calendar"></i></div>
-                            <input type="date" id="filter-date" class="block w-full min-w-0 pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 transition-colors appearance-none">
-                        </div>
-                    </div>
-                    <div id="filter-user-container">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta</label>
-                        <select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
-                            <option value="all">Todas las cuentas</option>
-                            <option value="jesus">Jesús</option>
-                            <option value="tito">Tito</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Estado</label>
-                        <select id="filter-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
-                            <option value="all">Todos</option>
-                            <option value="Pendiente">Pendientes</option>
-                            <option value="Verificado">Verificados</option>
-                            <option value="Denegado">Denegados</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto Exacto ($)</label>
-                        <div class="relative w-full">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
-                            <input type="text" id="filter-amount" inputmode="decimal" placeholder="0.00" class="block w-full min-w-0 pl-7 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 transition-colors">
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="applyFilters()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-2.5 text-sm font-bold transition-colors">Filtrar</button>
-                        <button onclick="clearFilters()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2.5 text-sm font-bold transition-colors">Limpiar</button>
-                    </div>
-                </div>
-
-                <!-- TABLA HISTORIAL -->
-                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-                    <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <!-- CONTENEDOR DE AUDITORÍA (Oculto para Gussepy) -->
+                <div id="panel-auditoria-main" class="block">
+                    <!-- PANEL DE FILTROS -->
+                    <div class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
                         <div>
-                            <h2 class="text-lg font-black text-slate-800" id="table-title">Historial de Movimientos</h2>
-                            <p class="text-xs font-medium text-slate-500 mt-0.5">Auditoría en tiempo real</p>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
+                            <div class="relative w-full">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-calendar"></i></div>
+                                <input type="date" id="filter-date" class="block w-full min-w-0 pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 transition-colors appearance-none">
+                            </div>
                         </div>
-                        <button onclick="fetchData(true)" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 shadow-sm flex items-center justify-center transition-all" title="Recargar datos">
-                            <i class="fas fa-sync-alt text-xs"></i>
-                        </button>
+                        <div id="filter-user-container">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta</label>
+                            <select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
+                                <option value="all">Todas las cuentas</option>
+                                <option value="jesus">Jesús</option>
+                                <option value="tito">Tito</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Estado</label>
+                            <select id="filter-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
+                                <option value="all">Todos</option>
+                                <option value="Pendiente">Pendientes</option>
+                                <option value="Verificado">Verificados</option>
+                                <option value="Denegado">Denegados</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto Exacto ($)</label>
+                            <div class="relative w-full">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
+                                <input type="text" id="filter-amount" inputmode="decimal" placeholder="0.00" class="block w-full min-w-0 pl-7 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 transition-colors">
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="applyFilters()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-2.5 text-sm font-bold transition-colors">Filtrar</button>
+                            <button onclick="clearFilters()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2.5 text-sm font-bold transition-colors">Limpiar</button>
+                        </div>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                    <th class="p-4 pl-6">Fecha</th>
-                                    <th class="p-4">Monto</th>
-                                    <th class="p-4">Concepto</th>
-                                    <th class="p-4">Asignado A</th>
-                                    <th class="p-4">Estado</th>
-                                    <th class="p-4">Comprobante</th>
-                                    <th class="p-4 pr-6 text-center">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody id="table-body" class="divide-y divide-slate-100"></tbody>
-                        </table>
-                    </div>
-                    <div id="empty-state" class="hidden flex-col items-center justify-center p-12 text-center">
-                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 text-2xl mb-4"><i class="fas fa-inbox"></i></div>
-                        <h3 class="text-sm font-bold text-slate-700">No hay registros</h3>
-                        <p class="text-xs text-slate-500 mt-1">La base de datos está limpia o no coincide con los filtros.</p>
+
+                    <!-- TABLA HISTORIAL -->
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                        <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                            <div>
+                                <h2 class="text-lg font-black text-slate-800" id="table-title">Historial de Movimientos</h2>
+                                <p class="text-xs font-medium text-slate-500 mt-0.5">Auditoría en tiempo real</p>
+                            </div>
+                            <button onclick="fetchData(true)" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 shadow-sm flex items-center justify-center transition-all" title="Recargar datos">
+                                <i class="fas fa-sync-alt text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                        <th class="p-4 pl-6">Fecha</th>
+                                        <th class="p-4">Monto</th>
+                                        <th class="p-4">Concepto</th>
+                                        <th class="p-4">Asignado A</th>
+                                        <th class="p-4">Estado</th>
+                                        <th class="p-4">Comprobante</th>
+                                        <th class="p-4 pr-6 text-center">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                        <div id="empty-state" class="hidden flex-col items-center justify-center p-12 text-center">
+                            <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 text-2xl mb-4"><i class="fas fa-inbox"></i></div>
+                            <h3 class="text-sm font-bold text-slate-700">No hay registros</h3>
+                            <p class="text-xs text-slate-500 mt-1">La base de datos está limpia o no coincide con los filtros.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -435,7 +446,7 @@
             <!-- PESTAÑAS BONOS (María Emilia / Gussepy)    -->
             <!-- ========================================== -->
 
-            <!-- TAB: MARIA DASHBOARD -->
+            <!-- TAB: MARIA DASHBOARD (RENDIMIENTO) -->
             <div id="tab-maria-dash" class="hidden fade-in space-y-6 theme-maria">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-rose-100 relative overflow-hidden">
@@ -468,10 +479,10 @@
                     </div>
                 </div>
 
-                <!-- TOP JUGADORES -->
-                <div class="bg-white border border-rose-100 rounded-2xl shadow-sm overflow-hidden">
-                    <div class="px-6 py-4 border-b border-rose-50 bg-rose-50/50 flex justify-between items-center">
-                        <h3 class="text-sm font-black text-rose-900"><i class="fas fa-star text-amber-400 mr-1"></i> Top Jugadores (Más Ganadores)</h3>
+                <!-- TOP JUGADORES GANADORES -->
+                <div class="bg-white border border-emerald-100 rounded-2xl shadow-sm overflow-hidden mb-6">
+                    <div class="px-6 py-4 border-b border-emerald-50 bg-emerald-50/50 flex justify-between items-center">
+                        <h3 class="text-sm font-black text-emerald-900"><i class="fas fa-trophy text-amber-500 mr-1"></i> Top 5: Mayores Ganadores</h3>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
@@ -479,18 +490,62 @@
                                 <tr class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                                     <th class="p-4 pl-6">Posición</th>
                                     <th class="p-4">Jugador</th>
-                                    <th class="p-4 text-center">Bonos Recibidos</th>
                                     <th class="p-4 text-center">Bonos Ganados</th>
                                     <th class="p-4 pr-6 text-right">Ganancia Total ($)</th>
                                 </tr>
                             </thead>
-                            <tbody id="table-maria-top" class="divide-y divide-slate-100"></tbody>
+                            <tbody id="table-maria-top-ganadores" class="divide-y divide-slate-100"></tbody>
                         </table>
+                    </div>
+                </div>
+
+                <!-- TOP JUGADORES CON MÁS BONOS RECIBIDOS -->
+                <div class="bg-white border border-rose-100 rounded-2xl shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-rose-50 bg-rose-50/50 flex justify-between items-center">
+                        <h3 class="text-sm font-black text-rose-900"><i class="fas fa-gift text-rose-400 mr-1"></i> Top 5: Más Bonos Recibidos</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                    <th class="p-4 pl-6">Posición</th>
+                                    <th class="p-4">Jugador</th>
+                                    <th class="p-4 text-center">Cantidad Recibida</th>
+                                    <th class="p-4 pr-6 text-right">Inversión Total ($)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-maria-top-recibidos" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- DASHBOARD REFERIDOS -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-indigo-100">
+                        <h3 class="text-xs font-black text-indigo-900 uppercase tracking-widest mb-3"><i class="fas fa-chart-line mr-1 text-indigo-500"></i> Crecimiento Referidos (Mes Actual)</h3>
+                        <div class="h-48 w-full relative">
+                            <canvas id="chart-referrals"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-indigo-100 overflow-hidden flex flex-col">
+                        <h3 class="text-xs font-black text-indigo-900 uppercase tracking-widest mb-3"><i class="fas fa-medal mr-1 text-amber-500"></i> Top 5: Mejores Referentes</h3>
+                        <div class="overflow-y-auto flex-1 hide-scrollbar">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                        <th class="pb-2">Pos</th>
+                                        <th class="pb-2">Referente</th>
+                                        <th class="pb-2 text-center">Personas</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-top-referrers" class="divide-y divide-slate-50"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB: MARIA ADD -->
+            <!-- TAB: MARIA ADD (Emitir Bono) -->
             <div id="tab-maria-add" class="hidden fade-in theme-maria">
                 <div class="max-w-3xl mx-auto">
                     <div class="bg-white border border-rose-100 rounded-2xl shadow-md overflow-hidden">
@@ -541,7 +596,7 @@
                 </div>
             </div>
 
-            <!-- TAB: MARIA LIST -->
+            <!-- TAB: MARIA LIST (Historial Bonos) -->
             <div id="tab-maria-list" class="hidden fade-in theme-maria space-y-6">
                 <!-- Filtro Bonos -->
                 <div class="bg-white border border-rose-100 p-4 rounded-2xl shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
@@ -594,9 +649,126 @@
                 </div>
             </div>
 
+            <!-- TAB: REGISTRO DE REFERIDOS (MARIA) -->
+            <div id="tab-maria-ref-add" class="hidden fade-in theme-maria">
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-white border border-indigo-100 rounded-3xl shadow-md overflow-hidden">
+                        <div class="px-6 py-6 border-b border-indigo-50 bg-indigo-50/30 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl shadow-inner"><i class="fas fa-user-plus"></i></div>
+                            <div>
+                                <h2 class="text-xl font-black text-indigo-900">Registrar Nuevo Referido</h2>
+                                <p class="text-xs font-medium text-slate-500 mt-0.5">Bono por traer nuevos clientes al sistema</p>
+                            </div>
+                        </div>
+                        <form id="form-referidos" class="p-6 sm:p-8 space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Fecha de Ingreso</label>
+                                    <div class="relative w-full">
+                                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-calendar"></i></div>
+                                        <input type="date" id="ref-date" required class="block w-full min-w-0 pl-10 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 text-sm font-bold text-slate-700 outline-none transition-colors cursor-pointer appearance-none">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Monto del Bono ($) *</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
+                                        <input type="text" id="ref-amount" inputmode="decimal" pattern="[0-9]+([,\.][0-9]+)?" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 text-lg font-black text-slate-800 outline-none transition-colors">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="p-5 bg-slate-50 border border-slate-100 rounded-2xl space-y-5">
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">¿Quién refiere? (Referente) *</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-bullhorn"></i></div>
+                                        <input type="text" id="ref-referrer" list="bonos-destinatarios" required placeholder="Nombre del jugador que refiere..." class="block w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 text-sm font-bold text-slate-800 outline-none transition-colors">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Nombre del Referido *</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-user"></i></div>
+                                            <input type="text" id="ref-referred" required placeholder="Nuevo jugador..." class="block w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 text-sm font-bold text-slate-800 outline-none transition-colors">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-black text-rose-500 uppercase tracking-widest mb-1.5 ml-1">Cédula del Referido *</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-id-card"></i></div>
+                                            <input type="text" id="ref-cedula" required placeholder="Nº de Cédula..." class="block w-full pl-10 pr-4 py-3 border-2 border-rose-200 bg-rose-50/30 rounded-xl focus:border-rose-500 text-sm font-black text-slate-800 outline-none transition-colors">
+                                        </div>
+                                        <p class="text-[9px] text-rose-500 mt-1 font-semibold ml-1">Obligatorio para evitar doble bono.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-2">
+                                <button type="submit" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex justify-center items-center gap-2">
+                                    <i class="fas fa-save"></i> Registrar Bono de Referido
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: HISTORIAL REFERIDOS -->
+            <div id="tab-maria-ref-list" class="hidden fade-in theme-maria space-y-6">
+                <!-- Filtro Referidos -->
+                <div class="bg-white border border-indigo-100 p-4 rounded-2xl shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
+                        <input type="date" id="filter-ref-date" class="w-full min-w-0 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 appearance-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Referente</label>
+                        <input type="text" id="filter-ref-referrer" placeholder="Quien refiere..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Referido (o Cédula)</label>
+                        <input type="text" id="filter-ref-referred" placeholder="Buscar..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="applyRefFilters()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-2.5 text-sm font-bold transition-colors">Filtrar</button>
+                        <button onclick="clearRefFilters()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2.5 text-sm font-bold transition-colors">Limpiar</button>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-indigo-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                    <div class="px-6 py-5 border-b border-indigo-50 bg-indigo-50/30 flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-black text-indigo-900">Historial de Referidos</h3>
+                        </div>
+                        <button onclick="fetchData(true)" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 shadow-sm flex items-center justify-center transition-all" title="Recargar datos">
+                            <i class="fas fa-sync-alt text-xs"></i>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                    <th class="p-4 pl-6">Fecha</th>
+                                    <th class="p-4">Referente</th>
+                                    <th class="p-4">Monto Bono</th>
+                                    <th class="p-4">Referido</th>
+                                    <th class="p-4">Cédula</th>
+                                    <th class="p-4 pr-6 text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-referidos" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Autor -->
             <div class="mt-12 text-center pb-6">
                 <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">SISTEMA CREADO POR TITO FEIJOO</p>
             </div>
+
         </main>
     </div>
 
@@ -652,7 +824,6 @@
             </div>
             <div class="p-6 space-y-4">
                 <div>
-                    <!-- INPUTMODE DECIMAL AGREGADO -->
                     <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Monto Ganado ($) *</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
@@ -668,7 +839,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycV0HwNBzzREBBgYl7PI-qVrNdsVvgQITvnhvkT8qXITxoLlZ47dm-XatyWBAZYalByA/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbznQ7QDdeysmvqxXdxscNPejWJbq2sc3Tx_VdN3BgjRZCfBLg691A0GGqD0ONHrInvwYg/exec';
 
         const USERS = {
             'michelle': { pass: 'Michi2026*', name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600' },
@@ -679,45 +850,36 @@
         };
 
         let currentUser = null;
-        let records = [], advances = [], bonos = [];
+        let records = [], advances = [], bonos = [], referrals = [];
         let filters = { date: '', user: 'all', status: 'all', amount: '' };
         let bonoFilters = { date: '', dest: '', amount: '' };
+        let refFilters = { date: '', referrer: '', referred: '' };
         
         let pendingVerifyId = null;
         let pendingAuthId = null;
         let pendingWinId = null;
+        
+        let refChartInstance = null;
 
         let inactivityTimer;
-        const INACTIVITY_LIMIT = 15 * 60 * 1000; // 15 minutos de inactividad
+        const INACTIVITY_LIMIT = 15 * 60 * 1000;
 
         window.onload = () => {
-            // Intento de carga instantánea desde caché local
-            const cachedData = localStorage.getItem('sb_cache_data');
-            if (cachedData) {
-                try {
-                    const parsed = JSON.parse(cachedData);
-                    records = parsed.data || [];
-                    advances = parsed.advances || [];
-                    bonos = parsed.bonos || [];
-                } catch(e) {}
-            }
-
             const savedUser = localStorage.getItem('sb_user');
-            if (savedUser && USERS[savedUser]) {
-                login(savedUser, true); // true = usa caché para arrancar en 0s
-            } else {
-                showScreen('login');
-            }
+            if (savedUser && USERS[savedUser]) login(savedUser);
+            else showScreen('login');
 
             const todayStr = new Date().toISOString().split('T')[0];
             if(document.getElementById('reg-date')) document.getElementById('reg-date').value = todayStr;
             if(document.getElementById('gus-date')) document.getElementById('gus-date').value = todayStr;
             if(document.getElementById('bono-date')) document.getElementById('bono-date').value = todayStr;
+            if(document.getElementById('ref-date')) document.getElementById('ref-date').value = todayStr;
 
             document.getElementById('login-form').addEventListener('submit', handleLogin);
             document.getElementById('register-form').addEventListener('submit', handleRegister);
             document.getElementById('form-gussepy').addEventListener('submit', handleGussepy);
             document.getElementById('form-bonos').addEventListener('submit', handleBono);
+            document.getElementById('form-referidos').addEventListener('submit', handleReferral);
 
             ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(evt => {
                 document.addEventListener(evt, resetInactivityTimer);
@@ -733,7 +895,7 @@
                 }, INACTIVITY_LIMIT);
             }
         }
-        
+
         function togglePassword() {
             const input = document.getElementById('login-pass');
             const icon = document.getElementById('login-eye');
@@ -744,11 +906,6 @@
                 input.type = 'password';
                 icon.classList.replace('fa-eye-slash', 'fa-eye');
             }
-        }
-
-        // Actualiza el caché para mantener la UI Optimista consistente
-        function updateCache() {
-            localStorage.setItem('sb_cache_data', JSON.stringify({ data: records, advances: advances, bonos: bonos }));
         }
 
         function showToast(msg, type = 'success') {
@@ -803,7 +960,7 @@
             }
         }
 
-        function login(userId, fromCache = false) {
+        function login(userId) {
             currentUser = userId;
             const user = USERS[userId];
             document.getElementById('user-display').innerText = user.name;
@@ -813,8 +970,8 @@
             
             document.getElementById('admin-select-user').classList.toggle('hidden', user.type !== 'admin');
             
-            ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            ['panel-admin', 'panel-personal', 'filter-user-container', 'filters-panel'].forEach(id => {
+            ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            ['panel-admin', 'panel-personal', 'filter-user-container', 'filters-panel', 'panel-auditoria-main'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.add('hidden');
             });
@@ -825,50 +982,36 @@
                 document.getElementById('btn-tab-gussepy').classList.remove('hidden');
                 document.getElementById('panel-admin').classList.remove('hidden');
                 document.getElementById('filter-user-container').classList.remove('hidden');
-                
-                const filtersPanel = document.getElementById('filters-panel');
-                if (filtersPanel) filtersPanel.classList.remove('hidden');
-                
+                document.getElementById('filters-panel').classList.remove('hidden');
+                document.getElementById('panel-auditoria-main').classList.remove('hidden');
                 switchTab('tab-dashboard');
             } else if (user.type === 'master') {
                 document.getElementById('btn-tab-dashboard').classList.remove('hidden');
                 document.getElementById('btn-tab-gussepy').classList.remove('hidden');
                 document.getElementById('btn-tab-maria-dash').classList.remove('hidden');
                 document.getElementById('btn-tab-maria-list').classList.remove('hidden');
+                document.getElementById('btn-tab-maria-ref-list').classList.remove('hidden');
                 document.getElementById('panel-admin').classList.remove('hidden');
-                document.getElementById('filter-user-container').classList.remove('hidden');
-                
-                const filtersPanel = document.getElementById('filters-panel');
-                if (filtersPanel) filtersPanel.classList.remove('hidden');
-                
                 switchTab('tab-dashboard');
             } else if (user.type === 'bonos') {
                 document.getElementById('btn-tab-maria-dash').classList.remove('hidden');
                 document.getElementById('btn-tab-maria-add').classList.remove('hidden');
                 document.getElementById('btn-tab-maria-list').classList.remove('hidden');
+                document.getElementById('btn-tab-maria-ref-add').classList.remove('hidden');
+                document.getElementById('btn-tab-maria-ref-list').classList.remove('hidden');
                 switchTab('tab-maria-dash');
             } else {
                 document.getElementById('btn-tab-dashboard').classList.remove('hidden');
                 document.getElementById('btn-tab-register').classList.remove('hidden');
                 document.getElementById('panel-personal').classList.remove('hidden');
-                
-                const filtersPanel = document.getElementById('filters-panel');
-                if (filtersPanel) filtersPanel.classList.remove('hidden');
-                
+                document.getElementById('filters-panel').classList.remove('hidden');
+                document.getElementById('panel-auditoria-main').classList.remove('hidden');
                 switchTab('tab-dashboard');
             }
 
             document.getElementById('login-pass').value = '';
             showScreen('app');
-            
-            // Lógica de Caché para arrancar en 0s
-            if (fromCache && (records.length > 0 || advances.length > 0 || bonos.length > 0)) {
-                updateAllViews();
-                updateBonoDatalist();
-                fetchData(true); // Actualización silenciosa de fondo
-            } else {
-                fetchData(); // Mostrar el Modal "Sincronizando" si no hay caché
-            }
+            fetchData();
         }
 
         function logout() {
@@ -878,7 +1021,7 @@
         }
 
         function switchTab(tabId) {
-            ['tab-dashboard', 'tab-register', 'tab-gussepy', 'tab-maria-dash', 'tab-maria-add', 'tab-maria-list'].forEach(id => {
+            ['tab-dashboard', 'tab-register', 'tab-gussepy', 'tab-maria-dash', 'tab-maria-add', 'tab-maria-list', 'tab-maria-ref-add', 'tab-maria-ref-list'].forEach(id => {
                 const el = document.getElementById(id);
                 if(el) el.classList.add('hidden');
                 const btn = document.getElementById(`btn-${id}`);
@@ -903,9 +1046,9 @@
             } else {
                 const icon = document.querySelector('button[title="Recargar datos"] i');
                 if (icon) icon.classList.add('fa-spin');
-                document.getElementById('sync-indicator').classList.add('hidden');
             }
             
+            document.getElementById('sync-indicator').classList.add('hidden');
             try {
                 const res = await fetch(SCRIPT_URL);
                 const data = await res.json();
@@ -913,14 +1056,14 @@
                     records = data.data || [];
                     advances = data.advances || [];
                     bonos = data.bonos || [];
-                    localStorage.setItem('sb_cache_data', JSON.stringify(data)); // GUARDAR CACHÉ
+                    referrals = data.referrals || [];
                     updateAllViews();
                     updateBonoDatalist();
                     document.getElementById('sync-indicator').classList.remove('hidden');
                     document.getElementById('sync-indicator').classList.add('flex');
                 } else throw new Error(data.msg);
             } catch (err) {
-                if(!isBackground) showToast("Fallo de conexión. Modo vista previa.", "error");
+                showToast("Fallo de conexión. Modo vista previa.", "error");
             } finally {
                 if (!isBackground) {
                     document.getElementById('global-loader').classList.add('hidden');
@@ -948,7 +1091,7 @@
         function updateBonoDatalist() {
             const dl = document.getElementById('bonos-destinatarios');
             if(!dl) return;
-            const uniqueNames = [...new Set(bonos.map(b => b.assignedTo))].filter(Boolean);
+            const uniqueNames = [...new Set([...bonos.map(b => b.assignedTo), ...referrals.map(r => r.referrer)])].filter(Boolean);
             dl.innerHTML = uniqueNames.map(name => `<option value="${name}">`).join('');
         }
 
@@ -981,7 +1124,6 @@
             const newTx = { id: 'TX' + Date.now(), date: dateVal, amount: amt, concept: conc || (isDebit ? 'Débito' : 'Ingreso'), assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: '' };
             
             records.unshift(newTx); 
-            updateCache();
             updateAllViews(); 
             showToast('Información grabada exitosamente', 'success');
 
@@ -994,7 +1136,7 @@
             
             pushData('add', newTx).then(res => {
                 if (!res.success) { 
-                    records.shift(); updateCache(); updateAllViews(); 
+                    records.shift(); updateAllViews(); 
                     showToast("Fallo de red: " + res.msg, "error");
                 }
             });
@@ -1020,7 +1162,6 @@
             const newAdv = { id: 'ADV' + Date.now(), date: dateVal, amount: amt, concept: conc, createdBy: currentUser, status: 'Pendiente', detail: '' };
             
             advances.unshift(newAdv); 
-            updateCache();
             updateAllViews();
             showToast('Adelanto grabado exitosamente', 'success');
 
@@ -1029,7 +1170,7 @@
             btn.innerHTML = orig; btn.disabled = false;
 
             pushData('add_advance', newAdv).then(res => {
-                if(!res.success) { advances.shift(); updateCache(); updateAllViews(); showToast("Error de red: " + res.msg, "error"); }
+                if(!res.success) { advances.shift(); updateAllViews(); showToast("Error de red: " + res.msg, "error"); }
             });
         }
 
@@ -1054,7 +1195,6 @@
             const newBono = { id: 'BN' + Date.now(), date: dateVal, amount: amt, assignedTo: dest, concept: conc, createdBy: currentUser, status: 'Entregado', amountWon: 0 };
             
             bonos.unshift(newBono); 
-            updateCache();
             updateAllViews(); updateBonoDatalist();
             showToast('Bono emitido exitosamente', 'success');
 
@@ -1063,7 +1203,53 @@
             btn.innerHTML = orig; btn.disabled = false;
 
             pushData('add_bono', newBono).then(res => {
-                if(!res.success) { bonos.shift(); updateCache(); updateAllViews(); showToast("Falla de red: " + res.msg, "error"); }
+                if(!res.success) { bonos.shift(); updateAllViews(); showToast("Falla de red: " + res.msg, "error"); }
+            });
+        }
+
+        async function handleReferral(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button'); 
+            const orig = btn.innerHTML;
+            
+            const cedula = document.getElementById('ref-cedula').value.trim().replace(/\s|-/g, '');
+            if (!cedula) {
+                showToast('La cédula es obligatoria', 'error');
+                return;
+            }
+            
+            const isDuplicate = referrals.some(r => r.cedula === cedula);
+            if (isDuplicate) {
+                showToast('Alerta: Ya se le entregó bono a esta cédula anteriormente.', 'error');
+                return;
+            }
+
+            btn.innerHTML = 'Guardando...'; btn.disabled = true;
+
+            const dateVal = document.getElementById('ref-date').value;
+            let amtStr = document.getElementById('ref-amount').value.replace(',', '.');
+            const amt = parseFloat(amtStr);
+            const referrer = document.getElementById('ref-referrer').value.trim();
+            const referred = document.getElementById('ref-referred').value.trim();
+
+            if (isNaN(amt) || amt <= 0) {
+                showToast('Ingrese un monto válido', 'error');
+                btn.innerHTML = orig; btn.disabled = false;
+                return;
+            }
+
+            const newRef = { id: 'REF' + Date.now(), date: dateVal, amount: amt, referrer: referrer, referred: referred, cedula: cedula, createdBy: currentUser };
+            
+            referrals.unshift(newRef);
+            updateAllViews(); updateBonoDatalist();
+            showToast('Referido registrado exitosamente', 'success');
+
+            document.getElementById('form-referidos').reset();
+            document.getElementById('ref-date').value = new Date().toISOString().split('T')[0];
+            btn.innerHTML = orig; btn.disabled = false;
+
+            pushData('add_referral', newRef).then(res => {
+                if(!res.success) { referrals.shift(); updateAllViews(); showToast("Falla de red: " + res.msg, "error"); }
             });
         }
 
@@ -1092,14 +1278,13 @@
             if (tx) {
                 const oldStatus = tx.status; const oldReceipt = tx.receipt;
                 tx.status = 'Verificado'; tx.receipt = receipt; 
-                updateCache();
                 updateAllViews();
                 closeModal();
                 showToast('Transacción aprobada', 'success');
                 
                 pushData('verify', { id: targetId, receipt: receipt }).then(res => {
                     if (!res.success) { 
-                        tx.status = oldStatus; tx.receipt = oldReceipt; updateCache(); updateAllViews(); 
+                        tx.status = oldStatus; tx.receipt = oldReceipt; updateAllViews(); 
                         showToast("Fallo: " + res.msg, "error"); 
                     }
                 });
@@ -1114,12 +1299,11 @@
                 if (tx) { 
                     const oldStatus = tx.status; 
                     tx.status = 'Denegado'; 
-                    updateCache();
                     updateAllViews(); 
                     showToast('Transacción denegada', 'success');
                     
                     pushData('deny', { id: targetId }).then(res => {
-                        if(!res.success) { tx.status = oldStatus; updateCache(); updateAllViews(); showToast("Error: " + res.msg, "error"); }
+                        if(!res.success) { tx.status = oldStatus; updateAllViews(); showToast("Error: " + res.msg, "error"); }
                     });
                 }
             }
@@ -1148,13 +1332,12 @@
             if (adv) {
                 const oldStatus = adv.status; const oldDetail = adv.detail;
                 adv.status = 'Autorizado'; adv.detail = detail; 
-                updateCache();
                 updateAllViews();
                 closeGussepyModal();
                 showToast('Autorizado exitosamente', 'success');
                 
                 pushData('authorize_advance', { id: targetId, detail: detail }).then(res => {
-                    if (!res.success) { adv.status = oldStatus; adv.detail = oldDetail; updateCache(); updateAllViews(); showToast("Error: " + res.msg, "error"); }
+                    if (!res.success) { adv.status = oldStatus; adv.detail = oldDetail; updateAllViews(); showToast("Error: " + res.msg, "error"); }
                 });
             } else { closeGussepyModal(); }
             btn.innerHTML = orig; btn.disabled = false; 
@@ -1189,14 +1372,13 @@
             if (bono) {
                 const oldStatus = bono.status; const oldAmtWon = bono.amountWon;
                 bono.status = 'Ganado'; bono.amountWon = amtWon; 
-                updateCache();
                 updateAllViews();
                 closeWinBonoModal();
                 showToast('Bono marcado como Ganado', 'success');
                 
                 pushData('win_bono', { id: targetId, amountWon: amtWon }).then(res => {
                     if (!res.success) { 
-                        bono.status = oldStatus; bono.amountWon = oldAmtWon; updateCache(); updateAllViews(); 
+                        bono.status = oldStatus; bono.amountWon = oldAmtWon; updateAllViews(); 
                         showToast("Error: " + res.msg, "error"); 
                     }
                 });
@@ -1210,27 +1392,28 @@
                 let actionStr = 'delete';
                 if(type === 'advance') actionStr = 'delete_advance';
                 if(type === 'bono') actionStr = 'delete_bono';
+                if(type === 'referral') actionStr = 'delete_referral';
 
-                let backupRecords = [...records], backupAdvances = [...advances], backupBonos = [...bonos];
+                let backupRecords = [...records], backupAdvances = [...advances], backupBonos = [...bonos], backupRefs = [...referrals];
 
                 if(type === 'bono') bonos = bonos.filter(r => String(r.id) !== targetId); 
                 else if(type === 'advance') advances = advances.filter(r => String(r.id) !== targetId); 
+                else if(type === 'referral') referrals = referrals.filter(r => String(r.id) !== targetId);
                 else records = records.filter(r => String(r.id) !== targetId); 
                 
-                updateCache();
                 updateAllViews();
-                if(type === 'bono') updateBonoDatalist();
+                if(type === 'bono' || type === 'referral') updateBonoDatalist();
                 showToast('Eliminado exitosamente', 'success');
 
                 pushData(actionStr, {id: targetId}).then(res => {
                     if(!res.success) {
                         if(type === 'bono') bonos = backupBonos;
                         else if(type === 'advance') advances = backupAdvances;
+                        else if(type === 'referral') referrals = backupRefs;
                         else records = backupRecords;
-                        updateCache();
                         updateAllViews();
-                        if(type === 'bono') updateBonoDatalist();
-                        showToast("Fallo de red", "error");
+                        if(type === 'bono' || type === 'referral') updateBonoDatalist();
+                        showToast("Fallo de red: " + res.msg, "error");
                     }
                 });
             }
@@ -1272,6 +1455,21 @@
             document.getElementById('filter-bono-date').value = '';
             document.getElementById('filter-bono-dest').value = '';
             document.getElementById('filter-bono-amount').value = '';
+            updateAllViews();
+        }
+
+        function applyRefFilters() {
+            refFilters.date = document.getElementById('filter-ref-date').value;
+            refFilters.referrer = document.getElementById('filter-ref-referrer').value.trim().toLowerCase();
+            refFilters.referred = document.getElementById('filter-ref-referred').value.trim().toLowerCase();
+            updateAllViews();
+        }
+
+        function clearRefFilters() {
+            refFilters = { date: '', referrer: '', referred: '' };
+            document.getElementById('filter-ref-date').value = '';
+            document.getElementById('filter-ref-referrer').value = '';
+            document.getElementById('filter-ref-referred').value = '';
             updateAllViews();
         }
 
@@ -1317,33 +1515,32 @@
                 if(document.getElementById('maria-dash-qty-ganados')) document.getElementById('maria-dash-qty-ganados').innerText = ganados.length;
                 if(document.getElementById('maria-dash-val-ganados')) document.getElementById('maria-dash-val-ganados').innerText = fmt(valGanados);
 
-                // Top Jugadores
                 const players = {};
                 bonos.forEach(b => {
-                    if (!players[b.assignedTo]) players[b.assignedTo] = { name: b.assignedTo, received: 0, won: 0, totalWon: 0 };
+                    if (!players[b.assignedTo]) players[b.assignedTo] = { name: b.assignedTo, received: 0, totalReceived: 0, won: 0, totalWon: 0 };
                     players[b.assignedTo].received++;
+                    players[b.assignedTo].totalReceived += (b.amount || 0);
                     if (b.status === 'Ganado') {
                         players[b.assignedTo].won++;
                         players[b.assignedTo].totalWon += (b.amountWon || 0);
                     }
                 });
                 
-                const topPlayers = Object.values(players).sort((a, b) => b.totalWon - a.totalWon).slice(0, 5);
-                const tbodyTop = document.getElementById('table-maria-top');
-                if (tbodyTop) {
-                    if (topPlayers.length === 0) {
-                        tbodyTop.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-xs text-slate-400">Aún no hay datos registrados</td></tr>`;
-                    } else {
-                        tbodyTop.innerHTML = topPlayers.map((p, i) => `
-                        <tr class="border-b border-slate-50 hover:bg-slate-50">
-                            <td class="p-4 pl-6 text-xs font-black text-rose-500">#${i+1}</td>
-                            <td class="p-4 text-xs font-bold text-slate-800 uppercase tracking-wide">${p.name}</td>
-                            <td class="p-4 text-center text-xs text-slate-500">${p.received}</td>
-                            <td class="p-4 text-center text-xs font-bold text-emerald-600">${p.won}</td>
-                            <td class="p-4 pr-6 text-right text-sm font-black text-emerald-600">${fmt(p.totalWon)}</td>
-                        </tr>`).join('');
-                    }
+                const topGanadores = Object.values(players).filter(p => p.totalWon > 0).sort((a, b) => b.totalWon - a.totalWon).slice(0, 5);
+                const tbodyGanadores = document.getElementById('table-maria-top-ganadores');
+                if (tbodyGanadores) {
+                    if (topGanadores.length === 0) tbodyGanadores.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-xs text-slate-400">Aún no hay ganadores</td></tr>`;
+                    else tbodyGanadores.innerHTML = topGanadores.map((p, i) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-black text-amber-500">#${i+1}</td><td class="p-4 text-xs font-bold text-slate-800 uppercase">${p.name}</td><td class="p-4 text-center text-xs font-bold text-emerald-600">${p.won}</td><td class="p-4 pr-6 text-right text-sm font-black text-emerald-600">${fmt(p.totalWon)}</td></tr>`).join('');
                 }
+
+                const topRecibidos = Object.values(players).filter(p => p.received > 0).sort((a, b) => b.received - a.received || b.totalReceived - a.totalReceived).slice(0, 5);
+                const tbodyRecibidos = document.getElementById('table-maria-top-recibidos');
+                if (tbodyRecibidos) {
+                    if (topRecibidos.length === 0) tbodyRecibidos.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-xs text-slate-400">No hay bonos entregados</td></tr>`;
+                    else tbodyRecibidos.innerHTML = topRecibidos.map((p, i) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-black text-indigo-400">#${i+1}</td><td class="p-4 text-xs font-bold text-slate-800 uppercase">${p.name}</td><td class="p-4 text-center text-xs font-bold text-slate-500">${p.received}</td><td class="p-4 pr-6 text-right text-sm font-black text-rose-600">${fmt(p.totalReceived)}</td></tr>`).join('');
+                }
+
+                renderReferralsDashboard();
             }
 
             // 2. RENDERIZADO TABLA REGISTROS
@@ -1365,19 +1562,12 @@
                     return recDate.toDateString() === filtDate.toDateString();
                 });
             }
-            if (user.type !== 'user' && filters.user !== 'all') {
-                displayRecords = displayRecords.filter(r => r.assignedTo === filters.user);
-            }
-            if (filters.status !== 'all') {
-                displayRecords = displayRecords.filter(r => r.status === filters.status);
-            }
+            if (user.type !== 'user' && filters.user !== 'all') displayRecords = displayRecords.filter(r => r.assignedTo === filters.user);
+            if (filters.status !== 'all') displayRecords = displayRecords.filter(r => r.status === filters.status);
             if (filters.amount) {
                 const searchAmt = parseFloat(filters.amount);
-                if (!isNaN(searchAmt)) {
-                    displayRecords = displayRecords.filter(r => Math.abs(r.amount) === Math.abs(searchAmt));
-                }
+                if (!isNaN(searchAmt)) displayRecords = displayRecords.filter(r => Math.abs(r.amount) === Math.abs(searchAmt));
             }
-            
             if (user.type === 'master') displayRecords = displayRecords.filter(r => r.amount > 0);
 
             displayRecords.sort((a, b) => String(b.id).localeCompare(String(a.id)));
@@ -1453,30 +1643,15 @@
             if (user.type === 'admin' || user.type === 'master') {
                 const tbodyGus = document.getElementById('table-gussepy');
                 let displayAdvances = [...advances];
-
-                displayAdvances.sort((a, b) => String(b.id).localeCompare(String(a.id)));
+                displayAdvances.sort((a,b) => String(b.id).localeCompare(String(a.id)));
 
                 tbodyGus.innerHTML = displayAdvances.map(a => {
-                    let badge = a.status === 'Autorizado' 
-                        ? `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-crown mr-1"></i>Autorizado</span>`
-                        : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Pendiente</span>`;
-                    
+                    let badge = a.status === 'Autorizado' ? `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-crown mr-1"></i>Autorizado</span>` : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Pendiente</span>`;
                     let actions = '';
-                    if (user.type === 'master' && a.status === 'Pendiente') {
-                        actions = `<button onclick="actionAuthorizeAdvance('${a.id}')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-colors">Autorizar</button>`;
-                    } else if (user.type === 'admin') {
-                        actions = `<button onclick="actionDelete('${a.id}', 'advance')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
-                    }
+                    if (user.type === 'master' && a.status === 'Pendiente') actions = `<button onclick="actionAuthorizeAdvance('${a.id}')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-colors">Autorizar</button>`;
+                    else if (user.type === 'admin') actions = `<button onclick="actionDelete('${a.id}', 'advance')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
 
-                    return `
-                    <tr class="hover:bg-slate-50 transition-colors border-b border-slate-50">
-                        <td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(a.date)}</td>
-                        <td class="p-4 text-sm font-black text-amber-600">${fmt(a.amount)}</td>
-                        <td class="p-4 text-xs font-medium text-slate-600">${a.concept}</td>
-                        <td class="p-4">${badge}</td>
-                        <td class="p-4 text-[10px] font-bold text-slate-400 italic">${a.detail || '-'}</td>
-                        <td class="p-4 pr-6 text-center">${actions}</td>
-                    </tr>`;
+                    return `<tr class="hover:bg-slate-50 transition-colors border-b border-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(a.date)}</td><td class="p-4 text-sm font-black text-amber-600">${fmt(a.amount)}</td><td class="p-4 text-xs font-medium text-slate-600">${a.concept}</td><td class="p-4">${badge}</td><td class="p-4 text-[10px] font-bold text-slate-400 italic">${a.detail || '-'}</td><td class="p-4 pr-6 text-center">${actions}</td></tr>`;
                 }).join('');
             }
 
@@ -1485,7 +1660,6 @@
                 const tbodyBonos = document.getElementById('table-bonos');
                 let displayBonos = [...bonos];
 
-                // Filtros
                 if (bonoFilters.date) {
                     displayBonos = displayBonos.filter(b => {
                         const recDate = new Date(b.date); recDate.setMinutes(recDate.getMinutes() + recDate.getTimezoneOffset());
@@ -1493,17 +1667,13 @@
                         return recDate.toDateString() === filtDate.toDateString();
                     });
                 }
-                if (bonoFilters.dest) {
-                    displayBonos = displayBonos.filter(b => (b.assignedTo || '').toLowerCase().includes(bonoFilters.dest));
-                }
+                if (bonoFilters.dest) displayBonos = displayBonos.filter(b => (b.assignedTo || '').toLowerCase().includes(bonoFilters.dest));
                 if (bonoFilters.amount) {
                     const searchAmt = parseFloat(bonoFilters.amount);
-                    if (!isNaN(searchAmt)) {
-                        displayBonos = displayBonos.filter(b => Math.abs(b.amount) === Math.abs(searchAmt));
-                    }
+                    if (!isNaN(searchAmt)) displayBonos = displayBonos.filter(b => Math.abs(b.amount) === Math.abs(searchAmt));
                 }
 
-                displayBonos.sort((a, b) => String(b.id).localeCompare(String(a.id)));
+                displayBonos.sort((a,b) => String(b.id).localeCompare(String(a.id)));
 
                 if(tbodyBonos) {
                     if(displayBonos.length === 0) {
@@ -1511,33 +1681,115 @@
                     } else {
                         tbodyBonos.innerHTML = displayBonos.map(b => {
                             let actions = '';
-                            let badge = b.status === 'Ganado' 
-                                ? `<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-trophy mr-1"></i>Ganado</span>`
-                                : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Entregado</span>`;
+                            let badge = b.status === 'Ganado' ? `<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-trophy mr-1"></i>Ganado</span>` : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Entregado</span>`;
                             
                             if (user.type === 'bonos') {
-                                if (b.status !== 'Ganado') {
-                                    actions += `<button onclick="actionWinBono('${b.id}')" class="w-8 h-8 mr-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors flex items-center justify-center inline-flex" title="Marcar Ganado"><i class="fas fa-check"></i></button>`;
-                                }
+                                if (b.status !== 'Ganado') actions += `<button onclick="actionWinBono('${b.id}')" class="w-8 h-8 mr-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors flex items-center justify-center inline-flex" title="Marcar Ganado"><i class="fas fa-check"></i></button>`;
                                 actions += `<button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center inline-flex" title="Eliminar"><i class="fas fa-trash"></i></button>`;
                             }
                             
                             const wonAmtStr = b.status === 'Ganado' ? `<span class="font-black text-emerald-600">${fmt(b.amountWon)}</span>` : `<span class="text-slate-300">-</span>`;
 
-                            return `
-                            <tr class="hover:bg-slate-50 transition-colors border-b border-rose-50">
-                                <td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(b.date)}</td>
-                                <td class="p-4 text-xs font-bold text-rose-600 uppercase tracking-wide"><i class="fas fa-user-circle mr-1"></i> ${b.assignedTo}</td>
-                                <td class="p-4 text-sm font-black text-slate-800">${fmt(b.amount)}</td>
-                                <td class="p-4 text-xs font-medium text-slate-600">${b.concept}</td>
-                                <td class="p-4">${badge}</td>
-                                <td class="p-4 text-sm">${wonAmtStr}</td>
-                                <td class="p-4 pr-6 text-center">${actions}</td>
-                            </tr>`;
+                            return `<tr class="hover:bg-slate-50 transition-colors border-b border-rose-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(b.date)}</td><td class="p-4 text-xs font-bold text-rose-600 uppercase tracking-wide"><i class="fas fa-user-circle mr-1"></i> ${b.assignedTo}</td><td class="p-4 text-sm font-black text-slate-800">${fmt(b.amount)}</td><td class="p-4 text-xs font-medium text-slate-600">${b.concept}</td><td class="p-4">${badge}</td><td class="p-4 text-sm">${wonAmtStr}</td><td class="p-4 pr-6 text-center">${actions}</td></tr>`;
+                        }).join('');
+                    }
+                }
+
+                // 5. RENDERIZAR REFERIDOS
+                const tbodyRef = document.getElementById('table-referidos');
+                let displayRefs = [...referrals];
+                
+                if (refFilters.date) {
+                    displayRefs = displayRefs.filter(r => {
+                        const recDate = new Date(r.date); recDate.setMinutes(recDate.getMinutes() + recDate.getTimezoneOffset());
+                        const filtDate = new Date(refFilters.date); filtDate.setMinutes(filtDate.getMinutes() + filtDate.getTimezoneOffset());
+                        return recDate.toDateString() === filtDate.toDateString();
+                    });
+                }
+                if (refFilters.referrer) displayRefs = displayRefs.filter(r => (r.referrer || '').toLowerCase().includes(refFilters.referrer));
+                if (refFilters.referred) displayRefs = displayRefs.filter(r => (r.referred || '').toLowerCase().includes(refFilters.referred) || (r.cedula || '').includes(refFilters.referred));
+
+                displayRefs.sort((a,b) => String(b.id).localeCompare(String(a.id)));
+
+                if(tbodyRef) {
+                    if(displayRefs.length === 0) {
+                        tbodyRef.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 text-sm">No hay referidos registrados.</td></tr>`;
+                    } else {
+                        tbodyRef.innerHTML = displayRefs.map(r => {
+                            let actions = '';
+                            if (user.type === 'bonos') {
+                                actions = `<button onclick="actionDelete('${r.id}', 'referral')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
+                            }
+                            return `<tr class="hover:bg-slate-50 transition-colors border-b border-indigo-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td><td class="p-4 text-xs font-bold text-indigo-600 uppercase tracking-wide">${r.referrer}</td><td class="p-4 text-sm font-black text-slate-800">${fmt(r.amount)}</td><td class="p-4 text-xs font-medium text-slate-800">${r.referred}</td><td class="p-4 text-xs font-mono text-slate-500 font-semibold">${r.cedula}</td><td class="p-4 pr-6 text-center">${actions}</td></tr>`;
                         }).join('');
                     }
                 }
             }
+        }
+
+        function renderReferralsDashboard() {
+            if (USERS[currentUser].type !== 'bonos' && USERS[currentUser].type !== 'master') return;
+            
+            const refCounts = {};
+            referrals.forEach(r => {
+                if(!refCounts[r.referrer]) refCounts[r.referrer] = 0;
+                refCounts[r.referrer]++;
+            });
+            const topRefs = Object.entries(refCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            
+            const tbodyTop = document.getElementById('table-top-referrers');
+            if(tbodyTop) {
+                if(topRefs.length === 0) tbodyTop.innerHTML = `<tr><td colspan="3" class="py-4 text-center text-xs text-slate-400">Sin datos aún</td></tr>`;
+                else tbodyTop.innerHTML = topRefs.map((tr, i) => `<tr class="hover:bg-slate-50 transition-colors"><td class="py-2.5 text-xs font-black text-amber-500">#${i+1}</td><td class="py-2.5 text-xs font-bold text-slate-700 uppercase">${tr[0]}</td><td class="py-2.5 text-center text-xs font-bold text-indigo-600">${tr[1]}</td></tr>`).join('');
+            }
+
+            const ctx = document.getElementById('chart-referrals');
+            if(!ctx) return;
+            
+            const now = new Date();
+            const curMonth = now.getMonth();
+            const curYear = now.getFullYear();
+            
+            const daysInMonth = new Date(curYear, curMonth + 1, 0).getDate();
+            const labels = Array.from({length: daysInMonth}, (_, i) => i + 1);
+            const dataCounts = new Array(daysInMonth).fill(0);
+            
+            referrals.forEach(r => {
+                const rDate = new Date(r.date);
+                rDate.setMinutes(rDate.getMinutes() + rDate.getTimezoneOffset());
+                if (rDate.getMonth() === curMonth && rDate.getFullYear() === curYear) {
+                    dataCounts[rDate.getDate() - 1]++;
+                }
+            });
+
+            if(refChartInstance) refChartInstance.destroy();
+            
+            refChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Referidos Diarios',
+                        data: dataCounts,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 2,
+                        pointBackgroundColor: '#4f46e5'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { font: { size: 9 } } },
+                        y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 10 } } }
+                    }
+                }
+            });
         }
     </script>
 </body>
