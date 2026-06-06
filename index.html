@@ -54,7 +54,7 @@
 <body class="text-slate-800 antialiased selection:bg-indigo-200 selection:text-indigo-900">
 
     <!-- TOAST NOTIFICATIONS -->
-    <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+    <div id="toast-container" class="fixed bottom-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
     <!-- PANTALLA DE LOGIN -->
     <div id="screen-login" class="fixed inset-0 z-40 login-bg flex flex-col items-center justify-center p-4">
@@ -139,9 +139,8 @@
                         <i class="fas fa-plus-circle"></i> Registrar Movimiento
                     </button>
                     <button onclick="switchTab('tab-gussepy')" id="btn-tab-gussepy" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap">
-                        <i class="fas fa-hand-holding-usd"></i> Adelantos (Gussepy)
+                        <i class="fas fa-hand-holding-usd"></i> Adelantos
                     </button>
-                    <!-- Pestañas de Bonos (Ahora ocultas para Gussepy, solo visibles para María) -->
                     <button onclick="switchTab('tab-maria-dash')" id="btn-tab-maria-dash" class="hidden px-4 py-2 rounded-lg text-xs font-bold transition-colors text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap">
                         <i class="fas fa-trophy"></i> Dashboard Bonos
                     </button>
@@ -173,7 +172,7 @@
         <!-- ÁREA DE CONTENIDO -->
         <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 relative">
 
-            <!-- TAB: PANEL GLOBAL Y AUDITORÍA -->
+            <!-- TAB 1: PANEL GLOBAL Y AUDITORÍA -->
             <div id="tab-dashboard" class="hidden fade-in space-y-6">
                 <!-- DASHBOARD GENERAL -->
                 <div id="panel-admin" class="hidden mb-6">
@@ -288,44 +287,42 @@
 
                 <!-- CONTENEDOR DE AUDITORÍA (Oculto para Gussepy) -->
                 <div id="panel-auditoria-main" class="block">
-                    <!-- PANEL DE FILTROS -->
-                    <div id="filters-panel" class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm mb-6 flex flex-col hidden">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
-                                <div class="relative w-full">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-calendar"></i></div>
-                                    <input type="date" id="filter-date" class="block w-full min-w-0 pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 transition-colors appearance-none">
-                                </div>
+                    
+                    <!-- NUEVO PANEL DE FILTROS EN LÍNEA -->
+                    <div id="filters-panel" class="bg-white border border-slate-100 p-3 rounded-2xl shadow-sm mb-6 hidden">
+                        <div class="flex flex-col lg:flex-row items-end gap-3 w-full">
+                            <div class="w-full lg:w-auto flex-1">
+                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Fecha</label>
+                                <input type="date" id="filter-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 appearance-none">
                             </div>
-                            <div id="filter-user-container">
+                            <div id="filter-user-container" class="w-full lg:w-auto flex-1">
                                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta</label>
-                                <select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
-                                    <option value="all">Todas las cuentas</option>
+                                <select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
+                                    <option value="all">Todas</option>
                                     <option value="jesus">Jesús</option>
                                     <option value="tito">Tito</option>
                                 </select>
                             </div>
-                            <div>
+                            <div class="w-full lg:w-auto flex-1">
                                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Estado</label>
-                                <select id="filter-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
+                                <select id="filter-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
                                     <option value="all">Todos</option>
                                     <option value="Pendiente">Pendientes</option>
                                     <option value="Verificado">Verificados</option>
                                     <option value="Denegado">Denegados</option>
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto Exacto ($)</label>
+                            <div class="w-full lg:w-auto flex-1">
+                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto ($)</label>
                                 <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
-                                    <input type="text" id="filter-amount" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 transition-colors">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
+                                    <input type="text" id="filter-amount" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex gap-2 mt-4">
-                            <button onclick="applyFilters()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-2.5 text-sm font-bold transition-colors">Filtrar</button>
-                            <button onclick="clearFilters()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2.5 text-sm font-bold transition-colors">Limpiar</button>
+                            <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0">
+                                <button onclick="applyFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold transition-colors shadow-md">Filtrar</button>
+                                <button onclick="clearFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-bold transition-colors">Limpiar</button>
+                            </div>
                         </div>
                     </div>
 
@@ -378,7 +375,7 @@
                 </div>
             </div>
 
-            <!-- TAB: REGISTRAR MOVIMIENTO -->
+            <!-- TAB 2: REGISTRAR MOVIMIENTO -->
             <div id="tab-register" class="hidden fade-in">
                 <div class="max-w-2xl mx-auto">
                     <div class="bg-white border border-slate-200 rounded-3xl shadow-xl overflow-hidden">
@@ -465,10 +462,11 @@
                 </div>
             </div>
 
-            <!-- TAB: ADELANTOS GUSSEPY (Michelle) -->
+            <!-- TAB 3: ADELANTOS GUSSEPY (Michelle y Gussepy) -->
             <div id="tab-gussepy" class="hidden fade-in">
                 <div class="max-w-5xl mx-auto space-y-6">
-                    <div class="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden" id="panel-add-gussepy">
+                    <!-- Formulario de solicitud (Visible solo para Admin) -->
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden hidden" id="panel-add-gussepy">
                         <div class="px-6 py-5 border-b border-slate-100 bg-amber-50/50 flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center"><i class="fas fa-hand-holding-usd"></i></div>
                             <div>
@@ -531,7 +529,7 @@
                 </div>
             </div>
 
-            <!-- TABS MARÍA EMILIA (DASHBOARD BONOS) -->
+            <!-- TAB 4: MARÍA EMILIA (DASHBOARD BONOS) -->
             <div id="tab-maria-dash" class="hidden fade-in theme-maria">
                 <div class="max-w-6xl mx-auto space-y-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -640,6 +638,7 @@
                 </div>
             </div>
 
+            <!-- TAB 5: EMITIR BONO -->
             <div id="tab-maria-add" class="hidden fade-in theme-maria">
                 <div class="max-w-2xl mx-auto">
                     <div class="bg-white border border-rose-100 rounded-3xl shadow-xl overflow-hidden">
@@ -688,7 +687,7 @@
                 </div>
             </div>
 
-            <!-- TABS REFERIDOS MARÍA EMILIA (Movido antes de los historiales) -->
+            <!-- TAB 6: REGISTRAR REFERIDO -->
             <div id="tab-maria-ref-add" class="hidden fade-in theme-maria">
                 <div class="max-w-2xl mx-auto">
                     <div class="bg-white border border-indigo-100 rounded-3xl shadow-xl overflow-hidden">
@@ -746,30 +745,32 @@
                 </div>
             </div>
 
-            <!-- HISTORIAL DE BONOS (Movido después del registro) -->
+            <!-- TAB 7: HISTORIAL DE BONOS -->
             <div id="tab-maria-list" class="hidden fade-in theme-maria">
                 <div class="max-w-6xl mx-auto space-y-6">
-                    <div class="bg-white border border-rose-100 p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row gap-4 items-end">
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full flex-1">
-                            <div>
+                    
+                    <!-- NUEVO PANEL DE FILTROS EN LÍNEA -->
+                    <div class="bg-white border border-rose-100 p-3 rounded-2xl shadow-sm mb-4">
+                        <div class="flex flex-col lg:flex-row items-end gap-3 w-full">
+                            <div class="w-full lg:w-auto flex-1">
                                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
-                                <input type="date" id="filter-bono-date" class="w-full min-w-0 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-rose-500 appearance-none">
+                                <input type="date" id="filter-bono-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-rose-500 appearance-none">
                             </div>
-                            <div>
+                            <div class="w-full lg:w-auto flex-1">
                                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Jugador</label>
-                                <input type="text" id="filter-bono-dest" placeholder="Nombre..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-rose-500">
+                                <input type="text" id="filter-bono-dest" placeholder="Nombre..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-rose-500">
                             </div>
-                            <div>
+                            <div class="w-full lg:w-auto flex-1">
                                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto Exacto ($)</label>
                                 <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
-                                    <input type="text" id="filter-bono-amount" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-rose-500">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
+                                    <input type="text" id="filter-bono-amount" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-rose-500">
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex gap-2 w-full sm:w-auto">
-                            <button onclick="applyBonoFilters()" class="flex-1 sm:flex-none px-6 bg-rose-600 hover:bg-rose-700 text-white rounded-xl py-2.5 text-sm font-bold transition-colors">Filtrar</button>
-                            <button onclick="clearBonoFilters()" class="flex-1 sm:flex-none px-6 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2.5 text-sm font-bold transition-colors">Limpiar</button>
+                            <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0">
+                                <button onclick="applyBonoFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-[#e11d48] hover:bg-rose-700 text-white rounded-xl text-sm font-bold transition-colors shadow-md">Filtrar</button>
+                                <button onclick="clearBonoFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-bold transition-colors">Limpiar</button>
+                            </div>
                         </div>
                     </div>
 
@@ -801,84 +802,29 @@
                 </div>
             </div>
 
-            <!-- TABS REFERIDOS MARÍA EMILIA -->
-            <div id="tab-maria-ref-add" class="hidden fade-in theme-maria">
-                <div class="max-w-2xl mx-auto">
-                    <div class="bg-white border border-indigo-100 rounded-3xl shadow-xl overflow-hidden">
-                        <div class="px-6 py-8 sm:p-10 border-b border-indigo-50 bg-gradient-to-br from-indigo-50 to-white relative overflow-hidden">
-                            <div class="absolute -right-4 -bottom-4 text-indigo-100/50 text-8xl pointer-events-none"><i class="fas fa-user-plus"></i></div>
-                            <h2 class="text-2xl font-black text-slate-800 relative z-10">Registrar Referido</h2>
-                            <p class="text-sm text-slate-500 font-medium mt-1 relative z-10">Ingreso de nueva persona referida</p>
-                        </div>
-                        <form id="form-referrals" class="p-6 sm:p-10 space-y-6 bg-white">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Fecha</label>
-                                    <div class="relative w-full">
-                                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-calendar"></i></div>
-                                        <input type="date" id="ref-date" required class="block w-full min-w-0 pl-10 pr-3 py-3 bg-white border border-slate-200 rounded-xl text-xs font-mono font-bold text-slate-700 outline-none focus:border-indigo-500 transition-colors cursor-pointer appearance-none">
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Monto Pagado ($) *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
-                                        <input type="text" id="ref-amount" inputmode="decimal" pattern="[0-9]+([,\.][0-9]+)?" required placeholder="0.00" class="block w-full pl-9 pr-4 py-3 border-2 border-slate-200 rounded-xl text-lg font-black text-slate-800 outline-none focus:border-indigo-500 transition-colors">
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">¿Quién refiere? (Referente) *</label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-bullhorn"></i></div>
-                                    <input type="text" id="ref-referrer" list="ref-referrers-list" required placeholder="Nombre de quien invitó..." class="block w-full pl-10 pr-4 py-3.5 border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-800 outline-none focus:border-indigo-500 transition-colors">
-                                    <datalist id="ref-referrers-list"></datalist>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
-                                <div>
-                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Nombre del Referido *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-user"></i></div>
-                                        <input type="text" id="ref-referred" required placeholder="Persona invitada" class="block w-full pl-10 pr-4 py-3.5 border-2 border-slate-200 rounded-xl text-sm font-medium text-slate-800 outline-none focus:border-indigo-500 transition-colors">
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Cédula del Referido *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><i class="fas fa-id-card"></i></div>
-                                        <input type="text" id="ref-cedula" required placeholder="Obligatorio" class="block w-full pl-10 pr-4 py-3.5 border-2 border-slate-200 rounded-xl text-sm font-bold text-indigo-700 outline-none focus:border-indigo-500 transition-colors">
-                                    </div>
-                                </div>
-                            </div>
-                                    <tbody id="table-bonos-list" class="divide-y divide-slate-100"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- HISTORIAL DE REFERIDOS -->
+            <!-- TAB 8: HISTORIAL DE REFERIDOS -->
             <div id="tab-maria-ref-list" class="hidden fade-in theme-maria">
                 <div class="max-w-6xl mx-auto space-y-6">
-                    <div class="bg-white border border-indigo-100 p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row gap-4 items-end">
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full flex-1">
-                            <div>
+                    
+                    <!-- NUEVO PANEL DE FILTROS EN LÍNEA -->
+                    <div class="bg-white border border-indigo-100 p-3 rounded-2xl shadow-sm mb-4">
+                        <div class="flex flex-col lg:flex-row items-end gap-3 w-full">
+                            <div class="w-full lg:w-auto flex-1">
                                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar Fecha</label>
-                                <input type="date" id="filter-ref-date" class="w-full min-w-0 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 appearance-none">
+                                <input type="date" id="filter-ref-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 appearance-none">
                             </div>
-                            <div>
+                            <div class="w-full lg:w-auto flex-1">
                                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Referente / Referido</label>
-                                <input type="text" id="filter-ref-name" placeholder="Buscar nombre..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
+                                <input type="text" id="filter-ref-name" placeholder="Buscar nombre..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
                             </div>
-                            <div>
+                            <div class="w-full lg:w-auto flex-1">
                                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cédula</label>
-                                <input type="text" id="filter-ref-cedula" placeholder="Buscar cédula..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
+                                <input type="text" id="filter-ref-cedula" placeholder="Buscar cédula..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
                             </div>
-                        </div>
-                        <div class="flex gap-2 w-full sm:w-auto">
-                            <button onclick="applyRefFilters()" class="flex-1 sm:flex-none px-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-2.5 text-sm font-bold transition-colors">Filtrar</button>
-                            <button onclick="clearRefFilters()" class="flex-1 sm:flex-none px-6 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2.5 text-sm font-bold transition-colors">Limpiar</button>
+                            <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0">
+                                <button onclick="applyRefFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold transition-colors shadow-md">Filtrar</button>
+                                <button onclick="clearRefFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-bold transition-colors">Limpiar</button>
+                            </div>
                         </div>
                     </div>
 
@@ -912,7 +858,7 @@
 
             <!-- Footer Autor -->
             <div class="mt-12 text-center pb-6">
-                <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">SISTEMA CREADO POR TITO FEIJOO</p>
+                <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">SISTEMA CREADO POR agency-tf/TitoFeijo</p>
             </div>
 
         </main>
@@ -1109,7 +1055,7 @@
             document.getElementById('admin-select-user').classList.toggle('hidden', user.type !== 'admin');
             
             ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            ['panel-admin', 'panel-personal', 'filter-user-container', 'filters-panel', 'panel-auditoria-main', 'panel-gussepy-bonos'].forEach(id => {
+            ['panel-admin', 'panel-personal', 'filter-user-container', 'filters-panel', 'panel-auditoria-main', 'panel-gussepy-bonos', 'panel-add-gussepy'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.add('hidden');
             });
@@ -1123,13 +1069,17 @@
                 document.getElementById('filter-user-container').classList.remove('hidden');
                 document.getElementById('filters-panel').classList.remove('hidden');
                 document.getElementById('panel-auditoria-main').classList.remove('hidden');
+                document.getElementById('panel-add-gussepy').classList.remove('hidden');
+
                 switchTab('tab-dashboard');
             } else if (user.type === 'master') {
                 document.getElementById('btn-tab-dashboard').classList.remove('hidden');
+                document.getElementById('btn-tab-gussepy').classList.remove('hidden');
+                document.getElementById('btn-tab-maria-list').classList.remove('hidden');
+                document.getElementById('btn-tab-maria-ref-list').classList.remove('hidden');
                 
                 document.getElementById('panel-admin').classList.remove('hidden');
                 document.getElementById('panel-gussepy-bonos').classList.remove('hidden'); 
-                document.getElementById('panel-auditoria-main').classList.add('hidden'); 
                 
                 switchTab('tab-dashboard');
             } else if (user.type === 'bonos') {
@@ -1664,12 +1614,17 @@
                 if(document.getElementById('dash-gussepy')) document.getElementById('dash-gussepy').innerText = fmt(totalAdelantos);
             }
 
-            if (user.type === 'master') {
+            if (user.type === 'master' || user.type === 'bonos') {
                 let qtyEntregados = bonos.length;
                 let valEntregados = bonos.reduce((s, b) => s + b.amount, 0);
                 let ganados = bonos.filter(b => b.status === 'Ganado');
                 let valGanados = ganados.reduce((s, b) => s + (b.amountWon || 0), 0);
 
+                if(document.getElementById('dash-bonos-qty')) document.getElementById('dash-bonos-qty').innerText = qtyEntregados;
+                if(document.getElementById('dash-bonos-val')) document.getElementById('dash-bonos-val').innerText = fmt(valEntregados);
+                if(document.getElementById('dash-bonos-won-qty')) document.getElementById('dash-bonos-won-qty').innerText = ganados.length;
+                if(document.getElementById('dash-bonos-won-val')) document.getElementById('dash-bonos-won-val').innerText = fmt(valGanados);
+                
                 if(document.getElementById('gus-dash-qty-entregados')) document.getElementById('gus-dash-qty-entregados').innerText = qtyEntregados;
                 if(document.getElementById('gus-dash-val-entregados')) document.getElementById('gus-dash-val-entregados').innerText = fmt(valEntregados);
                 if(document.getElementById('gus-dash-qty-ganados')) document.getElementById('gus-dash-qty-ganados').innerText = ganados.length;
@@ -1677,7 +1632,9 @@
 
                 const players = {};
                 bonos.forEach(b => {
-                    if (!players[b.assignedTo]) players[b.assignedTo] = { name: b.assignedTo, won: 0, totalWon: 0 };
+                    if (!players[b.assignedTo]) players[b.assignedTo] = { name: b.assignedTo, won: 0, totalWon: 0, received: 0, totalReceived: 0 };
+                    players[b.assignedTo].received++;
+                    players[b.assignedTo].totalReceived += b.amount;
                     if (b.status === 'Ganado') {
                         players[b.assignedTo].won++;
                         players[b.assignedTo].totalWon += (b.amountWon || 0);
@@ -1685,10 +1642,19 @@
                 });
                 
                 const topGanadores = Object.values(players).filter(p => p.totalWon > 0).sort((a, b) => b.totalWon - a.totalWon).slice(0, 5);
-                const tbodyGanadores = document.getElementById('gus-table-top-ganadores');
-                if (tbodyGanadores) {
-                    if (topGanadores.length === 0) tbodyGanadores.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-400">Aún no hay ganadores</td></tr>`;
-                    else tbodyGanadores.innerHTML = topGanadores.map((p, i) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-3 pl-4 text-xs font-black text-amber-500">#${i+1}</td><td class="p-3 text-xs font-bold text-slate-800 uppercase">${p.name}</td><td class="p-3 pr-4 text-right text-sm font-black text-emerald-600">${fmt(p.totalWon)}</td></tr>`).join('');
+                const tbodyGanadores = document.getElementById('table-top-ganadores');
+                const tbodyGanadoresGus = document.getElementById('gus-table-top-ganadores');
+                const htmlGanadores = topGanadores.length === 0 
+                    ? `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-400">Aún no hay ganadores</td></tr>`
+                    : topGanadores.map((p, i) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-3 pl-4 text-xs font-black text-amber-500">#${i+1}</td><td class="p-3 text-xs font-bold text-slate-800 uppercase">${p.name}</td><td class="p-3 pr-4 text-right text-sm font-black text-emerald-600">${fmt(p.totalWon)}</td></tr>`).join('');
+                if (tbodyGanadores) tbodyGanadores.innerHTML = htmlGanadores;
+                if (tbodyGanadoresGus) tbodyGanadoresGus.innerHTML = htmlGanadores;
+
+                const topRecibidos = Object.values(players).filter(p => p.totalReceived > 0).sort((a, b) => b.totalReceived - a.totalReceived).slice(0, 5);
+                const tbodyRecibidos = document.getElementById('table-top-recibidos');
+                if (tbodyRecibidos) {
+                    if (topRecibidos.length === 0) tbodyRecibidos.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-400">Aún no hay datos</td></tr>`;
+                    else tbodyRecibidos.innerHTML = topRecibidos.map((p, i) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-3 pl-4 text-xs font-black text-slate-400">#${i+1}</td><td class="p-3 text-xs font-bold text-slate-800 uppercase">${p.name} <span class="text-[10px] text-slate-400 normal-case">(${p.received} bonos)</span></td><td class="p-3 pr-4 text-right text-sm font-black text-rose-600">${fmt(p.totalReceived)}</td></tr>`).join('');
                 }
 
                 const refCounts = {};
@@ -1697,12 +1663,114 @@
                     refCounts[r.referrer]++;
                 });
                 const topRefs = Object.entries(refCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
+                const tbodyTopRefs = document.getElementById('table-top-referrers');
+                const tbodyTopRefsGus = document.getElementById('gus-table-top-referrers');
+                const htmlRefs = topRefs.length === 0 
+                    ? `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-400">Sin referidos aún</td></tr>`
+                    : topRefs.map((tr, i) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-3 pl-4 text-xs font-black text-amber-500">#${i+1}</td><td class="p-3 text-xs font-bold text-slate-700 uppercase">${tr[0]}</td><td class="p-3 text-center pr-4 text-xs font-bold text-indigo-600">${tr[1]}</td></tr>`).join('');
                 
-                const tbodyTop = document.getElementById('gus-table-top-referrers');
-                if(tbodyTop) {
-                    if(topRefs.length === 0) tbodyTop.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-400">Sin referidos aún</td></tr>`;
-                    else tbodyTop.innerHTML = topRefs.map((tr, i) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-3 pl-4 text-xs font-black text-amber-500">#${i+1}</td><td class="p-3 text-xs font-bold text-slate-700 uppercase">${tr[0]}</td><td class="p-3 text-center pr-4 text-xs font-bold text-indigo-600">${tr[1]}</td></tr>`).join('');
+                if (tbodyTopRefs) tbodyTopRefs.innerHTML = htmlRefs;
+                if (tbodyTopRefsGus) tbodyTopRefsGus.innerHTML = htmlRefs;
+                
+                // Lista de Bonos
+                const tbodyBonos = document.getElementById('table-bonos-list');
+                let displayBonos = [...bonos];
+
+                if (bonoFilters.date) {
+                    displayBonos = displayBonos.filter(b => {
+                        const recDate = new Date(b.date); recDate.setMinutes(recDate.getMinutes() + recDate.getTimezoneOffset());
+                        const filtDate = new Date(bonoFilters.date); filtDate.setMinutes(filtDate.getMinutes() + filtDate.getTimezoneOffset());
+                        return recDate.toDateString() === filtDate.toDateString();
+                    });
                 }
+                if (bonoFilters.dest) displayBonos = displayBonos.filter(b => (b.assignedTo || '').toLowerCase().includes(bonoFilters.dest));
+                if (bonoFilters.amount) {
+                    const searchAmt = parseFloat(bonoFilters.amount);
+                    if(!isNaN(searchAmt)) displayBonos = displayBonos.filter(b => b.amount === searchAmt);
+                }
+
+                displayBonos.sort((a,b) => String(b.id).localeCompare(String(a.id)));
+
+                if(tbodyBonos) {
+                    tbodyBonos.innerHTML = displayBonos.map(b => {
+                        let statusBadge = '';
+                        let btnAction = '';
+
+                        if (user.type === 'bonos') {
+                            statusBadge = `<span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider">Entregado</span>`;
+                            btnAction = `<div class="flex justify-center gap-2">
+                                <button onclick="actionBonoWin('${b.id}')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-colors">Ganado</button>
+                                <button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center"><i class="fas fa-trash"></i></button>
+                            </div>`;
+                            
+                            if (b.status === 'Ganado') {
+                                statusBadge = `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider"><i class="fas fa-trophy mr-1"></i> Ganó ${fmt(b.amountWon)}</span>`;
+                                btnAction = `<div class="flex justify-center">
+                                    <button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center"><i class="fas fa-trash"></i></button>
+                                </div>`;
+                            }
+                        } else { // Master / Gussepy
+                            if (b.status === 'Ganado') {
+                                statusBadge = `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider"><i class="fas fa-trophy mr-1"></i> Ganó ${fmt(b.amountWon)}</span>`;
+                            } else {
+                                statusBadge = `<span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider">Entregado</span>`;
+                            }
+                            btnAction = `<span class="text-[10px] text-slate-400 font-bold">Sin Acción</span>`;
+                        }
+
+                        return `
+                        <tr class="hover:bg-slate-50 transition-colors border-b border-rose-50">
+                            <td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(b.date)}</td>
+                            <td class="p-4 text-xs font-bold text-rose-600 uppercase tracking-wide"><i class="fas fa-user-circle mr-1"></i> ${b.assignedTo}</td>
+                            <td class="p-4 text-sm font-black text-slate-800">${fmt(b.amount)}</td>
+                            <td class="p-4 text-xs font-medium text-slate-600">${b.concept}</td>
+                            <td class="p-4">${statusBadge}</td>
+                            <td class="p-4 pr-6 text-center">${btnAction}</td>
+                        </tr>`;
+                    }).join('');
+                }
+
+                let displayRef = [...referrals];
+                if (refFilters.date) {
+                    displayRef = displayRef.filter(r => {
+                        const recDate = new Date(r.date); recDate.setMinutes(recDate.getMinutes() + recDate.getTimezoneOffset());
+                        const filtDate = new Date(refFilters.date); filtDate.setMinutes(filtDate.getMinutes() + filtDate.getTimezoneOffset());
+                        return recDate.toDateString() === filtDate.toDateString();
+                    });
+                }
+                if (refFilters.name) {
+                    const searchName = refFilters.name;
+                    displayRef = displayRef.filter(r => r.referrer.toLowerCase().includes(searchName) || r.referred.toLowerCase().includes(searchName));
+                }
+                if (refFilters.cedula) displayRef = displayRef.filter(r => r.cedula.includes(refFilters.cedula));
+                
+                displayRef.sort((a,b) => String(b.id).localeCompare(String(a.id)));
+
+                const tbodyRef = document.getElementById('table-ref-list');
+                if(tbodyRef) {
+                    tbodyRef.innerHTML = displayRef.map(r => {
+                        let btnActionRef = '';
+                        if (user.type === 'bonos') {
+                            btnActionRef = `<button onclick="actionDelete('${r.id}', 'referral')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
+                        } else {
+                            btnActionRef = `<span class="text-[10px] text-slate-400 font-bold">Sin Acción</span>`;
+                        }
+                        
+                        return `
+                        <tr class="hover:bg-slate-50 transition-colors border-b border-indigo-50">
+                            <td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td>
+                            <td class="p-4 text-xs font-bold text-indigo-600 uppercase tracking-wide"><i class="fas fa-bullhorn mr-1"></i> ${r.referrer}</td>
+                            <td class="p-4 text-xs font-bold text-slate-700 uppercase"><i class="fas fa-user mr-1"></i> ${r.referred}</td>
+                            <td class="p-4 text-xs font-mono font-bold text-slate-500">${r.cedula}</td>
+                            <td class="p-4 text-sm font-black text-emerald-600">${fmt(r.amount)}</td>
+                            <td class="p-4 pr-6 text-center">
+                                ${btnActionRef}
+                            </td>
+                        </tr>`;
+                    }).join('');
+                }
+
+                updateChartReferidos();
             }
 
             if (user.type === 'user') {
@@ -1725,11 +1793,11 @@
             
             if (user.type === 'user') {
                 displayRecords = displayRecords.filter(r => r.assignedTo === currentUser);
-                document.getElementById('table-title').innerText = `Tus Movimientos (${user.name})`;
+                if (document.getElementById('table-title')) document.getElementById('table-title').innerText = `Tus Movimientos (${user.name})`;
             } else if (user.type === 'admin') {
-                document.getElementById('table-title').innerText = "Auditoría General";
+                if (document.getElementById('table-title')) document.getElementById('table-title').innerText = "Auditoría General";
             } else if (user.type === 'master') {
-                document.getElementById('table-title').innerText = "Supervisión Global";
+                if (document.getElementById('table-title')) document.getElementById('table-title').innerText = "Supervisión Global";
             }
 
             if (filters.date) {
@@ -1761,228 +1829,102 @@
             
             if (user.type !== 'bonos') {
                 if (displayRecords.length === 0) {
-                    tbody.innerHTML = '';
-                    emptyState.classList.remove('hidden'); emptyState.classList.add('flex');
+                    if (tbody) tbody.innerHTML = '';
+                    if (emptyState) { emptyState.classList.remove('hidden'); emptyState.classList.add('flex'); }
                 } else {
-                    emptyState.classList.add('hidden'); emptyState.classList.remove('flex');
-                    tbody.innerHTML = displayRecords.map(r => {
-                        let badge = `<span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-amber-200">Pendiente</span>`;
-                        if (r.status === 'Verificado') badge = `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-emerald-200"><i class="fas fa-check mr-1"></i>Verificado</span>`;
-                        if (r.status === 'Denegado') badge = `<span class="bg-rose-100 text-rose-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-rose-200"><i class="fas fa-times mr-1"></i>Denegado</span>`;
-                        
-                        let actions = '';
-                        if (r.status === 'Pendiente') {
-                            const amICreator = (r.createdBy === currentUser);
-                            const amIAdmin = (user.type === 'admin');
-                            const amIOwner = (r.assignedTo === currentUser);
+                    if (emptyState) { emptyState.classList.add('hidden'); emptyState.classList.remove('flex'); }
+                    if (tbody) {
+                        tbody.innerHTML = displayRecords.map(r => {
+                            let badge = `<span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-amber-200">Pendiente</span>`;
+                            if (r.status === 'Verificado') badge = `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-emerald-200"><i class="fas fa-check mr-1"></i>Verificado</span>`;
+                            if (r.status === 'Denegado') badge = `<span class="bg-rose-100 text-rose-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-rose-200"><i class="fas fa-times mr-1"></i>Denegado</span>`;
                             
-                            if (amIAdmin) {
-                                if (r.createdBy !== 'michelle') {
-                                    actions = `<div class="flex justify-center gap-2">
-                                        <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors" title="Aprobar"><i class="fas fa-check"></i></button>
-                                        <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white rounded-lg transition-colors" title="Denegar"><i class="fas fa-times"></i></button>
-                                        <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar"><i class="fas fa-trash"></i></button>
-                                    </div>`;
-                                } else {
-                                    actions = `<div class="flex justify-center">
-                                        <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar"><i class="fas fa-trash"></i></button>
-                                    </div>`;
+                            let actions = '';
+                            if (r.status === 'Pendiente') {
+                                const amICreator = (r.createdBy === currentUser);
+                                const amIAdmin = (user.type === 'admin');
+                                const amIOwner = (r.assignedTo === currentUser);
+                                
+                                if (amIAdmin) {
+                                    if (r.createdBy !== 'michelle') {
+                                        actions = `<div class="flex justify-center gap-2">
+                                            <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors" title="Aprobar"><i class="fas fa-check"></i></button>
+                                            <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white rounded-lg transition-colors" title="Denegar"><i class="fas fa-times"></i></button>
+                                            <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar"><i class="fas fa-trash"></i></button>
+                                        </div>`;
+                                    } else {
+                                        actions = `<div class="flex justify-center">
+                                            <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar"><i class="fas fa-trash"></i></button>
+                                        </div>`;
+                                    }
+                                } 
+                                else if (amIOwner) {
+                                    if (r.createdBy === 'michelle') {
+                                        actions = `<div class="flex justify-center gap-2">
+                                            <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors" title="Aprobar"><i class="fas fa-check"></i></button>
+                                            <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white rounded-lg transition-colors" title="Denegar"><i class="fas fa-times"></i></button>
+                                        </div>`;
+                                    } else {
+                                        actions = `<div class="flex justify-center"><span class="text-[10px] font-bold text-slate-400"><i class="fas fa-clock mr-1"></i>Espera Admin</span></div>`;
+                                    }
                                 }
-                            } 
-                            else if (amIOwner) {
-                                if (r.createdBy === 'michelle') {
-                                    actions = `<div class="flex justify-center gap-2">
-                                        <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-lg transition-colors" title="Aprobar"><i class="fas fa-check"></i></button>
-                                        <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white rounded-lg transition-colors" title="Denegar"><i class="fas fa-times"></i></button>
-                                    </div>`;
-                                } else {
-                                    actions = `<div class="flex justify-center"><span class="text-[10px] font-bold text-slate-400"><i class="fas fa-clock mr-1"></i>Espera Admin</span></div>`;
-                                }
+                            } else if (user.type === 'admin') {
+                                actions = `<div class="flex justify-center">
+                                    <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar"><i class="fas fa-trash"></i></button>
+                                </div>`;
                             }
-                        } else if (user.type === 'admin') {
-                            actions = `<div class="flex justify-center">
-                                <button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors" title="Eliminar"><i class="fas fa-trash"></i></button>
-                            </div>`;
-                        }
 
-                        const opacity = r.status === 'Denegado' ? 'opacity-60 bg-slate-50' : 'hover:bg-slate-50 transition-colors';
-                        const isNeg = r.amount < 0;
-                        const amtColor = r.status === 'Denegado' ? 'text-slate-400 line-through' : (isNeg ? 'text-rose-600' : 'text-slate-800');
+                            const opacity = r.status === 'Denegado' ? 'opacity-60 bg-slate-50' : 'hover:bg-slate-50 transition-colors';
+                            const isNeg = r.amount < 0;
+                            const amtColor = r.status === 'Denegado' ? 'text-slate-400 line-through' : (isNeg ? 'text-rose-600' : 'text-slate-800');
 
-                        return `
-                        <tr class="${opacity} border-b border-slate-50">
-                            <td class="p-4 pl-6 text-xs font-bold text-slate-600 whitespace-nowrap">${fmtDate(r.date)}</td>
-                            <td class="p-4 text-sm font-black ${amtColor}">${fmt(r.amount)}</td>
-                            <td class="p-4 text-xs font-medium text-slate-600">${r.concept}</td>
-                            <td class="p-4 text-xs font-bold text-indigo-600 uppercase tracking-wide">${USERS[r.assignedTo]?.name || r.assignedTo}</td>
-                            <td class="p-4">${badge}</td>
-                            <td class="p-4 text-[10px] font-mono text-slate-400 font-bold">${r.receipt || '-'}</td>
-                            <td class="p-4 pr-6">${actions}</td>
-                        </tr>`;
-                    }).join('');
+                            return `
+                            <tr class="${opacity} border-b border-slate-50">
+                                <td class="p-4 pl-6 text-xs font-bold text-slate-600 whitespace-nowrap">${fmtDate(r.date)}</td>
+                                <td class="p-4 text-sm font-black ${amtColor}">${fmt(r.amount)}</td>
+                                <td class="p-4 text-xs font-medium text-slate-600">${r.concept}</td>
+                                <td class="p-4 text-xs font-bold text-indigo-600 uppercase tracking-wide">${USERS[r.assignedTo]?.name || r.assignedTo}</td>
+                                <td class="p-4">${badge}</td>
+                                <td class="p-4 text-[10px] font-mono text-slate-400 font-bold">${r.receipt || '-'}</td>
+                                <td class="p-4 pr-6">${actions}</td>
+                            </tr>`;
+                        }).join('');
+                    }
                 }
             }
 
-            // 3. RENDERIZADO ADELANTOS
+            // 3. RENDERIZADO ADELANTOS (Admin y Master)
             if (user.type === 'admin' || user.type === 'master') {
                 const tbodyGus = document.getElementById('table-gussepy');
                 let displayAdvances = [...advances];
                 displayAdvances.sort((a,b) => String(b.id).localeCompare(String(a.id)));
 
-                tbodyGus.innerHTML = displayAdvances.map(a => {
-                    let badge = a.status === 'Autorizado' 
-                        ? `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-crown mr-1"></i>Autorizado</span>`
-                        : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Pendiente</span>`;
-                    
-                    let actions = '';
-                    if (user.type === 'master' && a.status === 'Pendiente') {
-                        actions = `<button onclick="actionAuthorizeAdvance('${a.id}')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-colors">Autorizar</button>`;
-                    } else if (user.type === 'admin') {
-                        actions = `<button onclick="actionDelete('${a.id}', 'advance')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
-                    }
-
-                    return `
-                    <tr class="hover:bg-slate-50 transition-colors border-b border-slate-50">
-                        <td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(a.date)}</td>
-                        <td class="p-4 text-sm font-black text-amber-600">${fmt(a.amount)}</td>
-                        <td class="p-4 text-xs font-medium text-slate-600">${a.concept}</td>
-                        <td class="p-4">${badge}</td>
-                        <td class="p-4 text-[10px] font-bold text-slate-400 italic">${a.detail || '-'}</td>
-                        <td class="p-4 pr-6 text-center">${actions}</td>
-                    </tr>`;
-                }).join('');
-            }
-
-            // 4. RENDERIZADO BONOS (María Emilia)
-            if (user.type === 'bonos') {
-                let qtyEntregados = bonos.length;
-                let valEntregados = bonos.reduce((s, b) => s + b.amount, 0);
-                let ganados = bonos.filter(b => b.status === 'Ganado');
-                let valGanados = ganados.reduce((s, b) => s + (b.amountWon || 0), 0);
-
-                if(document.getElementById('dash-bonos-qty')) document.getElementById('dash-bonos-qty').innerText = qtyEntregados;
-                if(document.getElementById('dash-bonos-val')) document.getElementById('dash-bonos-val').innerText = fmt(valEntregados);
-                if(document.getElementById('dash-bonos-won-qty')) document.getElementById('dash-bonos-won-qty').innerText = ganados.length;
-                if(document.getElementById('dash-bonos-won-val')) document.getElementById('dash-bonos-won-val').innerText = fmt(valGanados);
-
-                const players = {};
-                bonos.forEach(b => {
-                    if (!players[b.assignedTo]) players[b.assignedTo] = { name: b.assignedTo, won: 0, totalWon: 0, received: 0, totalReceived: 0 };
-                    players[b.assignedTo].received++;
-                    players[b.assignedTo].totalReceived += b.amount;
-                    if (b.status === 'Ganado') {
-                        players[b.assignedTo].won++;
-                        players[b.assignedTo].totalWon += (b.amountWon || 0);
-                    }
-                });
-                
-                const topGanadores = Object.values(players).filter(p => p.totalWon > 0).sort((a, b) => b.totalWon - a.totalWon).slice(0, 5);
-                const tbodyGanadores = document.getElementById('table-top-ganadores');
-                if (tbodyGanadores) {
-                    if (topGanadores.length === 0) tbodyGanadores.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-400">Aún no hay ganadores</td></tr>`;
-                    else tbodyGanadores.innerHTML = topGanadores.map((p, i) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-3 pl-4 text-xs font-black text-amber-500">#${i+1}</td><td class="p-3 text-xs font-bold text-slate-800 uppercase">${p.name}</td><td class="p-3 pr-4 text-right text-sm font-black text-emerald-600">${fmt(p.totalWon)}</td></tr>`).join('');
-                }
-
-                const topRecibidos = Object.values(players).filter(p => p.totalReceived > 0).sort((a, b) => b.totalReceived - a.totalReceived).slice(0, 5);
-                const tbodyRecibidos = document.getElementById('table-top-recibidos');
-                if (tbodyRecibidos) {
-                    if (topRecibidos.length === 0) tbodyRecibidos.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-400">Aún no hay datos</td></tr>`;
-                    else tbodyRecibidos.innerHTML = topRecibidos.map((p, i) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-3 pl-4 text-xs font-black text-slate-400">#${i+1}</td><td class="p-3 text-xs font-bold text-slate-800 uppercase">${p.name} <span class="text-[10px] text-slate-400 normal-case">(${p.received} bonos)</span></td><td class="p-3 pr-4 text-right text-sm font-black text-rose-600">${fmt(p.totalReceived)}</td></tr>`).join('');
-                }
-
-                // Lista de Bonos
-                const tbodyBonos = document.getElementById('table-bonos-list');
-                let displayBonos = [...bonos];
-
-                if (bonoFilters.date) {
-                    displayBonos = displayBonos.filter(b => {
-                        const recDate = new Date(b.date); recDate.setMinutes(recDate.getMinutes() + recDate.getTimezoneOffset());
-                        const filtDate = new Date(bonoFilters.date); filtDate.setMinutes(filtDate.getMinutes() + filtDate.getTimezoneOffset());
-                        return recDate.toDateString() === filtDate.toDateString();
-                    });
-                }
-                if (bonoFilters.dest) displayBonos = displayBonos.filter(b => (b.assignedTo || '').toLowerCase().includes(bonoFilters.dest));
-                if (bonoFilters.amount) {
-                    const searchAmt = parseFloat(bonoFilters.amount);
-                    if(!isNaN(searchAmt)) displayBonos = displayBonos.filter(b => b.amount === searchAmt);
-                }
-
-                displayBonos.sort((a,b) => String(b.id).localeCompare(String(a.id)));
-
-                if(tbodyBonos) {
-                    tbodyBonos.innerHTML = displayBonos.map(b => {
-                        let statusBadge = `<span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider">Entregado</span>`;
-                        let btnAction = `<div class="flex justify-center gap-2">
-                            <button onclick="actionBonoWin('${b.id}')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-colors">Ganado</button>
-                            <button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center"><i class="fas fa-trash"></i></button>
-                        </div>`;
+                if (tbodyGus) {
+                    tbodyGus.innerHTML = displayAdvances.map(a => {
+                        let badge = a.status === 'Autorizado' 
+                            ? `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-crown mr-1"></i>Autorizado</span>`
+                            : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Pendiente</span>`;
                         
-                        if (b.status === 'Ganado') {
-                            statusBadge = `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider"><i class="fas fa-trophy mr-1"></i> Ganó ${fmt(b.amountWon)}</span>`;
-                            btnAction = `<div class="flex justify-center">
-                                <button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center"><i class="fas fa-trash"></i></button>
-                            </div>`;
+                        let actions = '';
+                        if (user.type === 'master' && a.status === 'Pendiente') {
+                            actions = `<button onclick="actionAuthorizeAdvance('${a.id}')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-colors">Autorizar</button>`;
+                        } else if (user.type === 'admin') {
+                            actions = `<button onclick="actionDelete('${a.id}', 'advance')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
+                        } else if (user.type === 'master') {
+                            actions = `<span class="text-[10px] text-slate-400 font-bold">Ok</span>`;
                         }
 
                         return `
-                        <tr class="hover:bg-slate-50 transition-colors border-b border-rose-50">
-                            <td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(b.date)}</td>
-                            <td class="p-4 text-xs font-bold text-rose-600 uppercase tracking-wide"><i class="fas fa-user-circle mr-1"></i> ${b.assignedTo}</td>
-                            <td class="p-4 text-sm font-black text-slate-800">${fmt(b.amount)}</td>
-                            <td class="p-4 text-xs font-medium text-slate-600">${b.concept}</td>
-                            <td class="p-4">${statusBadge}</td>
-                            <td class="p-4 pr-6">${btnAction}</td>
+                        <tr class="hover:bg-slate-50 transition-colors border-b border-slate-50">
+                            <td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(a.date)}</td>
+                            <td class="p-4 text-sm font-black text-amber-600">${fmt(a.amount)}</td>
+                            <td class="p-4 text-xs font-medium text-slate-600">${a.concept}</td>
+                            <td class="p-4">${badge}</td>
+                            <td class="p-4 text-[10px] font-bold text-slate-400 italic">${a.detail || '-'}</td>
+                            <td class="p-4 pr-6 text-center">${actions}</td>
                         </tr>`;
                     }).join('');
                 }
-
-                // Referidos
-                const refCounts = {};
-                referrals.forEach(r => {
-                    if(!refCounts[r.referrer]) refCounts[r.referrer] = 0;
-                    refCounts[r.referrer]++;
-                });
-                const topRefs = Object.entries(refCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
-                const tbodyTopRefs = document.getElementById('table-top-referrers');
-                if(tbodyTopRefs) {
-                    if(topRefs.length === 0) tbodyTopRefs.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-400">Sin referidos aún</td></tr>`;
-                    else tbodyTopRefs.innerHTML = topRefs.map((tr, i) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-3 pl-4 text-xs font-black text-amber-500">#${i+1}</td><td class="p-3 text-xs font-bold text-slate-700 uppercase">${tr[0]}</td><td class="p-3 text-center pr-4 text-xs font-bold text-indigo-600">${tr[1]}</td></tr>`).join('');
-                }
-
-                let displayRef = [...referrals];
-                if (refFilters.date) {
-                    displayRef = displayRef.filter(r => {
-                        const recDate = new Date(r.date); recDate.setMinutes(recDate.getMinutes() + recDate.getTimezoneOffset());
-                        const filtDate = new Date(refFilters.date); filtDate.setMinutes(filtDate.getMinutes() + filtDate.getTimezoneOffset());
-                        return recDate.toDateString() === filtDate.toDateString();
-                    });
-                }
-                if (refFilters.name) {
-                    const searchName = refFilters.name;
-                    displayRef = displayRef.filter(r => r.referrer.toLowerCase().includes(searchName) || r.referred.toLowerCase().includes(searchName));
-                }
-                if (refFilters.cedula) displayRef = displayRef.filter(r => r.cedula.includes(refFilters.cedula));
-                
-                displayRef.sort((a,b) => String(b.id).localeCompare(String(a.id)));
-
-                const tbodyRef = document.getElementById('table-ref-list');
-                if(tbodyRef) {
-                    tbodyRef.innerHTML = displayRef.map(r => {
-                        return `
-                        <tr class="hover:bg-slate-50 transition-colors border-b border-indigo-50">
-                            <td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td>
-                            <td class="p-4 text-xs font-bold text-indigo-600 uppercase tracking-wide"><i class="fas fa-bullhorn mr-1"></i> ${r.referrer}</td>
-                            <td class="p-4 text-xs font-bold text-slate-700 uppercase"><i class="fas fa-user mr-1"></i> ${r.referred}</td>
-                            <td class="p-4 text-xs font-mono font-bold text-slate-500">${r.cedula}</td>
-                            <td class="p-4 text-sm font-black text-emerald-600">${fmt(r.amount)}</td>
-                            <td class="p-4 pr-6 text-center">
-                                <button onclick="actionDelete('${r.id}', 'referral')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg transition-colors flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>`;
-                    }).join('');
-                }
-
-                updateChartReferidos();
             }
         }
     </script>
