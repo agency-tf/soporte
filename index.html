@@ -28,7 +28,7 @@
         .theme-maria .bg-indigo-600 { background-color: #e11d48 !important; }
         .theme-maria .text-indigo-600 { color: #e11d48 !important; }
 
-        input[type="date"] { -webkit-appearance: none; appearance: none; min-width: 0; width: 100%; background-color: transparent; }
+        input[type="date"], input[type="month"] { -webkit-appearance: none; appearance: none; min-width: 0; width: 100%; background-color: transparent; }
         input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -118,6 +118,12 @@
 
             <!-- TAB 1: DASHBOARD GENERAL Y AUDITORÍA -->
             <div id="tab-dashboard" class="hidden fade-in space-y-6">
+                <!-- Filtro de mes global para reset -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                    <h2 class="text-sm font-black text-slate-800"><i class="fas fa-calendar-alt text-indigo-500 mr-2"></i> Mes a Consultar:</h2>
+                    <input type="month" id="dash-month-filter" onchange="updateAllViews()" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500">
+                </div>
+
                 <!-- PANEL PERSONAL (TITO / JESUS) ARRIBA -->
                 <div id="panel-personal" class="hidden mb-6">
                     <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 p-6 rounded-2xl shadow-sm max-w-sm relative overflow-hidden">
@@ -134,6 +140,28 @@
                     <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 p-6 rounded-2xl shadow-sm relative overflow-hidden"><div class="flex justify-between items-start mb-4"><div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl shadow-inner"><i class="fas fa-star"></i></div><span class="bg-amber-100 text-amber-800 text-[10px] font-black px-3 py-1.5 rounded-lg">COMISIONES</span></div><p class="text-amber-700 text-[10px] font-black uppercase tracking-widest mb-1">ADELANTOS GUSSEPY</p><h3 class="text-4xl font-black text-slate-800" id="dash-gussepy">$0.00</h3></div>
                 </div>
 
+                <!-- Modulo Master: Bonos e Influencers -->
+                <div id="panel-gussepy-bonos" class="hidden mt-8 space-y-6 theme-maria bg-white border border-rose-100 p-6 rounded-2xl shadow-sm">
+                    <h2 class="text-xl font-black text-rose-900 border-b border-rose-100 pb-2"><i class="fas fa-chart-line mr-2 text-rose-500"></i>Rendimiento General de Bonos</h2>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100"><p class="text-[10px] font-black text-slate-500 uppercase">Bonos Entregados</p><h3 class="text-3xl font-black text-slate-800" id="gus-dash-qty-entregados">0</h3></div>
+                        <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100"><p class="text-[10px] font-black text-slate-500 uppercase">Inversión Total</p><h3 class="text-3xl font-black text-rose-600" id="gus-dash-val-entregados">$0.00</h3></div>
+                        <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100"><p class="text-[10px] font-black text-slate-500 uppercase">Bonos Ganados</p><h3 class="text-3xl font-black text-slate-800" id="gus-dash-qty-ganados">0</h3></div>
+                        <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100"><p class="text-[10px] font-black text-slate-500 uppercase">Premios Concedidos</p><h3 class="text-3xl font-black text-emerald-600" id="gus-dash-val-ganados">$0.00</h3></div>
+                    </div>
+                    
+                    <h2 class="text-xl font-black text-indigo-900 border-b border-indigo-100 pb-2 mt-8 pt-4"><i class="fas fa-users-cog mr-2 text-indigo-500"></i>Rendimiento de Influyentes (Comisiones)</h2>
+                    <div class="overflow-x-auto mt-4">
+                        <table class="w-full text-left border-collapse resp-table">
+                            <thead class="bg-indigo-50 border-b border-indigo-100 text-[10px] font-black text-indigo-800 uppercase hidden md:table-header-group">
+                                <tr><th class="p-3 pl-4">Influyente</th><th class="p-3">Total Referidos</th><th class="p-3">Depósitos</th><th class="p-3">Retiros</th><th class="p-3">Neto</th><th class="p-3 pr-4 text-right">Comisión Pagar (20%)</th></tr>
+                            </thead>
+                            <tbody id="gus-table-influencers" class="divide-y divide-slate-100 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Auditoría Principal -->
                 <div id="panel-auditoria-main" class="block">
                     <!-- Filtros en una sola línea -->
                     <div id="filters-panel" class="bg-white border border-slate-200 p-3 rounded-2xl shadow-sm mb-6 hidden">
@@ -206,7 +234,10 @@
                         </form>
                     </div>
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-                        <div class="px-6 py-4 bg-slate-50/50"><h3 class="text-sm font-black text-slate-700">Historial de Adelantos</h3></div>
+                        <div class="px-6 py-4 bg-slate-50/50 flex items-center justify-between">
+                            <h3 class="text-sm font-black text-slate-700">Historial de Adelantos</h3>
+                            <input type="month" id="gus-month-filter" onchange="updateAllViews()" class="bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold outline-none focus:border-amber-500">
+                        </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse resp-table">
                                 <thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group">
@@ -222,6 +253,11 @@
             <!-- TAB EMILIA: DASHBOARD BONOS -->
             <div id="tab-maria-dash" class="hidden fade-in theme-maria">
                 <div class="max-w-6xl mx-auto space-y-6">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-rose-100 flex items-center justify-between">
+                        <h2 class="text-sm font-black text-rose-900"><i class="fas fa-calendar-alt text-rose-500 mr-2"></i> Mes a Consultar:</h2>
+                        <input type="month" id="bonos-month-filter" onchange="updateAllViews()" class="bg-rose-50 border border-rose-200 rounded-xl px-4 py-2 text-sm font-bold text-rose-800 outline-none focus:border-rose-500">
+                    </div>
+
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100"><p class="text-[10px] font-black text-slate-500 uppercase">Bonos Entregados</p><h3 class="text-3xl font-black text-slate-800" id="dash-bonos-qty">0</h3></div>
                         <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100"><p class="text-[10px] font-black text-slate-500 uppercase">Inversión Total</p><h3 class="text-3xl font-black text-rose-600" id="dash-bonos-val">$0.00</h3></div>
@@ -263,8 +299,8 @@
                     <div class="bg-white border border-indigo-100 rounded-3xl shadow-xl overflow-hidden">
                         <div class="px-6 py-8 sm:p-10 border-b border-indigo-50 bg-gradient-to-br from-indigo-50 to-white"><h2 class="text-2xl font-black text-slate-800">Registrar Nuevo Referido</h2></div>
                         <form id="form-referrals" class="p-6 sm:p-10 space-y-6">
-                            <div class="p-4 bg-purple-50 rounded-xl border border-purple-100 flex items-center justify-between gap-3">
-                                <div><h4 class="text-sm font-bold text-purple-900">¿El referente es un Influyente?</h4><p class="text-[10px] text-purple-600 mt-0.5">Si se activa, el área de afiliados le podrá asignar depósitos.</p></div>
+                            <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100 flex items-center justify-between gap-3">
+                                <div><h4 class="text-sm font-bold text-indigo-900">¿El referente es un Influyente VIP?</h4><p class="text-[10px] text-indigo-600 mt-0.5">Si se activa, Melanie (Afiliados) le podrá asignar depósitos.</p></div>
                                 <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="ref-is-influencer" class="sr-only toggle-checkbox"><div class="toggle-label w-11 h-6 bg-slate-300 rounded-full transition-colors relative after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div></label>
                             </div>
                             <div>
@@ -296,13 +332,13 @@
                     </div>
                     <div class="bg-white border border-rose-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
                         <div class="px-6 py-5 border-b border-rose-50 flex justify-between items-center bg-rose-50/30">
-                            <h3 class="text-lg font-black text-rose-900">Historial de Bonos Emitidos</h3>
+                            <h3 class="text-lg font-black text-rose-900">Historial de Auditoría de Bonos</h3>
                             <div class="flex gap-2"><button onclick="exportToCSV('bonos')" class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-all"><i class="fas fa-file-excel text-xs"></i></button><button onclick="fetchData(true)" class="w-9 h-9 rounded-full bg-white border border-rose-200 text-rose-600 flex items-center justify-center"><i class="fas fa-sync-alt text-xs"></i></button></div>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse resp-table">
                                 <thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group">
-                                    <tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Jugador</th><th class="p-4">Monto</th><th class="p-4">Detalle</th><th class="p-4">Estado</th><th class="p-4 pr-6 text-center">Acción</th></tr>
+                                    <tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Jugador</th><th class="p-4">Monto Inicial</th><th class="p-4">Detalle</th><th class="p-4">Estado / Liquidación</th><th class="p-4 pr-6 text-center">Acción</th></tr>
                                 </thead>
                                 <tbody id="table-bonos-list"></tbody>
                             </table>
@@ -317,14 +353,14 @@
                     <div class="bg-white border border-indigo-100 p-3 rounded-2xl shadow-sm mb-4">
                         <div class="flex flex-col lg:flex-row items-end gap-3 w-full">
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Fecha</label><input type="date" id="filter-ref-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-indigo-500"></div>
-                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Nombre</label><input type="text" id="filter-ref-name" placeholder="Referente o Referido..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-indigo-500"></div>
-                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Cédula</label><input type="text" id="filter-ref-cedula" placeholder="Nº Doc..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-indigo-500"></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Nombre (Referente / Referido)</label><input type="text" id="filter-ref-name" placeholder="Buscar ID de jugador..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-indigo-500"></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Cédula</label><input type="text" id="filter-ref-cedula" placeholder="Buscar Nº documento..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-indigo-500"></div>
                             <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyRefFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearRefFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div>
                         </div>
                     </div>
                     <div class="bg-white border border-indigo-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
                         <div class="px-6 py-5 border-b border-indigo-50 flex justify-between items-center bg-indigo-50/30">
-                            <h3 class="text-lg font-black text-indigo-900">Historial de Referidos</h3>
+                            <h3 class="text-lg font-black text-indigo-900">Historial de Referidos del Sistema</h3>
                             <div class="flex gap-2"><button onclick="exportToCSV('referrals')" class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-all"><i class="fas fa-file-excel text-xs"></i></button><button onclick="fetchData(true)" class="w-9 h-9 rounded-full bg-white border border-indigo-200 text-indigo-600 flex items-center justify-center"><i class="fas fa-sync-alt text-xs"></i></button></div>
                         </div>
                         <div class="overflow-x-auto">
@@ -341,14 +377,19 @@
 
             <!-- TABS MELANIE: Carga de Depósitos y Retiros de Afiliados -->
             <div id="tab-melanie-add" class="hidden fade-in">
-                <div class="max-w-4xl mx-auto space-y-6">
+                <div class="max-w-6xl mx-auto space-y-6">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-pink-100 flex items-center justify-between">
+                        <h2 class="text-sm font-black text-pink-900"><i class="fas fa-calendar-alt text-pink-500 mr-2"></i> Mes a Consultar:</h2>
+                        <input type="month" id="mel-month-filter" onchange="updateAllViews()" class="bg-pink-50 border border-pink-200 rounded-xl px-4 py-2 text-sm font-bold text-pink-800 outline-none focus:border-pink-500">
+                    </div>
+
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="bg-white p-5 rounded-2xl border border-pink-100 shadow-sm"><p class="text-[10px] font-black text-slate-500 uppercase">Influyentes Activos</p><h3 class="text-3xl font-black text-slate-800" id="mel-dash-inf">0</h3></div>
                         <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100 shadow-sm"><p class="text-[10px] font-black text-emerald-600 uppercase">Total Depósitos</p><h3 class="text-3xl font-black text-emerald-600" id="mel-dash-dep">$0.00</h3></div>
                         <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100 shadow-sm"><p class="text-[10px] font-black text-rose-600 uppercase">Total Retiros</p><h3 class="text-3xl font-black text-rose-600" id="mel-dash-ret">$0.00</h3></div>
                         <div class="bg-pink-50 p-5 rounded-2xl border border-pink-100 shadow-sm"><p class="text-[10px] font-black text-pink-600 uppercase">Comisiones Generadas</p><h3 class="text-3xl font-black text-pink-600" id="mel-dash-com">$0.00</h3></div>
                     </div>
-                    <div class="bg-white border border-pink-200 rounded-3xl shadow-xl overflow-hidden">
+                    <div class="bg-white border border-pink-200 rounded-3xl shadow-xl overflow-hidden max-w-4xl mx-auto">
                         <div class="px-6 py-8 sm:p-10 border-b border-pink-50 bg-gradient-to-br from-pink-50 to-white relative">
                             <h2 class="text-2xl font-black text-slate-800">Cargar Movimientos de Red de Afiliados</h2>
                         </div>
@@ -365,14 +406,18 @@
                             <button type="submit" class="w-full py-4 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-xl shadow-lg transition-colors">Guardar y Generar Comisión 20%</button>
                         </form>
                     </div>
-                    <div class="bg-white border border-pink-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-                        <div class="px-6 py-5 border-b border-pink-50 bg-pink-50/30"><h3 class="text-lg font-black text-pink-900">Consolidado por Influyente</h3></div>
+
+                    <!-- Tabla de Historial para Melanie con Editar/Eliminar -->
+                    <div class="bg-white border border-pink-100 rounded-2xl shadow-sm overflow-hidden flex flex-col mt-6">
+                        <div class="px-6 py-5 border-b border-pink-50 bg-pink-50/30 flex justify-between items-center">
+                            <h3 class="text-lg font-black text-pink-900">Historial de Cargas (Editable)</h3>
+                        </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse resp-table">
                                 <thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group">
-                                    <tr><th class="p-4 pl-6">Influyente</th><th class="p-4">Depósitos</th><th class="p-4">Retiros</th><th class="p-4">Neto Creado</th><th class="p-4 pr-6 text-right">Comisión Adeudada (20%)</th></tr>
+                                    <tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Influyente</th><th class="p-4">Jugador</th><th class="p-4">Depósitos</th><th class="p-4">Retiros</th><th class="p-4">Comisión</th><th class="p-4 pr-6 text-center">Acción</th></tr>
                                 </thead>
-                                <tbody id="mel-table-body"></tbody>
+                                <tbody id="mel-table-history"></tbody>
                             </table>
                         </div>
                     </div>
@@ -383,7 +428,13 @@
             <div id="tab-influencer-dash" class="hidden fade-in">
                 <div class="max-w-5xl mx-auto space-y-6">
                     <div class="bg-gradient-to-r from-purple-800 to-indigo-900 rounded-3xl p-8 shadow-xl text-white">
-                        <h2 class="text-2xl font-black mb-1">Mi Panel de Afiliado VIP</h2>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+                            <h2 class="text-2xl font-black mb-1">Mi Panel de Afiliado VIP</h2>
+                            <div class="flex items-center bg-white/10 p-2 rounded-xl border border-white/20">
+                                <label class="text-xs font-bold mr-2 text-purple-200">Mes:</label>
+                                <input type="month" id="inf-month-filter" onchange="updateAllViews()" class="bg-transparent text-sm font-bold text-white outline-none">
+                            </div>
+                        </div>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                             <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-sm border border-white/20"><p class="text-[10px] font-black text-purple-200 uppercase tracking-widest mb-1">Total Referidos</p><h3 class="text-3xl font-black text-white" id="inf-dash-qty">0</h3></div>
                             <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-sm border border-white/20"><p class="text-[10px] font-black text-purple-200 uppercase tracking-widest mb-1">Depósitos Red</p><h3 class="text-3xl font-black text-emerald-400" id="inf-dash-dep">$0.00</h3></div>
@@ -391,6 +442,14 @@
                             <div class="bg-gradient-to-br from-amber-400 to-orange-500 p-5 rounded-2xl shadow-inner border border-amber-300 relative overflow-hidden"><i class="fas fa-coins absolute -right-2 -bottom-2 text-6xl text-white/20"></i><p class="text-[10px] font-black text-amber-900 uppercase tracking-widest mb-1 relative z-10">Mi Ganancia (20%)</p><h3 class="text-3xl font-black text-white relative z-10" id="inf-dash-com">$0.00</h3></div>
                         </div>
                     </div>
+
+                    <!-- Filtro buscador Influencer -->
+                    <div class="bg-white border border-slate-200 p-3 rounded-2xl shadow-sm mb-4">
+                        <div class="flex items-center w-full">
+                            <input type="text" id="inf-search" onkeyup="updateAllViews()" placeholder="Buscar jugador referido..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-purple-500">
+                        </div>
+                    </div>
+
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
                         <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50"><h3 class="text-lg font-black text-slate-800">Desglose de Ganancias por Jugador</h3></div>
                         <div class="overflow-x-auto">
@@ -410,7 +469,7 @@
         </main>
     </div>
 
-    <!-- MODAL EDICIÓN -->
+    <!-- MODAL EDICIÓN REGISTROS (Jesús/Tito/Admin) -->
     <div id="modal-edit" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in">
             <div class="p-6 text-center border-b border-slate-100 bg-slate-50"><div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-pen"></i></div><h3 class="text-lg font-black text-slate-800">Editar Registro Activo</h3></div>
@@ -424,10 +483,24 @@
         </div>
     </div>
 
+    <!-- MODAL EDICIÓN RENDIMIENTOS (Melanie) -->
+    <div id="modal-edit-rend" class="fixed inset-0 z-[55] bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in border border-pink-200">
+            <div class="p-6 text-center border-b border-pink-50 bg-pink-50"><div class="w-16 h-16 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-edit"></i></div><h3 class="text-lg font-black text-slate-800">Modificar Rendimiento</h3></div>
+            <div class="p-6 space-y-4">
+                <input type="hidden" id="edit-rend-id">
+                <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Fecha</label><input type="date" id="edit-rend-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-pink-500"></div>
+                <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Depósitos ($)</label><input type="text" id="edit-rend-dep" inputmode="decimal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-lg font-black text-emerald-600 outline-none focus:border-pink-500"></div>
+                <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Retiros ($)</label><input type="text" id="edit-rend-ret" inputmode="decimal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-lg font-black text-rose-600 outline-none focus:border-pink-500"></div>
+                <div class="flex gap-3 pt-2"><button onclick="closeEditRendModal()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-bold rounded-xl transition-colors">Cancelar</button><button id="btn-edit-rend-confirm" onclick="confirmEditRend()" class="flex-1 py-3 bg-pink-600 hover:bg-pink-700 text-white text-sm font-bold rounded-xl shadow-md transition-colors">Actualizar</button></div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL COMPROBANTE -->
     <div id="modal-comprobante" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in">
-            <div class="p-6 text-center border-b border-slate-100 bg-slate-50"><div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-check-circle"></i></div><h3 class="text-lg font-black text-slate-800">Dar Visto Bueno</h3></div>
+            <div class="p-6 text-center border-b border-slate-100 bg-slate-50"><div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-check-circle"></i></div><h3 class="text-lg font-black text-slate-800">Dar Visto Bueno</h3><p class="text-xs text-slate-400 mt-1">Sincronizar número de referencia o transacción</p></div>
             <div class="p-6 space-y-4">
                 <input type="text" id="input-receipt" placeholder="Nº Comprobante / Ref..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-emerald-500">
                 <div class="flex gap-3 pt-2"><button onclick="closeModal()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-bold rounded-xl">Cancelar</button><button id="btn-verify-confirm" onclick="confirmVerify()" class="flex-1 py-3 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold rounded-xl shadow-md">Aprobar</button></div>
@@ -460,50 +533,78 @@
     <!-- MODAL SUPERVISOR -->
     <div id="modal-superadmin" class="fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in border border-slate-700">
-            <div class="p-6 text-center border-b border-slate-100 bg-slate-800"><div class="w-16 h-16 bg-slate-700 text-white rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-users-cog"></i></div><h3 class="text-lg font-black text-white">Panel de Supervisor</h3></div>
+            <div class="p-6 text-center border-b border-slate-100 bg-slate-800"><div class="w-16 h-16 bg-slate-700 text-white rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-users-cog"></i></div><h3 class="text-lg font-black text-white">Panel de Supervisor</h3><p class="text-xs text-slate-400 mt-1">Seleccione la vista a auditar</p></div>
             <div class="p-6 space-y-4">
-                <select id="superadmin-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-slate-800">
-                    <option value="1311397689">Vista Global (Supervisor)</option><option value="michelle">Administración (Michelle)</option><option value="emilia">Bonos y Referidos (Emilia)</option><option value="melanie">Gestión Afiliados (Melanie)</option><option value="admin">Panel Influyente (Admin)</option><option value="gussepy">Dirección (Gussepy)</option><option value="tito">Operador (Tito)</option><option value="jesus">Operador (Jesús)</option>
-                </select>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Rol / Usuario</label>
+                    <select id="superadmin-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-slate-800">
+                        <option value="1311397689">Vista Global (Supervisor)</option><option value="michelle">Administración (Michelle)</option><option value="emilia">Bonos y Referidos (Emilia)</option><option value="melanie">Gestión Afiliados (Melanie)</option><option value="admin">Panel Influyente (Admin)</option><option value="gussepy">Dirección (Gussepy)</option><option value="tito">Operador (Tito)</option><option value="jesus">Operador (Jesús)</option>
+                    </select>
+                </div>
                 <div class="flex gap-3 pt-2"><button onclick="closeSuperAdminSwitcher()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-bold rounded-xl">Cerrar</button><button onclick="confirmSwitchUser()" class="flex-1 py-3 bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold rounded-xl shadow-md">Ingresar</button></div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- CONEXIÓN DE BACKEND (URL EXACTA DEL USUARIO) ---
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwdV2TAleBY9FbSYpiCIwJ7EhtOD2msSF_RJ4bwDpTZhT6sjpfbJJ58FMMTuoyQHMmsyA/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0dVaTkdO06B9Qg-Thy3AeTrBF6ogNct2VcbALzJNFruFOKoyxu1c16ZEyUWweeUlp/exec';
         
-        const USERS = { 'michelle': { pass: '1317857587', name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600' }, 'jesus': { pass: 'JesusVentas88', name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]' }, 'tito': { pass: '1311397689', name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]' }, 'gussepy': { pass: 'GussepyMaster', name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600' }, 'emilia': { pass: 'Emilia18@', name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600' }, 'melanie': { pass: 'Melanie', name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500' }, 'admin': { pass: 'admin', name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600' }, '1311397689': { pass: '1311397689', name: 'Supervisor', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800' } };
+        const USERS = { 'michelle': { pass: '1317857587', name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600' }, 'jesus': { pass: 'JesusVentas88', name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]' }, 'tito': { pass: '1311397689', name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]' }, 'gussepy': { pass: 'GussepyMaster', name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600' }, 'emilia': { pass: 'Emilia18@', name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600' }, 'melanie': { pass: 'Melanie', name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500' }, 'admin': { pass: 'admin', name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600' }, '1311397689': { pass: '1311397689', name: 'Supervisor General', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800' } };
+        
         let currentUser = null, isSuperAdmin = false, records = [], advances = [], bonos = [], referrals = [], rendimientos = [], filters = { date: '', user: 'all', status: 'all', amount: '' }, bonoFilters = { date: '', dest: '', amount: '' }, refFilters = { date: '', name: '', cedula: '' }, pendingVerifyId = null, pendingAuthId = null, pendingBonoWinId = null, referidosChart = null, inactivityTimer;
 
         window.onload = () => {
             const savedData = localStorage.getItem('sb_user_data');
             if (savedData) { const ud = JSON.parse(savedData); if (ud.baseType === 'superadmin') { isSuperAdmin = true; currentUser = ud.id; loginUI(USERS[ud.id] || ud); } else { currentUser = ud.id; loginUI(ud); } } else { showScreen('login'); }
-            const todayStr = new Date().toISOString().split('T')[0]; ['reg-date', 'gus-date', 'bono-date', 'ref-date', 'rend-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = todayStr; });
+            
+            const now = new Date();
+            const currentMonthStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+            ['dash-month-filter', 'bonos-month-filter', 'mel-month-filter', 'inf-month-filter'].forEach(id => { const el = document.getElementById(id); if (el) el.value = currentMonthStr; });
+
+            const todayStr = now.toISOString().split('T')[0]; 
+            ['reg-date', 'gus-date', 'bono-date', 'ref-date', 'rend-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = todayStr; });
+            
             document.getElementById('login-form').addEventListener('submit', handleLogin); document.getElementById('register-form').addEventListener('submit', handleRegister); document.getElementById('form-gussepy').addEventListener('submit', handleGussepy); document.getElementById('form-bonos').addEventListener('submit', handleBono); document.getElementById('form-referrals').addEventListener('submit', handleReferral); document.getElementById('form-rendimiento').addEventListener('submit', handleRendimiento);
             ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(evt => document.addEventListener(evt, resetInactivityTimer));
         };
 
-        function resetInactivityTimer() { clearTimeout(inactivityTimer); if (currentUser) inactivityTimer = setTimeout(() => { logout(); alert('Sesión cerrada por inactividad.'); }, 15 * 60 * 1000); }
+        function resetInactivityTimer() { clearTimeout(inactivityTimer); if (currentUser) inactivityTimer = setTimeout(() => { logout(); alert('Sesión cerrada por inactividad. Por favor, ingrese de nuevo.'); }, 15 * 60 * 1000); }
         function togglePassword() { const passInput = document.getElementById('login-pass'); const icon = document.getElementById('eye-icon'); if (passInput.type === 'password') { passInput.type = 'text'; icon.classList.replace('fa-eye', 'fa-eye-slash'); } else { passInput.type = 'password'; icon.classList.replace('fa-eye-slash', 'fa-eye'); } }
         function showToast(msg, type = 'success') { const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast-enter flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-white text-sm font-bold ${type === 'success' ? 'bg-slate-800' : 'bg-rose-600'}`; toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle text-emerald-400' : 'fa-exclamation-circle'}"></i> ${msg}`; container.appendChild(toast); setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000); }
         function showScreen(screen) { document.getElementById('screen-login').classList.add('hidden'); document.getElementById('screen-app').classList.add('hidden'); document.getElementById(`screen-${screen}`).classList.remove('hidden'); }
-        function toggleAmountStyle() { const checkedRadio = document.querySelector('input[name="reg-type"]:checked'); if (!checkedRadio) return; const isDebit = checkedRadio.value === 'debito'; const icon = document.getElementById('icon-amount'); const label = document.getElementById('label-amount'); if (icon && label) { if (isDebit) { icon.innerText = '-$'; icon.classList.replace('text-slate-400', 'text-rose-500'); label.innerText = 'Monto Débito ($) *'; label.classList.add('text-rose-600'); } else { icon.innerText = '$'; icon.classList.replace('text-rose-500', 'text-slate-400'); label.innerText = 'Monto ($) *'; label.classList.remove('text-rose-600'); } } }
+        
+        function toggleAmountStyle() { 
+            const checkedRadio = document.querySelector('input[name="reg-type"]:checked'); 
+            if (!checkedRadio) return; 
+            const isDebit = checkedRadio.value === 'debito'; 
+            const label = document.getElementById('label-amount'); 
+            if (label) { 
+                if (isDebit) { 
+                    label.innerText = 'Monto Débito ($) *'; 
+                    label.classList.add('text-rose-600'); 
+                    label.classList.remove('text-slate-500');
+                } else { 
+                    label.innerText = 'Monto ($) *'; 
+                    label.classList.remove('text-rose-600'); 
+                    label.classList.add('text-slate-500');
+                } 
+            } 
+        }
 
-        // MODO SILENCIOSO Y ANTI-BLOQUEO
         async function pushData(action, data) {
-            try { await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: action, data: data }) }); return { success: true }; } 
-            catch (err) { return { success: false, msg: 'Error de red' }; }
+            try {
+                const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: action, data: data }) });
+                const result = await response.json(); return { success: result.status === 'success', msg: result.msg, user: result.user };
+            } catch (err) { return { success: false, msg: 'Error de conexión.' }; }
         }
 
         async function handleLogin(e) {
-            e.preventDefault(); const u = document.getElementById('login-user').value.toLowerCase().trim(); const p = document.getElementById('login-pass').value.trim(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
+            e.preventDefault(); const u = document.getElementById('login-user').value.toLowerCase().trim(); const p = document.getElementById('login-pass').value.trim(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Autenticando...'; btn.disabled = true;
             setTimeout(() => {
                 if (USERS[u] && USERS[u].pass === p) {
                     const userObj = { id: u, name: USERS[u].name, type: USERS[u].type, color: USERS[u].color, icon: USERS[u].icon };
-                    if (userObj.type === 'superadmin') { isSuperAdmin = true; userObj.baseType = 'superadmin'; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = u; openSuperAdminSwitcher(); } 
-                    else { isSuperAdmin = false; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = u; loginUI(userObj); }
+                    if (userObj.type === 'superadmin') { isSuperAdmin = true; userObj.baseType = 'superadmin'; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = u; openSuperAdminSwitcher(); showToast('Supervisor: Seleccione vista.', 'success');} 
+                    else { isSuperAdmin = false; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = u; loginUI(userObj); showToast('Acceso concedido', 'success');}
                 } else showToast('Credenciales incorrectas.', 'error');
                 btn.innerHTML = orig; btn.disabled = false;
             }, 300);
@@ -511,7 +612,7 @@
 
         function openSuperAdminSwitcher() { document.getElementById('modal-superadmin').classList.replace('hidden', 'flex'); }
         function closeSuperAdminSwitcher() { if (document.getElementById('screen-app').classList.contains('hidden')) confirmSwitchUser('1311397689'); else document.getElementById('modal-superadmin').classList.replace('flex', 'hidden'); }
-        function confirmSwitchUser(overrideId = null) { const targetId = overrideId || document.getElementById('superadmin-select').value; const userObj = { ...USERS[targetId], id: targetId, baseType: 'superadmin' }; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = targetId; loginUI(userObj); document.getElementById('modal-superadmin').classList.replace('flex', 'hidden'); }
+        function confirmSwitchUser(overrideId = null) { const targetId = overrideId || document.getElementById('superadmin-select').value; const userObj = { ...USERS[targetId], id: targetId, baseType: 'superadmin' }; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = targetId; loginUI(userObj); document.getElementById('modal-superadmin').classList.replace('flex', 'hidden'); showToast('Vista cambiada exitosamente.', 'success'); }
 
         function loginUI(user) {
             const elUserDisplay = document.getElementById('user-display'); if (elUserDisplay) elUserDisplay.innerText = user.name + (isSuperAdmin ? " (Auditoría)" : "");
@@ -573,7 +674,7 @@
             try {
                 const res = await fetch(SCRIPT_URL); const data = await res.json();
                 if (data.status === 'success') { records = data.data || []; advances = data.advances || []; bonos = data.bonos || []; referrals = data.referrals || []; rendimientos = data.rendimientos || []; updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns(); }
-            } catch (err) {} 
+            } catch (err) { console.error("Error al cargar datos."); } 
             finally {
                 if (!isBackground) document.getElementById('global-loader').classList.add('hidden');
                 else document.querySelectorAll('button[title="Recargar"] i, button[title="Recargar datos"] i').forEach(i => i.classList.remove('fa-spin'));
@@ -587,10 +688,10 @@
         }
 
         function updateMelanieDropdowns() {
-            // Filtrar y mostrar únicamente los referentes que se marcaron como Influencers (isInfluencer == true)
             const refList = [...new Set(referrals.filter(r => r.isInfluencer).map(r => r.referrer))].filter(Boolean);
+            const allInf = [...new Set([...refList, 'admin'])];
             const selRef = document.getElementById('rend-referrer');
-            if (selRef) selRef.innerHTML = '<option value="">Seleccione Influyente...</option>' + refList.map(r => `<option value="${r}">${r}</option>`).join('');
+            if (selRef) selRef.innerHTML = '<option value="">Seleccione Influyente...</option>' + allInf.map(r => `<option value="${r}">${r}</option>`).join('');
         }
 
         function updateReferredDropdown() {
@@ -610,17 +711,26 @@
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = filename; link.click();
         }
 
+        function isSameMonth(dateStr, filterValue) {
+            if (!dateStr || !filterValue) return true;
+            const d = new Date(dateStr); d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
+            const [y, m] = filterValue.split('-');
+            return d.getFullYear() === parseInt(y) && (d.getMonth() + 1) === parseInt(m);
+        }
+
+        // --- SUBMIT HANDLERS ---
         async function handleRegister(e) {
             e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); const orig = btn.innerHTML; btn.innerHTML = 'Guardando...'; btn.disabled = true;
             let amt = parseFloat(document.getElementById('reg-amount').value.replace(',', '.'));
             if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); btn.innerHTML = orig; btn.disabled = false; return; }
-            const isDebit = document.querySelector('input[name="reg-type"]:checked').value === 'debito'; if (isDebit) amt = -Math.abs(amt);
+            const checkedRadio = document.querySelector('input[name="reg-type"]:checked');
+            const isDebit = checkedRadio && checkedRadio.value === 'debito'; if (isDebit) amt = -Math.abs(amt);
             const ud = JSON.parse(localStorage.getItem('sb_user_data')); let assigned = currentUser;
             if (ud && (ud.type === 'admin' || isSuperAdmin)) { const assignRadio = document.querySelector('input[name="reg-assign"]:checked'); assigned = assignRadio ? assignRadio.value : currentUser; }
             const newTx = { id: 'TX' + Date.now(), date: document.getElementById('reg-date').value, amount: amt, concept: document.getElementById('reg-concept').value.trim() || (isDebit ? 'Débito' : 'Ingreso'), assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: '' };
             records.unshift(newTx); updateAllViews(); document.getElementById('reg-amount').value = ''; document.getElementById('reg-concept').value = ''; document.querySelector('input[name="reg-type"][value="ingreso"]').checked = true; toggleAmountStyle();
             btn.innerHTML = orig; btn.disabled = false;
-            pushData('add', newTx).then(res => { if (res.success) showToast('Sincronizado', 'success'); else showToast("Error", "error"); });
+            pushData('add', newTx).then(res => { if (res.success) showToast('Registro guardado exitosamente', 'success'); else showToast("Guardado local, fallo de red.", "warning"); });
         }
 
         async function handleGussepy(e) {
@@ -629,7 +739,7 @@
             if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); btn.innerHTML = orig; btn.disabled = false; return; }
             const newAdv = { id: 'ADV' + Date.now(), date: document.getElementById('gus-date').value, amount: amt, concept: document.getElementById('gus-concept').value.trim() || 'Adelanto', createdBy: currentUser, status: 'Pendiente', detail: '' };
             advances.unshift(newAdv); updateAllViews(); document.getElementById('form-gussepy').reset(); document.getElementById('gus-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
-            pushData('add_advance', newAdv).then(res => { if(res.success) showToast('Enviado', 'success'); });
+            pushData('add_advance', newAdv).then(res => { if(res.success) showToast('Adelanto registrado con éxito', 'success'); });
         }
 
         async function handleBono(e) {
@@ -639,13 +749,13 @@
             const companyRadio = document.querySelector('input[name="bono-company"]:checked'); const company = companyRadio ? companyRadio.value : 'Sepybet';
             const newBono = { id: 'BN' + Date.now(), date: document.getElementById('bono-date').value, amount: amt, assignedTo: document.getElementById('bono-dest').value.trim(), concept: document.getElementById('bono-concept').value.trim() || 'Emisión', createdBy: currentUser, status: 'Entregado', amountWon: 0, company: company };
             bonos.unshift(newBono); updateAllViews(); updateBonoDatalist(); document.getElementById('form-bonos').reset(); document.getElementById('bono-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
-            pushData('add_bono', newBono).then(res => { if(res.success) showToast('Guardado', 'success'); });
+            pushData('add_bono', newBono).then(res => { if(res.success) showToast('Bono emitido y guardado exitosamente.', 'success'); });
         }
 
         async function handleReferral(e) {
             e.preventDefault(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; btn.innerHTML = 'Sincronizando...'; btn.disabled = true;
             const cedula = document.getElementById('ref-cedula').value.trim();
-            if (referrals.some(r => r.cedula === cedula)) { showToast("Cédula registrada.", "error"); btn.innerHTML = orig; btn.disabled = false; return; }
+            if (referrals.some(r => r.cedula === cedula)) { showToast("Esta Cédula ya está registrada.", "error"); btn.innerHTML = orig; btn.disabled = false; return; }
             const amt = parseFloat(document.getElementById('ref-amount').value.replace(',', '.'));
             if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); btn.innerHTML = orig; btn.disabled = false; return; }
             
@@ -658,7 +768,7 @@
             
             referrals.unshift(newRef); bonos.unshift(newBonoFromRef); updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns();
             document.getElementById('form-referrals').reset(); document.getElementById('ref-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
-            pushData('add_referral', { ...newRef, company: company });
+            pushData('add_referral', { ...newRef, company: company }).then(res => { if(res.success) showToast('Referido guardado correctamente.', 'success'); });
         }
 
         async function handleRendimiento(e) {
@@ -668,8 +778,9 @@
             const depositos = parseFloat(document.getElementById('rend-dep').value.replace(',', '.')) || 0; const retiros = parseFloat(document.getElementById('rend-ret').value.replace(',', '.')) || 0;
             const neto = depositos - retiros; const comision = neto * 0.20;
             const newRend = { id: 'RND' + Date.now(), date: document.getElementById('rend-date').value, referrer, referred, depositos, retiros, neto, comision, createdBy: currentUser };
-            rendimientos.push(newRend); updateAllViews(); document.getElementById('form-rendimiento').reset(); document.getElementById('rend-date').value = new Date().toISOString().split('T')[0];
-            btn.innerHTML = orig; btn.disabled = false; pushData('add_rendimiento', newRend);
+            rendimientos.unshift(newRend); updateAllViews(); document.getElementById('form-rendimiento').reset(); document.getElementById('rend-date').value = new Date().toISOString().split('T')[0];
+            btn.innerHTML = orig; btn.disabled = false; 
+            pushData('add_rendimiento', newRend).then(res => { if(res.success) showToast('Rendimiento y comisión calculados exitosamente.', 'success'); });
         }
 
         function actionVerify(id) { pendingVerifyId = String(id); document.getElementById('input-receipt').value = ''; document.getElementById('modal-comprobante').classList.replace('hidden', 'flex'); }
@@ -677,7 +788,7 @@
         async function confirmVerify() {
             if (!pendingVerifyId) return; const targetId = String(pendingVerifyId); const receipt = document.getElementById('input-receipt').value.trim(); const btn = document.getElementById('btn-verify-confirm');
             const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true; const tx = records.find(r => String(r.id) === targetId);
-            if (tx) { tx.status = 'Verificado'; tx.receipt = receipt; updateAllViews(); closeModal(); pushData('verify', { id: targetId, receipt: receipt }); } else closeModal();
+            if (tx) { tx.status = 'Verificado'; tx.receipt = receipt; updateAllViews(); closeModal(); pushData('verify', { id: targetId, receipt: receipt }).then(res => { if(res.success) showToast("Aprobado con éxito", "success")}); } else closeModal();
             btn.innerHTML = orig; btn.disabled = false; 
         }
 
@@ -690,15 +801,32 @@
             const id = document.getElementById('edit-id').value; const tx = records.find(r => String(r.id) === id); if(!tx) return;
             const btn = document.getElementById('btn-edit-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
             tx.date = document.getElementById('edit-date').value; let nAmt = parseFloat(document.getElementById('edit-amount').value.replace(',', '.')); tx.amount = (tx.amount < 0) ? -nAmt : nAmt; tx.concept = document.getElementById('edit-concept').value;
-            updateAllViews(); closeEditModal(); pushData('edit_record', tx); btn.innerHTML = orig; btn.disabled = false;
+            updateAllViews(); closeEditModal(); pushData('edit_record', tx).then(res => { if(res.success) showToast("Editado con éxito", "success")}); btn.innerHTML = orig; btn.disabled = false;
         }
 
-        async function actionDeny(id) { if (confirm("¿DENEGAR?")) { const targetId = String(id); const tx = records.find(r => String(r.id) === targetId); if (tx) { tx.status = 'Denegado'; updateAllViews(); pushData('deny', { id: targetId }); } } }
+        function actionEditRend(id) {
+            const rend = rendimientos.find(r => String(r.id) === String(id));
+            if(rend) { document.getElementById('edit-rend-id').value = rend.id; document.getElementById('edit-rend-date').value = rend.date; document.getElementById('edit-rend-dep').value = rend.depositos; document.getElementById('edit-rend-ret').value = rend.retiros; document.getElementById('modal-edit-rend').classList.replace('hidden', 'flex'); }
+        }
+        function closeEditRendModal() { document.getElementById('modal-edit-rend').classList.replace('flex', 'hidden'); }
+        async function confirmEditRend() {
+            const id = document.getElementById('edit-rend-id').value; const rend = rendimientos.find(r => String(r.id) === id); if(!rend) return;
+            const btn = document.getElementById('btn-edit-rend-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
+            rend.date = document.getElementById('edit-rend-date').value; 
+            rend.depositos = parseFloat(document.getElementById('edit-rend-dep').value.replace(',', '.')) || 0; 
+            rend.retiros = parseFloat(document.getElementById('edit-rend-ret').value.replace(',', '.')) || 0;
+            rend.neto = rend.depositos - rend.retiros;
+            rend.comision = rend.neto * 0.20;
+            updateAllViews(); closeEditRendModal(); 
+            pushData('edit_rendimiento', rend).then(res => { if(res.success) showToast("Rendimiento actualizado con éxito", "success")}); btn.innerHTML = orig; btn.disabled = false;
+        }
+
+        async function actionDeny(id) { if (confirm("¿DENEGAR?")) { const targetId = String(id); const tx = records.find(r => String(r.id) === targetId); if (tx) { tx.status = 'Denegado'; updateAllViews(); pushData('deny', { id: targetId }).then(res => { if(res.success) showToast("Denegado", "success")}); } } }
         function actionAuthorizeAdvance(id) { pendingAuthId = String(id); document.getElementById('input-gussepy-detail').value = ''; document.getElementById('modal-gussepy').classList.replace('hidden', 'flex'); }
         function closeGussepyModal() { document.getElementById('modal-gussepy').classList.replace('flex', 'hidden'); pendingAuthId = null; }
         async function confirmGussepyAuth() {
             if (!pendingAuthId) return; const detail = document.getElementById('input-gussepy-detail').value.trim() || 'Aprobado'; const btn = document.getElementById('btn-gussepy-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
-            const adv = advances.find(r => String(r.id) === String(pendingAuthId)); if (adv) { adv.status = 'Autorizado'; adv.detail = detail; updateAllViews(); closeGussepyModal(); pushData('authorize_advance', { id: String(pendingAuthId), detail: detail }); } else closeGussepyModal();
+            const adv = advances.find(r => String(r.id) === String(pendingAuthId)); if (adv) { adv.status = 'Autorizado'; adv.detail = detail; updateAllViews(); closeGussepyModal(); pushData('authorize_advance', { id: String(pendingAuthId), detail: detail }).then(res => { if(res.success) showToast("Adelanto autorizado", "success")}); } else closeGussepyModal();
             btn.innerHTML = orig; btn.disabled = false; 
         }
 
@@ -707,15 +835,15 @@
         async function confirmBonoWin() {
             if (!pendingBonoWinId) return; const wonAmt = parseFloat(document.getElementById('input-bono-win-amount').value.replace(',', '.')); if (isNaN(wonAmt) || wonAmt <= 0) return;
             const btn = document.getElementById('btn-bono-win-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
-            const b = bonos.find(r => String(r.id) === String(pendingBonoWinId)); if (b) { b.status = 'Ganado'; b.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_bono', { id: String(pendingBonoWinId), amountWon: wonAmt }); } else closeBonoWinModal();
+            const b = bonos.find(r => String(r.id) === String(pendingBonoWinId)); if (b) { b.status = 'Ganado'; b.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_bono', { id: String(pendingBonoWinId), amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia de bono guardada", "success")}); } else closeBonoWinModal();
             btn.innerHTML = orig; btn.disabled = false;
         }
 
         async function actionDelete(id, type = 'record') {
-            if(confirm("🚨 ¿Seguro que desea eliminar?")) {
+            if(confirm("🚨 ¿Seguro que desea eliminar permanentemente?")) {
                 const tId = String(id); let act = 'delete';
-                if(type === 'advance'){ act = 'delete_advance'; advances = advances.filter(r => String(r.id) !== tId); } else if(type === 'bono'){ act = 'delete_bono'; bonos = bonos.filter(r => String(r.id) !== tId); } else if(type === 'referral'){ act = 'delete_referral'; referrals = referrals.filter(r => String(r.id) !== tId); bonos = bonos.filter(b => String(b.id) !== tId + "_B"); } else { records = records.filter(r => String(r.id) !== tId); }
-                updateAllViews(); pushData(act, {id: tId});
+                if(type === 'advance'){ act = 'delete_advance'; advances = advances.filter(r => String(r.id) !== tId); } else if(type === 'bono'){ act = 'delete_bono'; bonos = bonos.filter(r => String(r.id) !== tId); } else if(type === 'referral'){ act = 'delete_referral'; referrals = referrals.filter(r => String(r.id) !== tId); bonos = bonos.filter(b => String(b.id) !== tId + "_B"); } else if (type === 'rendimiento') { act = 'delete_rendimiento'; rendimientos = rendimientos.filter(r => String(r.id) !== tId); } else { records = records.filter(r => String(r.id) !== tId); }
+                updateAllViews(); pushData(act, {id: tId}).then(res => { if(res.success) showToast("Registro eliminado.", "success")});
             }
         }
 
@@ -741,8 +869,14 @@
         function updateAllViews() {
             const ud = JSON.parse(localStorage.getItem('sb_user_data')); if (!ud) return; const userType = ud.type;
             
+            const dashMF = document.getElementById('dash-month-filter')?.value;
+            const bonoMF = document.getElementById('bonos-month-filter')?.value;
+            const melMF = document.getElementById('mel-month-filter')?.value;
+            const infMF = document.getElementById('inf-month-filter')?.value;
+
             const influencerStats = {};
-            rendimientos.forEach(r => {
+            const filteredRend = rendimientos.filter(r => isSameMonth(r.date, melMF));
+            filteredRend.forEach(r => {
                 if(!influencerStats[r.referrer]) influencerStats[r.referrer] = { dep: 0, ret: 0, net: 0, com: 0 };
                 influencerStats[r.referrer].dep += r.depositos; influencerStats[r.referrer].ret += r.retiros; influencerStats[r.referrer].net += r.neto; influencerStats[r.referrer].com += r.comision;
             });
@@ -755,35 +889,54 @@
                 const elMelTbody = document.getElementById('mel-table-body');
                 if (elMelTbody) {
                     const htmlMelTbody = Object.entries(influencerStats).map(([name, s]) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-bold text-pink-600 uppercase"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${name}</td><td class="p-4 text-sm font-black text-emerald-500">${fmt(s.dep)}</td><td class="p-4 text-sm font-black text-rose-500">${fmt(s.ret)}</td><td class="p-4 text-sm font-black text-slate-700">${fmt(s.net)}</td><td class="p-4 pr-6 text-right text-sm font-black text-pink-600">${fmt(s.com)}</td></tr>`).join('');
-                    elMelTbody.innerHTML = htmlMelTbody || `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">Sin datos de rendimientos.</td></tr>`;
+                    elMelTbody.innerHTML = htmlMelTbody || `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">Sin datos para este mes.</td></tr>`;
+                }
+                const elMelHistory = document.getElementById('mel-table-history');
+                if (elMelHistory) {
+                    elMelHistory.innerHTML = filteredRend.map(r => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td><td class="p-4 text-xs font-bold text-pink-600 uppercase"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${r.referrer}</td><td class="p-4 text-xs font-bold text-slate-800 uppercase">${r.referred}</td><td class="p-4 text-sm font-black text-emerald-500">${fmt(r.depositos)}</td><td class="p-4 text-sm font-black text-rose-500">${fmt(r.retiros)}</td><td class="p-4 text-sm font-black text-pink-600">${fmt(r.comision)}</td><td class="p-4 pr-6 text-center"><div class="flex justify-center gap-2"><button onclick="actionEditRend('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'rendimiento')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div></td></tr>`).join('') || `<tr><td colspan="7" class="p-6 text-center text-sm text-slate-400">No hay movimientos cargados este mes.</td></tr>`;
                 }
             }
 
             if (userType === 'admin' || userType === 'master' || isSuperAdmin) {
-                const elJesus = document.getElementById('dash-jesus'); if(elJesus) elJesus.innerText = fmt(records.reduce((s, r) => s + (r.assignedTo === 'jesus' && r.status === 'Verificado' ? r.amount : 0), 0));
-                const elTito = document.getElementById('dash-tito'); if(elTito) elTito.innerText = fmt(records.reduce((s, r) => s + (r.assignedTo === 'tito' && r.status === 'Verificado' ? r.amount : 0), 0));
-                const elGussepy = document.getElementById('dash-gussepy'); if(elGussepy) elGussepy.innerText = fmt(advances.reduce((s, a) => s + (a.amount || 0), 0));
+                const fRecords = records.filter(r => isSameMonth(r.date, dashMF));
+                const elJesus = document.getElementById('dash-jesus'); if(elJesus) elJesus.innerText = fmt(fRecords.reduce((s, r) => s + (r.assignedTo === 'jesus' && r.status === 'Verificado' ? r.amount : 0), 0));
+                const elTito = document.getElementById('dash-tito'); if(elTito) elTito.innerText = fmt(fRecords.reduce((s, r) => s + (r.assignedTo === 'tito' && r.status === 'Verificado' ? r.amount : 0), 0));
                 
+                const fAdvances = advances.filter(a => isSameMonth(a.date, dashMF));
+                const elGussepy = document.getElementById('dash-gussepy'); if(elGussepy) elGussepy.innerText = fmt(fAdvances.reduce((s, a) => s + (a.amount || 0), 0));
+                
+                const gusInfStats = {};
+                rendimientos.filter(r => isSameMonth(r.date, dashMF)).forEach(r => {
+                    if(!gusInfStats[r.referrer]) gusInfStats[r.referrer] = { dep: 0, ret: 0, net: 0, com: 0 };
+                    gusInfStats[r.referrer].dep += r.depositos; gusInfStats[r.referrer].ret += r.retiros; gusInfStats[r.referrer].net += r.neto; gusInfStats[r.referrer].com += r.comision;
+                });
+
                 const elGusInf = document.getElementById('gus-table-influencers');
                 if (elGusInf) {
-                    const htmlGusInf = Object.entries(influencerStats).map(([name, s]) => `<tr class="border-b border-indigo-50 hover:bg-slate-50"><td class="p-3 pl-4 text-xs font-bold text-indigo-700 uppercase"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${name}</td><td class="p-3 text-xs font-black text-slate-600">${referrals.filter(r => r.referrer === name).length}</td><td class="p-3 text-xs font-black text-emerald-600">${fmt(s.dep)}</td><td class="p-3 text-xs font-black text-rose-600">${fmt(s.ret)}</td><td class="p-3 text-xs font-black text-slate-700">${fmt(s.net)}</td><td class="p-3 pr-4 text-right text-sm font-black text-indigo-600">${fmt(s.com)}</td></tr>`).join('');
-                    elGusInf.innerHTML = htmlGusInf || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">Sin comisiones de influyentes.</td></tr>`;
+                    const htmlGusInf = Object.entries(gusInfStats).map(([name, s]) => `<tr class="border-b border-indigo-50 hover:bg-slate-50"><td class="p-3 pl-4 text-xs font-bold text-indigo-700 uppercase"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${name}</td><td class="p-3 text-xs font-black text-slate-600">${referrals.filter(r => r.referrer === name && isSameMonth(r.date, dashMF)).length}</td><td class="p-3 text-xs font-black text-emerald-600">${fmt(s.dep)}</td><td class="p-3 text-xs font-black text-rose-600">${fmt(s.ret)}</td><td class="p-3 text-xs font-black text-slate-700">${fmt(s.net)}</td><td class="p-3 pr-4 text-right text-sm font-black text-indigo-600">${fmt(s.com)}</td></tr>`).join('');
+                    elGusInf.innerHTML = htmlGusInf || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">Sin comisiones de influyentes este mes.</td></tr>`;
                 }
             }
 
             if (userType === 'master' || userType === 'bonos' || isSuperAdmin) {
-                const ganados = bonos.filter(b => b.status === 'Ganado');
-                const valGanados = ganados.reduce((s, b) => s + (b.amountWon || 0), 0); const valEntregados = bonos.reduce((s, b) => s + b.amount, 0);
-                const elBqty = document.getElementById('dash-bonos-qty'); if(elBqty) elBqty.innerText = bonos.length;
+                const fBonos = bonos.filter(b => isSameMonth(b.date, bonoMF));
+                const ganados = fBonos.filter(b => b.status === 'Ganado');
+                const valGanados = ganados.reduce((s, b) => s + (b.amountWon || 0), 0); const valEntregados = fBonos.reduce((s, b) => s + b.amount, 0);
+                const elBqty = document.getElementById('dash-bonos-qty'); if(elBqty) elBqty.innerText = fBonos.length;
                 const elBval = document.getElementById('dash-bonos-val'); if(elBval) elBval.innerText = fmt(valEntregados);
                 const elBwqty = document.getElementById('dash-bonos-won-qty'); if(elBwqty) elBwqty.innerText = ganados.length;
                 const elBwval = document.getElementById('dash-bonos-won-val'); if(elBwval) elBwval.innerText = fmt(valGanados);
-                const elGusBqty = document.getElementById('gus-dash-qty-entregados'); if(elGusBqty) elGusBqty.innerText = bonos.length;
-                const elGusBval = document.getElementById('gus-dash-val-entregados'); if(elGusBval) elGusBval.innerText = fmt(valEntregados);
-                const elGusBwqty = document.getElementById('gus-dash-qty-ganados'); if(elGusBwqty) elGusBwqty.innerText = ganados.length;
-                const elGusBwval = document.getElementById('gus-dash-val-ganados'); if(elGusBwval) elGusBwval.innerText = fmt(valGanados);
+                
+                const fBonosDash = bonos.filter(b => isSameMonth(b.date, dashMF));
+                const ganadosDash = fBonosDash.filter(b => b.status === 'Ganado');
+                const valGanadosDash = ganadosDash.reduce((s, b) => s + (b.amountWon || 0), 0); const valEntregadosDash = fBonosDash.reduce((s, b) => s + b.amount, 0);
 
-                const players = {}; bonos.forEach(b => { if (!players[b.assignedTo]) players[b.assignedTo] = { name: b.assignedTo, totalWon: 0, received: 0, totalReceived: 0 }; players[b.assignedTo].received++; players[b.assignedTo].totalReceived += b.amount; if (b.status === 'Ganado') players[b.assignedTo].totalWon += (b.amountWon || 0); });
+                const elGusBqty = document.getElementById('gus-dash-qty-entregados'); if(elGusBqty) elGusBqty.innerText = fBonosDash.length;
+                const elGusBval = document.getElementById('gus-dash-val-entregados'); if(elGusBval) elGusBval.innerText = fmt(valEntregadosDash);
+                const elGusBwqty = document.getElementById('gus-dash-qty-ganados'); if(elGusBwqty) elGusBwqty.innerText = ganadosDash.length;
+                const elGusBwval = document.getElementById('gus-dash-val-ganados'); if(elGusBwval) elGusBwval.innerText = fmt(valGanadosDash);
+
+                const players = {}; fBonos.forEach(b => { if (!players[b.assignedTo]) players[b.assignedTo] = { name: b.assignedTo, totalWon: 0, received: 0, totalReceived: 0 }; players[b.assignedTo].received++; players[b.assignedTo].totalReceived += b.amount; if (b.status === 'Ganado') players[b.assignedTo].totalWon += (b.amountWon || 0); });
                 const topGanadores = Object.values(players).filter(p => p.totalWon > 0).sort((a, b) => b.totalWon - a.totalWon).slice(0, 5);
                 const htmlGanadores = topGanadores.length === 0 ? `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-400">Sin datos</td></tr>` : topGanadores.map((p, i) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-3 pl-4 text-xs font-black text-amber-500">#${i+1}</td><td class="p-3 text-xs font-bold text-slate-800 uppercase">${p.name}</td><td class="p-3 pr-4 text-right text-sm font-black text-emerald-600">${fmt(p.totalWon)}</td></tr>`).join('');
                 const elTG = document.getElementById('table-top-ganadores'); if (elTG) elTG.innerHTML = htmlGanadores;
@@ -792,7 +945,8 @@
                 const topRecibidos = Object.values(players).filter(p => p.totalReceived > 0).sort((a, b) => b.totalReceived - a.totalReceived).slice(0, 5);
                 const elTR = document.getElementById('table-top-recibidos'); if (elTR) elTR.innerHTML = topRecibidos.length === 0 ? `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-400">Sin datos</td></tr>` : topRecibidos.map((p, i) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-3 pl-4 text-xs font-black text-slate-400">#${i+1}</td><td class="p-3 text-xs font-bold text-slate-800 uppercase">${p.name} <span class="text-[10px] text-slate-400 normal-case">(${p.received} bonos)</span></td><td class="p-3 pr-4 text-right text-sm font-black text-rose-600">${fmt(p.totalReceived)}</td></tr>`).join('');
 
-                const refCounts = {}; referrals.forEach(r => { refCounts[r.referrer] = (refCounts[r.referrer]||0) + 1; });
+                const fReferrals = referrals.filter(r => isSameMonth(r.date, bonoMF));
+                const refCounts = {}; fReferrals.forEach(r => { refCounts[r.referrer] = (refCounts[r.referrer]||0) + 1; });
                 const topRefs = Object.entries(refCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
                 const htmlRefs = topRefs.length === 0 ? `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-400">Sin datos</td></tr>` : topRefs.map((tr, i) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-3 pl-4 text-xs font-black text-amber-500">#${i+1}</td><td class="p-3 text-xs font-bold text-slate-700 uppercase">${tr[0]}</td><td class="p-3 text-center pr-4 text-xs font-bold text-indigo-600">${tr[1]}</td></tr>`).join('');
                 const elTRef = document.getElementById('table-top-referrers'); if (elTRef) elTRef.innerHTML = htmlRefs;
@@ -833,8 +987,10 @@
 
             if (userType === 'influencer' || isSuperAdmin) {
                 const targetRef = isSuperAdmin ? 'admin' : currentUser; 
-                const myReferrals = referrals.filter(r => r.referrer === targetRef);
-                const myRendimientos = rendimientos.filter(r => r.referrer === targetRef);
+                const searchTxt = document.getElementById('inf-search')?.value.toLowerCase() || '';
+                
+                const myReferrals = referrals.filter(r => r.referrer === targetRef && isSameMonth(r.date, infMF));
+                const myRendimientos = rendimientos.filter(r => r.referrer === targetRef && isSameMonth(r.date, infMF));
 
                 const elInfQty = document.getElementById('inf-dash-qty'); if(elInfQty) elInfQty.innerText = myReferrals.length;
                 const elInfDep = document.getElementById('inf-dash-dep'); if(elInfDep) elInfDep.innerText = fmt(myRendimientos.reduce((s, r) => s + r.depositos, 0));
@@ -850,8 +1006,10 @@
 
                 const tbodyInf = document.getElementById('inf-table-body');
                 if (tbodyInf) {
-                    const htmlRend = Object.entries(playersRend).map(([name, d]) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-800 uppercase"><i class="fas fa-user mr-1 text-slate-400"></i> ${name}</td><td class="p-4 text-sm font-black text-emerald-500">${fmt(d.dep)}</td><td class="p-4 text-sm font-black text-rose-500">${fmt(d.ret)}</td><td class="p-4 text-sm font-black text-slate-700">${fmt(d.net)}</td><td class="p-4 pr-6 text-right text-sm font-black text-indigo-600">${fmt(d.com)}</td></tr>`).join('');
-                    tbodyInf.innerHTML = htmlRend || `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">Aún no hay datos de rendimiento registrados.</td></tr>`;
+                    const htmlRend = Object.entries(playersRend)
+                        .filter(([name, d]) => name.toLowerCase().includes(searchTxt))
+                        .map(([name, d]) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-800 uppercase"><i class="fas fa-user mr-1 text-slate-400"></i> ${name}</td><td class="p-4 text-sm font-black text-emerald-500">${fmt(d.dep)}</td><td class="p-4 text-sm font-black text-rose-500">${fmt(d.ret)}</td><td class="p-4 text-sm font-black text-slate-700">${fmt(d.net)}</td><td class="p-4 pr-6 text-right text-sm font-black text-indigo-600">${fmt(d.com)}</td></tr>`).join('');
+                    tbodyInf.innerHTML = htmlRend || `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">Aún no hay datos de rendimiento para este mes.</td></tr>`;
                 }
             }
 
@@ -863,7 +1021,10 @@
 
             let displayRecords = [...records];
             if (userType === 'user') displayRecords = displayRecords.filter(r => r.assignedTo === currentUser);
+            
             if (filters.date) displayRecords = displayRecords.filter(r => { const d1=new Date(r.date); d1.setMinutes(d1.getMinutes()+d1.getTimezoneOffset()); const d2=new Date(filters.date); d2.setMinutes(d2.getMinutes()+d2.getTimezoneOffset()); return d1.toDateString()===d2.toDateString(); });
+            else if (document.getElementById('dash-month-filter')) displayRecords = displayRecords.filter(r => isSameMonth(r.date, document.getElementById('dash-month-filter').value));
+            
             if (userType !== 'user' && filters.user !== 'all') displayRecords = displayRecords.filter(r => r.assignedTo === filters.user);
             if (filters.status !== 'all') displayRecords = displayRecords.filter(r => r.status === filters.status);
             if (filters.amount && !isNaN(parseFloat(filters.amount))) displayRecords = displayRecords.filter(r => Math.abs(r.amount) === parseFloat(filters.amount));
@@ -873,8 +1034,9 @@
 
             const tbody = document.getElementById('table-body'); const emptyState = document.getElementById('empty-state');
             if (userType !== 'bonos' && userType !== 'cajero_afiliados' && userType !== 'influencer' && tbody) {
-                if (displayRecords.length === 0) { tbody.innerHTML = ''; if(emptyState) { emptyState.classList.remove('hidden'); emptyState.classList.add('flex'); } }
-                else {
+                if (displayRecords.length === 0) { 
+                    tbody.innerHTML = ''; if(emptyState) { emptyState.classList.remove('hidden'); emptyState.classList.add('flex'); } 
+                } else {
                     if(emptyState) { emptyState.classList.add('hidden'); emptyState.classList.remove('flex'); }
                     tbody.innerHTML = displayRecords.map(r => {
                         let badge = `<span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase">Pendiente</span>`;
@@ -899,16 +1061,19 @@
             }
 
             if (userType === 'admin' || userType === 'master' || isSuperAdmin) {
-                const tbodyGus = document.getElementById('table-gussepy-advances'); let displayAdvances = [...advances]; displayAdvances.sort((a,b) => String(b.id).localeCompare(String(a.id)));
+                const tbodyGus = document.getElementById('table-gussepy-advances'); 
+                const fAdv = advances.filter(a => isSameMonth(a.date, document.getElementById('dash-month-filter')?.value));
+                fAdv.sort((a,b) => String(b.id).localeCompare(String(a.id)));
+                
                 if (tbodyGus) {
-                    tbodyGus.innerHTML = displayAdvances.map(a => {
+                    tbodyGus.innerHTML = fAdv.map(a => {
                         let badge = a.status === 'Autorizado' ? `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-crown mr-1"></i>Autorizado</span>` : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Pendiente</span>`;
                         let actions = '';
                         if ((userType === 'master' || isSuperAdmin) && a.status === 'Pendiente') actions = `<button onclick="actionAuthorizeAdvance('${a.id}')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black uppercase rounded-lg">Autorizar</button>`;
                         else if (userType === 'admin' || isSuperAdmin) actions = `<button onclick="actionDelete('${a.id}', 'advance')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
                         else if (userType === 'master') actions = `<span class="text-[10px] text-slate-400 font-bold">Ok</span>`;
                         return `<tr class="hover:bg-slate-50 border-b border-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(a.date)}</td><td class="p-4 text-sm font-black text-amber-600">${fmt(a.amount)}</td><td class="p-4 text-xs font-medium text-slate-600">${a.concept}</td><td class="p-4">${badge}</td><td class="p-4 text-[10px] font-bold text-slate-400 italic">${a.detail || '-'}</td><td class="p-4 pr-6 text-center">${actions}</td></tr>`;
-                    }).join('');
+                    }).join('') || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">Sin adelantos.</td></tr>`;
                 }
             }
         }
