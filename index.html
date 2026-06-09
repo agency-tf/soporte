@@ -101,8 +101,13 @@
                     <button onclick="switchTab('tab-gussepy')" id="btn-tab-gussepy" class="hidden px-4 py-2 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fas fa-hand-holding-usd"></i> Adelantos</button>
                     <button onclick="switchTab('tab-maria-dash')" id="btn-tab-maria-dash" class="hidden px-4 py-2 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fas fa-trophy"></i> Dashboard Bonos</button>
                     <button onclick="switchTab('tab-maria-add')" id="btn-tab-maria-add" class="hidden px-4 py-2 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fas fa-gift"></i> Emitir Bono</button>
-                    <button onclick="switchTab('tab-maria-ref-add')" id="btn-tab-maria-ref-add" class="hidden px-4 py-2 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fas fa-user-plus"></i> Registrar Referido</button>
                     <button onclick="switchTab('tab-maria-list')" id="btn-tab-maria-list" class="hidden px-4 py-2 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fas fa-list-alt"></i> Historial Bonos</button>
+                    
+                    <!-- NUEVO: Botones Giros Gratis integrados en el menú que funciona -->
+                    <button onclick="switchTab('tab-giros-add')" id="btn-tab-giros-add" class="hidden px-4 py-2 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fas fa-sync"></i> Otorgar Giros</button>
+                    <button onclick="switchTab('tab-giros-list')" id="btn-tab-giros-list" class="hidden px-4 py-2 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fas fa-history"></i> Historial Giros</button>
+
+                    <button onclick="switchTab('tab-maria-ref-add')" id="btn-tab-maria-ref-add" class="hidden px-4 py-2 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fas fa-user-plus"></i> Registrar Referido</button>
                     <button onclick="switchTab('tab-maria-ref-list')" id="btn-tab-maria-ref-list" class="hidden px-4 py-2 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fas fa-users"></i> Historial Referidos</button>
                     <button onclick="switchTab('tab-melanie-add')" id="btn-tab-melanie-add" class="hidden px-4 py-2 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fas fa-calculator"></i> Gestión Afiliados</button>
                     <button onclick="switchTab('tab-influencer-dash')" id="btn-tab-influencer-dash" class="hidden px-4 py-2 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fas fa-chart-bar"></i> Mi Panel Afiliado</button>
@@ -146,7 +151,7 @@
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100"><p class="text-[10px] font-black text-slate-500 uppercase">Bonos Entregados</p><h3 class="text-3xl font-black text-slate-800" id="gus-dash-qty-entregados">0</h3></div>
                         <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100"><p class="text-[10px] font-black text-slate-500 uppercase">Inversión Total</p><h3 class="text-3xl font-black text-rose-600" id="gus-dash-val-entregados">$0.00</h3></div>
-                        <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100"><p class="text-[10px] font-black text-slate-500 uppercase">Bonos Ganados</p><h3 class="text-3xl font-black text-slate-800" id="gus-dash-qty-ganados">0</h3></div>
+                        <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100"><p class="text-[10px] font-black text-slate-500 uppercase">Premios Ganados</p><h3 class="text-3xl font-black text-slate-800" id="gus-dash-qty-ganados">0</h3></div>
                         <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100"><p class="text-[10px] font-black text-slate-500 uppercase">Premios Concedidos</p><h3 class="text-3xl font-black text-emerald-600" id="gus-dash-val-ganados">$0.00</h3></div>
                     </div>
                     
@@ -259,14 +264,22 @@
                     </div>
 
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100"><p class="text-[10px] font-black text-slate-500 uppercase">Bonos Entregados</p><h3 class="text-3xl font-black text-slate-800" id="dash-bonos-qty">0</h3></div>
+                        <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100"><p class="text-[10px] font-black text-slate-500 uppercase">Bonos Emitidos</p><h3 class="text-3xl font-black text-slate-800" id="dash-bonos-qty">0</h3></div>
                         <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100"><p class="text-[10px] font-black text-slate-500 uppercase">Inversión Total</p><h3 class="text-3xl font-black text-rose-600" id="dash-bonos-val">$0.00</h3></div>
-                        <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100"><p class="text-[10px] font-black text-slate-500 uppercase">Bonos Ganados</p><h3 class="text-3xl font-black text-slate-800" id="dash-bonos-won-qty">0</h3></div>
-                        <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100"><p class="text-[10px] font-black text-slate-500 uppercase">Premios Concedidos</p><h3 class="text-3xl font-black text-emerald-600" id="dash-bonos-won-val">$0.00</h3></div>
+                        <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100"><p class="text-[10px] font-black text-slate-500 uppercase">Premios/Giros Ganados</p><h3 class="text-3xl font-black text-slate-800" id="dash-bonos-won-qty">0</h3></div>
+                        <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100"><p class="text-[10px] font-black text-slate-500 uppercase">Total Pagado</p><h3 class="text-3xl font-black text-emerald-600" id="dash-bonos-won-val">$0.00</h3></div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                         <div class="bg-white border border-emerald-100 rounded-2xl overflow-hidden"><div class="px-6 py-4 bg-emerald-50/50"><h3 class="text-sm font-black text-emerald-900">Top Ganadores</h3></div><table class="w-full text-left"><tbody id="table-top-ganadores"></tbody></table></div>
                         <div class="bg-white border border-rose-100 rounded-2xl overflow-hidden"><div class="px-6 py-4 bg-rose-50/50"><h3 class="text-sm font-black text-rose-900">Top Inversión</h3></div><table class="w-full text-left"><tbody id="table-top-recibidos"></tbody></table></div>
+                    </div>
+                    
+                    <div class="mt-8 border-t border-slate-200 pt-8">
+                        <h2 class="text-xl font-black text-indigo-900 mb-6 flex items-center gap-2"><i class="fas fa-users text-indigo-500"></i> Rendimiento Analítico de Referidos</h2>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2 bg-white border border-indigo-100 rounded-2xl shadow-sm p-4"><div class="relative h-64 w-full"><canvas id="chart-referidos"></canvas></div></div>
+                            <div class="bg-white border border-indigo-100 rounded-2xl shadow-sm overflow-hidden flex flex-col"><div class="px-6 py-4 bg-indigo-50/50"><h3 class="text-sm font-black text-indigo-900">Top 5 Referentes</h3></div><table class="w-full text-left border-collapse"><tbody id="table-top-referrers" class="divide-y divide-slate-50"></tbody></table></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -289,6 +302,105 @@
                             <input type="text" id="bono-concept" placeholder="Concepto (Regalo, Recarga...)" class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl font-medium focus:border-rose-500">
                             <button type="submit" class="w-full py-4 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-lg">Guardar Bono</button>
                         </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB EMILIA: HISTORIAL BONOS -->
+            <div id="tab-maria-list" class="hidden fade-in theme-maria">
+                <div class="max-w-6xl mx-auto space-y-6">
+                    <div class="bg-white border border-rose-100 p-3 rounded-2xl shadow-sm mb-4">
+                        <div class="flex flex-col lg:flex-row items-end gap-3 w-full">
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Fecha</label><input type="date" id="filter-bono-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:border-rose-500"></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Agencia</label><select id="filter-bono-agency" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:border-rose-500"><option value="all">Todas</option><option value="Sepybet">Sepybet</option><option value="Chichesepy">Chichesepy</option></select></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Jugador</label><input type="text" id="filter-bono-dest" placeholder="ID Jugador..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:border-rose-500"></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Monto Bono ($)</label><input type="text" id="filter-bono-amount" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:border-rose-500"></div>
+                            <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyBonoFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-[#e11d48] text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearBonoFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-rose-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                        <div class="px-6 py-5 border-b border-rose-50 flex justify-between items-center bg-rose-50/30">
+                            <h3 class="text-lg font-black text-rose-900">Historial de Auditoría de Bonos</h3>
+                            <div class="flex gap-2"><button onclick="exportToCSV('bonos')" class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-all"><i class="fas fa-file-excel text-xs"></i></button><button onclick="fetchData(true)" class="w-9 h-9 rounded-full bg-white border border-rose-200 text-rose-600 flex items-center justify-center"><i class="fas fa-sync-alt text-xs"></i></button></div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse resp-table">
+                                <thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group">
+                                    <tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Jugador</th><th class="p-4">Monto Inicial</th><th class="p-4">Detalle</th><th class="p-4">Estado / Liquidación</th><th class="p-4 pr-6 text-center">Acción</th></tr>
+                                </thead>
+                                <tbody id="table-bonos-list"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NUEVO: TAB OTORGAR GIROS -->
+            <div id="tab-giros-add" class="hidden fade-in theme-maria">
+                <div class="max-w-2xl mx-auto">
+                    <div class="bg-white border border-rose-100 rounded-3xl shadow-xl overflow-hidden">
+                        <div class="px-6 py-8 sm:p-10 border-b border-rose-50 bg-gradient-to-br from-rose-50 to-white relative">
+                            <h2 class="text-2xl font-black text-slate-800">Otorgar Giros Gratis</h2>
+                        </div>
+                        <form id="form-giros" class="p-6 sm:p-10 space-y-6">
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 ml-1">Plataforma Origen *</label>
+                                <div class="flex gap-4">
+                                    <label class="flex-1 relative cursor-pointer group"><input type="radio" name="giro-company" value="Sepybet" class="peer sr-only" checked><div class="absolute inset-0 rounded-xl border-2 border-slate-200 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all"></div><div class="relative p-3 text-center"><i class="fas fa-shield-alt text-slate-400 peer-checked:text-indigo-600 mb-1"></i><div class="text-xs font-bold text-slate-600 peer-checked:text-indigo-800">Sepybet</div></div></label>
+                                    <label class="flex-1 relative cursor-pointer group"><input type="radio" name="giro-company" value="Chichesepy" class="peer sr-only"><div class="absolute inset-0 rounded-xl border-2 border-slate-200 peer-checked:border-orange-500 peer-checked:bg-orange-50 transition-all"></div><div class="relative p-3 text-center"><i class="fas fa-store text-slate-400 peer-checked:text-orange-600 mb-1"></i><div class="text-xs font-bold text-slate-600 peer-checked:text-orange-800">Chichesepy</div></div></label>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <input type="date" id="giro-date" required class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-rose-500">
+                                <input type="text" id="giro-dest" list="bonos-destinatarios" required placeholder="Jugador destinatario..." class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl font-bold focus:border-rose-500">
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Juego Autorizado *</label>
+                                    <select id="giro-game" required class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl font-bold text-slate-700 focus:border-rose-500">
+                                        <option value="THUNDER COINS">THUNDER COINS</option>
+                                        <option value="HOT TO BURN">HOT TO BURN</option>
+                                        <option value="SUPER TIKI STRIKE">SUPER TIKI STRIKE</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Cantidad de Giros *</label>
+                                    <input type="number" id="giro-qty" required placeholder="Ej. 10" class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl text-lg font-black focus:border-rose-500">
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full py-4 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-lg">Otorgar Giros</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NUEVO: TAB HISTORIAL GIROS -->
+            <div id="tab-giros-list" class="hidden fade-in theme-maria">
+                <div class="max-w-6xl mx-auto space-y-6">
+                    <div class="bg-white border border-rose-100 p-3 rounded-2xl shadow-sm mb-4">
+                        <div class="flex flex-col lg:flex-row items-end gap-3 w-full">
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Fecha</label><input type="date" id="filter-giro-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:border-rose-500"></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Agencia</label><select id="filter-giro-agency" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:border-rose-500"><option value="all">Todas</option><option value="Sepybet">Sepybet</option><option value="Chichesepy">Chichesepy</option></select></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Jugador</label><input type="text" id="filter-giro-dest" placeholder="ID Jugador..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:border-rose-500"></div>
+                            <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0">
+                                <button onclick="applyGiroFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-[#e11d48] text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button>
+                                <button onclick="clearGiroFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-rose-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                        <div class="px-6 py-5 border-b border-rose-50 flex justify-between items-center bg-rose-50/30">
+                            <h3 class="text-lg font-black text-rose-900">Historial de Giros Gratis</h3>
+                            <div class="flex gap-2"><button onclick="exportToCSV('giros')" class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-all"><i class="fas fa-file-excel text-xs"></i></button></div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse resp-table">
+                                <thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group">
+                                    <tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Jugador</th><th class="p-4">Juego</th><th class="p-4">Giros</th><th class="p-4">Estado / Real</th><th class="p-4 pr-6 text-center">Acción</th></tr>
+                                </thead>
+                                <tbody id="table-giros-list"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -319,42 +431,14 @@
                 </div>
             </div>
 
-            <!-- TAB EMILIA: HISTORIAL BONOS -->
-            <div id="tab-maria-list" class="hidden fade-in theme-maria">
-                <div class="max-w-6xl mx-auto space-y-6">
-                    <div class="bg-white border border-rose-100 p-3 rounded-2xl shadow-sm mb-4">
-                        <div class="flex flex-col lg:flex-row items-end gap-3 w-full">
-                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Fecha</label><input type="date" id="filter-bono-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:border-rose-500"></div>
-                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Jugador</label><input type="text" id="filter-bono-dest" placeholder="ID Jugador..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:border-rose-500"></div>
-                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Monto Bono ($)</label><input type="text" id="filter-bono-amount" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:border-rose-500"></div>
-                            <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyBonoFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-[#e11d48] text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearBonoFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div>
-                        </div>
-                    </div>
-                    <div class="bg-white border border-rose-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-                        <div class="px-6 py-5 border-b border-rose-50 flex justify-between items-center bg-rose-50/30">
-                            <h3 class="text-lg font-black text-rose-900">Historial de Auditoría de Bonos</h3>
-                            <div class="flex gap-2"><button onclick="exportToCSV('bonos')" class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-all"><i class="fas fa-file-excel text-xs"></i></button><button onclick="fetchData(true)" class="w-9 h-9 rounded-full bg-white border border-rose-200 text-rose-600 flex items-center justify-center"><i class="fas fa-sync-alt text-xs"></i></button></div>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse resp-table">
-                                <thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group">
-                                    <tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Jugador</th><th class="p-4">Monto Inicial</th><th class="p-4">Detalle</th><th class="p-4">Estado / Liquidación</th><th class="p-4 pr-6 text-center">Acción</th></tr>
-                                </thead>
-                                <tbody id="table-bonos-list"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- TAB EMILIA: HISTORIAL REFERIDOS -->
             <div id="tab-maria-ref-list" class="hidden fade-in theme-maria">
                 <div class="max-w-6xl mx-auto space-y-6">
                     <div class="bg-white border border-indigo-100 p-3 rounded-2xl shadow-sm mb-4">
                         <div class="flex flex-col lg:flex-row items-end gap-3 w-full">
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Fecha</label><input type="date" id="filter-ref-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-indigo-500"></div>
-                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Nombre (Referente / Referido)</label><input type="text" id="filter-ref-name" placeholder="Buscar ID de jugador..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-indigo-500"></div>
-                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Cédula</label><input type="text" id="filter-ref-cedula" placeholder="Buscar Nº documento..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-indigo-500"></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Agencia</label><select id="filter-ref-agency" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:border-indigo-500"><option value="all">Todas</option><option value="Sepybet">Sepybet</option><option value="Chichesepy">Chichesepy</option></select></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Nombre</label><input type="text" id="filter-ref-name" placeholder="Buscar ID..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-indigo-500"></div>
                             <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyRefFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearRefFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div>
                         </div>
                     </div>
@@ -366,7 +450,7 @@
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse resp-table">
                                 <thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group">
-                                    <tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Referente</th><th class="p-4">Nuevo Referido</th><th class="p-4">Documento / Cédula</th><th class="p-4">Monto Comisión</th><th class="p-4 pr-6 text-center">Acción</th></tr>
+                                    <tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Referente</th><th class="p-4">Nuevo Referido</th><th class="p-4">Cédula</th><th class="p-4">Pago</th><th class="p-4 pr-6 text-center">Acción</th></tr>
                                 </thead>
                                 <tbody id="table-ref-list"></tbody>
                             </table>
@@ -500,7 +584,7 @@
     <!-- MODAL COMPROBANTE -->
     <div id="modal-comprobante" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in">
-            <div class="p-6 text-center border-b border-slate-100 bg-slate-50"><div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-check-circle"></i></div><h3 class="text-lg font-black text-slate-800">Dar Visto Bueno</h3><p class="text-xs text-slate-400 mt-1">Sincronizar número de referencia o transacción</p></div>
+            <div class="p-6 text-center border-b border-slate-100 bg-slate-50"><div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-check-circle"></i></div><h3 class="text-lg font-black text-slate-800">Dar Visto Bueno</h3></div>
             <div class="p-6 space-y-4">
                 <input type="text" id="input-receipt" placeholder="Nº Comprobante / Ref..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-emerald-500">
                 <div class="flex gap-3 pt-2"><button onclick="closeModal()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-bold rounded-xl">Cancelar</button><button id="btn-verify-confirm" onclick="confirmVerify()" class="flex-1 py-3 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold rounded-xl shadow-md">Aprobar</button></div>
@@ -519,13 +603,13 @@
         </div>
     </div>
 
-    <!-- MODAL BONO GANADO -->
+    <!-- MODAL BONO/GIRO GANADO -->
     <div id="modal-bono-ganado" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in">
-            <div class="p-6 text-center border-b border-emerald-100 bg-emerald-50"><div class="w-16 h-16 bg-emerald-200 text-emerald-700 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-trophy"></i></div><h3 class="text-lg font-black text-slate-800">Cierre de Bono Líquido</h3></div>
+            <div class="p-6 text-center border-b border-emerald-100 bg-emerald-50"><div class="w-16 h-16 bg-emerald-200 text-emerald-700 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-trophy"></i></div><h3 class="text-lg font-black text-slate-800" id="title-bono-win">Cierre de Liquidación</h3></div>
             <div class="p-6 space-y-4">
-                <input type="text" id="input-bono-win-amount" inputmode="decimal" placeholder="Ganancia neta generada $" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-2xl font-black text-center outline-none focus:border-emerald-500 text-emerald-600">
-                <div class="flex gap-3 pt-2"><button onclick="closeBonoWinModal()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-bold rounded-xl">Cancelar</button><button id="btn-bono-win-confirm" onclick="confirmBonoWin()" class="flex-1 py-3 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold rounded-xl shadow-md">Liquidar Premio</button></div>
+                <input type="text" id="input-bono-win-amount" inputmode="decimal" placeholder="Ganancia Real ($)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-2xl font-black text-center outline-none focus:border-emerald-500 text-emerald-600">
+                <div class="flex gap-3 pt-2"><button onclick="closeBonoWinModal()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-bold rounded-xl">Cancelar</button><button id="btn-bono-win-confirm" onclick="confirmBonoWin()" class="flex-1 py-3 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold rounded-xl shadow-md">Guardar Ganancia</button></div>
             </div>
         </div>
     </div>
@@ -533,69 +617,84 @@
     <!-- MODAL SUPERVISOR -->
     <div id="modal-superadmin" class="fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in border border-slate-700">
-            <div class="p-6 text-center border-b border-slate-100 bg-slate-800"><div class="w-16 h-16 bg-slate-700 text-white rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-users-cog"></i></div><h3 class="text-lg font-black text-white">Panel de Supervisor</h3><p class="text-xs text-slate-400 mt-1">Seleccione la vista a auditar</p></div>
+            <div class="p-6 text-center border-b border-slate-100 bg-slate-800"><div class="w-16 h-16 bg-slate-700 text-white rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-users-cog"></i></div><h3 class="text-lg font-black text-white">Panel de Supervisor</h3></div>
             <div class="p-6 space-y-4">
-                <div>
-                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Rol / Usuario</label>
-                    <select id="superadmin-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-slate-800">
-                        <option value="1311397689">Vista Global (Supervisor)</option><option value="michelle">Administración (Michelle)</option><option value="emilia">Bonos y Referidos (Emilia)</option><option value="melanie">Gestión Afiliados (Melanie)</option><option value="admin">Panel Influyente (Admin)</option><option value="gussepy">Dirección (Gussepy)</option><option value="tito">Operador (Tito)</option><option value="jesus">Operador (Jesús)</option>
-                    </select>
-                </div>
+                <select id="superadmin-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-slate-800">
+                    <option value="1311397689">Vista Global (Supervisor)</option><option value="michelle">Administración (Michelle)</option><option value="emilia">Bonos y Referidos (Emilia)</option><option value="melanie">Gestión Afiliados (Melanie)</option><option value="admin">Panel Influyente (Admin)</option><option value="gussepy">Dirección (Gussepy)</option><option value="tito">Operador (Tito)</option><option value="jesus">Operador (Jesús)</option>
+                </select>
                 <div class="flex gap-3 pt-2"><button onclick="closeSuperAdminSwitcher()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-bold rounded-xl">Cerrar</button><button onclick="confirmSwitchUser()" class="flex-1 py-3 bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold rounded-xl shadow-md">Ingresar</button></div>
             </div>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0dVaTkdO06B9Qg-Thy3AeTrBF6ogNct2VcbALzJNFruFOKoyxu1c16ZEyUWweeUlp/exec';
+        // --- CONEXIÓN ---
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbydKRNe1xRKs2fQTlHPyYOAxYKcsPGPazIkE-W3ZelZyCpleWzJseet35olCsjj_SueYg/exec';
         
-        const USERS = { 'michelle': { pass: '1317857587', name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600' }, 'jesus': { pass: 'JesusVentas88', name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]' }, 'tito': { pass: '1311397689', name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]' }, 'gussepy': { pass: 'GussepyMaster', name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600' }, 'emilia': { pass: 'Emilia18@', name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600' }, 'melanie': { pass: 'Melanie', name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500' }, 'admin': { pass: 'admin', name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600' }, '1311397689': { pass: '1311397689', name: 'Supervisor General', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800' } };
+        const USERS = { 'michelle': { pass: '1317857587', name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600' }, 'jesus': { pass: 'JesusVentas88', name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]' }, 'tito': { pass: '1311397689', name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]' }, 'gussepy': { pass: 'GussepyMaster', name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600' }, 'emilia': { pass: 'Emilia18@', name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600' }, 'melanie': { pass: 'Melanie', name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500' }, 'admin': { pass: 'admin', name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600' }, '1311397689': { pass: '1311397689', name: 'Supervisor', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800' } };
         
-        let currentUser = null, isSuperAdmin = false, records = [], advances = [], bonos = [], referrals = [], rendimientos = [], filters = { date: '', user: 'all', status: 'all', amount: '' }, bonoFilters = { date: '', dest: '', amount: '' }, refFilters = { date: '', name: '', cedula: '' }, pendingVerifyId = null, pendingAuthId = null, pendingBonoWinId = null, referidosChart = null, inactivityTimer;
+        // --- VARIABLES GLOBALES (Completamente Separadas y Protegidas) ---
+        let currentUser = null;
+        let isSuperAdmin = false;
+        
+        let records = [];
+        let advances = [];
+        let bonos = [];
+        let giros = [];
+        let referrals = [];
+        let rendimientos = [];
+        
+        let filters = { date: '', user: 'all', status: 'all', amount: '' };
+        let bonoFilters = { date: '', dest: '', amount: '', agency: 'all' };
+        let giroFilters = { date: '', dest: '', agency: 'all' };
+        let refFilters = { date: '', name: '', cedula: '', agency: 'all' };
+        let melFilters = { date: '', inf: '', jug: '' };
+        
+        let pendingVerifyId = null;
+        let pendingAuthId = null;
+        let pendingBonoWinId = null;
+        let pendingGiroWinId = null;
+        let referidosChart = null;
+        let inactivityTimer;
+
+        // --- FORMATOS ---
+        const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
+        const fmtDate = dStr => { if(!dStr) return ''; const d = new Date(dStr); d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }); };
 
         window.onload = () => {
             const savedData = localStorage.getItem('sb_user_data');
             if (savedData) { const ud = JSON.parse(savedData); if (ud.baseType === 'superadmin') { isSuperAdmin = true; currentUser = ud.id; loginUI(USERS[ud.id] || ud); } else { currentUser = ud.id; loginUI(ud); } } else { showScreen('login'); }
             
-            const now = new Date();
-            const currentMonthStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-            ['dash-month-filter', 'bonos-month-filter', 'mel-month-filter', 'inf-month-filter'].forEach(id => { const el = document.getElementById(id); if (el) el.value = currentMonthStr; });
+            const now = new Date(); const currentMonthStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+            const dashF = document.getElementById('dash-month-filter'); if(dashF) dashF.value = currentMonthStr;
 
             const todayStr = now.toISOString().split('T')[0]; 
-            ['reg-date', 'gus-date', 'bono-date', 'ref-date', 'rend-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = todayStr; });
+            ['reg-date', 'gus-date', 'bono-date', 'ref-date', 'rend-date', 'giro-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = todayStr; });
             
-            document.getElementById('login-form').addEventListener('submit', handleLogin); document.getElementById('register-form').addEventListener('submit', handleRegister); document.getElementById('form-gussepy').addEventListener('submit', handleGussepy); document.getElementById('form-bonos').addEventListener('submit', handleBono); document.getElementById('form-referrals').addEventListener('submit', handleReferral); document.getElementById('form-rendimiento').addEventListener('submit', handleRendimiento);
+            document.getElementById('login-form').addEventListener('submit', handleLogin); 
+            document.getElementById('register-form').addEventListener('submit', handleRegister); 
+            document.getElementById('form-gussepy').addEventListener('submit', handleGussepy); 
+            document.getElementById('form-bonos').addEventListener('submit', handleBono); 
+            if(document.getElementById('form-giros')) document.getElementById('form-giros').addEventListener('submit', handleGiro); 
+            document.getElementById('form-referrals').addEventListener('submit', handleReferral); 
+            document.getElementById('form-rendimiento').addEventListener('submit', handleRendimiento);
             ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(evt => document.addEventListener(evt, resetInactivityTimer));
         };
 
-        function resetInactivityTimer() { clearTimeout(inactivityTimer); if (currentUser) inactivityTimer = setTimeout(() => { logout(); alert('Sesión cerrada por inactividad. Por favor, ingrese de nuevo.'); }, 15 * 60 * 1000); }
+        function resetInactivityTimer() { clearTimeout(inactivityTimer); if (currentUser) inactivityTimer = setTimeout(() => { logout(); alert('Sesión cerrada por inactividad.'); }, 15 * 60 * 1000); }
         function togglePassword() { const passInput = document.getElementById('login-pass'); const icon = document.getElementById('eye-icon'); if (passInput.type === 'password') { passInput.type = 'text'; icon.classList.replace('fa-eye', 'fa-eye-slash'); } else { passInput.type = 'password'; icon.classList.replace('fa-eye-slash', 'fa-eye'); } }
         function showToast(msg, type = 'success') { const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast-enter flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-white text-sm font-bold ${type === 'success' ? 'bg-slate-800' : 'bg-rose-600'}`; toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle text-emerald-400' : 'fa-exclamation-circle'}"></i> ${msg}`; container.appendChild(toast); setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000); }
         function showScreen(screen) { document.getElementById('screen-login').classList.add('hidden'); document.getElementById('screen-app').classList.add('hidden'); document.getElementById(`screen-${screen}`).classList.remove('hidden'); }
-        
-        function toggleAmountStyle() { 
-            const checkedRadio = document.querySelector('input[name="reg-type"]:checked'); 
-            if (!checkedRadio) return; 
-            const isDebit = checkedRadio.value === 'debito'; 
-            const label = document.getElementById('label-amount'); 
-            if (label) { 
-                if (isDebit) { 
-                    label.innerText = 'Monto Débito ($) *'; 
-                    label.classList.add('text-rose-600'); 
-                    label.classList.remove('text-slate-500');
-                } else { 
-                    label.innerText = 'Monto ($) *'; 
-                    label.classList.remove('text-rose-600'); 
-                    label.classList.add('text-slate-500');
-                } 
-            } 
-        }
+        function toggleAmountStyle() { const checkedRadio = document.querySelector('input[name="reg-type"]:checked'); if (!checkedRadio) return; const isDebit = checkedRadio.value === 'debito'; const icon = document.getElementById('icon-amount'); const label = document.getElementById('label-amount'); if (icon && label) { if (isDebit) { icon.innerText = '-$'; icon.classList.replace('text-slate-400', 'text-rose-500'); label.innerText = 'Monto Débito ($) *'; label.classList.add('text-rose-600'); } else { icon.innerText = '$'; icon.classList.replace('text-rose-500', 'text-slate-400'); label.innerText = 'Monto ($) *'; label.classList.remove('text-rose-600'); } } }
 
         async function pushData(action, data) {
             try {
-                const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: action, data: data }) });
-                const result = await response.json(); return { success: result.status === 'success', msg: result.msg, user: result.user };
-            } catch (err) { return { success: false, msg: 'Error de conexión.' }; }
+                const response = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, data: data }) });
+                const text = await response.text();
+                if (text.includes("<html") || text.includes("<body")) { showToast("ERROR: El Script de Google pide iniciar sesión.", "error"); return { success: false, msg: "Permisos denegados." }; }
+                try { const result = JSON.parse(text); return { success: result.status === 'success', msg: result.msg }; } 
+                catch(e) { return { success: true, msg: 'Guardado procesado' }; }
+            } catch (err) { return { success: false, msg: 'Error de red.' }; }
         }
 
         async function handleLogin(e) {
@@ -603,7 +702,7 @@
             setTimeout(() => {
                 if (USERS[u] && USERS[u].pass === p) {
                     const userObj = { id: u, name: USERS[u].name, type: USERS[u].type, color: USERS[u].color, icon: USERS[u].icon };
-                    if (userObj.type === 'superadmin') { isSuperAdmin = true; userObj.baseType = 'superadmin'; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = u; openSuperAdminSwitcher(); showToast('Supervisor: Seleccione vista.', 'success');} 
+                    if (userObj.type === 'superadmin') { isSuperAdmin = true; userObj.baseType = 'superadmin'; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = u; openSuperAdminSwitcher(); showToast('Supervisor: Seleccione vista', 'success');} 
                     else { isSuperAdmin = false; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = u; loginUI(userObj); showToast('Acceso concedido', 'success');}
                 } else showToast('Credenciales incorrectas.', 'error');
                 btn.innerHTML = orig; btn.disabled = false;
@@ -612,27 +711,34 @@
 
         function openSuperAdminSwitcher() { document.getElementById('modal-superadmin').classList.replace('hidden', 'flex'); }
         function closeSuperAdminSwitcher() { if (document.getElementById('screen-app').classList.contains('hidden')) confirmSwitchUser('1311397689'); else document.getElementById('modal-superadmin').classList.replace('flex', 'hidden'); }
-        function confirmSwitchUser(overrideId = null) { const targetId = overrideId || document.getElementById('superadmin-select').value; const userObj = { ...USERS[targetId], id: targetId, baseType: 'superadmin' }; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = targetId; loginUI(userObj); document.getElementById('modal-superadmin').classList.replace('flex', 'hidden'); showToast('Vista cambiada exitosamente.', 'success'); }
+        function confirmSwitchUser(overrideId = null) { const targetId = overrideId || document.getElementById('superadmin-select').value; const userObj = { ...USERS[targetId], id: targetId, baseType: 'superadmin' }; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = targetId; loginUI(userObj); document.getElementById('modal-superadmin').classList.replace('flex', 'hidden'); showToast('Vista cambiada exitosamente.', 'success');}
 
         function loginUI(user) {
-            const elUserDisplay = document.getElementById('user-display'); if (elUserDisplay) elUserDisplay.innerText = user.name + (isSuperAdmin ? " (Auditoría)" : "");
+            const elUserDisplay = document.getElementById('user-display'); if (elUserDisplay) elUserDisplay.innerText = user.name + (isSuperAdmin ? " (Auditor)" : "");
             const iconEl = document.getElementById('nav-icon'); if (iconEl) { iconEl.innerHTML = `<i class="fas ${user.icon}"></i>`; iconEl.className = `w-10 h-10 rounded-xl text-white flex items-center justify-center text-lg shadow-md ${user.color}`; }
             const btnSuper = document.getElementById('btn-superadmin'); if (btnSuper) { if (isSuperAdmin) btnSuper.classList.remove('hidden'); else btnSuper.classList.add('hidden'); }
             const adminSel = document.getElementById('admin-select-user'); if (adminSel) adminSel.classList.toggle('hidden', (user.type !== 'admin' && user.type !== 'superadmin'));
-            ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-influencer-dash'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
+            
+            // Ocultar botones principales
+            const allTabs = ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-influencer-dash'];
+            allTabs.forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
+            
             ['panel-admin', 'panel-personal', 'filter-user-container', 'filters-panel', 'panel-auditoria-main', 'panel-gussepy-bonos', 'panel-add-gussepy'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
 
+            // Mostrar botones según rol
             if (user.type === 'admin' || user.type === 'superadmin') {
                 ['btn-tab-dashboard','btn-tab-register','btn-tab-gussepy'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 ['panel-admin','filter-user-container','filters-panel','panel-auditoria-main','panel-add-gussepy'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
-                if(user.type === 'superadmin') { ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list','btn-tab-maria-ref-add','btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-influencer-dash'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); }); }
+                if(user.type === 'superadmin') { 
+                    ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add','btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-influencer-dash'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); }); 
+                }
                 switchTab('tab-dashboard');
             } else if (user.type === 'master') {
-                ['btn-tab-dashboard','btn-tab-gussepy','btn-tab-maria-list','btn-tab-maria-ref-list'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
+                ['btn-tab-dashboard','btn-tab-gussepy','btn-tab-maria-list', 'btn-tab-giros-list', 'btn-tab-maria-ref-list'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 ['panel-admin','panel-gussepy-bonos'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-dashboard');
             } else if (user.type === 'bonos') {
-                ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list','btn-tab-maria-ref-add','btn-tab-maria-ref-list'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
+                ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add','btn-tab-maria-ref-list'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-maria-dash');
             } else if (user.type === 'cajero_afiliados') {
                 ['btn-tab-melanie-add'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
@@ -645,13 +751,12 @@
                 ['panel-personal','filters-panel','panel-auditoria-main'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-dashboard');
             }
+            
             document.getElementById('login-pass').value = ''; showScreen('app'); fetchData();
         }
 
-        function logout() { localStorage.removeItem('sb_user_data'); currentUser = null; sessionStorage.clear(); window.location.reload(true); }
-
         function switchTab(tabId) {
-            ['tab-dashboard', 'tab-register', 'tab-gussepy', 'tab-maria-dash', 'tab-maria-add', 'tab-maria-list', 'tab-maria-ref-add', 'tab-maria-ref-list', 'tab-melanie-add', 'tab-influencer-dash'].forEach(id => {
+            ['tab-dashboard', 'tab-register', 'tab-gussepy', 'tab-maria-dash', 'tab-maria-add', 'tab-maria-list', 'tab-giros-add', 'tab-giros-list', 'tab-maria-ref-add', 'tab-maria-ref-list', 'tab-melanie-add', 'tab-influencer-dash'].forEach(id => {
                 const el = document.getElementById(id); if(el) el.classList.add('hidden');
                 const btn = document.getElementById(`btn-${id}`);
                 if(btn) { btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm', 'bg-rose-600', 'bg-slate-800', 'bg-pink-600', 'bg-purple-600'); btn.classList.add('text-slate-500', 'hover:bg-slate-200'); }
@@ -661,7 +766,7 @@
             if(activeBtn) {
                 activeBtn.classList.remove('text-slate-500', 'hover:bg-slate-200');
                 if (isSuperAdmin) activeBtn.classList.add('bg-slate-800', 'text-white', 'shadow-sm');
-                else if (tabId.includes('maria')) activeBtn.classList.add('bg-rose-600', 'text-white', 'shadow-sm');
+                else if (tabId.includes('maria') || tabId.includes('giros')) activeBtn.classList.add('bg-rose-600', 'text-white', 'shadow-sm');
                 else if (tabId.includes('melanie')) activeBtn.classList.add('bg-pink-600', 'text-white', 'shadow-sm');
                 else if (tabId.includes('influencer')) activeBtn.classList.add('bg-purple-600', 'text-white', 'shadow-sm');
                 else activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
@@ -672,9 +777,10 @@
             if (!isBackground) document.getElementById('global-loader').classList.remove('hidden');
             else document.querySelectorAll('button[title="Recargar"] i, button[title="Recargar datos"] i').forEach(i => i.classList.add('fa-spin'));
             try {
-                const res = await fetch(SCRIPT_URL); const data = await res.json();
-                if (data.status === 'success') { records = data.data || []; advances = data.advances || []; bonos = data.bonos || []; referrals = data.referrals || []; rendimientos = data.rendimientos || []; updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns(); }
-            } catch (err) { console.error("Error al cargar datos."); } 
+                const res = await fetch(SCRIPT_URL); 
+                const data = await res.json();
+                if (data.status === 'success') { records = data.data || []; advances = data.advances || []; bonos = data.bonos || []; giros = data.giros || []; referrals = data.referrals || []; rendimientos = data.rendimientos || []; updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns(); }
+            } catch (err) { } 
             finally {
                 if (!isBackground) document.getElementById('global-loader').classList.add('hidden');
                 else document.querySelectorAll('button[title="Recargar"] i, button[title="Recargar datos"] i').forEach(i => i.classList.remove('fa-spin'));
@@ -682,9 +788,12 @@
         }
 
         function updateBonoDatalist() {
-            const dlBono = document.getElementById('bonos-destinatarios'); const dlRef = document.getElementById('ref-referrers-list');
-            if(dlBono) dlBono.innerHTML = [...new Set(bonos.map(b => b.assignedTo))].filter(Boolean).map(n => `<option value="${n}">`).join('');
-            if(dlRef) dlRef.innerHTML = [...new Set([...bonos.map(b=>b.assignedTo), ...referrals.map(r=>r.referrer), ...referrals.map(r=>r.referred)])].filter(Boolean).map(n => `<option value="${n}">`).join('');
+            const dlBono = document.getElementById('bonos-destinatarios'); const dlRef = document.getElementById('ref-referrers-list'); const dlGiro = document.getElementById('giro-dest');
+            const p = [...new Set([...bonos.map(b => b.assignedTo), ...giros.map(g => g.dest), ...referrals.map(r=>r.referrer), ...referrals.map(r=>r.referred)])].filter(Boolean);
+            const opts = p.map(n => `<option value="${n}">`).join('');
+            if(dlBono) dlBono.innerHTML = opts;
+            if(dlRef) dlRef.innerHTML = opts;
+            if(dlGiro && dlBono) dlGiro.setAttribute('list', 'bonos-destinatarios');
         }
 
         function updateMelanieDropdowns() {
@@ -703,10 +812,10 @@
 
         function exportToCSV(type) {
             let dataArr = []; let filename = '';
-            if(type === 'records') { dataArr = records; filename = 'movimientos.csv'; } else if(type === 'bonos') { dataArr = bonos; filename = 'bonos.csv'; } else if(type === 'referrals') { dataArr = referrals; filename = 'referidos.csv'; }
+            if(type === 'records') { dataArr = records; filename = 'movimientos.csv'; } else if(type === 'bonos') { dataArr = bonos; filename = 'bonos.csv'; } else if (type === 'giros') { dataArr = giros; filename = 'giros.csv'; } else if(type === 'referrals') { dataArr = referrals; filename = 'referidos.csv'; }
             if(!dataArr.length) { showToast('No hay datos', 'warning'); return; }
             const headers = Object.keys(dataArr[0]).join(';');
-            const rows = dataArr.map(obj => Object.values(obj).map(val => `"${String(val || '').replace(/"/g, '""')}"`).join(';')).join('\n');
+            const rows = dataArr.map(obj => Object.values(obj).map(val => `"${String(val !== null && val !== undefined ? val : '').replace(/"/g, '""')}"`).join(';')).join('\n');
             const csv = "\uFEFF" + headers + '\n' + rows;
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = filename; link.click();
         }
@@ -718,19 +827,24 @@
             return d.getFullYear() === parseInt(y) && (d.getMonth() + 1) === parseInt(m);
         }
 
-        // --- SUBMIT HANDLERS ---
+        function isExactDate(dateStr, exactDate) {
+            if (!dateStr || !exactDate) return true;
+            const d1 = new Date(dateStr); d1.setMinutes(d1.getMinutes() + d1.getTimezoneOffset());
+            const d2 = new Date(exactDate); d2.setMinutes(d2.getMinutes() + d2.getTimezoneOffset());
+            return d1.toDateString() === d2.toDateString();
+        }
+
         async function handleRegister(e) {
             e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); const orig = btn.innerHTML; btn.innerHTML = 'Guardando...'; btn.disabled = true;
             let amt = parseFloat(document.getElementById('reg-amount').value.replace(',', '.'));
             if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); btn.innerHTML = orig; btn.disabled = false; return; }
-            const checkedRadio = document.querySelector('input[name="reg-type"]:checked');
-            const isDebit = checkedRadio && checkedRadio.value === 'debito'; if (isDebit) amt = -Math.abs(amt);
+            const isDebit = document.querySelector('input[name="reg-type"]:checked').value === 'debito'; if (isDebit) amt = -Math.abs(amt);
             const ud = JSON.parse(localStorage.getItem('sb_user_data')); let assigned = currentUser;
             if (ud && (ud.type === 'admin' || isSuperAdmin)) { const assignRadio = document.querySelector('input[name="reg-assign"]:checked'); assigned = assignRadio ? assignRadio.value : currentUser; }
             const newTx = { id: 'TX' + Date.now(), date: document.getElementById('reg-date').value, amount: amt, concept: document.getElementById('reg-concept').value.trim() || (isDebit ? 'Débito' : 'Ingreso'), assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: '' };
             records.unshift(newTx); updateAllViews(); document.getElementById('reg-amount').value = ''; document.getElementById('reg-concept').value = ''; document.querySelector('input[name="reg-type"][value="ingreso"]').checked = true; toggleAmountStyle();
             btn.innerHTML = orig; btn.disabled = false;
-            pushData('add', newTx).then(res => { if (res.success) showToast('Registro guardado exitosamente', 'success'); else showToast("Guardado local, fallo de red.", "warning"); });
+            pushData('add', newTx).then(res => { if (res.success) showToast('Registro guardado', 'success'); });
         }
 
         async function handleGussepy(e) {
@@ -739,7 +853,7 @@
             if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); btn.innerHTML = orig; btn.disabled = false; return; }
             const newAdv = { id: 'ADV' + Date.now(), date: document.getElementById('gus-date').value, amount: amt, concept: document.getElementById('gus-concept').value.trim() || 'Adelanto', createdBy: currentUser, status: 'Pendiente', detail: '' };
             advances.unshift(newAdv); updateAllViews(); document.getElementById('form-gussepy').reset(); document.getElementById('gus-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
-            pushData('add_advance', newAdv).then(res => { if(res.success) showToast('Adelanto registrado con éxito', 'success'); });
+            pushData('add_advance', newAdv).then(res => { if(res.success) showToast('Adelanto registrado', 'success'); });
         }
 
         async function handleBono(e) {
@@ -749,7 +863,17 @@
             const companyRadio = document.querySelector('input[name="bono-company"]:checked'); const company = companyRadio ? companyRadio.value : 'Sepybet';
             const newBono = { id: 'BN' + Date.now(), date: document.getElementById('bono-date').value, amount: amt, assignedTo: document.getElementById('bono-dest').value.trim(), concept: document.getElementById('bono-concept').value.trim() || 'Emisión', createdBy: currentUser, status: 'Entregado', amountWon: 0, company: company };
             bonos.unshift(newBono); updateAllViews(); updateBonoDatalist(); document.getElementById('form-bonos').reset(); document.getElementById('bono-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
-            pushData('add_bono', newBono).then(res => { if(res.success) showToast('Bono emitido y guardado exitosamente.', 'success'); });
+            pushData('add_bono', newBono).then(res => { if(res.success) showToast('Bono emitido', 'success'); });
+        }
+
+        async function handleGiro(e) {
+            e.preventDefault(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; btn.innerHTML = 'Enviando...'; btn.disabled = true;
+            const qty = parseInt(document.getElementById('giro-qty').value);
+            if (isNaN(qty) || qty <= 0) { showToast('Cantidad inválida', 'error'); btn.innerHTML = orig; btn.disabled = false; return; }
+            const companyRadio = document.querySelector('input[name="giro-company"]:checked'); const company = companyRadio ? companyRadio.value : 'Sepybet';
+            const newGiro = { id: 'GR' + Date.now(), date: document.getElementById('giro-date').value, company: company, dest: document.getElementById('giro-dest').value.trim(), game: document.getElementById('giro-game').value, qty: qty, status: 'Entregado', amountWon: 0, createdBy: currentUser };
+            giros.unshift(newGiro); updateAllViews(); updateBonoDatalist(); document.getElementById('form-giros').reset(); document.getElementById('giro-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
+            pushData('add_giro', newGiro).then(res => { if(res.success) showToast('Giros registrados con éxito', 'success'); });
         }
 
         async function handleReferral(e) {
@@ -763,12 +887,12 @@
             const companyRadio = document.querySelector('input[name="ref-company"]:checked'); const company = companyRadio ? companyRadio.value : 'Sepybet';
             const referrer = document.getElementById('ref-referrer').value.trim(); const referred = document.getElementById('ref-referred').value.trim(); const dateVal = document.getElementById('ref-date').value; const rId = 'REF' + Date.now();
             
-            const newRef = { id: rId, date: dateVal, amount: amt, referrer: referrer, referred: referred, cedula: cedula, createdBy: currentUser, isInfluencer: isInfluencer };
+            const newRef = { id: rId, date: dateVal, amount: amt, referrer: referrer, referred: referred, cedula: cedula, createdBy: currentUser, isInfluencer: isInfluencer, company: company };
             const newBonoFromRef = { id: rId + '_B', date: dateVal, amount: amt, assignedTo: referrer, concept: "Referido: " + referred, createdBy: currentUser, status: 'Entregado', amountWon: 0, company: company };
             
             referrals.unshift(newRef); bonos.unshift(newBonoFromRef); updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns();
             document.getElementById('form-referrals').reset(); document.getElementById('ref-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
-            pushData('add_referral', { ...newRef, company: company }).then(res => { if(res.success) showToast('Referido guardado correctamente.', 'success'); });
+            pushData('add_referral', { ...newRef }).then(res => { if(res.success) showToast('Referido guardado.', 'success'); });
         }
 
         async function handleRendimiento(e) {
@@ -780,7 +904,7 @@
             const newRend = { id: 'RND' + Date.now(), date: document.getElementById('rend-date').value, referrer, referred, depositos, retiros, neto, comision, createdBy: currentUser };
             rendimientos.unshift(newRend); updateAllViews(); document.getElementById('form-rendimiento').reset(); document.getElementById('rend-date').value = new Date().toISOString().split('T')[0];
             btn.innerHTML = orig; btn.disabled = false; 
-            pushData('add_rendimiento', newRend).then(res => { if(res.success) showToast('Rendimiento y comisión calculados exitosamente.', 'success'); });
+            pushData('add_rendimiento', newRend).then(res => { if(res.success) showToast('Rendimiento guardado.', 'success'); });
         }
 
         function actionVerify(id) { pendingVerifyId = String(id); document.getElementById('input-receipt').value = ''; document.getElementById('modal-comprobante').classList.replace('hidden', 'flex'); }
@@ -812,13 +936,8 @@
         async function confirmEditRend() {
             const id = document.getElementById('edit-rend-id').value; const rend = rendimientos.find(r => String(r.id) === id); if(!rend) return;
             const btn = document.getElementById('btn-edit-rend-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
-            rend.date = document.getElementById('edit-rend-date').value; 
-            rend.depositos = parseFloat(document.getElementById('edit-rend-dep').value.replace(',', '.')) || 0; 
-            rend.retiros = parseFloat(document.getElementById('edit-rend-ret').value.replace(',', '.')) || 0;
-            rend.neto = rend.depositos - rend.retiros;
-            rend.comision = rend.neto * 0.20;
-            updateAllViews(); closeEditRendModal(); 
-            pushData('edit_rendimiento', rend).then(res => { if(res.success) showToast("Rendimiento actualizado con éxito", "success")}); btn.innerHTML = orig; btn.disabled = false;
+            rend.date = document.getElementById('edit-rend-date').value; rend.depositos = parseFloat(document.getElementById('edit-rend-dep').value.replace(',', '.')) || 0; rend.retiros = parseFloat(document.getElementById('edit-rend-ret').value.replace(',', '.')) || 0; rend.neto = rend.depositos - rend.retiros; rend.comision = rend.neto * 0.20;
+            updateAllViews(); closeEditRendModal(); pushData('edit_rendimiento', rend).then(res => { if(res.success) showToast("Editado con éxito", "success")}); btn.innerHTML = orig; btn.disabled = false;
         }
 
         async function actionDeny(id) { if (confirm("¿DENEGAR?")) { const targetId = String(id); const tx = records.find(r => String(r.id) === targetId); if (tx) { tx.status = 'Denegado'; updateAllViews(); pushData('deny', { id: targetId }).then(res => { if(res.success) showToast("Denegado", "success")}); } } }
@@ -826,36 +945,126 @@
         function closeGussepyModal() { document.getElementById('modal-gussepy').classList.replace('flex', 'hidden'); pendingAuthId = null; }
         async function confirmGussepyAuth() {
             if (!pendingAuthId) return; const detail = document.getElementById('input-gussepy-detail').value.trim() || 'Aprobado'; const btn = document.getElementById('btn-gussepy-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
-            const adv = advances.find(r => String(r.id) === String(pendingAuthId)); if (adv) { adv.status = 'Autorizado'; adv.detail = detail; updateAllViews(); closeGussepyModal(); pushData('authorize_advance', { id: String(pendingAuthId), detail: detail }).then(res => { if(res.success) showToast("Adelanto autorizado", "success")}); } else closeGussepyModal();
+            const adv = advances.find(r => String(r.id) === String(pendingAuthId)); if (adv) { adv.status = 'Autorizado'; adv.detail = detail; updateAllViews(); closeGussepyModal(); pushData('authorize_advance', { id: String(pendingAuthId), detail: detail }).then(res => { if(res.success) showToast("Autorizado", "success")}); } else closeGussepyModal();
             btn.innerHTML = orig; btn.disabled = false; 
         }
 
-        function actionBonoWin(id) { pendingBonoWinId = String(id); document.getElementById('input-bono-win-amount').value = ''; document.getElementById('modal-bono-ganado').classList.replace('hidden', 'flex'); }
-        function closeBonoWinModal() { document.getElementById('modal-bono-ganado').classList.replace('flex', 'hidden'); pendingBonoWinId = null; }
+        function actionBonoWin(id) { pendingBonoWinId = String(id); pendingGiroWinId = null; document.getElementById('input-bono-win-amount').value = ''; document.getElementById('title-bono-win').innerText='Cierre de Bono Líquido'; document.getElementById('modal-bono-ganado').classList.replace('hidden', 'flex'); }
+        function actionGiroWin(id) { pendingGiroWinId = String(id); pendingBonoWinId = null; document.getElementById('input-bono-win-amount').value = ''; document.getElementById('title-bono-win').innerText='Ganancia Real de Giros'; document.getElementById('modal-bono-ganado').classList.replace('hidden', 'flex'); }
+        function closeBonoWinModal() { document.getElementById('modal-bono-ganado').classList.replace('flex', 'hidden'); pendingBonoWinId = null; pendingGiroWinId = null; }
+        
         async function confirmBonoWin() {
-            if (!pendingBonoWinId) return; const wonAmt = parseFloat(document.getElementById('input-bono-win-amount').value.replace(',', '.')); if (isNaN(wonAmt) || wonAmt <= 0) return;
-            const btn = document.getElementById('btn-bono-win-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
-            const b = bonos.find(r => String(r.id) === String(pendingBonoWinId)); if (b) { b.status = 'Ganado'; b.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_bono', { id: String(pendingBonoWinId), amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia de bono guardada", "success")}); } else closeBonoWinModal();
-            btn.innerHTML = orig; btn.disabled = false;
+            const wonAmtStr = document.getElementById('input-bono-win-amount').value.replace(',', '.');
+            const wonAmt = parseFloat(wonAmtStr);
+            if (isNaN(wonAmt) || wonAmt < 0) { showToast("Monto inválido", "error"); return; }
+            
+            const btn = document.getElementById('btn-bono-win-confirm'); 
+            const orig = btn.innerHTML; 
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; 
+            btn.disabled = true;
+            
+            if (pendingBonoWinId) {
+                const b = bonos.find(r => String(r.id) === String(pendingBonoWinId));
+                if (b) {
+                    b.status = 'Ganado'; 
+                    b.amountWon = wonAmt; 
+                    updateAllViews(); 
+                    closeBonoWinModal(); 
+                    pushData('win_bono', { id: String(pendingBonoWinId), amountWon: wonAmt }).then(res => { 
+                        if(res.success) showToast("Ganancia de bono guardada", "success");
+                    }); 
+                }
+            } else if (pendingGiroWinId) {
+                const g = giros.find(r => String(r.id) === String(pendingGiroWinId));
+                if (g) {
+                    g.status = 'Ganado'; 
+                    g.amountWon = wonAmt; 
+                    updateAllViews(); 
+                    closeBonoWinModal(); 
+                    pushData('win_giro', { id: String(pendingGiroWinId), amountWon: wonAmt }).then(res => { 
+                        if(res.success) showToast("Ganancia de giros guardada", "success");
+                    }); 
+                }
+            }
+            btn.innerHTML = orig; 
+            btn.disabled = false;
         }
 
         async function actionDelete(id, type = 'record') {
             if(confirm("🚨 ¿Seguro que desea eliminar permanentemente?")) {
                 const tId = String(id); let act = 'delete';
-                if(type === 'advance'){ act = 'delete_advance'; advances = advances.filter(r => String(r.id) !== tId); } else if(type === 'bono'){ act = 'delete_bono'; bonos = bonos.filter(r => String(r.id) !== tId); } else if(type === 'referral'){ act = 'delete_referral'; referrals = referrals.filter(r => String(r.id) !== tId); bonos = bonos.filter(b => String(b.id) !== tId + "_B"); } else if (type === 'rendimiento') { act = 'delete_rendimiento'; rendimientos = rendimientos.filter(r => String(r.id) !== tId); } else { records = records.filter(r => String(r.id) !== tId); }
-                updateAllViews(); pushData(act, {id: tId}).then(res => { if(res.success) showToast("Registro eliminado.", "success")});
+                if(type === 'advance'){ act = 'delete_advance'; advances = advances.filter(r => String(r.id) !== tId); } 
+                else if(type === 'bono'){ act = 'delete_bono'; bonos = bonos.filter(r => String(r.id) !== tId); } 
+                else if(type === 'giro'){ act = 'delete_giro'; giros = giros.filter(r => String(r.id) !== tId); } 
+                else if(type === 'referral'){ act = 'delete_referral'; referrals = referrals.filter(r => String(r.id) !== tId); bonos = bonos.filter(b => String(b.id) !== tId + "_B"); } 
+                else if (type === 'rendimiento') { act = 'delete_rendimiento'; rendimientos = rendimientos.filter(r => String(r.id) !== tId); } 
+                else { records = records.filter(r => String(r.id) !== tId); }
+                updateAllViews(); pushData(act, {id: tId}).then(res => { if(res.success) showToast("Eliminado", "success"); });
             }
         }
 
-        const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
-        const fmtDate = dStr => { if(!dStr) return ''; const d = new Date(dStr); d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }); };
+        function applyFilters() { filters.date = document.getElementById('filter-date')?.value || ''; const fUser = document.getElementById('filter-user'); filters.user = fUser ? fUser.value : 'all'; filters.status = document.getElementById('filter-status')?.value || 'all'; filters.amount = document.getElementById('filter-amount')?.value.replace(',', '.') || ''; updateAllViews(); }
+        function clearFilters() { filters = { date: '', user: 'all', status: 'all', amount: '' }; if(document.getElementById('filter-date')) document.getElementById('filter-date').value = ''; const fUser = document.getElementById('filter-user'); if(fUser) fUser.value = 'all'; if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all'; if(document.getElementById('filter-amount')) document.getElementById('filter-amount').value = ''; updateAllViews(); }
+        
+        function applyBonoFilters() { 
+            bonoFilters.date = document.getElementById('filter-bono-date')?.value || ''; 
+            bonoFilters.dest = document.getElementById('filter-bono-dest')?.value.trim().toLowerCase() || ''; 
+            bonoFilters.amount = document.getElementById('filter-bono-amount')?.value.replace(',', '.') || ''; 
+            bonoFilters.agency = document.getElementById('filter-bono-agency')?.value || 'all';
+            updateAllViews(); 
+        }
+        function clearBonoFilters() { 
+            bonoFilters = { date: '', dest: '', amount: '', agency: 'all' }; 
+            if(document.getElementById('filter-bono-date')) document.getElementById('filter-bono-date').value = ''; 
+            if(document.getElementById('filter-bono-dest')) document.getElementById('filter-bono-dest').value = ''; 
+            if(document.getElementById('filter-bono-amount')) document.getElementById('filter-bono-amount').value = ''; 
+            if(document.getElementById('filter-bono-agency')) document.getElementById('filter-bono-agency').value = 'all'; 
+            updateAllViews(); 
+        }
+        
+        function applyRefFilters() { 
+            refFilters.date = document.getElementById('filter-ref-date')?.value || ''; 
+            refFilters.name = document.getElementById('filter-ref-name')?.value.trim().toLowerCase() || ''; 
+            refFilters.cedula = document.getElementById('filter-ref-cedula')?.value.trim() || ''; 
+            refFilters.agency = document.getElementById('filter-ref-agency')?.value || 'all';
+            updateAllViews(); 
+        }
+        function clearRefFilters() { 
+            refFilters = { date: '', name: '', cedula: '', agency: 'all' }; 
+            if(document.getElementById('filter-ref-date')) document.getElementById('filter-ref-date').value = ''; 
+            if(document.getElementById('filter-ref-name')) document.getElementById('filter-ref-name').value = ''; 
+            if(document.getElementById('filter-ref-cedula')) document.getElementById('filter-ref-cedula').value = ''; 
+            if(document.getElementById('filter-ref-agency')) document.getElementById('filter-ref-agency').value = 'all'; 
+            updateAllViews(); 
+        }
 
-        function applyFilters() { filters.date = document.getElementById('filter-date').value; const fUser = document.getElementById('filter-user'); filters.user = fUser ? fUser.value : 'all'; filters.status = document.getElementById('filter-status').value; filters.amount = document.getElementById('filter-amount').value.replace(',', '.'); updateAllViews(); }
-        function clearFilters() { filters = { date: '', user: 'all', status: 'all', amount: '' }; document.getElementById('filter-date').value = ''; const fUser = document.getElementById('filter-user'); if(fUser) fUser.value = 'all'; document.getElementById('filter-status').value = 'all'; document.getElementById('filter-amount').value = ''; updateAllViews(); }
-        function applyBonoFilters() { bonoFilters.date = document.getElementById('filter-bono-date').value; bonoFilters.dest = document.getElementById('filter-bono-dest').value.trim().toLowerCase(); bonoFilters.amount = document.getElementById('filter-bono-amount').value.replace(',', '.'); updateAllViews(); }
-        function clearBonoFilters() { bonoFilters = { date: '', dest: '', amount: '' }; document.getElementById('filter-bono-date').value = ''; document.getElementById('filter-bono-dest').value = ''; document.getElementById('filter-bono-amount').value = ''; updateAllViews(); }
-        function applyRefFilters() { refFilters.date = document.getElementById('filter-ref-date').value; refFilters.name = document.getElementById('filter-ref-name').value.trim().toLowerCase(); refFilters.cedula = document.getElementById('filter-ref-cedula').value.trim(); updateAllViews(); }
-        function clearRefFilters() { refFilters = { date: '', name: '', cedula: '' }; document.getElementById('filter-ref-date').value = ''; document.getElementById('filter-ref-name').value = ''; document.getElementById('filter-ref-cedula').value = ''; updateAllViews(); }
+        function applyGiroFilters() { 
+            giroFilters.date = document.getElementById('filter-giro-date')?.value || ''; 
+            giroFilters.dest = document.getElementById('filter-giro-dest')?.value.trim().toLowerCase() || ''; 
+            giroFilters.agency = document.getElementById('filter-giro-agency')?.value || 'all';
+            updateAllViews(); 
+        }
+        function clearGiroFilters() { 
+            giroFilters = { date: '', dest: '', agency: 'all' }; 
+            if(document.getElementById('filter-giro-date')) document.getElementById('filter-giro-date').value = ''; 
+            if(document.getElementById('filter-giro-dest')) document.getElementById('filter-giro-dest').value = ''; 
+            if(document.getElementById('filter-giro-agency')) document.getElementById('filter-giro-agency').value = 'all'; 
+            updateAllViews(); 
+        }
+
+        function applyMelFilters() {
+            melFilters.date = document.getElementById('filter-rend-date')?.value || '';
+            melFilters.inf = document.getElementById('filter-rend-inf')?.value.trim().toLowerCase() || '';
+            melFilters.jug = document.getElementById('filter-rend-jug')?.value.trim().toLowerCase() || '';
+            updateAllViews();
+        }
+        function clearRendFilters() {
+            melFilters = { date: '', inf: '', jug: '' };
+            if(document.getElementById('filter-rend-date')) document.getElementById('filter-rend-date').value = ''; 
+            if(document.getElementById('filter-rend-inf')) document.getElementById('filter-rend-inf').value = ''; 
+            if(document.getElementById('filter-rend-jug')) document.getElementById('filter-rend-jug').value = '';
+            updateAllViews();
+        }
 
         function updateChartReferidos() {
             const ctx = document.getElementById('chart-referidos'); if(!ctx) return;
@@ -869,11 +1078,13 @@
         function updateAllViews() {
             const ud = JSON.parse(localStorage.getItem('sb_user_data')); if (!ud) return; const userType = ud.type;
             
+            // Filtros de Mes
             const dashMF = document.getElementById('dash-month-filter')?.value;
             const bonoMF = document.getElementById('bonos-month-filter')?.value;
             const melMF = document.getElementById('mel-month-filter')?.value;
             const infMF = document.getElementById('inf-month-filter')?.value;
 
+            // Stats para Melanie y Gussepy/Admin
             const influencerStats = {};
             const filteredRend = rendimientos.filter(r => isSameMonth(r.date, melMF));
             filteredRend.forEach(r => {
@@ -891,6 +1102,7 @@
                     const htmlMelTbody = Object.entries(influencerStats).map(([name, s]) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-bold text-pink-600 uppercase"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${name}</td><td class="p-4 text-sm font-black text-emerald-500">${fmt(s.dep)}</td><td class="p-4 text-sm font-black text-rose-500">${fmt(s.ret)}</td><td class="p-4 text-sm font-black text-slate-700">${fmt(s.net)}</td><td class="p-4 pr-6 text-right text-sm font-black text-pink-600">${fmt(s.com)}</td></tr>`).join('');
                     elMelTbody.innerHTML = htmlMelTbody || `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">Sin datos para este mes.</td></tr>`;
                 }
+
                 const elMelHistory = document.getElementById('mel-table-history');
                 if (elMelHistory) {
                     elMelHistory.innerHTML = filteredRend.map(r => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td><td class="p-4 text-xs font-bold text-pink-600 uppercase"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${r.referrer}</td><td class="p-4 text-xs font-bold text-slate-800 uppercase">${r.referred}</td><td class="p-4 text-sm font-black text-emerald-500">${fmt(r.depositos)}</td><td class="p-4 text-sm font-black text-rose-500">${fmt(r.retiros)}</td><td class="p-4 text-sm font-black text-pink-600">${fmt(r.comision)}</td><td class="p-4 pr-6 text-center"><div class="flex justify-center gap-2"><button onclick="actionEditRend('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'rendimiento')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div></td></tr>`).join('') || `<tr><td colspan="7" class="p-6 text-center text-sm text-slate-400">No hay movimientos cargados este mes.</td></tr>`;
@@ -922,21 +1134,30 @@
                 const fBonos = bonos.filter(b => isSameMonth(b.date, bonoMF));
                 const ganados = fBonos.filter(b => b.status === 'Ganado');
                 const valGanados = ganados.reduce((s, b) => s + (b.amountWon || 0), 0); const valEntregados = fBonos.reduce((s, b) => s + b.amount, 0);
+
+                const fGiros = giros.filter(g => isSameMonth(g.date, bonoMF));
+                const girosGanados = fGiros.filter(g => g.status === 'Ganado').reduce((s, g) => s + (g.amountWon || 0), 0);
+
                 const elBqty = document.getElementById('dash-bonos-qty'); if(elBqty) elBqty.innerText = fBonos.length;
                 const elBval = document.getElementById('dash-bonos-val'); if(elBval) elBval.innerText = fmt(valEntregados);
-                const elBwqty = document.getElementById('dash-bonos-won-qty'); if(elBwqty) elBwqty.innerText = ganados.length;
-                const elBwval = document.getElementById('dash-bonos-won-val'); if(elBwval) elBwval.innerText = fmt(valGanados);
+                const elBwqty = document.getElementById('dash-bonos-won-qty'); if(elBwqty) elBwqty.innerText = ganados.length + fGiros.filter(g => g.status === 'Ganado').length;
+                const elBwval = document.getElementById('dash-bonos-won-val'); if(elBwval) elBwval.innerText = fmt(valGanados + girosGanados);
                 
                 const fBonosDash = bonos.filter(b => isSameMonth(b.date, dashMF));
                 const ganadosDash = fBonosDash.filter(b => b.status === 'Ganado');
                 const valGanadosDash = ganadosDash.reduce((s, b) => s + (b.amountWon || 0), 0); const valEntregadosDash = fBonosDash.reduce((s, b) => s + b.amount, 0);
+                const fGirosDash = giros.filter(g => isSameMonth(g.date, dashMF));
+                const girosGanadosDash = fGirosDash.filter(g => g.status === 'Ganado').reduce((s, g) => s + (g.amountWon || 0), 0);
 
                 const elGusBqty = document.getElementById('gus-dash-qty-entregados'); if(elGusBqty) elGusBqty.innerText = fBonosDash.length;
                 const elGusBval = document.getElementById('gus-dash-val-entregados'); if(elGusBval) elGusBval.innerText = fmt(valEntregadosDash);
-                const elGusBwqty = document.getElementById('gus-dash-qty-ganados'); if(elGusBwqty) elGusBwqty.innerText = ganadosDash.length;
-                const elGusBwval = document.getElementById('gus-dash-val-ganados'); if(elGusBwval) elGusBwval.innerText = fmt(valGanadosDash);
+                const elGusBwqty = document.getElementById('gus-dash-qty-ganados'); if(elGusBwqty) elGusBwqty.innerText = ganadosDash.length + fGirosDash.filter(g => g.status === 'Ganado').length;
+                const elGusBwval = document.getElementById('gus-dash-val-ganados'); if(elGusBwval) elGusBwval.innerText = fmt(valGanadosDash + girosGanadosDash);
 
-                const players = {}; fBonos.forEach(b => { if (!players[b.assignedTo]) players[b.assignedTo] = { name: b.assignedTo, totalWon: 0, received: 0, totalReceived: 0 }; players[b.assignedTo].received++; players[b.assignedTo].totalReceived += b.amount; if (b.status === 'Ganado') players[b.assignedTo].totalWon += (b.amountWon || 0); });
+                const players = {}; 
+                fBonos.forEach(b => { if (!players[b.assignedTo]) players[b.assignedTo] = { name: b.assignedTo, totalWon: 0, received: 0, totalReceived: 0 }; players[b.assignedTo].received++; players[b.assignedTo].totalReceived += b.amount; if (b.status === 'Ganado') players[b.assignedTo].totalWon += (b.amountWon || 0); });
+                fGiros.forEach(g => { if (!players[g.dest]) players[g.dest] = { name: g.dest, totalWon: 0, received: 0, totalReceived: 0 }; if (g.status === 'Ganado') players[g.dest].totalWon += (g.amountWon || 0); });
+                
                 const topGanadores = Object.values(players).filter(p => p.totalWon > 0).sort((a, b) => b.totalWon - a.totalWon).slice(0, 5);
                 const htmlGanadores = topGanadores.length === 0 ? `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-400">Sin datos</td></tr>` : topGanadores.map((p, i) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-3 pl-4 text-xs font-black text-amber-500">#${i+1}</td><td class="p-3 text-xs font-bold text-slate-800 uppercase">${p.name}</td><td class="p-3 pr-4 text-right text-sm font-black text-emerald-600">${fmt(p.totalWon)}</td></tr>`).join('');
                 const elTG = document.getElementById('table-top-ganadores'); if (elTG) elTG.innerHTML = htmlGanadores;
@@ -952,79 +1173,70 @@
                 const elTRef = document.getElementById('table-top-referrers'); if (elTRef) elTRef.innerHTML = htmlRefs;
                 const elGusTRef = document.getElementById('gus-table-top-referrers'); if (elGusTRef) elGusTRef.innerHTML = htmlRefs;
                 
+                // GIROS LIST
+                let displayGiros = [...giros];
+                if (giroFilters.date) displayGiros = displayGiros.filter(g => isExactDate(g.date, giroFilters.date));
+                if (giroFilters.dest) displayGiros = displayGiros.filter(g => (g.dest || '').toLowerCase().includes(giroFilters.dest));
+                if (giroFilters.agency && giroFilters.agency !== 'all') displayGiros = displayGiros.filter(g => g.company && g.company.toLowerCase() === giroFilters.agency.toLowerCase());
+                displayGiros.sort((a,b) => String(b.id).localeCompare(String(a.id)));
+                
+                const elTableGiros = document.getElementById('table-giros-list');
+                if(elTableGiros) {
+                    elTableGiros.innerHTML = displayGiros.map(g => {
+                        let statusBadge = (g.status === 'Ganado') ? `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase"><i class="fas fa-trophy mr-1"></i> Ganó ${fmt(g.amountWon)}</span>` : `<span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-[10px] font-black uppercase">Entregado</span>`;
+                        let btnAction = (userType === 'bonos' || isSuperAdmin) ? `<div class="flex justify-center gap-2">${g.status !== 'Ganado' ? `<button onclick="actionGiroWin('${g.id}')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase rounded-lg shadow-sm">Ganó</button>` : ''}<button onclick="actionDelete('${g.id}', 'giro')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg flex items-center justify-center"><i class="fas fa-trash"></i></button></div>` : `<span class="text-[10px] text-slate-400 font-bold">Sin Acción</span>`;
+                        return `<tr class="hover:bg-slate-50 transition-colors border-b border-rose-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600" data-label="Fecha">${fmtDate(g.date)}</td><td class="p-4 text-xs font-bold text-indigo-600 uppercase tracking-wide flex items-center flex-wrap gap-1" data-label="Jugador"><i class="fas fa-user mr-1 text-slate-400"></i> ${g.dest} <span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">${g.company || 'Sepybet'}</span></td><td class="p-4 text-xs font-bold text-slate-800" data-label="Juego">${g.game}</td><td class="p-4 text-sm font-black text-slate-800" data-label="Giros">${g.qty} <i class="fas fa-sync text-indigo-300"></i></td><td class="p-4" data-label="Estado">${statusBadge}</td><td class="p-4 pr-6 text-center" data-label="Acción">${btnAction}</td></tr>`;
+                    }).join('') || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">Sin datos de giros para este filtro.</td></tr>`;
+                }
+
+                // BONOS LIST
                 let displayBonos = [...bonos];
-                if (bonoFilters.date) displayBonos = displayBonos.filter(b => { const d1=new Date(b.date); d1.setMinutes(d1.getMinutes()+d1.getTimezoneOffset()); const d2=new Date(bonoFilters.date); d2.setMinutes(d2.getMinutes()+d2.getTimezoneOffset()); return d1.toDateString()===d2.toDateString(); });
+                if (bonoFilters.date) displayBonos = displayBonos.filter(b => isExactDate(b.date, bonoFilters.date));
                 if (bonoFilters.dest) displayBonos = displayBonos.filter(b => (b.assignedTo || '').toLowerCase().includes(bonoFilters.dest));
-                if (bonoFilters.amount && !isNaN(parseFloat(bonoFilters.amount))) displayBonos = displayBonos.filter(b => b.amount === parseFloat(bonoFilters.amount));
+                if (bonoFilters.amount && !isNaN(parseFloat(bonoFilters.amount))) displayBonos = displayBonos.filter(b => Math.abs(b.amount) === parseFloat(bonoFilters.amount));
+                if (bonoFilters.agency && bonoFilters.agency !== 'all') displayBonos = displayBonos.filter(b => b.company && b.company.toLowerCase() === bonoFilters.agency.toLowerCase());
                 displayBonos.sort((a,b) => String(b.id).localeCompare(String(a.id)));
                 
                 const elTableBonos = document.getElementById('table-bonos-list');
                 if(elTableBonos) {
                     elTableBonos.innerHTML = displayBonos.map(b => {
-                        let statusBadge = (b.status === 'Ganado') ? `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase"><i class="fas fa-trophy mr-1"></i> ${fmt(b.amountWon)}</span>` : `<span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-[10px] font-black uppercase">Entregado</span>`;
-                        let companyBadge = (b.company === 'Chichesepy') ? `<span class="bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-2">Chiche</span>` : `<span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-2">Sepybet</span>`;
-                        let btnAction = (userType === 'bonos' || isSuperAdmin) ? `<div class="flex justify-center gap-2">${b.status !== 'Ganado' ? `<button onclick="actionBonoWin('${b.id}')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase rounded-lg shadow-sm">Ganado</button>` : ''}<button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg flex items-center justify-center"><i class="fas fa-trash"></i></button></div>` : `<span class="text-[10px] text-slate-400 font-bold">Auditoría</span>`;
-                        return `<tr class="hover:bg-slate-50 transition-colors border-b border-rose-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(b.date)}</td><td class="p-4 text-xs font-bold text-rose-600 uppercase tracking-wide flex items-center flex-wrap gap-1"><i class="fas fa-user-circle mr-1"></i> ${b.assignedTo} ${companyBadge}</td><td class="p-4 text-sm font-black text-slate-800">${fmt(b.amount)}</td><td class="p-4 text-xs font-medium text-slate-600">${b.concept}</td><td class="p-4">${statusBadge}</td><td class="p-4 pr-6 text-center">${btnAction}</td></tr>`;
-                    }).join('');
+                        let statusBadge = (b.status === 'Ganado') ? `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase"><i class="fas fa-trophy mr-1"></i> Ganó ${fmt(b.amountWon)}</span>` : `<span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-[10px] font-black uppercase">Entregado</span>`;
+                        let companyBadge = '';
+                        if (b.company === 'Chichesepy') companyBadge = `<span class="bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-2">Chiche</span>`;
+                        else companyBadge = `<span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-2">Sepybet</span>`;
+
+                        let btnAction = (userType === 'bonos' || isSuperAdmin) ? `<div class="flex justify-center gap-2">${b.status !== 'Ganado' ? `<button onclick="actionBonoWin('${b.id}')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase rounded-lg shadow-sm">Ganó</button>` : ''}<button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg flex items-center justify-center"><i class="fas fa-trash"></i></button></div>` : `<span class="text-[10px] text-slate-400 font-bold">Sin Acción</span>`;
+                        return `<tr class="hover:bg-slate-50 transition-colors border-b border-rose-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600" data-label="Fecha">${fmtDate(b.date)}</td><td class="p-4 text-xs font-bold text-rose-600 uppercase tracking-wide flex items-center flex-wrap gap-1" data-label="Jugador"><i class="fas fa-user-circle mr-1"></i> ${b.assignedTo} ${companyBadge}</td><td class="p-4 text-sm font-black text-slate-800" data-label="Bono">${fmt(b.amount)}</td><td class="p-4 text-xs font-medium text-slate-600" data-label="Concepto">${b.concept}</td><td class="p-4" data-label="Estado">${statusBadge}</td><td class="p-4 pr-6 text-center" data-label="Acción">${btnAction}</td></tr>`;
+                    }).join('') || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">Sin datos de bonos para este filtro.</td></tr>`;
                 }
 
                 let displayRef = [...referrals];
-                if (refFilters.date) displayRef = displayRef.filter(r => { const d1=new Date(r.date); d1.setMinutes(d1.getMinutes()+d1.getTimezoneOffset()); const d2=new Date(refFilters.date); d2.setMinutes(d2.getMinutes()+d2.getTimezoneOffset()); return d1.toDateString()===d2.toDateString(); });
+                if (refFilters.date) displayRef = displayRef.filter(r => isExactDate(r.date, refFilters.date));
                 if (refFilters.name) displayRef = displayRef.filter(r => r.referrer.toLowerCase().includes(refFilters.name) || r.referred.toLowerCase().includes(refFilters.name));
                 if (refFilters.cedula) displayRef = displayRef.filter(r => r.cedula.includes(refFilters.cedula));
+                if (refFilters.agency && refFilters.agency !== 'all') displayRef = displayRef.filter(r => r.company && r.company.toLowerCase() === refFilters.agency.toLowerCase());
                 displayRef.sort((a,b) => String(b.id).localeCompare(String(a.id)));
 
                 const elTableRef = document.getElementById('table-ref-list');
                 if(elTableRef) {
                     elTableRef.innerHTML = displayRef.map(r => {
-                        let btnActionRef = (userType === 'bonos' || isSuperAdmin) ? `<button onclick="actionDelete('${r.id}', 'referral')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>` : `<span class="text-[10px] text-slate-400 font-bold">Auditoría</span>`;
+                        let btnActionRef = (userType === 'bonos' || isSuperAdmin) ? `<button onclick="actionDelete('${r.id}', 'referral')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>` : `<span class="text-[10px] text-slate-400 font-bold">Sin Acción</span>`;
                         let infBadge = r.isInfluencer ? `<span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">VIP</span>` : '';
-                        return `<tr class="hover:bg-slate-50 transition-colors border-b border-indigo-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td><td class="p-4 text-xs font-bold text-indigo-600 uppercase tracking-wide"><i class="fas fa-bullhorn mr-1"></i> ${r.referrer} ${infBadge}</td><td class="p-4 text-xs font-bold text-slate-700 uppercase"><i class="fas fa-user mr-1"></i> ${r.referred}</td><td class="p-4 text-xs font-mono font-bold text-slate-500">${r.cedula}</td><td class="p-4 text-sm font-black text-emerald-600">${fmt(r.amount)}</td><td class="p-4 pr-6 text-center">${btnActionRef}</td></tr>`;
-                    }).join('');
+                        let companyBadge = (r.company === 'Chichesepy') ? `<span class="bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">Chiche</span>` : `<span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">Sepybet</span>`;
+                        return `<tr class="hover:bg-slate-50 transition-colors border-b border-indigo-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600" data-label="Fecha">${fmtDate(r.date)}</td><td class="p-4 text-xs font-bold text-indigo-600 uppercase tracking-wide flex items-center flex-wrap gap-1" data-label="Referente"><i class="fas fa-bullhorn mr-1"></i> ${r.referrer} ${infBadge} ${companyBadge}</td><td class="p-4 text-xs font-bold text-slate-700 uppercase" data-label="Referido"><i class="fas fa-user mr-1"></i> ${r.referred}</td><td class="p-4 text-xs font-mono font-bold text-slate-500" data-label="Cédula">${r.cedula}</td><td class="p-4 text-sm font-black text-emerald-600" data-label="Pago">${fmt(r.amount)}</td><td class="p-4 pr-6 text-center" data-label="Acción">${btnActionRef}</td></tr>`;
+                    }).join('') || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">No hay referidos registrados.</td></tr>`;
                 }
                 updateChartReferidos();
             }
 
-            if (userType === 'influencer' || isSuperAdmin) {
-                const targetRef = isSuperAdmin ? 'admin' : currentUser; 
-                const searchTxt = document.getElementById('inf-search')?.value.toLowerCase() || '';
-                
-                const myReferrals = referrals.filter(r => r.referrer === targetRef && isSameMonth(r.date, infMF));
-                const myRendimientos = rendimientos.filter(r => r.referrer === targetRef && isSameMonth(r.date, infMF));
-
-                const elInfQty = document.getElementById('inf-dash-qty'); if(elInfQty) elInfQty.innerText = myReferrals.length;
-                const elInfDep = document.getElementById('inf-dash-dep'); if(elInfDep) elInfDep.innerText = fmt(myRendimientos.reduce((s, r) => s + r.depositos, 0));
-                const elInfRet = document.getElementById('inf-dash-ret'); if(elInfRet) elInfRet.innerText = fmt(myRendimientos.reduce((s, r) => s + r.retiros, 0));
-                const elInfCom = document.getElementById('inf-dash-com'); if(elInfCom) elInfCom.innerText = fmt(myRendimientos.reduce((s, r) => s + r.comision, 0));
-
-                const playersRend = {};
-                myRendimientos.forEach(r => {
-                    if(!playersRend[r.referred]) playersRend[r.referred] = { dep:0, ret:0, net:0, com:0 };
-                    playersRend[r.referred].dep += r.depositos; playersRend[r.referred].ret += r.retiros;
-                    playersRend[r.referred].net += r.neto; playersRend[r.referred].com += r.comision;
-                });
-
-                const tbodyInf = document.getElementById('inf-table-body');
-                if (tbodyInf) {
-                    const htmlRend = Object.entries(playersRend)
-                        .filter(([name, d]) => name.toLowerCase().includes(searchTxt))
-                        .map(([name, d]) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-800 uppercase"><i class="fas fa-user mr-1 text-slate-400"></i> ${name}</td><td class="p-4 text-sm font-black text-emerald-500">${fmt(d.dep)}</td><td class="p-4 text-sm font-black text-rose-500">${fmt(d.ret)}</td><td class="p-4 text-sm font-black text-slate-700">${fmt(d.net)}</td><td class="p-4 pr-6 text-right text-sm font-black text-indigo-600">${fmt(d.com)}</td></tr>`).join('');
-                    tbodyInf.innerHTML = htmlRend || `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">Aún no hay datos de rendimiento para este mes.</td></tr>`;
-                }
-            }
-
             if (userType === 'user') {
                 const now = new Date(); const m = now.getMonth(); const y = now.getFullYear();
-                const elDashPersonal = document.getElementById('dash-personal');
-                if(elDashPersonal) elDashPersonal.innerText = fmt(records.reduce((sum, r) => { const d = new Date(r.date); d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); return (r.assignedTo === currentUser && r.status === 'Verificado' && d.getMonth() === m && d.getFullYear() === y) ? sum + r.amount : sum; }, 0));
+                if(document.getElementById('dash-personal')) document.getElementById('dash-personal').innerText = fmt(records.reduce((sum, r) => { const d = new Date(r.date); d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); return (r.assignedTo === currentUser && r.status === 'Verificado' && d.getMonth() === m && d.getFullYear() === y) ? sum + r.amount : sum; }, 0));
             }
 
             let displayRecords = [...records];
             if (userType === 'user') displayRecords = displayRecords.filter(r => r.assignedTo === currentUser);
-            
-            if (filters.date) displayRecords = displayRecords.filter(r => { const d1=new Date(r.date); d1.setMinutes(d1.getMinutes()+d1.getTimezoneOffset()); const d2=new Date(filters.date); d2.setMinutes(d2.getMinutes()+d2.getTimezoneOffset()); return d1.toDateString()===d2.toDateString(); });
-            else if (document.getElementById('dash-month-filter')) displayRecords = displayRecords.filter(r => isSameMonth(r.date, document.getElementById('dash-month-filter').value));
-            
+            if (filters.date) displayRecords = displayRecords.filter(r => isExactDate(r.date, filters.date));
             if (userType !== 'user' && filters.user !== 'all') displayRecords = displayRecords.filter(r => r.assignedTo === filters.user);
             if (filters.status !== 'all') displayRecords = displayRecords.filter(r => r.status === filters.status);
             if (filters.amount && !isNaN(parseFloat(filters.amount))) displayRecords = displayRecords.filter(r => Math.abs(r.amount) === parseFloat(filters.amount));
@@ -1055,25 +1267,24 @@
 
                         const opacity = r.status === 'Denegado' ? 'opacity-60 bg-slate-50' : 'hover:bg-slate-50';
                         const isNeg = r.amount < 0; const amtColor = r.status === 'Denegado' ? 'text-slate-400 line-through' : (isNeg ? 'text-rose-600' : 'text-slate-800');
-                        return `<tr class="${opacity} border-b border-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600 whitespace-nowrap">${fmtDate(r.date)}</td><td class="p-4 text-sm font-black ${amtColor}">${fmt(r.amount)}</td><td class="p-4 text-xs font-medium text-slate-600">${r.concept}</td><td class="p-4 text-xs font-bold text-indigo-600 uppercase">${USERS[r.assignedTo]?.name || r.assignedTo}</td><td class="p-4">${badge}</td><td class="p-4 text-[10px] font-mono text-slate-400 font-bold">${r.receipt || '-'}</td><td class="p-4 pr-6 text-center">${actions}</td></tr>`;
+                        return `<tr class="${opacity} border-b border-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600 whitespace-nowrap" data-label="Fecha">${fmtDate(r.date)}</td><td class="p-4 text-sm font-black ${amtColor}" data-label="Monto">${fmt(r.amount)}</td><td class="p-4 text-xs font-medium text-slate-600" data-label="Concepto">${r.concept}</td><td class="p-4 text-xs font-bold text-indigo-600 uppercase" data-label="Cuenta">${USERS[r.assignedTo]?.name || r.assignedTo}</td><td class="p-4" data-label="Estado">${badge}</td><td class="p-4 text-[10px] font-mono text-slate-400 font-bold" data-label="Ref/Comp">${r.receipt || '-'}</td><td class="p-4 pr-6 text-center" data-label="Acción">${actions}</td></tr>`;
                     }).join('');
                 }
             }
 
             if (userType === 'admin' || userType === 'master' || isSuperAdmin) {
                 const tbodyGus = document.getElementById('table-gussepy-advances'); 
-                const fAdv = advances.filter(a => isSameMonth(a.date, document.getElementById('dash-month-filter')?.value));
-                fAdv.sort((a,b) => String(b.id).localeCompare(String(a.id)));
-                
+                let displayAdvances = [...advances]; 
+                displayAdvances.sort((a,b) => String(b.id).localeCompare(String(a.id)));
                 if (tbodyGus) {
-                    tbodyGus.innerHTML = fAdv.map(a => {
+                    tbodyGus.innerHTML = displayAdvances.map(a => {
                         let badge = a.status === 'Autorizado' ? `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-crown mr-1"></i>Autorizado</span>` : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Pendiente</span>`;
                         let actions = '';
                         if ((userType === 'master' || isSuperAdmin) && a.status === 'Pendiente') actions = `<button onclick="actionAuthorizeAdvance('${a.id}')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black uppercase rounded-lg">Autorizar</button>`;
                         else if (userType === 'admin' || isSuperAdmin) actions = `<button onclick="actionDelete('${a.id}', 'advance')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
                         else if (userType === 'master') actions = `<span class="text-[10px] text-slate-400 font-bold">Ok</span>`;
-                        return `<tr class="hover:bg-slate-50 border-b border-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(a.date)}</td><td class="p-4 text-sm font-black text-amber-600">${fmt(a.amount)}</td><td class="p-4 text-xs font-medium text-slate-600">${a.concept}</td><td class="p-4">${badge}</td><td class="p-4 text-[10px] font-bold text-slate-400 italic">${a.detail || '-'}</td><td class="p-4 pr-6 text-center">${actions}</td></tr>`;
-                    }).join('') || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">Sin adelantos.</td></tr>`;
+                        return `<tr class="hover:bg-slate-50 border-b border-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600" data-label="Fecha">${fmtDate(a.date)}</td><td class="p-4 text-sm font-black text-amber-600" data-label="Monto">${fmt(a.amount)}</td><td class="p-4 text-xs font-medium text-slate-600" data-label="Concepto">${a.concept}</td><td class="p-4" data-label="Estado">${badge}</td><td class="p-4 text-[10px] font-bold text-slate-400 italic" data-label="Detalle">${a.detail || '-'}</td><td class="p-4 pr-6 text-center" data-label="Acción">${actions}</td></tr>`;
+                    }).join('');
                 }
             }
         }
