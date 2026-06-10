@@ -1035,7 +1035,7 @@
         // ACCIONES MODALES
         function actionVerify(id) { pendingVerifyId = String(id); document.getElementById('input-receipt').value = ''; document.getElementById('modal-comprobante').classList.replace('hidden', 'flex'); }
         function closeModal() { document.getElementById('modal-comprobante').classList.replace('flex', 'hidden'); pendingVerifyId = null; }
-        async function confirmVerify() {
+        function confirmVerify() {
             if (!pendingVerifyId) return; const targetId = String(pendingVerifyId); const receipt = document.getElementById('input-receipt').value.trim(); const btn = document.getElementById('btn-verify-confirm');
             const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true; const tx = records.find(r => String(r.id) === targetId);
             if (tx) { tx.status = 'Verificado'; tx.receipt = receipt; updateAllViews(); closeModal(); pushData('verify', { id: targetId, receipt: receipt }).then(res => { if(res.success) showToast("Aprobado con éxito", "success")}); } else closeModal();
@@ -1044,8 +1044,8 @@
 
         function actionEdit(id) {
             const ud = JSON.parse(localStorage.getItem('sb_user_data'));
-            if (ud && ud.type === 'user') { showToast("Acceso denegado. No tienes permisos para editar.", "error"); return; }
             const tx = records.find(r => String(r.id) === String(id));
+            if (ud && ud.type === 'user' && tx && tx.status !== 'Pendiente') { showToast("Acceso denegado. Registro bloqueado.", "error"); return; }
             if(tx) { document.getElementById('edit-id').value = tx.id; document.getElementById('edit-date').value = tx.date; document.getElementById('edit-amount').value = Math.abs(tx.amount); document.getElementById('edit-concept').value = tx.concept; document.getElementById('modal-edit').classList.replace('hidden', 'flex'); }
         }
         function closeEditModal() { document.getElementById('modal-edit').classList.replace('flex', 'hidden'); }
@@ -1235,25 +1235,20 @@
                             </div>`;
                         }
                     } else if (userType === 'user') {
-                        // Tito y Jesús: NUNCA pueden editar valores (no tienen botón actionEdit)
+                        // Tito y Jesús: Pueden editar/eliminar todo lo que esté pendiente
                         if (r.status === 'Pendiente') {
+                            let userBtns = '';
                             if (assigned === currentUser && (creator === 'michelle' || creator === '1311397689')) {
-                                // Tito / Jesús aprueban transacciones subidas por Michelle o Supervisor
-                                actions = `<div class="flex justify-center gap-2">
-                                    <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg" title="Aprobar"><i class="fas fa-check"></i></button>
-                                    <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg" title="Denegar"><i class="fas fa-times"></i></button>
-                                </div>`;
-                            } else if (creator === currentUser) {
-                                // Tito / Jesús se equivocaron al crear, pueden eliminar si está pendiente
-                                actions = `<div class="flex justify-center gap-2">
-                                    <button onclick="actionDelete('${r.id}', 'record')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg" title="Eliminar"><i class="fas fa-trash"></i></button>
-                                </div>`;
-                            } else {
-                                actions = `<span class="text-[10px] font-bold text-slate-400">Espera Admin</span>`;
+                                userBtns += `<button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg" title="Aprobar"><i class="fas fa-check"></i></button>
+                                             <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg" title="Denegar"><i class="fas fa-times"></i></button>`;
                             }
+                            userBtns += `<button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg" title="Editar"><i class="fas fa-pen"></i></button>
+                                         <button onclick="actionDelete('${r.id}', 'record')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg" title="Eliminar"><i class="fas fa-trash"></i></button>`;
+                            
+                            actions = `<div class="flex justify-center gap-2">${userBtns}</div>`;
                         } else {
-                            // Una vez VERIFICADO o DENEGADO por Michelle, Tito y Jesús NO pueden borrarlo
-                            actions = `<span class="text-[10px] font-bold text-slate-400">Bloqueado</span>`;
+                            // Una vez VERIFICADO o DENEGADO por Michelle, aparece como Bloqueado
+                            actions = `<span class="text-[10px] font-bold text-slate-400"><i class="fas fa-lock mr-1"></i> Bloqueado</span>`;
                         }
                     } else {
                         // Gussepy (Master) u otros roles: Solo visualizan informe
