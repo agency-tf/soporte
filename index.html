@@ -160,18 +160,41 @@
                     <input type="month" id="dash-month-filter" onchange="updateAllViews()" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 w-full sm:w-auto">
                 </div>
 
-                <div id="panel-personal" class="hidden mb-6">
-                    <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 p-6 rounded-2xl shadow-sm max-w-sm relative overflow-hidden">
+                <!-- PANELES Y GRÁFICOS PRIVADOS (JESÚS Y TITO) -->
+                <div id="panel-personal" class="hidden mb-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 p-6 rounded-2xl shadow-sm relative overflow-hidden flex flex-col justify-between">
                         <i class="fas fa-wallet absolute -right-4 -top-4 text-indigo-500/10 text-8xl"></i>
-                        <div class="flex justify-between items-start mb-4 relative z-10"><div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-lg shadow-inner"><i class="fas fa-calendar-check"></i></div><span class="bg-indigo-100 text-indigo-800 text-[10px] font-black px-3 py-1.5 rounded-lg border border-indigo-200">MI BALANCE</span></div>
-                        <p class="text-indigo-700 text-[10px] font-black uppercase tracking-widest mb-1 relative z-10">VERIFICADO ESTE MES</p>
-                        <h3 class="text-3xl font-black text-slate-900 relative z-10" id="dash-personal">$0.00</h3>
+                        <div>
+                            <div class="flex justify-between items-start mb-4 relative z-10"><div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-lg shadow-inner"><i class="fas fa-calendar-check"></i></div><span class="bg-indigo-100 text-indigo-800 text-[10px] font-black px-3 py-1.5 rounded-lg border border-indigo-200">MI BALANCE</span></div>
+                            <p class="text-indigo-700 text-[10px] font-black uppercase tracking-widest mb-1 relative z-10">VERIFICADO (MES SELECCIONADO)</p>
+                        </div>
+                        <h3 class="text-4xl font-black text-slate-900 relative z-10 mt-4" id="dash-personal">$0.00</h3>
+                    </div>
+                    
+                    <div class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm relative overflow-hidden flex flex-col">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Depósitos (7 días)</p>
+                            <i class="fas fa-chart-line text-emerald-400"></i>
+                        </div>
+                        <div class="flex-1 relative min-h-[120px]">
+                            <canvas id="chart-week"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm relative overflow-hidden flex flex-col">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Histórico (3 meses)</p>
+                            <i class="fas fa-chart-bar text-blue-400"></i>
+                        </div>
+                        <div class="flex-1 relative min-h-[120px]">
+                            <canvas id="chart-months"></canvas>
+                        </div>
                     </div>
                 </div>
 
                 <div id="panel-admin" class="hidden mb-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div class="bg-gradient-to-br from-[#f0f9ff] to-[#e0f2fe] border border-[#bae6fd] p-6 rounded-2xl shadow-sm relative overflow-hidden"><div class="flex justify-between items-start mb-4"><div class="w-12 h-12 rounded-xl bg-[#bae6fd] text-[#0284c7] flex items-center justify-center text-xl shadow-inner"><i class="fas fa-user"></i></div><span class="bg-[#d0eaf8] text-[#0369a1] text-[10px] font-black px-3 py-1.5 rounded-lg border border-[#bae6fd]">CUENTA 01</span></div><p class="text-[#0369a1] text-[10px] font-black uppercase tracking-widest mb-1">SALDO CONFIRMADO: JESÚS</p><h3 class="text-4xl font-black text-slate-900" id="dash-jesus">$0.00</h3></div>
-                    <div class="bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7] border border-[#bbf7d0] p-6 rounded-2xl shadow-sm relative overflow-hidden"><div class="flex justify-between items-start mb-4"><div class="w-12 h-12 rounded-xl bg-[#bbf7d0] text-[#16a34a] flex items-center justify-center text-xl shadow-inner"><i class="fas fa-user-tie"></i></div><span class="bg-[#dcfce7] text-[#15803d] text-[10px] font-black px-3 py-1.5 rounded-lg border border-[#bbf7d0]">CUENTA 02</span></div><p class="text-[#15803d] text-[10px] font-black uppercase tracking-widest mb-1">SALDO CONFIRMADO: TITO</p><h3 class="text-4xl font-black text-slate-900" id="dash-tito">$0.00</h3></div>
+                    <div class="bg-gradient-to-br from-[#f0f9ff] to-[#e0f2fe] border border-[#bae6fd] p-6 rounded-2xl shadow-sm relative overflow-hidden"><div class="flex justify-between items-start mb-4"><div class="w-12 h-12 rounded-xl bg-[#bae6fd] text-[#0284c7] flex items-center justify-center text-xl shadow-inner"><i class="fas fa-user"></i></div><span class="bg-[#d0eaf8] text-[#0369a1] text-[10px] font-black px-3 py-1.5 rounded-lg border border-[#bae6fd]">CUENTA 01</span></div><p class="text-[#0369a1] text-[10px] font-black uppercase tracking-widest mb-1">SALDO CONFIRMADO: JESÚS</p><h3 class="text-4xl font-black text-slate-900" id="dash-jesus">$0.00</h3><p class="text-[10px] font-bold text-[#0284c7] mt-2"><i class="fas fa-calendar-week"></i> Últimos 7 días: <span id="dash-jesus-week">$0.00</span></p></div>
+                    <div class="bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7] border border-[#bbf7d0] p-6 rounded-2xl shadow-sm relative overflow-hidden"><div class="flex justify-between items-start mb-4"><div class="w-12 h-12 rounded-xl bg-[#bbf7d0] text-[#16a34a] flex items-center justify-center text-xl shadow-inner"><i class="fas fa-user-tie"></i></div><span class="bg-[#dcfce7] text-[#15803d] text-[10px] font-black px-3 py-1.5 rounded-lg border border-[#bbf7d0]">CUENTA 02</span></div><p class="text-[#15803d] text-[10px] font-black uppercase tracking-widest mb-1">SALDO CONFIRMADO: TITO</p><h3 class="text-4xl font-black text-slate-900" id="dash-tito">$0.00</h3><p class="text-[10px] font-bold text-[#16a34a] mt-2"><i class="fas fa-calendar-week"></i> Últimos 7 días: <span id="dash-tito-week">$0.00</span></p></div>
                     <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 p-6 rounded-2xl shadow-sm relative overflow-hidden"><div class="flex justify-between items-start mb-4"><div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl shadow-inner"><i class="fas fa-star"></i></div><span class="bg-amber-100 text-amber-800 text-[10px] font-black px-3 py-1.5 rounded-lg">COMISIONES</span></div><p class="text-amber-700 text-[10px] font-black uppercase tracking-widest mb-1">ADELANTOS GUSSEPY</p><h3 class="text-4xl font-black text-slate-800" id="dash-gussepy">$0.00</h3></div>
                 </div>
 
@@ -650,7 +673,7 @@
     </div>
 
     <script>
-        // --- CONEXIÓN URL ACTUALIZADA ---
+        // --- RECUERDA PONER TU URL DEL DEPLOY AQUÍ ---
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzsrIJyHHk3aY0xVbHQzezEW4Bdn3nofNiBmQbCD5bKds5q0qZV8ITnXHWK_ZNTAS8tKw/exec';
         
         const USERS = { 'michelle': { pass: '1317857587', name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600' }, 'jesus': { pass: 'JesusVentas88', name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]' }, 'tito': { pass: '1311397689', name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]' }, 'gussepy': { pass: 'GussepyMaster', name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600' }, 'emilia': { pass: 'Emilia18@', name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600' }, 'melanie': { pass: 'Melanie', name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500' }, 'admin': { pass: 'admin', name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600' }, '1311397689': { pass: '1311397689', name: 'Supervisor', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800' } };
@@ -658,7 +681,7 @@
         // --- VARIABLES GLOBALES ---
         let currentUser = null, isSuperAdmin = false, records = [], advances = [], bonos = [], giros = [], referrals = [], rendimientos = [];
         let filters = { date: '', user: 'all', status: 'all', amount: '' }, bonoFilters = { date: '', dest: '', amount: '', agency: 'all' }, refFilters = { date: '', name: '', cedula: '', agency: 'all' }, giroFilters = { date: '', dest: '', agency: 'all' }, melFilters = { date: '', inf: '', jug: '' };
-        let pendingVerifyId = null, pendingAuthId = null, pendingBonoWinId = null, pendingGiroWinId = null, referidosChart = null, inactivityTimer;
+        let pendingVerifyId = null, pendingAuthId = null, pendingBonoWinId = null, pendingGiroWinId = null, referidosChart = null, inactivityTimer, chartWeekInstance = null, chartMonthsInstance = null;
 
         // --- FUNCIONES DE FORMATO ---
         const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
@@ -678,7 +701,7 @@
             ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(evt => document.addEventListener(evt, resetInactivityTimer));
         };
 
-        // --- CIERRE DE SESIÓN E INACTIVIDAD CORREGIDOS ---
+        // --- CIERRE DE SESIÓN E INACTIVIDAD ---
         function logout() { 
             localStorage.removeItem('sb_user_data'); 
             currentUser = null; 
@@ -767,24 +790,22 @@
             const iconEl = document.getElementById('nav-icon'); if (iconEl) { iconEl.innerHTML = `<i class="fas ${user.icon}"></i>`; iconEl.className = `w-10 h-10 rounded-xl text-white flex items-center justify-center text-lg shadow-md ${user.color}`; }
             const btnSuper = document.getElementById('btn-superadmin'); if (btnSuper) { if (isSuperAdmin) btnSuper.classList.remove('hidden'); else btnSuper.classList.add('hidden'); }
             
-            // Iniciar inactividad
             resetInactivityTimer();
             
-            // LIMPIA VISTA
             const allTabs = ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-auditoria', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash', 'divider-1', 'divider-2'];
             allTabs.forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
-            ['panel-admin', 'panel-personal', 'filter-user-container', 'filters-panel', 'panel-auditoria-main', 'panel-gussepy-bonos', 'panel-add-gussepy'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
+            ['panel-admin', 'panel-personal', 'panel-gussepy-bonos', 'panel-add-gussepy', 'panel-dash-movimientos'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
 
             if (user.type === 'admin' || user.type === 'superadmin') {
                 ['btn-tab-dashboard','btn-tab-register','btn-tab-gussepy', 'btn-tab-auditoria', 'divider-1'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
-                ['panel-admin','filter-user-container','filters-panel','panel-auditoria-main','panel-add-gussepy'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
+                ['panel-admin','panel-dash-movimientos','panel-add-gussepy'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 if(user.type === 'superadmin') { 
                     ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'divider-2', 'btn-tab-maria-ref-add','btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); }); 
                 }
                 switchTab('tab-dashboard');
             } else if (user.type === 'master') {
                 ['btn-tab-dashboard','btn-tab-gussepy','btn-tab-maria-list', 'btn-tab-giros-list', 'btn-tab-maria-ref-list', 'divider-1', 'divider-2'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
-                ['panel-admin','panel-gussepy-bonos'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
+                ['panel-admin','panel-gussepy-bonos', 'panel-dash-movimientos'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-dashboard');
             } else if (user.type === 'bonos') {
                 ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'divider-2', 'btn-tab-maria-ref-add','btn-tab-maria-ref-list'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
@@ -796,8 +817,8 @@
                 ['btn-tab-influencer-dash'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-influencer-dash');
             } else {
-                ['btn-tab-dashboard','btn-tab-register'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
-                ['panel-personal','filters-panel','panel-auditoria-main'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
+                ['btn-tab-dashboard','btn-tab-register', 'btn-tab-auditoria'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
+                ['panel-personal','panel-dash-movimientos'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-dashboard');
             }
 
@@ -1010,18 +1031,34 @@
         function actionGiroWin(id) { pendingGiroWinId = String(id); pendingBonoWinId = null; document.getElementById('input-bono-win-amount').value = ''; document.getElementById('title-bono-win').innerText='Ganancia Real de Giros'; document.getElementById('modal-bono-ganado').classList.replace('hidden', 'flex'); }
         function closeBonoWinModal() { document.getElementById('modal-bono-ganado').classList.replace('flex', 'hidden'); pendingBonoWinId = null; pendingGiroWinId = null; }
         
+        // --- FUNCIÓN CLAVE PARA GUARDAR LA GANANCIA DE BONOS Y GIROS ---
         async function confirmBonoWin() {
             const wonAmtStr = document.getElementById('input-bono-win-amount').value.replace(',', '.');
-            const wonAmt = parseFloat(wonAmtStr);
-            if (isNaN(wonAmt) || wonAmt < 0) return;
-            const btn = document.getElementById('btn-bono-win-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
+            const wonAmt = wonAmtStr === '' ? 0 : parseFloat(wonAmtStr);
+            if (isNaN(wonAmt) || wonAmt < 0) { showToast("Ingrese un valor numérico válido", "error"); return; }
+            
+            const btn = document.getElementById('btn-bono-win-confirm'); const orig = btn.innerHTML; btn.innerHTML = 'Guardando...'; btn.disabled = true;
             
             if (pendingBonoWinId) {
-                const b = bonos.find(r => String(r.id) === String(pendingBonoWinId)); 
-                if (b) { b.status = 'Ganado'; b.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_bono', { id: String(pendingBonoWinId), amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); }); }
+                const bId = String(pendingBonoWinId);
+                const b = bonos.find(r => String(r.id) === bId); 
+                if (b) { 
+                    b.status = 'Ganado'; 
+                    b.amountWon = wonAmt; 
+                    updateAllViews(); 
+                    closeBonoWinModal(); 
+                    pushData('win_bono', { id: bId, amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); else showToast("Error en base de datos", "error"); }); 
+                }
             } else if (pendingGiroWinId) {
-                const g = giros.find(r => String(r.id) === String(pendingGiroWinId)); 
-                if (g) { g.status = 'Ganado'; g.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_giro', { id: String(pendingGiroWinId), amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); }); }
+                const gId = String(pendingGiroWinId);
+                const g = giros.find(r => String(r.id) === gId); 
+                if (g) { 
+                    g.status = 'Ganado'; 
+                    g.amountWon = wonAmt; 
+                    updateAllViews(); 
+                    closeBonoWinModal(); 
+                    pushData('win_giro', { id: gId, amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); else showToast("Error en base de datos", "error"); }); 
+                }
             }
             btn.innerHTML = orig; btn.disabled = false;
         }
@@ -1113,16 +1150,31 @@
                     let badge = `<span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase">Pendiente</span>`;
                     if (r.status === 'Verificado') badge = `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase"><i class="fas fa-check mr-1"></i>Verif</span>`;
                     if (r.status === 'Denegado') badge = `<span class="bg-rose-100 text-rose-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase"><i class="fas fa-times mr-1"></i>Deneg</span>`;
+                    
                     let actions = '';
+                    const creator = (r.createdBy || '').toLowerCase().trim();
+                    
                     if (r.status === 'Pendiente') {
                         if (userType === 'admin' || isSuperAdmin) {
-                            if (r.createdBy !== 'michelle') { actions = `<div class="flex justify-center gap-2"><button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg"><i class="fas fa-check"></i></button><button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg"><i class="fas fa-times"></i></button><button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div>`; } 
-                            else { actions = `<div class="flex justify-center gap-2"><button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div>`; }
-                        } else if (r.assignedTo === currentUser) {
-                            if (r.createdBy === 'michelle') { actions = `<div class="flex justify-center gap-2"><button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg"><i class="fas fa-check"></i></button><button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg"><i class="fas fa-times"></i></button></div>`; } 
-                            else { actions = `<span class="text-[10px] font-bold text-slate-400">Espera Admin</span>`; }
+                            // Admin (Michelle) verifica todos menos los de ella misma y los del SuperAdmin
+                            if (creator !== currentUser && creator !== '1311397689') {
+                                actions = `<div class="flex justify-center gap-2"><button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg"><i class="fas fa-check"></i></button><button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg"><i class="fas fa-times"></i></button><button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div>`;
+                            } else {
+                                actions = `<div class="flex justify-center gap-2"><button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div>`;
+                            }
+                        } else if (userType === 'user' && r.assignedTo === currentUser) {
+                            // Usuario (Tito/Jesus) verifica transacciones subidas por Michelle o SuperAdmin
+                            if (creator === 'michelle' || creator === '1311397689') {
+                                actions = `<div class="flex justify-center gap-2"><button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg"><i class="fas fa-check"></i></button><button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg"><i class="fas fa-times"></i></button></div>`;
+                            } else {
+                                actions = `<span class="text-[10px] font-bold text-slate-400">Espera Admin</span>`;
+                            }
                         }
-                    } else if (userType === 'admin' || isSuperAdmin) { actions = `<div class="flex justify-center gap-2"><button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div>`; }
+                    } else if (userType === 'admin' || isSuperAdmin) {
+                        actions = `<div class="flex justify-center gap-2"><button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div>`;
+                    } else {
+                        actions = `<span class="text-[10px] font-bold text-slate-400">-</span>`;
+                    }
 
                     const opacity = r.status === 'Denegado' ? 'opacity-60 bg-slate-50' : 'hover:bg-slate-50';
                     const isNeg = r.amount < 0; const amtColor = r.status === 'Denegado' ? 'text-slate-400 line-through' : (isNeg ? 'text-rose-600' : 'text-slate-800');
@@ -1146,13 +1198,45 @@
                 const elJesus = document.getElementById('dash-jesus'); if(elJesus) elJesus.innerText = fmt(fRecords.reduce((s, r) => s + (r.assignedTo === 'jesus' && r.status === 'Verificado' ? r.amount : 0), 0));
                 const elTito = document.getElementById('dash-tito'); if(elTito) elTito.innerText = fmt(fRecords.reduce((s, r) => s + (r.assignedTo === 'tito' && r.status === 'Verificado' ? r.amount : 0), 0));
                 
+                const nowW = new Date(); const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(nowW.getDate() - 7);
+                const elJesusW = document.getElementById('dash-jesus-week'); if(elJesusW) elJesusW.innerText = fmt(records.reduce((s, r) => { const d = new Date(r.date); return (r.assignedTo === 'jesus' && r.status === 'Verificado' && d >= sevenDaysAgo && d <= nowW) ? s + r.amount : s; }, 0));
+                const elTitoW = document.getElementById('dash-tito-week'); if(elTitoW) elTitoW.innerText = fmt(records.reduce((s, r) => { const d = new Date(r.date); return (r.assignedTo === 'tito' && r.status === 'Verificado' && d >= sevenDaysAgo && d <= nowW) ? s + r.amount : s; }, 0));
+
                 const fAdvances = advances.filter(a => isSameMonth(a.date, globalMF));
                 const elGussepy = document.getElementById('dash-gussepy'); if(elGussepy) elGussepy.innerText = fmt(fAdvances.reduce((s, a) => s + (a.amount || 0), 0));
                 
                 if (userType === 'user') {
-                    const now = new Date(); const m = now.getMonth(); const y = now.getFullYear();
                     const elDashPersonal = document.getElementById('dash-personal');
-                    if(elDashPersonal) elDashPersonal.innerText = fmt(records.reduce((sum, r) => { const d = new Date(r.date); d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); return (r.assignedTo === currentUser && r.status === 'Verificado' && d.getMonth() === m && d.getFullYear() === y) ? sum + r.amount : sum; }, 0));
+                    // Panel se actualiza con el mes seleccionado en el filtro (dashMF/globalMF)
+                    if(elDashPersonal) elDashPersonal.innerText = fmt(fRecords.reduce((sum, r) => (r.assignedTo === currentUser && r.status === 'Verificado') ? sum + r.amount : sum, 0));
+                    
+                    const ctxWeek = document.getElementById('chart-week');
+                    if (ctxWeek && typeof Chart !== 'undefined') {
+                        const wLabels = []; const wData = []; const t = new Date();
+                        for (let i = 6; i >= 0; i--) {
+                            const d = new Date(t); d.setDate(t.getDate() - i);
+                            wLabels.push(d.toLocaleDateString('es-ES', { weekday: 'short' }));
+                            wData.push(records.reduce((sum, r) => {
+                                const rd = new Date(r.date); rd.setMinutes(rd.getMinutes() + rd.getTimezoneOffset());
+                                return (r.assignedTo === currentUser && r.status === 'Verificado' && rd.toDateString() === d.toDateString() && r.amount > 0) ? sum + r.amount : sum;
+                            }, 0));
+                        }
+                        if(chartWeekInstance) chartWeekInstance.destroy();
+                        chartWeekInstance = new Chart(ctxWeek, { type: 'line', data: { labels: wLabels, datasets: [{ label: 'Depósitos', data: wData, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: true, grid:{display:false} }, y: { display: false, beginAtZero: true } } } });
+                    }
+
+                    const ctxMonths = document.getElementById('chart-months');
+                    if (ctxMonths && typeof Chart !== 'undefined') {
+                        const mLabels = []; const mData = []; const t = new Date();
+                        for (let i = 2; i >= 0; i--) {
+                            const d = new Date(t.getFullYear(), t.getMonth() - i, 1);
+                            mLabels.push(d.toLocaleDateString('es-ES', { month: 'short' }).toUpperCase());
+                            const mStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+                            mData.push(records.reduce((sum, r) => (r.assignedTo === currentUser && r.status === 'Verificado' && isSameMonth(r.date, mStr) && r.amount > 0) ? sum + r.amount : sum, 0));
+                        }
+                        if(chartMonthsInstance) chartMonthsInstance.destroy();
+                        chartMonthsInstance = new Chart(ctxMonths, { type: 'bar', data: { labels: mLabels, datasets: [{ label: 'Depósitos', data: mData, backgroundColor: '#3b82f6', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: true, grid:{display:false} }, y: { display: false, beginAtZero: true } } } });
+                    }
                 }
 
                 // Tabla Dashboard (Mismo Mes)
