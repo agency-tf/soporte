@@ -8,7 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
         .glass-dark { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transform: translateZ(0); }
         .login-bg { background: radial-gradient(circle at top right, #1e1b4b, #0f172a 40%, #020617); }
@@ -648,7 +648,7 @@
         </div>
     </div>
 
-    <!-- MODAL BONO GANADO -->
+    <!-- MODAL COMPARTIDO BONO Y GIROS GANADO -->
     <div id="modal-bono-ganado" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in">
             <div class="p-6 text-center border-b border-emerald-100 bg-emerald-50"><div class="w-16 h-16 bg-emerald-200 text-emerald-700 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-trophy"></i></div><h3 class="text-lg font-black text-slate-800" id="title-bono-win">Cierre de Liquidación</h3></div>
@@ -673,7 +673,7 @@
     </div>
 
     <script>
-        // --- RECUERDA PONER TU URL DEL DEPLOY AQUÍ ---
+        // --- RECUERDA PONER TU URL DEL DEPLOY DE GOOGLE APPS SCRIPT AQUÍ ---
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzsrIJyHHk3aY0xVbHQzezEW4Bdn3nofNiBmQbCD5bKds5q0qZV8ITnXHWK_ZNTAS8tKw/exec';
         
         const USERS = { 'michelle': { pass: '1317857587', name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600' }, 'jesus': { pass: 'JesusVentas88', name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]' }, 'tito': { pass: '1311397689', name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]' }, 'gussepy': { pass: 'GussepyMaster', name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600' }, 'emilia': { pass: 'Emilia18@', name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600' }, 'melanie': { pass: 'Melanie', name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500' }, 'admin': { pass: 'admin', name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600' }, '1311397689': { pass: '1311397689', name: 'Supervisor', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800' } };
@@ -804,8 +804,9 @@
                 }
                 switchTab('tab-dashboard');
             } else if (user.type === 'master') {
+                // Gussepy (Master): No ve ni aprueba movimientos de Tito y Jesús (panel-dash-movimientos oculto)
                 ['btn-tab-dashboard','btn-tab-gussepy','btn-tab-maria-list', 'btn-tab-giros-list', 'btn-tab-maria-ref-list', 'divider-1', 'divider-2'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
-                ['panel-admin','panel-gussepy-bonos', 'panel-dash-movimientos'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
+                ['panel-admin','panel-gussepy-bonos'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-dashboard');
             } else if (user.type === 'bonos') {
                 ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'divider-2', 'btn-tab-maria-ref-add','btn-tab-maria-ref-list'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
@@ -817,6 +818,7 @@
                 ['btn-tab-influencer-dash'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-influencer-dash');
             } else {
+                // Operador (Tito / Jesús): Sí ven su historial ('panel-dash-movimientos')
                 ['btn-tab-dashboard','btn-tab-register', 'btn-tab-auditoria'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 ['panel-personal','panel-dash-movimientos'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-dashboard');
@@ -901,6 +903,7 @@
             } catch(e) { return true; }
         }
 
+        // Corrección de comparación de fecha exacta para evitar desfasajes horarios de zona local
         function isExactDate(dateStr, exactDate) {
             if (!exactDate) return true;
             if (!dateStr) return false;
@@ -1139,6 +1142,7 @@
             updateAllViews();
         }
 
+        // --- SISTEMA DE CONTROL DE PERMISOS ESTRICTO PARA HISTORIAL ---
         function renderRecordsTable(tbodyId, emptyId, dataArray, userType) {
             const tbody = document.getElementById(tbodyId); const emptyState = document.getElementById(emptyId);
             if (!tbody) return;
@@ -1153,26 +1157,54 @@
                     
                     let actions = '';
                     const creator = (r.createdBy || '').toLowerCase().trim();
+                    const assigned = (r.assignedTo || '').toLowerCase().trim();
                     
-                    if (r.status === 'Pendiente') {
-                        if (userType === 'admin' || isSuperAdmin) {
-                            // Admin (Michelle) verifica todos menos los de ella misma y los del SuperAdmin
+                    if (userType === 'admin' || isSuperAdmin) {
+                        if (r.status === 'Pendiente') {
+                            // Michelle no se auto-aprueba ni se auto-deniega
                             if (creator !== currentUser && creator !== '1311397689') {
-                                actions = `<div class="flex justify-center gap-2"><button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg"><i class="fas fa-check"></i></button><button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg"><i class="fas fa-times"></i></button><button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div>`;
+                                actions = `<div class="flex justify-center gap-2">
+                                    <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg" title="Aprobar"><i class="fas fa-check"></i></button>
+                                    <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg" title="Denegar"><i class="fas fa-times"></i></button>
+                                    <button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg" title="Editar"><i class="fas fa-pen"></i></button>
+                                    <button onclick="actionDelete('${r.id}', 'record')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg" title="Eliminar"><i class="fas fa-trash"></i></button>
+                                </div>`;
                             } else {
-                                actions = `<div class="flex justify-center gap-2"><button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div>`;
+                                actions = `<div class="flex justify-center gap-2">
+                                    <button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg" title="Editar"><i class="fas fa-pen"></i></button>
+                                    <button onclick="actionDelete('${r.id}', 'record')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg" title="Eliminar"><i class="fas fa-trash"></i></button>
+                                </div>`;
                             }
-                        } else if (userType === 'user' && r.assignedTo === currentUser) {
-                            // Usuario (Tito/Jesus) verifica transacciones subidas por Michelle o SuperAdmin
-                            if (creator === 'michelle' || creator === '1311397689') {
-                                actions = `<div class="flex justify-center gap-2"><button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg"><i class="fas fa-check"></i></button><button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg"><i class="fas fa-times"></i></button></div>`;
+                        } else {
+                            // Los administradores sí pueden editar o eliminar registros Verificados o Denegados
+                            actions = `<div class="flex justify-center gap-2">
+                                <button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg" title="Editar"><i class="fas fa-pen"></i></button>
+                                <button onclick="actionDelete('${r.id}', 'record')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg" title="Eliminar"><i class="fas fa-trash"></i></button>
+                            </div>`;
+                        }
+                    } else if (userType === 'user') {
+                        // Tito y Jesús: NUNCA pueden editar valores (no tienen botón actionEdit)
+                        if (r.status === 'Pendiente') {
+                            if (assigned === currentUser && (creator === 'michelle' || creator === '1311397689')) {
+                                // Tito / Jesús aprueban transacciones subidas por Michelle o Supervisor
+                                actions = `<div class="flex justify-center gap-2">
+                                    <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg" title="Aprobar"><i class="fas fa-check"></i></button>
+                                    <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg" title="Denegar"><i class="fas fa-times"></i></button>
+                                </div>`;
+                            } else if (creator === currentUser) {
+                                // Tito / Jesús se equivocaron al crear, pueden eliminar si está pendiente
+                                actions = `<div class="flex justify-center gap-2">
+                                    <button onclick="actionDelete('${r.id}', 'record')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg" title="Eliminar"><i class="fas fa-trash"></i></button>
+                                </div>`;
                             } else {
                                 actions = `<span class="text-[10px] font-bold text-slate-400">Espera Admin</span>`;
                             }
+                        } else {
+                            // Una vez VERIFICADO o DENEGADO por Michelle, Tito y Jesús NO pueden borrarlo
+                            actions = `<span class="text-[10px] font-bold text-slate-400">Bloqueado</span>`;
                         }
-                    } else if (userType === 'admin' || isSuperAdmin) {
-                        actions = `<div class="flex justify-center gap-2"><button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div>`;
                     } else {
+                        // Gussepy (Master) u otros roles: Solo visualizan informe
                         actions = `<span class="text-[10px] font-bold text-slate-400">-</span>`;
                     }
 
