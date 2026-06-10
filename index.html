@@ -279,7 +279,7 @@
                     <div class="bg-white border border-slate-200 p-3 rounded-2xl shadow-sm mb-6">
                         <div class="flex flex-col lg:flex-row items-end gap-3 w-full">
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Fecha Exacta</label><input type="date" id="filter-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500"></div>
-                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta</label><select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500"><option value="all">Todas</option><option value="jesus">Jesús</option><option value="tito">Tito</option></select></div>
+                            <div class="w-full lg:w-auto flex-1" id="filter-user-container"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta</label><select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500"><option value="all">Todas</option><option value="jesus">Jesús</option><option value="tito">Tito</option></select></div>
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Estado</label><select id="filter-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500"><option value="all">Todos</option><option value="Pendiente">Pendientes</option><option value="Verificado">Verificados</option><option value="Denegado">Denegados</option></select></div>
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto Exacto</label><div class="relative"><div class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 font-bold">$</div><input type="text" id="filter-amount" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500"></div></div>
                             <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div>
@@ -794,11 +794,11 @@
             
             const allTabs = ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-auditoria', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash', 'divider-1', 'divider-2'];
             allTabs.forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
-            ['panel-admin', 'panel-personal', 'panel-gussepy-bonos', 'panel-add-gussepy', 'panel-dash-movimientos'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
+            ['panel-admin', 'panel-personal', 'panel-gussepy-bonos', 'panel-add-gussepy', 'panel-dash-movimientos', 'filter-user-container'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
 
             if (user.type === 'admin' || user.type === 'superadmin') {
                 ['btn-tab-dashboard','btn-tab-register','btn-tab-gussepy', 'btn-tab-auditoria', 'divider-1'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
-                ['panel-admin','panel-dash-movimientos','panel-add-gussepy'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
+                ['panel-admin','panel-dash-movimientos','panel-add-gussepy', 'filter-user-container'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 if(user.type === 'superadmin') { 
                     ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'divider-2', 'btn-tab-maria-ref-add','btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); }); 
                 }
@@ -818,9 +818,9 @@
                 ['btn-tab-influencer-dash'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-influencer-dash');
             } else {
-                // Operador (Tito / Jesús): Sí ven su historial ('panel-dash-movimientos')
+                // Operador (Tito / Jesús): Sí ven su historial en Auditoría, pero no en Dashboard
                 ['btn-tab-dashboard','btn-tab-register', 'btn-tab-auditoria'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
-                ['panel-personal','panel-dash-movimientos'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
+                ['panel-personal'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-dashboard');
             }
 
@@ -998,6 +998,8 @@
         }
 
         function actionEdit(id) {
+            const ud = JSON.parse(localStorage.getItem('sb_user_data'));
+            if (ud && ud.type === 'user') { showToast("Acceso denegado. No tienes permisos para editar.", "error"); return; }
             const tx = records.find(r => String(r.id) === String(id));
             if(tx) { document.getElementById('edit-id').value = tx.id; document.getElementById('edit-date').value = tx.date; document.getElementById('edit-amount').value = Math.abs(tx.amount); document.getElementById('edit-concept').value = tx.concept; document.getElementById('modal-edit').classList.replace('hidden', 'flex'); }
         }
@@ -1067,6 +1069,11 @@
         }
 
         async function actionDelete(id, type = 'record') {
+            const ud = JSON.parse(localStorage.getItem('sb_user_data'));
+            if (type === 'record' && ud && ud.type === 'user') {
+                const tx = records.find(r => String(r.id) === String(id));
+                if (tx && tx.status !== 'Pendiente') { showToast("Bloqueado: No puedes eliminar registros ya procesados por el Admin.", "error"); return; }
+            }
             if(confirm("🚨 ¿Seguro que desea eliminar permanentemente?")) {
                 const tId = String(id); let act = 'delete';
                 if(type === 'advance'){ act = 'delete_advance'; advances = advances.filter(r => String(r.id) !== tId); } 
@@ -1285,7 +1292,14 @@
                 } else if (document.getElementById('filter-date') && document.getElementById('filter-date').value) {
                     auditRecords = auditRecords.filter(r => isExactDate(r.date, document.getElementById('filter-date').value));
                 }
-                if (filters.user !== 'all') auditRecords = auditRecords.filter(r => r.assignedTo === filters.user);
+                
+                // RESTRICCIÓN ESTRICTA DE VISIBILIDAD DE CUENTAS
+                if (userType === 'user') {
+                    auditRecords = auditRecords.filter(r => r.assignedTo === currentUser);
+                } else {
+                    if (filters.user !== 'all') auditRecords = auditRecords.filter(r => r.assignedTo === filters.user);
+                }
+                
                 if (filters.status !== 'all') auditRecords = auditRecords.filter(r => r.status === filters.status);
                 if (filters.amount && !isNaN(parseFloat(filters.amount))) auditRecords = auditRecords.filter(r => Math.abs(r.amount) === parseFloat(filters.amount));
                 auditRecords.sort((a,b) => String(b.id).localeCompare(String(a.id)));
