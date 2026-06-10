@@ -8,7 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
         .glass-dark { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transform: translateZ(0); }
         .login-bg { background: radial-gradient(circle at top right, #1e1b4b, #0f172a 40%, #020617); }
@@ -138,8 +138,9 @@
                 <button onclick="switchTab('tab-melanie-list')" id="btn-tab-melanie-list" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-list w-5 text-center text-pink-400"></i> Historial Rendimientos</button>
                 <button onclick="switchTab('tab-influencer-dash')" id="btn-tab-influencer-dash" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-chart-bar w-5 text-center text-purple-400"></i> Mi Panel VIP</button>
             </div>
-            <!-- Botón Logout Lateral -->
-            <div class="p-4 border-t border-slate-800">
+            <!-- Botón Logout y Cambiar Clave Lateral -->
+            <div class="p-4 border-t border-slate-800 space-y-2">
+                <button onclick="openPasswordModal()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-300 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-key w-5 text-center"></i> Cambiar Clave</button>
                 <button onclick="logout()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-rose-500 hover:bg-rose-500 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-sign-out-alt w-5 text-center"></i> Cerrar Sesión</button>
             </div>
         </div>
@@ -468,7 +469,7 @@
                     <div class="px-6 py-8 sm:p-10 border-b border-indigo-50 bg-gradient-to-br from-indigo-50 to-white"><h2 class="text-2xl font-black text-slate-800">Registrar Nuevo Referido</h2></div>
                     <form id="form-referrals" class="p-6 sm:p-10 space-y-6">
                         <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100 flex items-center justify-between gap-3">
-                            <div><h4 class="text-sm font-bold text-indigo-900">¿El referente es un Influyente VIP?</h4><p class="text-[10px] text-indigo-600 mt-0.5">Si se activa, el área de afiliados le podrá asignar depósitos.</p></div>
+                            <div><h4 class="text-sm font-bold text-indigo-900">¿El referente es un Influyente VIP?</h4><p class="text-[10px] text-indigo-600 mt-0.5">Si se activa, el sistema creará una cuenta para que pueda ver sus afiliados.</p></div>
                             <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="ref-is-influencer" class="sr-only toggle-checkbox"><div class="toggle-label w-11 h-6 bg-slate-300 rounded-full transition-colors relative after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div></label>
                         </div>
                         <div>
@@ -598,6 +599,17 @@
         </main>
     </div>
 
+    <!-- MODAL CAMBIAR CLAVE -->
+    <div id="modal-password" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in">
+            <div class="p-6 text-center border-b border-slate-100 bg-slate-50"><div class="w-16 h-16 bg-slate-200 text-slate-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-key"></i></div><h3 class="text-lg font-black text-slate-800">Cambiar Contraseña</h3></div>
+            <form id="form-password" class="p-6 space-y-4">
+                <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Nueva Clave</label><input type="password" id="new-password" required minlength="4" placeholder="Min. 4 caracteres..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-slate-500"></div>
+                <div class="flex gap-3 pt-2"><button type="button" onclick="closePasswordModal()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-bold rounded-xl">Cancelar</button><button type="submit" class="flex-1 py-3 bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold rounded-xl shadow-md">Actualizar</button></div>
+            </form>
+        </div>
+    </div>
+
     <!-- MODAL EDICIÓN REGISTROS (GENERAL) -->
     <div id="modal-edit" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in">
@@ -665,7 +677,8 @@
             <div class="p-6 text-center border-b border-slate-100 bg-slate-800"><div class="w-16 h-16 bg-slate-700 text-white rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-users-cog"></i></div><h3 class="text-lg font-black text-white">Panel de Supervisor</h3></div>
             <div class="p-6 space-y-4">
                 <select id="superadmin-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-slate-800">
-                    <option value="1311397689">Vista Global (Supervisor)</option><option value="michelle">Administración (Michelle)</option><option value="emilia">Bonos y Referidos (Emilia)</option><option value="melanie">Gestión Afiliados (Melanie)</option><option value="admin">Panel Influyente (Admin)</option><option value="gussepy">Dirección (Gussepy)</option><option value="tito">Operador (Tito)</option><option value="jesus">Operador (Jesús)</option>
+                    <option value="1311397689">Vista Global (Supervisor)</option>
+                    <!-- Las opciones se generan de forma dinámica desde JS -->
                 </select>
                 <div class="flex gap-3 pt-2"><button onclick="closeSuperAdminSwitcher()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-bold rounded-xl">Cerrar</button><button onclick="confirmSwitchUser()" class="flex-1 py-3 bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold rounded-xl shadow-md">Ingresar</button></div>
             </div>
@@ -674,9 +687,10 @@
 
     <script>
         // --- RECUERDA PONER TU URL DEL DEPLOY DE GOOGLE APPS SCRIPT AQUÍ ---
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzsrIJyHHk3aY0xVbHQzezEW4Bdn3nofNiBmQbCD5bKds5q0qZV8ITnXHWK_ZNTAS8tKw/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzywdeIpGewXoOjM1ZyIugncUWJl96YTYgMSf55GwImMgF_XYCynM1LHftr4X2IcJmbEQ/exec';
         
-        const USERS = { 'michelle': { pass: '1317857587', name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600' }, 'jesus': { pass: 'JesusVentas88', name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]' }, 'tito': { pass: '1311397689', name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]' }, 'gussepy': { pass: 'GussepyMaster', name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600' }, 'emilia': { pass: 'Emilia18@', name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600' }, 'melanie': { pass: 'Melanie', name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500' }, 'admin': { pass: 'admin', name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600' }, '1311397689': { pass: '1311397689', name: 'Supervisor', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800' } };
+        // Base de datos de reserva para interfaz (No incluye claves, la autenticación ahora es 100% en backend)
+        let USERS = { 'michelle': { name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600' }, 'jesus': { name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]' }, 'tito': { name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]' }, 'gussepy': { name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600' }, 'emilia': { name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600' }, 'melanie': { name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500' }, 'admin': { name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600' }, '1311397689': { name: 'Supervisor', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800' } };
         
         // --- VARIABLES GLOBALES ---
         let currentUser = null, isSuperAdmin = false, records = [], advances = [], bonos = [], giros = [], referrals = [], rendimientos = [];
@@ -722,7 +736,7 @@
             }
         }
 
-        // --- MENÚ HAMBURGUESA ---
+        // --- MENÚ HAMBURGUESA Y MODAL DE CONTRASEÑA ---
         function toggleMenu(forceOpen) {
             const sidebar = document.getElementById('sidebar-menu');
             const overlay = document.getElementById('sidebar-overlay');
@@ -745,6 +759,23 @@
         function showToast(msg, type = 'success') { const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast-enter flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-white text-sm font-bold ${type === 'success' ? 'bg-slate-800' : 'bg-rose-600'}`; toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle text-emerald-400' : 'fa-exclamation-circle'}"></i> ${msg}`; container.appendChild(toast); setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 4000); }
         function showScreen(screen) { document.getElementById('screen-login').classList.add('hidden'); document.getElementById('screen-app').classList.add('hidden'); document.getElementById(`screen-${screen}`).classList.remove('hidden'); }
         function toggleAmountStyle() { const checkedRadio = document.querySelector('input[name="reg-type"]:checked'); if (!checkedRadio) return; const isDebit = checkedRadio.value === 'debito'; const label = document.getElementById('label-amount'); if (label) { if (isDebit) { label.innerText = 'Monto Débito ($) *'; label.classList.add('text-rose-600'); label.classList.remove('text-slate-500'); } else { label.innerText = 'Monto ($) *'; label.classList.remove('text-rose-600'); label.classList.add('text-slate-500'); } } }
+
+        function openPasswordModal() { document.getElementById('modal-password').classList.replace('hidden', 'flex'); document.getElementById('new-password').value = ''; toggleMenu(false); }
+        function closePasswordModal() { document.getElementById('modal-password').classList.replace('flex', 'hidden'); }
+        
+        document.getElementById('form-password').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newPass = document.getElementById('new-password').value.trim();
+            if(newPass.length < 4) { showToast("Mínimo 4 caracteres", "error"); return; }
+            const btn = e.target.querySelector('button[type="submit"]'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
+            
+            const targetUser = isSuperAdmin ? document.getElementById('superadmin-select').value : currentUser;
+            const res = await pushData('change_password', { user: targetUser, newPass: newPass });
+            
+            if (res.success) { showToast("Clave actualizada", "success"); closePasswordModal(); }
+            else { showToast("Error al cambiar clave", "error"); }
+            btn.innerHTML = orig; btn.disabled = false;
+        });
 
         async function pushData(action, data) {
             try {
@@ -771,17 +802,27 @@
 
         async function handleLogin(e) {
             e.preventDefault(); const u = document.getElementById('login-user').value.toLowerCase().trim(); const p = document.getElementById('login-pass').value.trim(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Autenticando...'; btn.disabled = true;
-            setTimeout(() => {
-                if (USERS[u] && USERS[u].pass === p) {
-                    const userObj = { id: u, name: USERS[u].name, type: USERS[u].type, color: USERS[u].color, icon: USERS[u].icon };
-                    if (userObj.type === 'superadmin') { isSuperAdmin = true; userObj.baseType = 'superadmin'; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = u; openSuperAdminSwitcher(); showToast('Supervisor: Seleccione vista', 'success');} 
-                    else { isSuperAdmin = false; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = u; loginUI(userObj); showToast('Acceso concedido', 'success');}
-                } else showToast('Credenciales incorrectas.', 'error');
-                btn.innerHTML = orig; btn.disabled = false;
-            }, 300);
+            
+            // Llama directo al Backend para verificar en tiempo real si el usuario existe
+            const res = await pushData('login', { user: u, pass: p });
+            
+            if (res.success && res.user) {
+                const userObj = res.user;
+                if (userObj.type === 'superadmin') { isSuperAdmin = true; userObj.baseType = 'superadmin'; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = u; openSuperAdminSwitcher(); showToast('Supervisor: Seleccione vista', 'success');} 
+                else { isSuperAdmin = false; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = u; loginUI(userObj); showToast('Acceso concedido', 'success');}
+            } else {
+                showToast(res.msg || 'Credenciales incorrectas.', 'error');
+            }
+            btn.innerHTML = orig; btn.disabled = false;
         }
 
-        function openSuperAdminSwitcher() { document.getElementById('modal-superadmin').classList.replace('hidden', 'flex'); }
+        function openSuperAdminSwitcher() { 
+            const select = document.getElementById('superadmin-select');
+            select.innerHTML = '<option value="1311397689">Vista Global (Supervisor)</option>';
+            Object.keys(USERS).forEach(k => { if (k !== '1311397689') select.innerHTML += `<option value="${k}">${USERS[k].name} (${USERS[k].type})</option>`; });
+            document.getElementById('modal-superadmin').classList.replace('hidden', 'flex'); 
+        }
+
         function closeSuperAdminSwitcher() { if (document.getElementById('screen-app').classList.contains('hidden')) confirmSwitchUser('1311397689'); else document.getElementById('modal-superadmin').classList.replace('flex', 'hidden'); }
         function confirmSwitchUser(overrideId = null) { const targetId = overrideId || document.getElementById('superadmin-select').value; const userObj = { ...USERS[targetId], id: targetId, baseType: 'superadmin' }; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = targetId; loginUI(userObj); document.getElementById('modal-superadmin').classList.replace('flex', 'hidden'); showToast('Vista cambiada exitosamente.', 'success');}
 
@@ -851,7 +892,11 @@
             try {
                 const res = await fetch(SCRIPT_URL); 
                 const data = await res.json();
-                if (data.status === 'success') { records = data.data || []; advances = data.advances || []; bonos = data.bonos || []; giros = data.giros || []; referrals = data.referrals || []; rendimientos = data.rendimientos || []; updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns(); }
+                if (data.status === 'success') { 
+                    if (data.users) USERS = { ...USERS, ...data.users }; // Cargar usuarios de backend para nombres dinámicos en UI
+                    records = data.data || []; advances = data.advances || []; bonos = data.bonos || []; giros = data.giros || []; referrals = data.referrals || []; rendimientos = data.rendimientos || []; 
+                    updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns(); 
+                }
             } catch (err) { console.error(err); if (!isBackground) showToast("Aviso: Conectando en modo local/cache. Verifica tu red.", "error"); } 
             finally {
                 if (!isBackground) document.getElementById('global-loader').classList.add('hidden');
@@ -972,7 +1017,7 @@
             
             referrals.unshift(newRef); bonos.unshift(newBonoFromRef); updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns();
             document.getElementById('form-referrals').reset(); document.getElementById('ref-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
-            pushData('add_referral', { ...newRef, company: company }).then(res => { if(res.success) showToast('Referido guardado.', 'success'); });
+            pushData('add_referral', { ...newRef, company: company, isInfluencer: isInfluencer }).then(res => { if(res.success) showToast('Referido guardado.', 'success'); });
         }
 
         async function handleRendimiento(e) {
