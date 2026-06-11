@@ -1490,11 +1490,13 @@
             }
 
             if (userType === 'influencer' || isSuperAdmin) {
-                const targetRef = isSuperAdmin ? 'admin' : currentUser; 
+                const targetRef = currentUser === '1311397689' ? 'admin' : currentUser; 
                 const searchTxt = document.getElementById('inf-search')?.value.toLowerCase() || '';
                 const infMF = document.getElementById('inf-month-filter')?.value;
-                const myReferrals = referrals.filter(r => r.referrer === targetRef && isSameMonth(r.date, infMF));
-                const myRendimientos = rendimientos.filter(r => r.referrer === targetRef && isSameMonth(r.date, infMF));
+                
+                const targetRefLower = String(targetRef).toLowerCase();
+                const myReferrals = referrals.filter(r => String(r.referrer).toLowerCase() === targetRefLower && isSameMonth(r.date, infMF));
+                const myRendimientos = rendimientos.filter(r => String(r.referrer).toLowerCase() === targetRefLower && isSameMonth(r.date, infMF));
 
                 const elInfQty = document.getElementById('inf-dash-qty'); if(elInfQty) elInfQty.innerText = myReferrals.length;
                 const elInfDep = document.getElementById('inf-dash-dep'); if(elInfDep) elInfDep.innerText = fmt(myRendimientos.reduce((s, r) => s + r.depositos, 0));
