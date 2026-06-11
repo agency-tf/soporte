@@ -835,11 +835,11 @@
             
             const allTabs = ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-auditoria', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash', 'divider-1', 'divider-2'];
             allTabs.forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
-            ['panel-admin', 'panel-personal', 'panel-gussepy-bonos', 'panel-add-gussepy', 'panel-dash-movimientos', 'filter-user-container'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
+            ['panel-admin', 'panel-personal', 'panel-gussepy-bonos', 'panel-add-gussepy', 'panel-dash-movimientos', 'filter-user-container', 'admin-select-user'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
 
             if (user.type === 'admin' || user.type === 'superadmin') {
                 ['btn-tab-dashboard','btn-tab-register','btn-tab-gussepy', 'btn-tab-auditoria', 'divider-1'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
-                ['panel-admin','panel-dash-movimientos','panel-add-gussepy', 'filter-user-container'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
+                ['panel-admin','panel-dash-movimientos','panel-add-gussepy', 'filter-user-container', 'admin-select-user'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 if(user.type === 'superadmin') { 
                     ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'divider-2', 'btn-tab-maria-ref-add','btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); }); 
                 }
