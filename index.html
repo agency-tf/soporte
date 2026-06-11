@@ -137,6 +137,7 @@
                 <button onclick="switchTab('tab-melanie-add')" id="btn-tab-melanie-add" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-calculator w-5 text-center text-pink-400"></i> Gestión Afiliados</button>
                 <button onclick="switchTab('tab-melanie-list')" id="btn-tab-melanie-list" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-list w-5 text-center text-pink-400"></i> Historial Rendimientos</button>
                 <button onclick="switchTab('tab-influencer-dash')" id="btn-tab-influencer-dash" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-chart-bar w-5 text-center text-purple-400"></i> Mi Panel VIP</button>
+                <button onclick="switchTab('tab-influencer-details')" id="btn-tab-influencer-details" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-list-ul w-5 text-center text-purple-400"></i> Historial por Jugador</button>
             </div>
             <!-- Botón Logout y Cambiar Clave Lateral -->
             <div class="p-4 border-t border-slate-800 space-y-2">
@@ -581,13 +582,45 @@
                     <div class="bg-white border border-slate-200 p-3 rounded-2xl shadow-sm mb-4"><div class="flex items-center w-full"><input type="text" id="inf-search" onkeyup="updateAllViews()" placeholder="Buscar jugador referido..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-purple-500"></div></div>
 
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-                        <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50"><h3 class="text-lg font-black text-slate-800">Desglose de Ganancias por Jugador</h3></div>
+                        <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50"><h3 class="text-lg font-black text-slate-800">Desglose de Ganancias por Jugador</h3><p class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">Haz clic en un jugador para ver el historial diario</p></div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse resp-table">
                                 <thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group">
-                                    <tr><th class="p-4 pl-6">Jugador (ID)</th><th class="p-4">Depósitos</th><th class="p-4">Retiros</th><th class="p-4">Neto Generado</th><th class="p-4 pr-6 text-right">Mi Comisión (20%)</th></tr>
+                                    <tr><th class="p-4 pl-6">Jugador (ID)</th><th class="p-4">Depósitos</th><th class="p-4">Retiros</th><th class="p-4">Neto Generado</th><th class="p-4 pr-6 text-right">Mi Comisión (20%)</th><th class="p-4 text-center hidden md:table-cell">Detalle</th></tr>
                                 </thead>
                                 <tbody id="inf-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HISTORIAL DETALLADO VIP -->
+            <div id="tab-influencer-details" class="hidden fade-in tab-content">
+                <div class="max-w-5xl mx-auto space-y-6">
+                    <div class="bg-gradient-to-r from-purple-800 to-indigo-900 rounded-3xl p-6 shadow-xl text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h2 class="text-xl font-black mb-1"><i class="fas fa-address-book mr-2"></i>Historial Detallado por Jugador</h2>
+                            <p class="text-xs text-purple-200">Revisa los movimientos diarios de tus afiliados.</p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                            <select id="inf-detail-player" onchange="updateAllViews()" class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-bold text-white outline-none w-full sm:w-48">
+                                <option value="" class="text-slate-800">Seleccionar Jugador...</option>
+                            </select>
+                            <input type="month" id="inf-detail-month" onchange="updateAllViews()" class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-bold text-white outline-none w-full sm:w-auto">
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                        <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                            <h3 class="text-lg font-black text-slate-800" id="inf-detail-title">Movimientos Diarios</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse resp-table">
+                                <thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group">
+                                    <tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Depósitos</th><th class="p-4">Retiros</th><th class="p-4">Neto Generado</th><th class="p-4 pr-6 text-right">Mi Comisión (20%)</th></tr>
+                                </thead>
+                                <tbody id="inf-detail-table-body"></tbody>
                             </table>
                         </div>
                     </div>
@@ -706,12 +739,26 @@
             if (savedData) { const ud = JSON.parse(savedData); if (ud.baseType === 'superadmin') { isSuperAdmin = true; currentUser = ud.id; loginUI(USERS[ud.id] || ud); } else { currentUser = ud.id; loginUI(ud); } } else { showScreen('login'); }
             
             const now = new Date(); const currentMonthStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-            ['dash-month-filter', 'bonos-month-filter', 'mel-month-filter', 'inf-month-filter', 'giros-month-filter', 'gus-month-filter'].forEach(id => { const el = document.getElementById(id); if (el) el.value = currentMonthStr; });
+            ['dash-month-filter', 'bonos-month-filter', 'mel-month-filter', 'inf-month-filter', 'giros-month-filter', 'gus-month-filter', 'inf-detail-month'].forEach(id => { const el = document.getElementById(id); if (el) el.value = currentMonthStr; });
 
             const todayStr = now.toISOString().split('T')[0]; 
             ['reg-date', 'gus-date', 'bono-date', 'ref-date', 'rend-date', 'giro-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = todayStr; });
             
-            document.getElementById('login-form').addEventListener('submit', handleLogin); document.getElementById('register-form').addEventListener('submit', handleRegister); document.getElementById('form-gussepy').addEventListener('submit', handleGussepy); document.getElementById('form-bonos').addEventListener('submit', handleBono); if(document.getElementById('form-giros')) document.getElementById('form-giros').addEventListener('submit', handleGiro); document.getElementById('form-referrals').addEventListener('submit', handleReferral); document.getElementById('form-rendimiento').addEventListener('submit', handleRendimiento);
+            const forms = [
+                { id: 'login-form', handler: handleLogin },
+                { id: 'register-form', handler: handleRegister },
+                { id: 'form-gussepy', handler: handleGussepy },
+                { id: 'form-bonos', handler: handleBono },
+                { id: 'form-giros', handler: handleGiro },
+                { id: 'form-referrals', handler: handleReferral },
+                { id: 'form-rendimiento', handler: handleRendimiento }
+            ];
+
+            forms.forEach(form => {
+                const el = document.getElementById(form.id);
+                if (el) el.addEventListener('submit', form.handler);
+            });
+
             ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(evt => document.addEventListener(evt, resetInactivityTimer));
         };
 
@@ -833,7 +880,7 @@
             
             resetInactivityTimer();
             
-            const allTabs = ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-auditoria', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash', 'divider-1', 'divider-2'];
+            const allTabs = ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-auditoria', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash', 'btn-tab-influencer-details', 'divider-1', 'divider-2'];
             allTabs.forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
             ['panel-admin', 'panel-personal', 'panel-gussepy-bonos', 'panel-add-gussepy', 'panel-dash-movimientos', 'filter-user-container', 'admin-select-user'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
 
@@ -841,7 +888,7 @@
                 ['btn-tab-dashboard','btn-tab-register','btn-tab-gussepy', 'btn-tab-auditoria', 'divider-1'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 ['panel-admin','panel-dash-movimientos','panel-add-gussepy', 'filter-user-container', 'admin-select-user'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 if(user.type === 'superadmin') { 
-                    ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'divider-2', 'btn-tab-maria-ref-add','btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); }); 
+                    ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'divider-2', 'btn-tab-maria-ref-add','btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash', 'btn-tab-influencer-details'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); }); 
                 }
                 switchTab('tab-dashboard');
             } else if (user.type === 'master') {
@@ -856,7 +903,7 @@
                 ['btn-tab-melanie-add', 'btn-tab-melanie-list'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-melanie-add');
             } else if (user.type === 'influencer') {
-                ['btn-tab-influencer-dash'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
+                ['btn-tab-influencer-dash', 'btn-tab-influencer-details'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-influencer-dash');
             } else {
                 // Operador (Tito / Jesús): Sí ven su historial en Auditoría, pero no en Dashboard
@@ -870,7 +917,7 @@
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-auditoria', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash'].forEach(id => {
+            ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-auditoria', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash', 'btn-tab-influencer-details'].forEach(id => {
                 const btn = document.getElementById(id); if(btn) { btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm', 'bg-rose-600', 'bg-slate-800', 'bg-pink-600', 'bg-purple-600'); btn.classList.add('text-slate-400', 'hover:bg-slate-800'); }
             });
             const content = document.getElementById(tabId); if(content) content.classList.remove('hidden');
@@ -1081,44 +1128,23 @@
         function actionGiroWin(id) { pendingGiroWinId = String(id); pendingBonoWinId = null; document.getElementById('input-bono-win-amount').value = ''; document.getElementById('title-bono-win').innerText='Ganancia Real de Giros'; document.getElementById('modal-bono-ganado').classList.replace('hidden', 'flex'); }
         function closeBonoWinModal() { document.getElementById('modal-bono-ganado').classList.replace('flex', 'hidden'); pendingBonoWinId = null; pendingGiroWinId = null; }
         
-        // --- FUNCIÓN CLAVE PARA GUARDAR LA GANANCIA DE BONOS Y GIROS ---
         async function confirmBonoWin() {
             const wonAmtStr = document.getElementById('input-bono-win-amount').value.replace(',', '.');
-            const wonAmt = wonAmtStr === '' ? 0 : parseFloat(wonAmtStr);
-            if (isNaN(wonAmt) || wonAmt < 0) { showToast("Ingrese un valor numérico válido", "error"); return; }
-            
-            const btn = document.getElementById('btn-bono-win-confirm'); const orig = btn.innerHTML; btn.innerHTML = 'Guardando...'; btn.disabled = true;
+            const wonAmt = parseFloat(wonAmtStr);
+            if (isNaN(wonAmt) || wonAmt < 0) return;
+            const btn = document.getElementById('btn-bono-win-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
             
             if (pendingBonoWinId) {
-                const bId = String(pendingBonoWinId);
-                const b = bonos.find(r => String(r.id) === bId); 
-                if (b) { 
-                    b.status = 'Ganado'; 
-                    b.amountWon = wonAmt; 
-                    updateAllViews(); 
-                    closeBonoWinModal(); 
-                    pushData('win_bono', { id: bId, amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); else showToast("Error en base de datos", "error"); }); 
-                }
+                const b = bonos.find(r => String(r.id) === String(pendingBonoWinId)); 
+                if (b) { b.status = 'Ganado'; b.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_bono', { id: String(pendingBonoWinId), amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); }); }
             } else if (pendingGiroWinId) {
-                const gId = String(pendingGiroWinId);
-                const g = giros.find(r => String(r.id) === gId); 
-                if (g) { 
-                    g.status = 'Ganado'; 
-                    g.amountWon = wonAmt; 
-                    updateAllViews(); 
-                    closeBonoWinModal(); 
-                    pushData('win_giro', { id: gId, amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); else showToast("Error en base de datos", "error"); }); 
-                }
+                const g = giros.find(r => String(r.id) === String(pendingGiroWinId)); 
+                if (g) { g.status = 'Ganado'; g.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_giro', { id: String(pendingGiroWinId), amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); }); }
             }
             btn.innerHTML = orig; btn.disabled = false;
         }
 
         async function actionDelete(id, type = 'record') {
-            const ud = JSON.parse(localStorage.getItem('sb_user_data'));
-            if (type === 'record' && ud && ud.type === 'user') {
-                const tx = records.find(r => String(r.id) === String(id));
-                if (tx && tx.status !== 'Pendiente') { showToast("Bloqueado: No puedes eliminar registros ya procesados por el Admin.", "error"); return; }
-            }
             if(confirm("🚨 ¿Seguro que desea eliminar permanentemente?")) {
                 const tId = String(id); let act = 'delete';
                 if(type === 'advance'){ act = 'delete_advance'; advances = advances.filter(r => String(r.id) !== tId); } 
@@ -1191,6 +1217,28 @@
             if(document.getElementById('filter-rend-date')) document.getElementById('filter-rend-date').value = ''; 
             if(document.getElementById('filter-rend-inf')) document.getElementById('filter-rend-inf').value = ''; 
             if(document.getElementById('filter-rend-jug')) document.getElementById('filter-rend-jug').value = '';
+            updateAllViews();
+        }
+
+        // --- FUNCIÓN PARA VER DETALLE DEL JUGADOR DESDE VIP ---
+        function viewPlayerDetails(playerName) {
+            const select = document.getElementById('inf-detail-player');
+            if (select) {
+                let exists = false;
+                for (let i = 0; i < select.options.length; i++) { if (select.options[i].value === playerName) exists = true; }
+                if (!exists) {
+                    const opt = document.createElement('option');
+                    opt.value = playerName; opt.text = playerName; opt.className = "text-slate-800";
+                    select.appendChild(opt);
+                }
+                select.value = playerName;
+            }
+            
+            // Sincronizar el mes con el que estaba mirando en el dashboard principal
+            const mainMonth = document.getElementById('inf-month-filter').value;
+            if (document.getElementById('inf-detail-month')) document.getElementById('inf-detail-month').value = mainMonth;
+            
+            switchTab('tab-influencer-details');
             updateAllViews();
         }
 
@@ -1514,8 +1562,38 @@
                 if (tbodyInf) {
                     const htmlRend = Object.entries(playersRend)
                         .filter(([name, d]) => name.toLowerCase().includes(searchTxt))
-                        .map(([name, d]) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-800 uppercase" data-label="Jugador"><i class="fas fa-user mr-1 text-slate-400"></i> ${name}</td><td class="p-4 text-sm font-black text-emerald-500" data-label="Depósitos">${fmt(d.dep)}</td><td class="p-4 text-sm font-black text-rose-500" data-label="Retiros">${fmt(d.ret)}</td><td class="p-4 text-sm font-black text-slate-700" data-label="Neto">${fmt(d.net)}</td><td class="p-4 pr-6 text-right text-sm font-black text-indigo-600" data-label="Comisión">${fmt(d.com)}</td></tr>`).join('');
-                    tbodyInf.innerHTML = htmlRend || `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">Aún no hay datos de rendimiento para este mes.</td></tr>`;
+                        .map(([name, d]) => `<tr class="border-b border-slate-50 hover:bg-slate-100 cursor-pointer transition-colors group" onclick="viewPlayerDetails('${name}')"><td class="p-4 pl-6 text-xs font-bold text-slate-800 uppercase" data-label="Jugador"><i class="fas fa-user mr-1 text-slate-400"></i> ${name}</td><td class="p-4 text-sm font-black text-emerald-500" data-label="Depósitos">${fmt(d.dep)}</td><td class="p-4 text-sm font-black text-rose-500" data-label="Retiros">${fmt(d.ret)}</td><td class="p-4 text-sm font-black text-slate-700" data-label="Neto">${fmt(d.net)}</td><td class="p-4 pr-6 text-right text-sm font-black text-indigo-600" data-label="Comisión">${fmt(d.com)}</td><td class="p-4 text-center hidden md:table-cell text-slate-300 group-hover:text-purple-600 transition-colors"><i class="fas fa-chevron-circle-right"></i></td></tr>`).join('');
+                    tbodyInf.innerHTML = htmlRend || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">Aún no hay datos de rendimiento para este mes.</td></tr>`;
+                }
+
+                // Lógica de la Pestaña de Detalles Individuales
+                const detailSelect = document.getElementById('inf-detail-player');
+                if (detailSelect) {
+                    const currentSelected = detailSelect.value;
+                    const allMyPlayers = [...new Set(referrals.filter(r => String(r.referrer).toLowerCase() === targetRefLower).map(r => r.referred))];
+                    detailSelect.innerHTML = '<option value="" class="text-slate-800">Todos mis jugadores...</option>' + allMyPlayers.map(p => `<option value="${p}" class="text-slate-800">${p}</option>`).join('');
+                    if (allMyPlayers.includes(currentSelected)) detailSelect.value = currentSelected;
+                }
+
+                const detailPlayer = document.getElementById('inf-detail-player')?.value;
+                const detailMonth = document.getElementById('inf-detail-month')?.value;
+                
+                let detailRend = rendimientos.filter(r => String(r.referrer).toLowerCase() === targetRefLower && isSameMonth(r.date, detailMonth));
+                if (detailPlayer) { detailRend = detailRend.filter(r => r.referred === detailPlayer); }
+                detailRend.sort((a,b) => new Date(b.date) - new Date(a.date));
+                
+                const tbodyDetail = document.getElementById('inf-detail-table-body');
+                if (tbodyDetail) {
+                    if (!detailPlayer && detailRend.length === 0) {
+                        tbodyDetail.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">Selecciona un jugador o mes para ver sus movimientos.</td></tr>`;
+                    } else {
+                        tbodyDetail.innerHTML = detailRend.map(r => `<tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors"><td class="p-4 pl-6 text-xs font-bold text-slate-600 whitespace-nowrap" data-label="Fecha">${fmtDate(r.date)} <span class="block md:hidden text-[9px] text-purple-500 uppercase mt-0.5">${r.referred}</span></td><td class="p-4 text-sm font-black text-emerald-500" data-label="Depósitos">${fmt(r.depositos)}</td><td class="p-4 text-sm font-black text-rose-500" data-label="Retiros">${fmt(r.retiros)}</td><td class="p-4 text-sm font-black text-slate-700" data-label="Neto">${fmt(r.neto)}</td><td class="p-4 pr-6 text-right text-sm font-black text-purple-600" data-label="Comisión">${fmt(r.comision)}</td></tr>`).join('') || `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">No hay movimientos registrados en esta fecha.</td></tr>`;
+                    }
+                    
+                    const elTitle = document.getElementById('inf-detail-title');
+                    if (elTitle) {
+                        elTitle.innerText = detailPlayer ? `Movimientos de: ${detailPlayer}` : 'Movimientos Diarios (Todos)';
+                    }
                 }
             }
         }
