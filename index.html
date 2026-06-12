@@ -157,7 +157,7 @@
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-sm font-black text-slate-800"><i class="fas fa-chart-line text-indigo-500 mr-2"></i> Rendimiento Mensual</h2>
-                        <p class="text-[10px] text-slate-400 mt-1">Mostrando datos del mes seleccionado. Cambie para ver históricos.</p>
+                        <p class="text-[10px] text-slate-400 mt-1">Mostrando datos del mes seleccionado.</p>
                     </div>
                     <input type="month" id="dash-month-filter" onchange="updateAllViews()" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 w-full sm:w-auto">
                 </div>
@@ -221,7 +221,7 @@
                     <div class="overflow-x-auto mt-4">
                         <table class="w-full text-left border-collapse resp-table">
                             <thead class="bg-indigo-50 border-b border-indigo-100 text-[10px] font-black text-indigo-800 uppercase hidden md:table-header-group">
-                                <tr><th class="p-3 pl-4">Influyente</th><th class="p-3">Total Referidos</th><th class="p-3">Depósitos</th><th class="p-3">Retiros</th><th class="p-3">Neto</th><th class="p-3 pr-4 text-right">Comisión Pagar (20%)</th></tr>
+                                <tr><th class="p-3 pl-4">Influyente</th><th class="p-3">Total Referidos</th><th class="p-3">Depósitos</th><th class="p-3">Retiros</th><th class="p-3">Neto</th><th class="p-3 pr-4 text-right">Comisión Pagar</th></tr>
                             </thead>
                             <tbody id="gus-table-influencers" class="divide-y divide-slate-100 text-sm"></tbody>
                         </table>
@@ -575,7 +575,7 @@
                             <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-sm border border-white/20"><p class="text-[10px] font-black text-purple-200 uppercase tracking-widest mb-1">Total Referidos</p><h3 class="text-3xl font-black text-white" id="inf-dash-qty">0</h3></div>
                             <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-sm border border-white/20"><p class="text-[10px] font-black text-purple-200 uppercase tracking-widest mb-1">Depósitos Red</p><h3 class="text-3xl font-black text-emerald-400" id="inf-dash-dep">$0.00</h3></div>
                             <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-sm border border-white/20"><p class="text-[10px] font-black text-purple-200 uppercase tracking-widest mb-1">Retiros Red</p><h3 class="text-3xl font-black text-rose-400" id="inf-dash-ret">$0.00</h3></div>
-                            <div class="bg-gradient-to-br from-amber-400 to-orange-500 p-5 rounded-2xl shadow-inner border border-amber-300 relative overflow-hidden"><i class="fas fa-coins absolute -right-2 -bottom-2 text-6xl text-white/20"></i><p class="text-[10px] font-black text-amber-900 uppercase tracking-widest mb-1 relative z-10">Mi Ganancia (20%)</p><h3 class="text-3xl font-black text-white relative z-10" id="inf-dash-com">$0.00</h3></div>
+                            <div class="bg-gradient-to-br from-amber-400 to-orange-500 p-5 rounded-2xl shadow-inner border border-amber-300 relative overflow-hidden"><i class="fas fa-coins absolute -right-2 -bottom-2 text-6xl text-white/20"></i><p class="text-[10px] font-black text-amber-900 uppercase tracking-widest mb-1 relative z-10" id="inf-dash-com-label">Mi Ganancia</p><h3 class="text-3xl font-black text-white relative z-10" id="inf-dash-com">$0.00</h3></div>
                         </div>
                     </div>
 
@@ -586,7 +586,7 @@
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse resp-table">
                                 <thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group">
-                                    <tr><th class="p-4 pl-6">Jugador (ID)</th><th class="p-4">Depósitos</th><th class="p-4">Retiros</th><th class="p-4">Neto Generado</th><th class="p-4 pr-6 text-right">Mi Comisión (20%)</th><th class="p-4 text-center hidden md:table-cell">Detalle</th></tr>
+                                    <tr><th class="p-4 pl-6">Jugador (ID)</th><th class="p-4">Depósitos</th><th class="p-4">Retiros</th><th class="p-4">Neto Generado</th><th class="p-4 pr-6 text-right">Mi Comisión</th><th class="p-4 text-center hidden md:table-cell">Detalle</th></tr>
                                 </thead>
                                 <tbody id="inf-table-body"></tbody>
                             </table>
@@ -618,7 +618,7 @@
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse resp-table">
                                 <thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group">
-                                    <tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Depósitos</th><th class="p-4">Retiros</th><th class="p-4">Neto Generado</th><th class="p-4 pr-6 text-right">Mi Comisión (20%)</th></tr>
+                                    <tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Depósitos</th><th class="p-4">Retiros</th><th class="p-4">Neto Generado</th><th class="p-4 pr-6 text-right">Mi Comisión</th></tr>
                                 </thead>
                                 <tbody id="inf-detail-table-body"></tbody>
                             </table>
@@ -711,7 +711,6 @@
             <div class="p-6 space-y-4">
                 <select id="superadmin-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-slate-800">
                     <option value="1311397689">Vista Global (Supervisor)</option>
-                    <!-- Las opciones se generan de forma dinámica desde JS -->
                 </select>
                 <div class="flex gap-3 pt-2"><button onclick="closeSuperAdminSwitcher()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-bold rounded-xl">Cerrar</button><button onclick="confirmSwitchUser()" class="flex-1 py-3 bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold rounded-xl shadow-md">Ingresar</button></div>
             </div>
@@ -719,18 +718,14 @@
     </div>
 
     <script>
-        // --- RECUERDA PONER TU URL DEL DEPLOY DE GOOGLE APPS SCRIPT AQUÍ ---
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzywdeIpGewXoOjM1ZyIugncUWJl96YTYgMSf55GwImMgF_XYCynM1LHftr4X2IcJmbEQ/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_BI7oDNe2gpnBWf3bQK-4AaQE-ps6iyxl_JvG4H35NpmY6cm301tWGLZX22pQRfsaRg/exec';
+
+        let USERS = { 'michelle': { name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600', comision: 20 }, 'jesus': { name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]', comision: 20 }, 'tito': { name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]', comision: 20 }, 'gussepy': { name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600', comision: 20 }, 'emilia': { name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600', comision: 20 }, 'melanie': { name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500', comision: 20 }, 'admin': { name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600', comision: 20 }, '1311397689': { name: 'Supervisor', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800', comision: 20 } };
         
-        // Base de datos de reserva para interfaz (No incluye claves, la autenticación ahora es 100% en backend)
-        let USERS = { 'michelle': { name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600' }, 'jesus': { name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]' }, 'tito': { name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]' }, 'gussepy': { name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600' }, 'emilia': { name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600' }, 'melanie': { name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500' }, 'admin': { name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600' }, '1311397689': { name: 'Supervisor', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800' } };
-        
-        // --- VARIABLES GLOBALES ---
         let currentUser = null, isSuperAdmin = false, records = [], advances = [], bonos = [], giros = [], referrals = [], rendimientos = [];
         let filters = { date: '', user: 'all', status: 'all', amount: '' }, bonoFilters = { date: '', dest: '', amount: '', agency: 'all' }, refFilters = { date: '', name: '', cedula: '', agency: 'all' }, giroFilters = { date: '', dest: '', agency: 'all' }, melFilters = { date: '', inf: '', jug: '' };
         let pendingVerifyId = null, pendingAuthId = null, pendingBonoWinId = null, pendingGiroWinId = null, referidosChart = null, inactivityTimer, chartWeekInstance = null, chartMonthsInstance = null;
 
-        // --- FUNCIONES DE FORMATO ---
         const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
         const fmtDate = dStr => { if(!dStr) return ''; const d = new Date(dStr); d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }); };
 
@@ -762,7 +757,6 @@
             ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(evt => document.addEventListener(evt, resetInactivityTimer));
         };
 
-        // --- CIERRE DE SESIÓN E INACTIVIDAD ---
         function logout() { 
             localStorage.removeItem('sb_user_data'); 
             currentUser = null; 
@@ -783,7 +777,6 @@
             }
         }
 
-        // --- MENÚ HAMBURGUESA Y MODAL DE CONTRASEÑA ---
         function toggleMenu(forceOpen) {
             const sidebar = document.getElementById('sidebar-menu');
             const overlay = document.getElementById('sidebar-overlay');
@@ -810,49 +803,35 @@
         function openPasswordModal() { document.getElementById('modal-password').classList.replace('hidden', 'flex'); document.getElementById('new-password').value = ''; toggleMenu(false); }
         function closePasswordModal() { document.getElementById('modal-password').classList.replace('flex', 'hidden'); }
         
-        document.getElementById('form-password').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const newPass = document.getElementById('new-password').value.trim();
-            if(newPass.length < 4) { showToast("Mínimo 4 caracteres", "error"); return; }
-            const btn = e.target.querySelector('button[type="submit"]'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
-            
-            const targetUser = isSuperAdmin ? document.getElementById('superadmin-select').value : currentUser;
-            const res = await pushData('change_password', { user: targetUser, newPass: newPass });
-            
-            if (res.success) { showToast("Clave actualizada", "success"); closePasswordModal(); }
-            else { showToast("Error al cambiar clave", "error"); }
-            btn.innerHTML = orig; btn.disabled = false;
-        });
+        const formPw = document.getElementById('form-password');
+        if(formPw) {
+            formPw.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const newPass = document.getElementById('new-password').value.trim();
+                if(newPass.length < 4) { showToast("Mínimo 4 caracteres", "error"); return; }
+                const btn = e.target.querySelector('button[type="submit"]'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
+                
+                const targetUser = isSuperAdmin ? document.getElementById('superadmin-select').value : currentUser;
+                const res = await pushData('change_password', { user: targetUser, newPass: newPass });
+                
+                if (res.success) { showToast("Clave actualizada", "success"); closePasswordModal(); }
+                else { showToast("Error al cambiar clave", "error"); }
+                btn.innerHTML = orig; btn.disabled = false;
+            });
+        }
 
         async function pushData(action, data) {
             try {
-                const response = await fetch(SCRIPT_URL, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: action, data: data }) 
-                });
+                const response = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, data: data }) });
                 const text = await response.text(); 
-                if (text.includes("<html") || text.includes("<body")) {
-                    showToast("ERROR: Google Sheets bloqueó la conexión. Revisa permisos.", "error");
-                    return { success: false, msg: "Permisos denegados." };
-                }
-                try {
-                    const result = JSON.parse(text); 
-                    return { success: result.status === 'success', msg: result.msg, user: result.user };
-                } catch(e) {
-                    return { success: true, msg: 'Procesado.' };
-                }
-            } catch (err) { 
-                return { success: true, msg: 'Guardado localmente.' }; 
-            }
+                if (text.includes("<html") || text.includes("<body")) { showToast("ERROR: Google Sheets bloqueó la conexión. Revisa permisos.", "error"); return { success: false, msg: "Permisos denegados." }; }
+                try { const result = JSON.parse(text); return { success: result.status === 'success', msg: result.msg, user: result.user }; } catch(e) { return { success: true, msg: 'Procesado.' }; }
+            } catch (err) { return { success: true, msg: 'Guardado localmente.' }; }
         }
 
         async function handleLogin(e) {
             e.preventDefault(); const u = document.getElementById('login-user').value.toLowerCase().trim(); const p = document.getElementById('login-pass').value.trim(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Autenticando...'; btn.disabled = true;
-            
-            // Llama directo al Backend para verificar en tiempo real si el usuario existe
             const res = await pushData('login', { user: u, pass: p });
-            
             if (res.success && res.user) {
                 const userObj = res.user;
                 if (userObj.type === 'superadmin') { isSuperAdmin = true; userObj.baseType = 'superadmin'; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = u; openSuperAdminSwitcher(); showToast('Supervisor: Seleccione vista', 'success');} 
@@ -892,7 +871,6 @@
                 }
                 switchTab('tab-dashboard');
             } else if (user.type === 'master') {
-                // Gussepy (Master): No ve ni aprueba movimientos de Tito y Jesús (panel-dash-movimientos oculto)
                 ['btn-tab-dashboard','btn-tab-gussepy','btn-tab-maria-list', 'btn-tab-giros-list', 'btn-tab-maria-ref-list', 'divider-1', 'divider-2'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 ['panel-admin','panel-gussepy-bonos'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-dashboard');
@@ -906,7 +884,6 @@
                 ['btn-tab-influencer-dash', 'btn-tab-influencer-details'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-influencer-dash');
             } else {
-                // Operador (Tito / Jesús): Sí ven su historial en Auditoría, pero no en Dashboard
                 ['btn-tab-dashboard','btn-tab-register', 'btn-tab-auditoria'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 ['panel-personal'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-dashboard');
@@ -937,10 +914,20 @@
             if (!isBackground) document.getElementById('global-loader').classList.remove('hidden');
             else document.querySelectorAll('button[title="Recargar"] i, button[title="Recargar datos"] i').forEach(i => i.classList.add('fa-spin'));
             try {
-                const res = await fetch(SCRIPT_URL); 
+                const cacheBuster = new Date().getTime();
+                const urlWithCacheBuster = SCRIPT_URL + (SCRIPT_URL.includes('?') ? '&' : '?') + 't=' + cacheBuster;
+                
+                const res = await fetch(urlWithCacheBuster); 
                 const data = await res.json();
                 if (data.status === 'success') { 
-                    if (data.users) USERS = { ...USERS, ...data.users }; // Cargar usuarios de backend para nombres dinámicos en UI
+                    if (data.users) {
+                        Object.keys(data.users).forEach(k => {
+                            let com = parseFloat(data.users[k].comision);
+                            if (com > 0 && com <= 1) com = com * 100; 
+                            if(USERS[k]) USERS[k] = { ...USERS[k], ...data.users[k], comision: com || 20 };
+                            else USERS[k] = { ...data.users[k], comision: com || 20 };
+                        });
+                    }
                     records = data.data || []; advances = data.advances || []; bonos = data.bonos || []; giros = data.giros || []; referrals = data.referrals || []; rendimientos = data.rendimientos || []; 
                     updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns(); 
                 }
@@ -963,7 +950,13 @@
             const refList = [...new Set(referrals.filter(r => r.isInfluencer).map(r => r.referrer))].filter(Boolean);
             const allInf = [...new Set([...refList, 'admin'])]; 
             const selRef = document.getElementById('rend-referrer');
-            if (selRef) selRef.innerHTML = '<option value="">Seleccione Influyente...</option>' + allInf.map(r => `<option value="${r}">${r}</option>`).join('');
+            if (selRef) {
+                selRef.innerHTML = '<option value="">Seleccione Influyente...</option>' + allInf.map(r => {
+                    const rKey = String(r).trim().toLowerCase();
+                    const rate = (USERS[rKey] && USERS[rKey].comision ? USERS[rKey].comision : 20);
+                    return `<option value="${r}">${r} (${rate}%)</option>`;
+                }).join('');
+            }
         }
 
         function updateReferredDropdown() {
@@ -995,7 +988,6 @@
             } catch(e) { return true; }
         }
 
-        // Corrección de comparación de fecha exacta para evitar desfasajes horarios de zona local
         function isExactDate(dateStr, exactDate) {
             if (!exactDate) return true;
             if (!dateStr) return false;
@@ -1072,14 +1064,18 @@
             const referrer = document.getElementById('rend-referrer').value; const referred = document.getElementById('rend-referred').value;
             if(!referrer || !referred) { showToast("Seleccione usuarios.", "error"); btn.innerHTML=orig; btn.disabled=false; return; }
             const depositos = parseFloat(document.getElementById('rend-dep').value.replace(',', '.')) || 0; const retiros = parseFloat(document.getElementById('rend-ret').value.replace(',', '.')) || 0;
-            const neto = depositos - retiros; const comision = neto * 0.20;
+            const neto = depositos - retiros; 
+            
+            const rateKey = String(referrer).trim().toLowerCase();
+            const rate = (USERS[rateKey] && USERS[rateKey].comision ? USERS[rateKey].comision : 20) / 100;
+            const comision = neto * rate;
+            
             const newRend = { id: 'RND' + Date.now(), date: document.getElementById('rend-date').value, referrer, referred, depositos, retiros, neto, comision, createdBy: currentUser };
             rendimientos.unshift(newRend); updateAllViews(); document.getElementById('form-rendimiento').reset(); document.getElementById('rend-date').value = new Date().toISOString().split('T')[0];
             btn.innerHTML = orig; btn.disabled = false; 
             pushData('add_rendimiento', newRend).then(res => { if(res.success) showToast('Rendimiento guardado.', 'success'); });
         }
 
-        // ACCIONES MODALES
         function actionVerify(id) { pendingVerifyId = String(id); document.getElementById('input-receipt').value = ''; document.getElementById('modal-comprobante').classList.replace('hidden', 'flex'); }
         function closeModal() { document.getElementById('modal-comprobante').classList.replace('flex', 'hidden'); pendingVerifyId = null; }
         function confirmVerify() {
@@ -1111,7 +1107,12 @@
         async function confirmEditRend() {
             const id = document.getElementById('edit-rend-id').value; const rend = rendimientos.find(r => String(r.id) === id); if(!rend) return;
             const btn = document.getElementById('btn-edit-rend-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
-            rend.date = document.getElementById('edit-rend-date').value; rend.depositos = parseFloat(document.getElementById('edit-rend-dep').value.replace(',', '.')) || 0; rend.retiros = parseFloat(document.getElementById('edit-rend-ret').value.replace(',', '.')) || 0; rend.neto = rend.depositos - rend.retiros; rend.comision = rend.neto * 0.20;
+            rend.date = document.getElementById('edit-rend-date').value; rend.depositos = parseFloat(document.getElementById('edit-rend-dep').value.replace(',', '.')) || 0; rend.retiros = parseFloat(document.getElementById('edit-rend-ret').value.replace(',', '.')) || 0; rend.neto = rend.depositos - rend.retiros; 
+            
+            const rateKey = String(rend.referrer).trim().toLowerCase();
+            const rate = (USERS[rateKey] && USERS[rateKey].comision ? USERS[rateKey].comision : 20) / 100;
+            rend.comision = rend.neto * rate;
+            
             updateAllViews(); closeEditRendModal(); pushData('edit_rendimiento', rend).then(res => { if(res.success) showToast("Editado con éxito", "success")}); btn.innerHTML = orig; btn.disabled = false;
         }
 
@@ -1135,16 +1136,23 @@
             const btn = document.getElementById('btn-bono-win-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
             
             if (pendingBonoWinId) {
-                const b = bonos.find(r => String(r.id) === String(pendingBonoWinId)); 
-                if (b) { b.status = 'Ganado'; b.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_bono', { id: String(pendingBonoWinId), amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); }); }
+                const bId = String(pendingBonoWinId);
+                const b = bonos.find(r => String(r.id) === bId); 
+                if (b) { b.status = 'Ganado'; b.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_bono', { id: bId, amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); }); }
             } else if (pendingGiroWinId) {
-                const g = giros.find(r => String(r.id) === String(pendingGiroWinId)); 
-                if (g) { g.status = 'Ganado'; g.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_giro', { id: String(pendingGiroWinId), amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); }); }
+                const gId = String(pendingGiroWinId);
+                const g = giros.find(r => String(r.id) === gId); 
+                if (g) { g.status = 'Ganado'; g.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_giro', { id: gId, amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); }); }
             }
             btn.innerHTML = orig; btn.disabled = false;
         }
 
         async function actionDelete(id, type = 'record') {
+            const ud = JSON.parse(localStorage.getItem('sb_user_data'));
+            if (type === 'record' && ud && ud.type === 'user') {
+                const tx = records.find(r => String(r.id) === String(id));
+                if (tx && tx.status !== 'Pendiente') { showToast("Bloqueado: No puedes eliminar registros ya procesados por el Admin.", "error"); return; }
+            }
             if(confirm("🚨 ¿Seguro que desea eliminar permanentemente?")) {
                 const tId = String(id); let act = 'delete';
                 if(type === 'advance'){ act = 'delete_advance'; advances = advances.filter(r => String(r.id) !== tId); } 
@@ -1220,7 +1228,6 @@
             updateAllViews();
         }
 
-        // --- FUNCIÓN PARA VER DETALLE DEL JUGADOR DESDE VIP ---
         function viewPlayerDetails(playerName) {
             const select = document.getElementById('inf-detail-player');
             if (select) {
@@ -1234,7 +1241,6 @@
                 select.value = playerName;
             }
             
-            // Sincronizar el mes con el que estaba mirando en el dashboard principal
             const mainMonth = document.getElementById('inf-month-filter').value;
             if (document.getElementById('inf-detail-month')) document.getElementById('inf-detail-month').value = mainMonth;
             
@@ -1242,7 +1248,6 @@
             updateAllViews();
         }
 
-        // --- SISTEMA DE CONTROL DE PERMISOS ESTRICTO PARA HISTORIAL ---
         function renderRecordsTable(tbodyId, emptyId, dataArray, userType) {
             const tbody = document.getElementById(tbodyId); const emptyState = document.getElementById(emptyId);
             if (!tbody) return;
@@ -1261,45 +1266,26 @@
                     
                     if (userType === 'admin' || isSuperAdmin) {
                         if (r.status === 'Pendiente') {
-                            // Michelle no se auto-aprueba ni se auto-deniega
                             if (creator !== currentUser && creator !== '1311397689') {
-                                actions = `<div class="flex justify-center gap-2">
-                                    <button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg" title="Aprobar"><i class="fas fa-check"></i></button>
-                                    <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg" title="Denegar"><i class="fas fa-times"></i></button>
-                                    <button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg" title="Editar"><i class="fas fa-pen"></i></button>
-                                    <button onclick="actionDelete('${r.id}', 'record')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg" title="Eliminar"><i class="fas fa-trash"></i></button>
-                                </div>`;
+                                actions = `<div class="flex justify-center gap-2"><button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg" title="Aprobar"><i class="fas fa-check"></i></button><button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg" title="Denegar"><i class="fas fa-times"></i></button><button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg" title="Editar"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'record')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg" title="Eliminar"><i class="fas fa-trash"></i></button></div>`;
                             } else {
-                                actions = `<div class="flex justify-center gap-2">
-                                    <button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg" title="Editar"><i class="fas fa-pen"></i></button>
-                                    <button onclick="actionDelete('${r.id}', 'record')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg" title="Eliminar"><i class="fas fa-trash"></i></button>
-                                </div>`;
+                                actions = `<div class="flex justify-center gap-2"><button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg" title="Editar"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'record')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg" title="Eliminar"><i class="fas fa-trash"></i></button></div>`;
                             }
                         } else {
-                            // Los administradores sí pueden editar o eliminar registros Verificados o Denegados
-                            actions = `<div class="flex justify-center gap-2">
-                                <button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg" title="Editar"><i class="fas fa-pen"></i></button>
-                                <button onclick="actionDelete('${r.id}', 'record')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg" title="Eliminar"><i class="fas fa-trash"></i></button>
-                            </div>`;
+                            actions = `<div class="flex justify-center gap-2"><button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg" title="Editar"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'record')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg" title="Eliminar"><i class="fas fa-trash"></i></button></div>`;
                         }
                     } else if (userType === 'user') {
-                        // Tito y Jesús: Pueden editar/eliminar todo lo que esté pendiente
                         if (r.status === 'Pendiente') {
                             let userBtns = '';
                             if (assigned === currentUser && (creator === 'michelle' || creator === '1311397689')) {
-                                userBtns += `<button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg" title="Aprobar"><i class="fas fa-check"></i></button>
-                                             <button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg" title="Denegar"><i class="fas fa-times"></i></button>`;
+                                userBtns += `<button onclick="actionVerify('${r.id}')" class="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg" title="Aprobar"><i class="fas fa-check"></i></button><button onclick="actionDeny('${r.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg" title="Denegar"><i class="fas fa-times"></i></button>`;
                             }
-                            userBtns += `<button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg" title="Editar"><i class="fas fa-pen"></i></button>
-                                         <button onclick="actionDelete('${r.id}', 'record')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg" title="Eliminar"><i class="fas fa-trash"></i></button>`;
-                            
+                            userBtns += `<button onclick="actionEdit('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg" title="Editar"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'record')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg" title="Eliminar"><i class="fas fa-trash"></i></button>`;
                             actions = `<div class="flex justify-center gap-2">${userBtns}</div>`;
                         } else {
-                            // Una vez VERIFICADO o DENEGADO por Michelle, aparece como Bloqueado
                             actions = `<span class="text-[10px] font-bold text-slate-400"><i class="fas fa-lock mr-1"></i> Bloqueado</span>`;
                         }
                     } else {
-                        // Gussepy (Master) u otros roles: Solo visualizan informe
                         actions = `<span class="text-[10px] font-bold text-slate-400">-</span>`;
                     }
 
@@ -1313,13 +1299,11 @@
         function updateAllViews() {
             const ud = JSON.parse(localStorage.getItem('sb_user_data')); if (!ud) return; const userType = ud.type;
             
-            // FILTROS PRINCIPALES DE MES
             const dashMF = document.getElementById('dash-month-filter')?.value;
             const globalMF = document.getElementById('global-month-filter')?.value || dashMF;
             const bonoMF = document.getElementById('bonos-month-filter')?.value || dashMF;
             const melMF = document.getElementById('mel-month-filter')?.value || dashMF;
 
-            // ----- DASHBOARD GLOBAL Y AUDITORÍA (Saldos) -----
             if (userType === 'admin' || userType === 'master' || isSuperAdmin || userType === 'user') {
                 const fRecords = records.filter(r => isSameMonth(r.date, globalMF));
                 const elJesus = document.getElementById('dash-jesus'); if(elJesus) elJesus.innerText = fmt(fRecords.reduce((s, r) => s + (r.assignedTo === 'jesus' && r.status === 'Verificado' ? r.amount : 0), 0));
@@ -1334,7 +1318,6 @@
                 
                 if (userType === 'user') {
                     const elDashPersonal = document.getElementById('dash-personal');
-                    // Panel se actualiza con el mes seleccionado en el filtro (dashMF/globalMF)
                     if(elDashPersonal) elDashPersonal.innerText = fmt(fRecords.reduce((sum, r) => (r.assignedTo === currentUser && r.status === 'Verificado') ? sum + r.amount : sum, 0));
                     
                     const ctxWeek = document.getElementById('chart-week');
@@ -1366,14 +1349,12 @@
                     }
                 }
 
-                // Tabla Dashboard (Mismo Mes)
                 let dashRecords = [...fRecords];
                 if (userType === 'user') dashRecords = dashRecords.filter(r => r.assignedTo === currentUser);
                 if (userType === 'master') dashRecords = dashRecords.filter(r => r.amount > 0);
                 dashRecords.sort((a,b) => String(b.id).localeCompare(String(a.id)));
                 renderRecordsTable('dash-table-body', 'dash-empty-state', dashRecords, userType);
 
-                // Tabla Auditoría (Filtros Específicos de Fecha/Mes exacto)
                 let auditRecords = [...records];
                 if (filters.date) {
                     auditRecords = auditRecords.filter(r => isExactDate(r.date, filters.date));
@@ -1381,7 +1362,6 @@
                     auditRecords = auditRecords.filter(r => isExactDate(r.date, document.getElementById('filter-date').value));
                 }
                 
-                // RESTRICCIÓN ESTRICTA DE VISIBILIDAD DE CUENTAS
                 if (userType === 'user') {
                     auditRecords = auditRecords.filter(r => r.assignedTo === currentUser);
                 } else {
@@ -1393,7 +1373,6 @@
                 auditRecords.sort((a,b) => String(b.id).localeCompare(String(a.id)));
                 renderRecordsTable('audit-table-body', 'audit-empty-state', auditRecords, userType);
 
-                // Tabla Gussepy Adelantos
                 const tbodyGus = document.getElementById('table-gussepy-advances'); 
                 const fAdv = advances.filter(a => isSameMonth(a.date, document.getElementById('gus-month-filter')?.value || globalMF)); fAdv.sort((a,b) => String(b.id).localeCompare(String(a.id)));
                 if (tbodyGus) {
@@ -1408,7 +1387,6 @@
                 }
             }
 
-            // ----- BONOS Y GIROS (Master / Emilia / SuperAdmin / Admin) -----
             if (userType === 'master' || userType === 'bonos' || isSuperAdmin || userType === 'admin') {
                 const fBonos = bonos.filter(b => isSameMonth(b.date, bonoMF));
                 const ganados = fBonos.filter(b => b.status === 'Ganado');
@@ -1448,7 +1426,6 @@
                 const elTR = document.getElementById('table-top-recibidos'); if (elTR) elTR.innerHTML = htmlRecibidos;
                 const elDashTR = document.getElementById('dash-table-top-recibidos'); if (elDashTR) elDashTR.innerHTML = htmlRecibidos;
 
-                // Giros Table Filtered
                 let displayGiros = [...giros];
                 if (giroFilters.date) displayGiros = displayGiros.filter(g => isExactDate(g.date, giroFilters.date));
                 else if (document.getElementById('filter-giro-date') && document.getElementById('filter-giro-date').value) displayGiros = displayGiros.filter(g => isExactDate(g.date, document.getElementById('filter-giro-date').value));
@@ -1465,11 +1442,9 @@
                     }).join('') || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">Sin datos de giros para este filtro.</td></tr>`;
                 }
 
-                // BONOS LIST
                 let displayBonos = [...bonos];
                 if (bonoFilters.date) displayBonos = displayBonos.filter(b => isExactDate(b.date, bonoFilters.date));
                 else if (document.getElementById('filter-bono-date') && document.getElementById('filter-bono-date').value) displayBonos = displayBonos.filter(b => isExactDate(b.date, document.getElementById('filter-bono-date').value));
-
                 if (bonoFilters.dest) displayBonos = displayBonos.filter(b => (b.assignedTo || '').toLowerCase().includes(bonoFilters.dest));
                 if (bonoFilters.amount && !isNaN(parseFloat(bonoFilters.amount))) displayBonos = displayBonos.filter(b => Math.abs(b.amount) === parseFloat(bonoFilters.amount));
                 if (bonoFilters.agency && bonoFilters.agency !== 'all') displayBonos = displayBonos.filter(b => b.company && b.company.toLowerCase() === bonoFilters.agency.toLowerCase());
@@ -1479,10 +1454,7 @@
                 if(elTableBonos) {
                     elTableBonos.innerHTML = displayBonos.map(b => {
                         let statusBadge = (b.status === 'Ganado') ? `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase"><i class="fas fa-trophy mr-1"></i> Ganó ${fmt(b.amountWon)}</span>` : `<span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-[10px] font-black uppercase">Entregado</span>`;
-                        let companyBadge = '';
-                        if (b.company === 'Chichesepy') companyBadge = `<span class="bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-2">Chiche</span>`;
-                        else companyBadge = `<span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-2">Sepybet</span>`;
-
+                        let companyBadge = b.company === 'Chichesepy' ? `<span class="bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-2">Chiche</span>` : `<span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-2">Sepybet</span>`;
                         let btnAction = (userType === 'bonos' || isSuperAdmin) ? `<div class="flex justify-center gap-2">${b.status !== 'Ganado' ? `<button onclick="actionBonoWin('${b.id}')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase rounded-lg shadow-sm">Ganar</button>` : ''}<button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg flex items-center justify-center"><i class="fas fa-trash"></i></button></div>` : `<span class="text-[10px] text-slate-400 font-bold">Sin Acción</span>`;
                         return `<tr class="hover:bg-slate-50 transition-colors border-b border-rose-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600" data-label="Fecha">${fmtDate(b.date)}</td><td class="p-4 text-xs font-bold text-rose-600 uppercase tracking-wide flex items-center flex-wrap gap-1" data-label="Jugador"><i class="fas fa-user-circle mr-1"></i> ${b.assignedTo} ${companyBadge}</td><td class="p-4 text-sm font-black text-slate-800" data-label="Bono">${fmt(b.amount)}</td><td class="p-4 text-xs font-medium text-slate-600" data-label="Concepto">${b.concept}</td><td class="p-4" data-label="Estado">${statusBadge}</td><td class="p-4 pr-6 text-center" data-label="Acción">${btnAction}</td></tr>`;
                     }).join('') || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">Sin datos de bonos para este filtro.</td></tr>`;
@@ -1501,21 +1473,27 @@
                     elTableRef.innerHTML = displayRef.map(r => {
                         let btnActionRef = (userType === 'bonos' || isSuperAdmin) ? `<button onclick="actionDelete('${r.id}', 'referral')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>` : `<span class="text-[10px] text-slate-400 font-bold">Sin Acción</span>`;
                         let infBadge = r.isInfluencer ? `<span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">VIP</span>` : '';
-                        let companyBadge = (r.company === 'Chichesepy') ? `<span class="bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">Chiche</span>` : `<span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">Sepybet</span>`;
+                        let companyBadge = r.company === 'Chichesepy' ? `<span class="bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">Chiche</span>` : `<span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">Sepybet</span>`;
                         return `<tr class="hover:bg-slate-50 transition-colors border-b border-indigo-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600" data-label="Fecha">${fmtDate(r.date)}</td><td class="p-4 text-xs font-bold text-indigo-600 uppercase tracking-wide flex items-center flex-wrap gap-1" data-label="Referente"><i class="fas fa-bullhorn mr-1"></i> ${r.referrer} ${infBadge} ${companyBadge}</td><td class="p-4 text-xs font-bold text-slate-700 uppercase" data-label="Referido"><i class="fas fa-user mr-1"></i> ${r.referred}</td><td class="p-4 text-xs font-mono font-bold text-slate-500" data-label="Cédula">${r.cedula}</td><td class="p-4 text-sm font-black text-emerald-600" data-label="Pago">${fmt(r.amount)}</td><td class="p-4 pr-6 text-center" data-label="Acción">${btnActionRef}</td></tr>`;
                     }).join('') || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">No hay referidos registrados.</td></tr>`;
                 }
             }
 
-            // ----- AFILIADOS (Melanie / VIP Dash) -----
-            const influencerStats = {};
-            const baseRend = rendimientos.filter(r => isSameMonth(r.date, melMF));
-            baseRend.forEach(r => {
-                if(!influencerStats[r.referrer]) influencerStats[r.referrer] = { dep: 0, ret: 0, net: 0, com: 0 };
-                influencerStats[r.referrer].dep += r.depositos; influencerStats[r.referrer].ret += r.retiros; influencerStats[r.referrer].net += r.neto; influencerStats[r.referrer].com += r.comision;
-            });
-
             if (userType === 'cajero_afiliados' || isSuperAdmin || userType === 'admin') {
+                const influencerStats = {};
+                const baseRend = rendimientos.filter(r => isSameMonth(r.date, melMF));
+                baseRend.forEach(r => {
+                    const rKey = String(r.referrer).trim().toLowerCase();
+                    let rate = USERS[rKey] && USERS[rKey].comision ? parseFloat(USERS[rKey].comision) : 20;
+                    if (rate > 1) rate = rate / 100;
+                    
+                    if(!influencerStats[r.referrer]) influencerStats[r.referrer] = { dep: 0, ret: 0, net: 0, com: 0 };
+                    influencerStats[r.referrer].dep += r.depositos; 
+                    influencerStats[r.referrer].ret += r.retiros; 
+                    influencerStats[r.referrer].net += r.neto; 
+                    influencerStats[r.referrer].com += (r.neto * rate);
+                });
+
                 const elInf = document.getElementById('mel-dash-inf'); if(elInf) elInf.innerText = Object.keys(influencerStats).length;
                 const elDep = document.getElementById('mel-dash-dep'); if(elDep) elDep.innerText = fmt(Object.values(influencerStats).reduce((s, x) => s + x.dep, 0));
                 const elRet = document.getElementById('mel-dash-ret'); if(elRet) elRet.innerText = fmt(Object.values(influencerStats).reduce((s, x) => s + x.ret, 0));
@@ -1523,7 +1501,6 @@
                 
                 const htmlMelTbody = Object.entries(influencerStats).map(([name, s]) => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-bold text-pink-600 uppercase"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${name}</td><td class="p-4 text-sm font-black text-emerald-500">${fmt(s.dep)}</td><td class="p-4 text-sm font-black text-rose-500">${fmt(s.ret)}</td><td class="p-4 text-sm font-black text-slate-700">${fmt(s.net)}</td><td class="p-4 pr-6 text-right text-sm font-black text-pink-600">${fmt(s.com)}</td></tr>`).join('');
                 const elMelTbody = document.getElementById('mel-table-body'); if (elMelTbody) elMelTbody.innerHTML = htmlMelTbody || `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">Sin datos para este mes.</td></tr>`;
-                const elMelDashBody = document.getElementById('mel-dash-table-body'); if (elMelDashBody) elMelDashBody.innerHTML = htmlMelTbody || `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">Sin datos para este mes.</td></tr>`;
                 
                 const elMelHistory = document.getElementById('mel-table-history');
                 if (elMelHistory) {
@@ -1533,7 +1510,13 @@
                     if(melFilters.jug) fRendHist = fRendHist.filter(r => r.referred.toLowerCase().includes(melFilters.jug));
                     fRendHist.sort((a,b) => String(b.id).localeCompare(String(a.id)));
 
-                    elMelHistory.innerHTML = fRendHist.map(r => `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td><td class="p-4 text-xs font-bold text-pink-600 uppercase"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${r.referrer}</td><td class="p-4 text-xs font-bold text-slate-800 uppercase">${r.referred}</td><td class="p-4 text-sm font-black text-emerald-500">${fmt(r.depositos)}</td><td class="p-4 text-sm font-black text-rose-500">${fmt(r.retiros)}</td><td class="p-4 text-sm font-black text-pink-600">${fmt(r.comision)}</td><td class="p-4 pr-6 text-center"><div class="flex justify-center gap-2"><button onclick="actionEditRend('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'rendimiento')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div></td></tr>`).join('') || `<tr><td colspan="7" class="p-6 text-center text-sm text-slate-400">No hay movimientos cargados este mes.</td></tr>`;
+                    elMelHistory.innerHTML = fRendHist.map(r => {
+                        const rKey = String(r.referrer).trim().toLowerCase();
+                        let rate = USERS[rKey] && USERS[rKey].comision ? parseFloat(USERS[rKey].comision) : 20;
+                        if (rate > 1) rate = rate / 100;
+                        const dynamicComision = r.neto * rate;
+                        return `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td><td class="p-4 text-xs font-bold text-pink-600 uppercase"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${r.referrer}</td><td class="p-4 text-xs font-bold text-slate-800 uppercase">${r.referred}</td><td class="p-4 text-sm font-black text-emerald-500">${fmt(r.depositos)}</td><td class="p-4 text-sm font-black text-rose-500">${fmt(r.retiros)}</td><td class="p-4 text-sm font-black text-pink-600">${fmt(dynamicComision)}</td><td class="p-4 pr-6 text-center"><div class="flex justify-center gap-2"><button onclick="actionEditRend('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'rendimiento')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div></td></tr>`;
+                    }).join('') || `<tr><td colspan="7" class="p-6 text-center text-sm text-slate-400">No hay movimientos cargados este mes.</td></tr>`;
                 }
             }
 
@@ -1546,16 +1529,24 @@
                 const myReferrals = referrals.filter(r => String(r.referrer).toLowerCase() === targetRefLower && isSameMonth(r.date, infMF));
                 const myRendimientos = rendimientos.filter(r => String(r.referrer).toLowerCase() === targetRefLower && isSameMonth(r.date, infMF));
 
+                let customRate = USERS[targetRefLower] && USERS[targetRefLower].comision ? parseFloat(USERS[targetRefLower].comision) : 20;
+                if (customRate > 1) customRate = customRate / 100;
+                
                 const elInfQty = document.getElementById('inf-dash-qty'); if(elInfQty) elInfQty.innerText = myReferrals.length;
                 const elInfDep = document.getElementById('inf-dash-dep'); if(elInfDep) elInfDep.innerText = fmt(myRendimientos.reduce((s, r) => s + r.depositos, 0));
                 const elInfRet = document.getElementById('inf-dash-ret'); if(elInfRet) elInfRet.innerText = fmt(myRendimientos.reduce((s, r) => s + r.retiros, 0));
-                const elInfCom = document.getElementById('inf-dash-com'); if(elInfCom) elInfCom.innerText = fmt(myRendimientos.reduce((s, r) => s + r.comision, 0));
+                const elInfCom = document.getElementById('inf-dash-com'); if(elInfCom) elInfCom.innerText = fmt(myRendimientos.reduce((s, r) => s + (r.neto * customRate), 0));
+
+                const labelGanancia = document.getElementById('inf-dash-com-label');
+                if (labelGanancia) labelGanancia.innerText = `Mi Ganancia (${Math.round(customRate * 100)}%)`;
 
                 const playersRend = {};
                 myRendimientos.forEach(r => {
                     if(!playersRend[r.referred]) playersRend[r.referred] = { dep:0, ret:0, net:0, com:0 };
-                    playersRend[r.referred].dep += r.depositos; playersRend[r.referred].ret += r.retiros;
-                    playersRend[r.referred].net += r.neto; playersRend[r.referred].com += r.comision;
+                    playersRend[r.referred].dep += r.depositos; 
+                    playersRend[r.referred].ret += r.retiros;
+                    playersRend[r.referred].net += r.neto; 
+                    playersRend[r.referred].com += (r.neto * customRate);
                 });
 
                 const tbodyInf = document.getElementById('inf-table-body');
@@ -1566,7 +1557,6 @@
                     tbodyInf.innerHTML = htmlRend || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">Aún no hay datos de rendimiento para este mes.</td></tr>`;
                 }
 
-                // Lógica de la Pestaña de Detalles Individuales
                 const detailSelect = document.getElementById('inf-detail-player');
                 if (detailSelect) {
                     const currentSelected = detailSelect.value;
@@ -1587,7 +1577,10 @@
                     if (!detailPlayer && detailRend.length === 0) {
                         tbodyDetail.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">Selecciona un jugador o mes para ver sus movimientos.</td></tr>`;
                     } else {
-                        tbodyDetail.innerHTML = detailRend.map(r => `<tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors"><td class="p-4 pl-6 text-xs font-bold text-slate-600 whitespace-nowrap" data-label="Fecha">${fmtDate(r.date)} <span class="block md:hidden text-[9px] text-purple-500 uppercase mt-0.5">${r.referred}</span></td><td class="p-4 text-sm font-black text-emerald-500" data-label="Depósitos">${fmt(r.depositos)}</td><td class="p-4 text-sm font-black text-rose-500" data-label="Retiros">${fmt(r.retiros)}</td><td class="p-4 text-sm font-black text-slate-700" data-label="Neto">${fmt(r.neto)}</td><td class="p-4 pr-6 text-right text-sm font-black text-purple-600" data-label="Comisión">${fmt(r.comision)}</td></tr>`).join('') || `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">No hay movimientos registrados en esta fecha.</td></tr>`;
+                        tbodyDetail.innerHTML = detailRend.map(r => {
+                            const dynCom = r.neto * customRate;
+                            return `<tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors"><td class="p-4 pl-6 text-xs font-bold text-slate-600 whitespace-nowrap" data-label="Fecha">${fmtDate(r.date)} <span class="block md:hidden text-[9px] text-purple-500 uppercase mt-0.5">${r.referred}</span></td><td class="p-4 text-sm font-black text-emerald-500" data-label="Depósitos">${fmt(r.depositos)}</td><td class="p-4 text-sm font-black text-rose-500" data-label="Retiros">${fmt(r.retiros)}</td><td class="p-4 text-sm font-black text-slate-700" data-label="Neto">${fmt(r.neto)}</td><td class="p-4 pr-6 text-right text-sm font-black text-purple-600" data-label="Comisión">${fmt(dynCom)}</td></tr>`;
+                        }).join('') || `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">No hay movimientos registrados en esta fecha.</td></tr>`;
                     }
                     
                     const elTitle = document.getElementById('inf-detail-title');
