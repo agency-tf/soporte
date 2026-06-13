@@ -1483,6 +1483,33 @@
                 const elTR = document.getElementById('table-top-recibidos'); if (elTR) elTR.innerHTML = htmlRecibidos;
                 const elDashTR = document.getElementById('dash-table-top-recibidos'); if (elDashTR) elDashTR.innerHTML = htmlRecibidos;
 
+                // --- RENDIMIENTO DE INFLUYENTES PARA PANEL GUSSEPY ---
+                const gusInfMF = document.getElementById('gus-inf-month-filter')?.value || dashMF;
+                const infStatsGus = {};
+                
+                referrals.filter(r => isSameMonth(r.date, gusInfMF) && r.isInfluencer).forEach(r => {
+                    if(!infStatsGus[r.referrer]) infStatsGus[r.referrer] = { refs: 0, dep: 0, ret: 0, net: 0, com: 0 };
+                    infStatsGus[r.referrer].refs++;
+                });
+
+                rendimientos.filter(r => isSameMonth(r.date, gusInfMF)).forEach(r => {
+                    const rKey = String(r.referrer).trim().toLowerCase();
+                    let rate = USERS[rKey] && USERS[rKey].comision ? parseFloat(USERS[rKey].comision) : 20;
+                    if (rate > 1) rate = rate / 100;
+                    
+                    if(!infStatsGus[r.referrer]) infStatsGus[r.referrer] = { refs: 0, dep: 0, ret: 0, net: 0, com: 0 };
+                    infStatsGus[r.referrer].dep += r.depositos;
+                    infStatsGus[r.referrer].ret += r.retiros;
+                    infStatsGus[r.referrer].net += r.neto;
+                    infStatsGus[r.referrer].com += (r.neto * rate);
+                });
+
+                const elGusInfTable = document.getElementById('gus-table-influencers');
+                if (elGusInfTable) {
+                    const htmlGusInf = Object.entries(infStatsGus).map(([name, s]) => `<tr class="hover:bg-slate-50 transition-colors border-b border-slate-50"><td class="p-3 pl-4 text-xs font-bold text-indigo-600 uppercase" data-label="Influyente"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${name}</td><td class="p-3 text-xs font-bold text-slate-700 text-center" data-label="Total Referidos">${s.refs}</td><td class="p-3 text-sm font-black text-emerald-500" data-label="Depósitos">${fmt(s.dep)}</td><td class="p-3 text-sm font-black text-rose-500" data-label="Retiros">${fmt(s.ret)}</td><td class="p-3 text-sm font-black text-slate-800" data-label="Neto">${fmt(s.net)}</td><td class="p-3 pr-4 text-sm font-black text-purple-600 text-right" data-label="Comisión Pagar">${fmt(s.com)}</td></tr>`).join('');
+                    elGusInfTable.innerHTML = htmlGusInf || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">No hay datos de influyentes para este mes.</td></tr>`;
+                }
+
                 let displayGiros = [...giros];
                 if (giroFilters.date) displayGiros = displayGiros.filter(g => isExactDate(g.date, giroFilters.date));
                 else if (document.getElementById('filter-giro-date') && document.getElementById('filter-giro-date').value) displayGiros = displayGiros.filter(g => isExactDate(g.date, document.getElementById('filter-giro-date').value));
