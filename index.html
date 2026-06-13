@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Agregar librería SheetJS para leer Excel nativamente -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
@@ -527,7 +529,7 @@
             <div id="tab-melanie-add" class="hidden fade-in tab-content">
                 <div class="max-w-6xl mx-auto space-y-6">
                     <div class="bg-white border border-pink-200 rounded-3xl shadow-xl overflow-hidden max-w-4xl mx-auto mt-8">
-                        <div class="px-6 py-8 sm:p-10 border-b border-pink-50 bg-gradient-to-br from-pink-50 to-white relative"><h2 class="text-2xl font-black text-slate-800">Cargar Movimientos de Red</h2></div>
+                        <div class="px-6 py-8 sm:p-10 border-b border-pink-50 bg-gradient-to-br from-pink-50 to-white relative"><h2 class="text-2xl font-black text-slate-800">Cargar Movimientos de Red (Individual)</h2></div>
                         <form id="form-rendimiento" class="p-6 sm:p-10 space-y-6">
                             <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Fecha de Registro</label><input type="date" id="rend-date" required class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-pink-500"></div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -551,6 +553,40 @@
                             <button type="submit" class="w-full py-4 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-xl shadow-lg transition-colors">Guardar Rendimiento</button>
                         </form>
                     </div>
+
+                    <!-- NUEVA SECCIÓN CARGA MASIVA EXCEL -->
+                    <div class="bg-white border border-pink-200 rounded-3xl shadow-xl overflow-hidden max-w-4xl mx-auto mt-8">
+                        <div class="px-6 py-6 border-b border-pink-50 bg-gradient-to-br from-pink-50 to-white relative">
+                            <h2 class="text-xl font-black text-slate-800"><i class="fas fa-file-excel text-emerald-500 mr-2"></i>Carga Masiva (Excel)</h2>
+                            <p class="text-xs text-slate-500 mt-1">Formato esperado (.xlsx): NOMBRE DE INFLUENCER | NOMBRE DE USUARIO | DEPOSITO | RETIRO</p>
+                        </div>
+                        <div class="p-6 sm:p-10 space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Fecha de Registros</label>
+                                    <input type="date" id="upload-date" required class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-pink-500">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Subir Archivo .XLSX</label>
+                                    <input type="file" id="upload-file" accept=".xlsx, .xls" class="block w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer border-2 border-slate-200 rounded-xl focus:border-pink-500" onchange="handleFileUpload(event)">
+                                </div>
+                            </div>
+                            
+                            <!-- PREVIEW CONTAINER -->
+                            <div id="upload-preview-container" class="hidden flex-col gap-4 mt-6">
+                                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 overflow-x-auto max-h-60">
+                                    <table class="w-full text-left text-xs">
+                                        <thead class="text-[10px] font-black text-slate-500 uppercase border-b border-slate-200">
+                                            <tr><th class="pb-2">Influencer</th><th class="pb-2">Jugador</th><th class="pb-2 text-right">Depósitos</th><th class="pb-2 text-right">Retiros</th><th class="pb-2 text-right">Comisión a Pagar</th></tr>
+                                        </thead>
+                                        <tbody id="upload-preview-body" class="divide-y divide-slate-100"></tbody>
+                                    </table>
+                                </div>
+                                <button type="button" id="btn-upload-data" onclick="submitUploadData()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg transition-colors"><i class="fas fa-upload mr-2"></i> Confirmar y Subir Registros</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -762,6 +798,7 @@
         let filters = { date: '', user: 'all', status: 'all', amount: '' }, bonoFilters = { date: '', dest: '', amount: '', agency: 'all' }, refFilters = { date: '', name: '', cedula: '', agency: 'all' }, giroFilters = { date: '', dest: '', agency: 'all' }, melFilters = { date: '', inf: '', jug: '' };
         let pendingVerifyId = null, pendingAuthId = null, pendingBonoWinId = null, pendingGiroWinId = null, referidosChart = null, inactivityTimer, chartWeekInstance = null, chartMonthsInstance = null;
         let currentPlayersList = [];
+        let uploadData = [];
 
         const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
         const fmtDate = dStr => { if(!dStr) return ''; const d = new Date(dStr); d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }); };
@@ -771,10 +808,10 @@
             if (savedData) { const ud = JSON.parse(savedData); if (ud.baseType === 'superadmin') { isSuperAdmin = true; currentUser = ud.id; loginUI(USERS[ud.id] || ud); } else { currentUser = ud.id; loginUI(ud); } } else { showScreen('login'); }
             
             const now = new Date(); const currentMonthStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-            ['dash-month-filter', 'bonos-month-filter', 'mel-month-filter', 'inf-month-filter', 'giros-month-filter', 'gus-month-filter', 'inf-detail-month', 'gus-inf-month-filter'].forEach(id => { const el = document.getElementById(id); if (el) el.value = currentMonthStr; });
+            ['dash-month-filter', 'bonos-month-filter', 'mel-month-filter', 'inf-month-filter', 'giros-month-filter', 'gus-month-filter', 'inf-detail-month'].forEach(id => { const el = document.getElementById(id); if (el) el.value = currentMonthStr; });
 
             const todayStr = now.toISOString().split('T')[0]; 
-            ['reg-date', 'gus-date', 'bono-date', 'ref-date', 'rend-date', 'giro-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = todayStr; });
+            ['reg-date', 'gus-date', 'bono-date', 'ref-date', 'rend-date', 'giro-date', 'upload-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = todayStr; });
             
             const forms = [
                 { id: 'login-form', handler: handleLogin },
@@ -1797,6 +1834,115 @@
                     }
                 }
             }
+        }
+
+        // --- LÓGICA DE CARGA MASIVA EXCEL ---
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    // Procesar archivo Excel usando SheetJS
+                    const data = new Uint8Array(event.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    
+                    // Tomamos la primera hoja del Excel
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    
+                    // Lo convertimos en un arreglo de arreglos (filas x columnas)
+                    const rows = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                    
+                    uploadData = [];
+                    for (let i = 1; i < rows.length; i++) { // Empezamos en 1 para omitir los encabezados
+                        const cols = rows[i];
+                        if (!cols || cols.length < 2) continue; // Necesita al menos influencer y jugador
+                        
+                        const inf = String(cols[0] || '').trim();
+                        const jug = String(cols[1] || '').trim();
+                        
+                        if (!inf || !jug) continue;
+                        
+                        const dep = parseFloat(cols[2]) || 0;
+                        const ret = parseFloat(cols[3]) || 0;
+                        const neto = dep - ret;
+                        
+                        // Calculamos la comisión basándonos en la BD
+                        const rateKey = String(inf).trim().toLowerCase();
+                        const rate = (USERS[rateKey] && USERS[rateKey].comision ? USERS[rateKey].comision : 20) / 100;
+                        const com = neto * rate;
+                        
+                        uploadData.push({ influencer: inf, jugador: jug, depositos: dep, retiros: ret, neto: neto, comision: com });
+                    }
+                    renderUploadPreview();
+                } catch(error) {
+                    console.error(error);
+                    showToast("Error leyendo el archivo Excel", "error");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function renderUploadPreview() {
+            const tbody = document.getElementById('upload-preview-body');
+            const container = document.getElementById('upload-preview-container');
+            if (uploadData.length === 0) {
+                showToast("El archivo está vacío o mal formateado", "error");
+                container.classList.add('hidden');
+                return;
+            }
+            tbody.innerHTML = uploadData.map(row => `
+                <tr class="hover:bg-slate-100 transition-colors">
+                    <td class="py-2 font-bold text-slate-700">${row.influencer}</td>
+                    <td class="py-2 text-slate-600">${row.jugador}</td>
+                    <td class="py-2 text-emerald-600 font-black text-right">${fmt(row.depositos)}</td>
+                    <td class="py-2 text-rose-600 font-black text-right">${fmt(row.retiros)}</td>
+                    <td class="py-2 text-purple-600 font-black text-right">${fmt(row.comision)}</td>
+                </tr>
+            `).join('');
+            container.classList.remove('hidden');
+            container.classList.add('flex');
+        }
+
+        async function submitUploadData() {
+            const btn = document.getElementById('btn-upload-data');
+            btn.disabled = true;
+            let successCount = 0;
+            const uploadDate = document.getElementById('upload-date').value;
+            
+            for (let i = 0; i < uploadData.length; i++) {
+                btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo ${i + 1} de ${uploadData.length}...`;
+                const row = uploadData[i];
+                const newRend = {
+                    id: 'RND_XL_' + Date.now() + i,
+                    date: uploadDate,
+                    referrer: row.influencer,
+                    referred: row.jugador,
+                    depositos: row.depositos,
+                    retiros: row.retiros,
+                    neto: row.neto,
+                    comision: row.comision,
+                    createdBy: currentUser
+                };
+                
+                const res = await pushData('add_rendimiento', newRend);
+                if (res.success) {
+                    rendimientos.unshift(newRend);
+                    successCount++;
+                }
+            }
+            
+            updateAllViews();
+            showToast(`Carga masiva completa: ${successCount} registrados.`, 'success');
+            const container = document.getElementById('upload-preview-container');
+            container.classList.add('hidden');
+            container.classList.remove('flex');
+            document.getElementById('upload-file').value = '';
+            btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Confirmar y Subir Registros';
+            btn.disabled = false;
+            uploadData = [];
         }
     </script>
 </body>
