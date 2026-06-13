@@ -1112,9 +1112,64 @@
         });
 
         function exportToCSV(type) {
+            const ud = JSON.parse(localStorage.getItem('sb_user_data'));
+            if (!ud) return;
+            const userType = ud.type;
+            
             let dataArr = []; let filename = '';
-            if(type === 'records') { dataArr = records; filename = 'movimientos.csv'; } else if(type === 'bonos') { dataArr = bonos; filename = 'bonos.csv'; } else if (type === 'giros') { dataArr = giros; filename = 'giros.csv'; } else if(type === 'referrals') { dataArr = referrals; filename = 'referidos.csv'; }
-            if(!dataArr.length) { showToast('No hay datos', 'warning'); return; }
+            
+            if(type === 'records') { 
+                dataArr = [...records];
+                // Aplicar filtros de fecha
+                if (filters.date) dataArr = dataArr.filter(r => isExactDate(r.date, filters.date));
+                else if (document.getElementById('filter-date') && document.getElementById('filter-date').value) dataArr = dataArr.filter(r => isExactDate(r.date, document.getElementById('filter-date').value));
+                
+                // Aplicar restricciones de seguridad (Jesús solo ve lo de Jesús)
+                if (userType === 'user') dataArr = dataArr.filter(r => r.assignedTo === currentUser);
+                else if (filters.user !== 'all') dataArr = dataArr.filter(r => r.assignedTo === filters.user);
+                
+                // Aplicar filtros de estado y monto
+                if (filters.status !== 'all') dataArr = dataArr.filter(r => r.status === filters.status);
+                if (filters.amount && !isNaN(parseFloat(filters.amount))) dataArr = dataArr.filter(r => Math.abs(r.amount) === parseFloat(filters.amount));
+                
+                dataArr.sort((a,b) => String(b.id).localeCompare(String(a.id)));
+                filename = 'movimientos.csv'; 
+                
+            } else if(type === 'bonos') { 
+                dataArr = [...bonos];
+                if (bonoFilters.date) dataArr = dataArr.filter(b => isExactDate(b.date, bonoFilters.date));
+                else if (document.getElementById('filter-bono-date') && document.getElementById('filter-bono-date').value) dataArr = dataArr.filter(b => isExactDate(b.date, document.getElementById('filter-bono-date').value));
+                if (bonoFilters.dest) dataArr = dataArr.filter(b => (b.assignedTo || '').toLowerCase().includes(bonoFilters.dest));
+                if (bonoFilters.amount && !isNaN(parseFloat(bonoFilters.amount))) dataArr = dataArr.filter(b => Math.abs(b.amount) === parseFloat(bonoFilters.amount));
+                if (bonoFilters.agency && bonoFilters.agency !== 'all') dataArr = dataArr.filter(b => b.company && b.company.toLowerCase() === bonoFilters.agency.toLowerCase());
+                
+                dataArr.sort((a,b) => String(b.id).localeCompare(String(a.id)));
+                filename = 'bonos.csv'; 
+                
+            } else if (type === 'giros') { 
+                dataArr = [...giros];
+                if (giroFilters.date) dataArr = dataArr.filter(g => isExactDate(g.date, giroFilters.date));
+                else if (document.getElementById('filter-giro-date') && document.getElementById('filter-giro-date').value) dataArr = dataArr.filter(g => isExactDate(g.date, document.getElementById('filter-giro-date').value));
+                if (giroFilters.dest) dataArr = dataArr.filter(g => (g.dest || '').toLowerCase().includes(giroFilters.dest));
+                if (giroFilters.agency && giroFilters.agency !== 'all') dataArr = dataArr.filter(g => g.company && g.company.toLowerCase() === giroFilters.agency.toLowerCase());
+                
+                dataArr.sort((a,b) => String(b.id).localeCompare(String(a.id)));
+                filename = 'giros.csv'; 
+                
+            } else if(type === 'referrals') { 
+                dataArr = [...referrals];
+                if (refFilters.date) dataArr = dataArr.filter(r => isExactDate(r.date, refFilters.date));
+                else if (document.getElementById('filter-ref-date') && document.getElementById('filter-ref-date').value) dataArr = dataArr.filter(r => isExactDate(r.date, document.getElementById('filter-ref-date').value));
+                if (refFilters.name) dataArr = dataArr.filter(r => r.referrer.toLowerCase().includes(refFilters.name) || r.referred.toLowerCase().includes(refFilters.name));
+                if (refFilters.cedula) dataArr = dataArr.filter(r => r.cedula.includes(refFilters.cedula));
+                if (refFilters.agency && refFilters.agency !== 'all') dataArr = dataArr.filter(r => r.company && r.company.toLowerCase() === refFilters.agency.toLowerCase());
+                
+                dataArr.sort((a,b) => String(b.id).localeCompare(String(a.id)));
+                filename = 'referidos.csv'; 
+            }
+
+            if(!dataArr.length) { showToast('No hay datos con los filtros actuales', 'warning'); return; }
+            
             const headers = Object.keys(dataArr[0]).join(';');
             const rows = dataArr.map(obj => Object.values(obj).map(val => `"${String(val !== null && val !== undefined ? val : '').replace(/"/g, '""')}"`).join(';')).join('\n');
             const csv = "\uFEFF" + headers + '\n' + rows;
