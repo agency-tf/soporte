@@ -218,7 +218,13 @@
                         </div>
                     </div>
 
-                    <h2 class="text-xl font-black text-indigo-900 border-b border-indigo-100 pb-2 mt-8 pt-4"><i class="fas fa-users-cog mr-2 text-indigo-500"></i>Rendimiento de Influyentes (Comisiones)</h2>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-indigo-100 pb-2 mt-8 pt-4 gap-4">
+                        <h2 class="text-xl font-black text-indigo-900"><i class="fas fa-users-cog mr-2 text-indigo-500"></i>Rendimiento de Influyentes (Comisiones)</h2>
+                        <div class="flex items-center gap-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mes:</label>
+                            <input type="month" id="gus-inf-month-filter" onchange="updateAllViews()" class="bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-1.5 text-sm font-bold text-indigo-800 outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
                     <div class="overflow-x-auto mt-4">
                         <table class="w-full text-left border-collapse resp-table">
                             <thead class="bg-indigo-50 border-b border-indigo-100 text-[10px] font-black text-indigo-800 uppercase hidden md:table-header-group">
@@ -526,7 +532,17 @@
                             <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Fecha de Registro</label><input type="date" id="rend-date" required class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-pink-500"></div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Seleccione Influencer VIP</label><select id="rend-referrer" required onchange="updateReferredDropdown()" class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl font-bold focus:border-pink-500"><option value="">Cargando...</option></select></div>
-                                <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Seleccione Jugador Referido</label><input type="text" id="rend-referred" list="rend-referred-list" required placeholder="Seleccione influyente primero..." autocomplete="off" class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl font-bold focus:border-pink-500"><datalist id="rend-referred-list"></datalist></div>
+                                <div class="relative w-full">
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Seleccione Jugador Referido</label>
+                                    <div class="relative flex items-center w-full">
+                                        <input type="text" id="rend-referred" required placeholder="Seleccione influyente primero..." autocomplete="off" class="block w-full px-4 py-3.5 pr-12 border-2 border-slate-200 rounded-xl font-bold focus:border-pink-500 cursor-text" onfocus="openPlayerDropdown()" oninput="filterPlayerDropdown()">
+                                        <div class="absolute right-3 flex items-center gap-2 text-slate-400">
+                                            <button type="button" id="btn-clear-player" onclick="clearPlayerSelection()" class="hover:text-slate-600 focus:outline-none bg-white px-1 h-full"><i class="fas fa-times"></i></button>
+                                            <i class="fas fa-caret-down pointer-events-none text-sm"></i>
+                                        </div>
+                                    </div>
+                                    <ul id="custom-player-dropdown" class="absolute z-[100] w-full bg-white border border-slate-200 rounded-xl mt-1 shadow-2xl max-h-60 overflow-y-auto hidden text-left left-0 top-full"></ul>
+                                </div>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Depositado ($)</label><input type="text" id="rend-dep" inputmode="decimal" required placeholder="0.00" class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-lg font-black text-emerald-600 focus:border-pink-500"></div>
@@ -745,6 +761,7 @@
         let currentUser = null, isSuperAdmin = false, records = [], advances = [], bonos = [], giros = [], referrals = [], rendimientos = [];
         let filters = { date: '', user: 'all', status: 'all', amount: '' }, bonoFilters = { date: '', dest: '', amount: '', agency: 'all' }, refFilters = { date: '', name: '', cedula: '', agency: 'all' }, giroFilters = { date: '', dest: '', agency: 'all' }, melFilters = { date: '', inf: '', jug: '' };
         let pendingVerifyId = null, pendingAuthId = null, pendingBonoWinId = null, pendingGiroWinId = null, referidosChart = null, inactivityTimer, chartWeekInstance = null, chartMonthsInstance = null;
+        let currentPlayersList = [];
 
         const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
         const fmtDate = dStr => { if(!dStr) return ''; const d = new Date(dStr); d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }); };
@@ -754,7 +771,7 @@
             if (savedData) { const ud = JSON.parse(savedData); if (ud.baseType === 'superadmin') { isSuperAdmin = true; currentUser = ud.id; loginUI(USERS[ud.id] || ud); } else { currentUser = ud.id; loginUI(ud); } } else { showScreen('login'); }
             
             const now = new Date(); const currentMonthStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-            ['dash-month-filter', 'bonos-month-filter', 'mel-month-filter', 'inf-month-filter', 'giros-month-filter', 'gus-month-filter', 'inf-detail-month'].forEach(id => { const el = document.getElementById(id); if (el) el.value = currentMonthStr; });
+            ['dash-month-filter', 'bonos-month-filter', 'mel-month-filter', 'inf-month-filter', 'giros-month-filter', 'gus-month-filter', 'inf-detail-month', 'gus-inf-month-filter'].forEach(id => { const el = document.getElementById(id); if (el) el.value = currentMonthStr; });
 
             const todayStr = now.toISOString().split('T')[0]; 
             ['reg-date', 'gus-date', 'bono-date', 'ref-date', 'rend-date', 'giro-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = todayStr; });
@@ -983,21 +1000,79 @@
         function updateReferredDropdown() {
             const referrer = document.getElementById('rend-referrer').value; 
             const inputReferred = document.getElementById('rend-referred');
-            const listReferred = document.getElementById('rend-referred-list');
-            if (!inputReferred || !listReferred) return;
             
-            inputReferred.value = ''; // Limpia el valor anterior al cambiar de influencer
+            if (inputReferred) inputReferred.value = ''; 
             
             if (!referrer) { 
-                inputReferred.placeholder = 'Seleccione influyente primero...'; 
-                listReferred.innerHTML = '';
+                if (inputReferred) inputReferred.placeholder = 'Seleccione influyente primero...'; 
+                currentPlayersList = [];
+                renderPlayerDropdown([]);
                 return; 
             }
             
-            const users = referrals.filter(r => r.referrer === referrer).map(r => r.referred);
-            inputReferred.placeholder = 'Escriba o seleccione jugador...';
-            listReferred.innerHTML = users.map(u => `<option value="${u}">`).join('');
+            currentPlayersList = [...new Set(referrals.filter(r => r.referrer === referrer).map(r => r.referred))];
+            if (inputReferred) inputReferred.placeholder = 'Escriba o seleccione jugador...';
+            renderPlayerDropdown(currentPlayersList);
         }
+
+        function renderPlayerDropdown(list) {
+            const ul = document.getElementById('custom-player-dropdown');
+            if (!ul) return;
+            if(list.length === 0) {
+                ul.innerHTML = '<li class="px-4 py-3 text-sm text-slate-500 italic border-b border-slate-50 last:border-0">No se encontraron jugadores</li>';
+            } else {
+                ul.innerHTML = list.map(u => `<li class="px-4 py-3 text-sm font-bold text-slate-700 hover:bg-pink-50 hover:text-pink-600 cursor-pointer transition-colors border-b border-slate-50 last:border-0" onclick="selectPlayer('${u.replace(/'/g, "\\'")}')">${u}</li>`).join('');
+            }
+        }
+
+        function filterPlayerDropdown() {
+            const input = document.getElementById('rend-referred');
+            if (!input) return;
+            const val = input.value.toLowerCase();
+            const filtered = currentPlayersList.filter(p => p.toLowerCase().includes(val));
+            renderPlayerDropdown(filtered);
+            openPlayerDropdown();
+        }
+
+        function openPlayerDropdown() {
+            const referrer = document.getElementById('rend-referrer');
+            if(!referrer || !referrer.value) return;
+            const ul = document.getElementById('custom-player-dropdown');
+            if (ul) ul.classList.remove('hidden');
+        }
+
+        function closePlayerDropdown() {
+            const ul = document.getElementById('custom-player-dropdown');
+            if (ul) ul.classList.add('hidden');
+        }
+
+        function selectPlayer(name) {
+            const input = document.getElementById('rend-referred');
+            if(input) input.value = name;
+            closePlayerDropdown();
+        }
+
+        function clearPlayerSelection() {
+            const input = document.getElementById('rend-referred');
+            if(input) {
+                input.value = '';
+                input.focus();
+            }
+            filterPlayerDropdown(); 
+            openPlayerDropdown();
+        }
+
+        document.addEventListener('click', function(e) {
+            const input = document.getElementById('rend-referred');
+            const dropdown = document.getElementById('custom-player-dropdown');
+            const btnClear = document.getElementById('btn-clear-player');
+            
+            if (input && dropdown) {
+                if (!input.contains(e.target) && !dropdown.contains(e.target) && (!btnClear || !btnClear.contains(e.target))) {
+                    closePlayerDropdown();
+                }
+            }
+        });
 
         function exportToCSV(type) {
             let dataArr = []; let filename = '';
@@ -1094,7 +1169,8 @@
 
         async function handleRendimiento(e) {
             e.preventDefault(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; btn.innerHTML = 'Guardando...'; btn.disabled = true;
-            const referrer = document.getElementById('rend-referrer').value; const referred = document.getElementById('rend-referred').value;
+            const referrer = document.getElementById('rend-referrer').value; 
+            const referred = document.getElementById('rend-referred').value;
             if(!referrer || !referred) { showToast("Seleccione usuarios.", "error"); btn.innerHTML=orig; btn.disabled=false; return; }
             const depositos = parseFloat(document.getElementById('rend-dep').value.replace(',', '.')) || 0; const retiros = parseFloat(document.getElementById('rend-ret').value.replace(',', '.')) || 0;
             const neto = depositos - retiros; 
@@ -1104,7 +1180,12 @@
             const comision = neto * rate;
             
             const newRend = { id: 'RND' + Date.now(), date: document.getElementById('rend-date').value, referrer, referred, depositos, retiros, neto, comision, createdBy: currentUser };
-            rendimientos.unshift(newRend); updateAllViews(); document.getElementById('form-rendimiento').reset(); document.getElementById('rend-date').value = new Date().toISOString().split('T')[0];
+            rendimientos.unshift(newRend); updateAllViews(); 
+            
+            document.getElementById('form-rendimiento').reset(); 
+            document.getElementById('rend-date').value = new Date().toISOString().split('T')[0];
+            clearPlayerSelection(); // Limpia la caja del nuevo buscador
+            
             btn.innerHTML = orig; btn.disabled = false; 
             pushData('add_rendimiento', newRend).then(res => { if(res.success) showToast('Rendimiento guardado.', 'success'); });
         }
@@ -1168,7 +1249,6 @@
             if (isNaN(wonAmt) || wonAmt < 0) { showToast("Ingrese un valor numérico válido", "error"); return; }
             
             const btn = document.getElementById('btn-bono-win-confirm'); const orig = btn.innerHTML; btn.innerHTML = 'Guardando...'; btn.disabled = true;
-            const todayStr = new Date().toISOString().split('T')[0];
             
             if (pendingBonoWinId) {
                 const bId = String(pendingBonoWinId);
@@ -1177,16 +1257,6 @@
                     b.status = 'Ganado'; 
                     b.amountWon = wonAmt; 
                     
-                    const ref = referrals.find(r => r.referred.toLowerCase() === String(b.assignedTo).toLowerCase());
-                    if (ref && wonAmt > 0) {
-                        const rateKey = String(ref.referrer).trim().toLowerCase();
-                        const rate = (USERS[rateKey] && USERS[rateKey].comision ? USERS[rateKey].comision : 20) / 100;
-                        const comision = (0 - wonAmt) * rate; 
-                        const newRend = { id: 'RND_B_' + Date.now(), date: todayStr, referrer: ref.referrer, referred: b.assignedTo, depositos: 0, retiros: wonAmt, neto: -wonAmt, comision: comision, createdBy: currentUser };
-                        rendimientos.unshift(newRend);
-                        pushData('add_rendimiento', newRend);
-                    }
-
                     updateAllViews(); 
                     closeBonoWinModal(); 
                     pushData('win_bono', { id: bId, amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); else showToast("Error en base de datos", "error"); }); 
@@ -1197,16 +1267,6 @@
                 if (g) { 
                     g.status = 'Ganado'; 
                     g.amountWon = wonAmt; 
-
-                    const ref = referrals.find(r => r.referred.toLowerCase() === String(g.dest).toLowerCase());
-                    if (ref && wonAmt > 0) {
-                        const rateKey = String(ref.referrer).trim().toLowerCase();
-                        const rate = (USERS[rateKey] && USERS[rateKey].comision ? USERS[rateKey].comision : 20) / 100;
-                        const comision = (0 - wonAmt) * rate; 
-                        const newRend = { id: 'RND_G_' + Date.now(), date: todayStr, referrer: ref.referrer, referred: g.dest, depositos: 0, retiros: wonAmt, neto: -wonAmt, comision: comision, createdBy: currentUser };
-                        rendimientos.unshift(newRend);
-                        pushData('add_rendimiento', newRend);
-                    }
 
                     updateAllViews(); 
                     closeBonoWinModal(); 
@@ -1569,7 +1629,7 @@
                     elTableRef.innerHTML = displayRef.map(r => {
                         let btnActionRef = (userType === 'bonos' || isSuperAdmin) ? `<button onclick="actionDelete('${r.id}', 'referral')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>` : `<span class="text-[10px] text-slate-400 font-bold">Sin Acción</span>`;
                         let infBadge = r.isInfluencer ? `<span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">VIP</span>` : '';
-                        let companyBadge = r.company === 'Chichesepy' ? `<span class="bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">Chiche</span>` : `<span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">Sepybet</span>`;
+                        let companyBadge = (r.company === 'Chichesepy') ? `<span class="bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">Chiche</span>` : `<span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">Sepybet</span>`;
                         return `<tr class="hover:bg-slate-50 transition-colors border-b border-indigo-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600" data-label="Fecha">${fmtDate(r.date)}</td><td class="p-4 text-xs font-bold text-indigo-600 uppercase tracking-wide flex items-center flex-wrap gap-1" data-label="Referente"><i class="fas fa-bullhorn mr-1"></i> ${r.referrer} ${infBadge} ${companyBadge}</td><td class="p-4 text-xs font-bold text-slate-700 uppercase" data-label="Referido"><i class="fas fa-user mr-1"></i> ${r.referred}</td><td class="p-4 text-xs font-mono font-bold text-slate-500" data-label="Cédula">${r.cedula}</td><td class="p-4 text-sm font-black text-emerald-600" data-label="Pago">${fmt(r.amount)}</td><td class="p-4 pr-6 text-center" data-label="Acción">${btnActionRef}</td></tr>`;
                     }).join('') || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">No hay referidos registrados.</td></tr>`;
                 }
