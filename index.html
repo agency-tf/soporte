@@ -526,7 +526,7 @@
                             <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Fecha de Registro</label><input type="date" id="rend-date" required class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-pink-500"></div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Seleccione Influencer VIP</label><select id="rend-referrer" required onchange="updateReferredDropdown()" class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl font-bold focus:border-pink-500"><option value="">Cargando...</option></select></div>
-                                <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Seleccione Jugador Referido</label><select id="rend-referred" required class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl font-bold focus:border-pink-500"><option value="">Seleccione influyente primero...</option></select></div>
+                                <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Seleccione Jugador Referido</label><input type="text" id="rend-referred" list="rend-referred-list" required placeholder="Seleccione influyente primero..." autocomplete="off" class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl font-bold focus:border-pink-500"><datalist id="rend-referred-list"></datalist></div>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Depositado ($)</label><input type="text" id="rend-dep" inputmode="decimal" required placeholder="0.00" class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-lg font-black text-emerald-600 focus:border-pink-500"></div>
@@ -981,10 +981,22 @@
         }
 
         function updateReferredDropdown() {
-            const referrer = document.getElementById('rend-referrer').value; const selReferred = document.getElementById('rend-referred');
-            if (!referrer) { selReferred.innerHTML = '<option value="">Seleccione influyente primero...</option>'; return; }
+            const referrer = document.getElementById('rend-referrer').value; 
+            const inputReferred = document.getElementById('rend-referred');
+            const listReferred = document.getElementById('rend-referred-list');
+            if (!inputReferred || !listReferred) return;
+            
+            inputReferred.value = ''; // Limpia el valor anterior al cambiar de influencer
+            
+            if (!referrer) { 
+                inputReferred.placeholder = 'Seleccione influyente primero...'; 
+                listReferred.innerHTML = '';
+                return; 
+            }
+            
             const users = referrals.filter(r => r.referrer === referrer).map(r => r.referred);
-            selReferred.innerHTML = '<option value="">Seleccione Jugador...</option>' + users.map(u => `<option value="${u}">${u}</option>`).join('');
+            inputReferred.placeholder = 'Escriba o seleccione jugador...';
+            listReferred.innerHTML = users.map(u => `<option value="${u}">`).join('');
         }
 
         function exportToCSV(type) {
