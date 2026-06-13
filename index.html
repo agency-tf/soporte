@@ -138,6 +138,7 @@
                 <button onclick="switchTab('tab-melanie-list')" id="btn-tab-melanie-list" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-list w-5 text-center text-pink-400"></i> Historial Rendimientos</button>
                 <button onclick="switchTab('tab-influencer-dash')" id="btn-tab-influencer-dash" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-chart-bar w-5 text-center text-purple-400"></i> Mi Panel VIP</button>
                 <button onclick="switchTab('tab-influencer-details')" id="btn-tab-influencer-details" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-list-ul w-5 text-center text-purple-400"></i> Historial por Jugador</button>
+                <button onclick="switchTab('tab-inactivos')" id="btn-tab-inactivos" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-user-clock w-5 text-center text-amber-400"></i> Alerta Inactivos</button>
             </div>
             <!-- Botón Logout y Cambiar Clave Lateral -->
             <div class="p-4 border-t border-slate-800 space-y-2">
@@ -561,6 +562,25 @@
                 </div>
             </div>
 
+            <!-- INFORME INACTIVOS -->
+            <div id="tab-inactivos" class="hidden fade-in tab-content">
+                <div class="max-w-6xl mx-auto space-y-6 mt-8">
+                    <div class="bg-white border border-amber-200 rounded-3xl shadow-xl overflow-hidden">
+                        <div class="px-6 py-5 border-b border-amber-100 bg-amber-50/50 flex justify-between items-center">
+                            <h2 class="text-lg font-black text-amber-900"><i class="fas fa-user-clock mr-2 text-amber-500"></i>Jugadores Inactivos (+10 Días)</h2>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse resp-table">
+                                <thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group">
+                                    <tr><th class="p-4 pl-6">Influencer</th><th class="p-4">Jugador</th><th class="p-4">Último Mov.</th><th class="p-4">Días Inactivo</th><th class="p-4 text-center">Estado</th></tr>
+                                </thead>
+                                <tbody id="table-inactivos-list"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- PANEL INFLUENCER -->
             <div id="tab-influencer-dash" class="hidden fade-in tab-content">
                 <div class="max-w-5xl mx-auto space-y-6">
@@ -859,7 +879,7 @@
             
             resetInactivityTimer();
             
-            const allTabs = ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-auditoria', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash', 'btn-tab-influencer-details', 'divider-1', 'divider-2'];
+            const allTabs = ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-auditoria', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash', 'btn-tab-influencer-details', 'btn-tab-inactivos', 'divider-1', 'divider-2'];
             allTabs.forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
             ['panel-admin', 'panel-personal', 'panel-gussepy-bonos', 'panel-add-gussepy', 'panel-dash-movimientos', 'filter-user-container', 'admin-select-user'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('hidden'); });
 
@@ -867,11 +887,11 @@
                 ['btn-tab-dashboard','btn-tab-register','btn-tab-gussepy', 'btn-tab-auditoria', 'divider-1'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 ['panel-admin','panel-dash-movimientos','panel-add-gussepy', 'filter-user-container', 'admin-select-user'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 if(user.type === 'superadmin') { 
-                    ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'divider-2', 'btn-tab-maria-ref-add','btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash', 'btn-tab-influencer-details'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); }); 
+                    ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'divider-2', 'btn-tab-maria-ref-add','btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash', 'btn-tab-influencer-details', 'btn-tab-inactivos'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); }); 
                 }
                 switchTab('tab-dashboard');
             } else if (user.type === 'master') {
-                ['btn-tab-dashboard','btn-tab-gussepy','btn-tab-maria-list', 'btn-tab-giros-list', 'btn-tab-maria-ref-list', 'divider-1', 'divider-2'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
+                ['btn-tab-dashboard','btn-tab-gussepy','btn-tab-maria-list', 'btn-tab-giros-list', 'btn-tab-maria-ref-list', 'btn-tab-melanie-list', 'btn-tab-inactivos', 'divider-1', 'divider-2'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 ['panel-admin','panel-gussepy-bonos'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-dashboard');
             } else if (user.type === 'bonos') {
@@ -894,8 +914,8 @@
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-auditoria', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash', 'btn-tab-influencer-details'].forEach(id => {
-                const btn = document.getElementById(id); if(btn) { btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm', 'bg-rose-600', 'bg-slate-800', 'bg-pink-600', 'bg-purple-600'); btn.classList.add('text-slate-400', 'hover:bg-slate-800'); }
+            ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-auditoria', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-inactivos', 'btn-tab-influencer-dash', 'btn-tab-influencer-details'].forEach(id => {
+                const btn = document.getElementById(id); if(btn) { btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm', 'bg-rose-600', 'bg-slate-800', 'bg-pink-600', 'bg-purple-600', 'bg-amber-500'); btn.classList.add('text-slate-400', 'hover:bg-slate-800'); }
             });
             const content = document.getElementById(tabId); if(content) content.classList.remove('hidden');
             const activeBtn = document.getElementById(`btn-${tabId}`);
@@ -905,6 +925,7 @@
                 else if (tabId.includes('maria') || tabId.includes('giros')) activeBtn.classList.add('bg-rose-600', 'text-white', 'shadow-sm');
                 else if (tabId.includes('melanie')) activeBtn.classList.add('bg-pink-600', 'text-white', 'shadow-sm');
                 else if (tabId.includes('influencer')) activeBtn.classList.add('bg-purple-600', 'text-white', 'shadow-sm');
+                else if (tabId.includes('inactivos')) activeBtn.classList.add('bg-amber-500', 'text-white', 'shadow-sm');
                 else activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
             }
             toggleMenu(false);
@@ -1131,18 +1152,54 @@
         
         async function confirmBonoWin() {
             const wonAmtStr = document.getElementById('input-bono-win-amount').value.replace(',', '.');
-            const wonAmt = parseFloat(wonAmtStr);
-            if (isNaN(wonAmt) || wonAmt < 0) return;
-            const btn = document.getElementById('btn-bono-win-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
+            const wonAmt = wonAmtStr === '' ? 0 : parseFloat(wonAmtStr);
+            if (isNaN(wonAmt) || wonAmt < 0) { showToast("Ingrese un valor numérico válido", "error"); return; }
+            
+            const btn = document.getElementById('btn-bono-win-confirm'); const orig = btn.innerHTML; btn.innerHTML = 'Guardando...'; btn.disabled = true;
+            const todayStr = new Date().toISOString().split('T')[0];
             
             if (pendingBonoWinId) {
                 const bId = String(pendingBonoWinId);
                 const b = bonos.find(r => String(r.id) === bId); 
-                if (b) { b.status = 'Ganado'; b.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_bono', { id: bId, amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); }); }
+                if (b) { 
+                    b.status = 'Ganado'; 
+                    b.amountWon = wonAmt; 
+                    
+                    const ref = referrals.find(r => r.referred.toLowerCase() === String(b.assignedTo).toLowerCase());
+                    if (ref && wonAmt > 0) {
+                        const rateKey = String(ref.referrer).trim().toLowerCase();
+                        const rate = (USERS[rateKey] && USERS[rateKey].comision ? USERS[rateKey].comision : 20) / 100;
+                        const comision = (0 - wonAmt) * rate; 
+                        const newRend = { id: 'RND_B_' + Date.now(), date: todayStr, referrer: ref.referrer, referred: b.assignedTo, depositos: 0, retiros: wonAmt, neto: -wonAmt, comision: comision, createdBy: currentUser };
+                        rendimientos.unshift(newRend);
+                        pushData('add_rendimiento', newRend);
+                    }
+
+                    updateAllViews(); 
+                    closeBonoWinModal(); 
+                    pushData('win_bono', { id: bId, amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); else showToast("Error en base de datos", "error"); }); 
+                }
             } else if (pendingGiroWinId) {
                 const gId = String(pendingGiroWinId);
                 const g = giros.find(r => String(r.id) === gId); 
-                if (g) { g.status = 'Ganado'; g.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_giro', { id: gId, amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); }); }
+                if (g) { 
+                    g.status = 'Ganado'; 
+                    g.amountWon = wonAmt; 
+
+                    const ref = referrals.find(r => r.referred.toLowerCase() === String(g.dest).toLowerCase());
+                    if (ref && wonAmt > 0) {
+                        const rateKey = String(ref.referrer).trim().toLowerCase();
+                        const rate = (USERS[rateKey] && USERS[rateKey].comision ? USERS[rateKey].comision : 20) / 100;
+                        const comision = (0 - wonAmt) * rate; 
+                        const newRend = { id: 'RND_G_' + Date.now(), date: todayStr, referrer: ref.referrer, referred: g.dest, depositos: 0, retiros: wonAmt, neto: -wonAmt, comision: comision, createdBy: currentUser };
+                        rendimientos.unshift(newRend);
+                        pushData('add_rendimiento', newRend);
+                    }
+
+                    updateAllViews(); 
+                    closeBonoWinModal(); 
+                    pushData('win_giro', { id: gId, amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); else showToast("Error en base de datos", "error"); }); 
+                }
             }
             btn.innerHTML = orig; btn.disabled = false;
         }
@@ -1479,7 +1536,7 @@
                 }
             }
 
-            if (userType === 'cajero_afiliados' || isSuperAdmin || userType === 'admin') {
+            if (userType === 'cajero_afiliados' || isSuperAdmin || userType === 'admin' || userType === 'master') {
                 const influencerStats = {};
                 const baseRend = rendimientos.filter(r => isSameMonth(r.date, melMF));
                 baseRend.forEach(r => {
@@ -1515,8 +1572,60 @@
                         let rate = USERS[rKey] && USERS[rKey].comision ? parseFloat(USERS[rKey].comision) : 20;
                         if (rate > 1) rate = rate / 100;
                         const dynamicComision = r.neto * rate;
-                        return `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td><td class="p-4 text-xs font-bold text-pink-600 uppercase"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${r.referrer}</td><td class="p-4 text-xs font-bold text-slate-800 uppercase">${r.referred}</td><td class="p-4 text-sm font-black text-emerald-500">${fmt(r.depositos)}</td><td class="p-4 text-sm font-black text-rose-500">${fmt(r.retiros)}</td><td class="p-4 text-sm font-black text-pink-600">${fmt(dynamicComision)}</td><td class="p-4 pr-6 text-center"><div class="flex justify-center gap-2"><button onclick="actionEditRend('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'rendimiento')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div></td></tr>`;
+
+                        let btnActions = '';
+                        if (userType === 'master') {
+                            btnActions = `<span class="text-[10px] font-bold text-slate-400">Solo Lectura</span>`;
+                        } else {
+                            btnActions = `<div class="flex justify-center gap-2"><button onclick="actionEditRend('${r.id}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'rendimiento')" class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg"><i class="fas fa-trash"></i></button></div>`;
+                        }
+
+                        return `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td><td class="p-4 text-xs font-bold text-pink-600 uppercase"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${r.referrer}</td><td class="p-4 text-xs font-bold text-slate-800 uppercase">${r.referred}</td><td class="p-4 text-sm font-black text-emerald-500">${fmt(r.depositos)}</td><td class="p-4 text-sm font-black text-rose-500">${fmt(r.retiros)}</td><td class="p-4 text-sm font-black text-pink-600">${fmt(dynamicComision)}</td><td class="p-4 pr-6 text-center">${btnActions}</td></tr>`;
                     }).join('') || `<tr><td colspan="7" class="p-6 text-center text-sm text-slate-400">No hay movimientos cargados este mes.</td></tr>`;
+                }
+            }
+
+            // ALERTA INACTIVOS (Solo para Admin, Master, y Superadmin)
+            if (userType === 'admin' || userType === 'master' || isSuperAdmin) {
+                const todayDate = new Date();
+                todayDate.setHours(0,0,0,0);
+                const lastActivityMap = {};
+                
+                rendimientos.forEach(r => {
+                    const rDate = new Date(r.date);
+                    if (!lastActivityMap[r.referred] || rDate > lastActivityMap[r.referred].date) {
+                        lastActivityMap[r.referred] = { date: rDate, referrer: r.referrer };
+                    }
+                });
+                
+                referrals.forEach(ref => {
+                    if (!lastActivityMap[ref.referred]) {
+                        lastActivityMap[ref.referred] = { date: new Date(ref.date), referrer: ref.referrer };
+                    }
+                });
+
+                const inactiveData = [];
+                for (const [player, data] of Object.entries(lastActivityMap)) {
+                    const diffTime = todayDate - data.date;
+                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                    if (diffDays > 10) {
+                        inactiveData.push({ player, referrer: data.referrer, lastDate: data.date, days: diffDays });
+                    }
+                }
+                
+                inactiveData.sort((a,b) => b.days - a.days);
+
+                const tbodyInactivos = document.getElementById('table-inactivos-list');
+                if (tbodyInactivos) {
+                    tbodyInactivos.innerHTML = inactiveData.map(d => `
+                        <tr class="hover:bg-slate-50 border-b border-slate-50 transition-colors">
+                            <td class="p-4 pl-6 text-xs font-bold text-indigo-600 uppercase" data-label="Influencer"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${d.referrer}</td>
+                            <td class="p-4 text-xs font-bold text-slate-800 uppercase" data-label="Jugador">${d.player}</td>
+                            <td class="p-4 text-xs font-medium text-slate-600" data-label="Último Mov.">${fmtDate(d.lastDate)}</td>
+                            <td class="p-4 text-sm font-black text-rose-600" data-label="Días Inactivo">${d.days} días</td>
+                            <td class="p-4 text-center" data-label="Estado"><span class="bg-rose-100 text-rose-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase"><i class="fas fa-exclamation-triangle mr-1"></i>Alerta</span></td>
+                        </tr>
+                    `).join('') || `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">Excelente. Todos los jugadores están activos.</td></tr>`;
                 }
             }
 
