@@ -230,7 +230,7 @@
                     <div class="overflow-x-auto mt-4">
                         <table class="w-full text-left border-collapse resp-table">
                             <thead class="bg-indigo-50 border-b border-indigo-100 text-[10px] font-black text-indigo-800 uppercase hidden md:table-header-group">
-                                <tr><th class="p-3 pl-4">Influyente</th><th class="p-3">Total Referidos</th><th class="p-3">Depósitos</th><th class="p-3">Retiros</th><th class="p-3">Neto</th><th class="p-3 pr-4 text-right">Comisión Pagar</th></tr>
+                                <tr><th class="p-3 pl-4">Influyente</th><th class="p-3">Total Referidos</th><th class="p-3">Depósitos</th><th class="p-3">Retiros</th><th class="p-3">Neto</th><th class="p-3 text-right">Comisión Plataforma (5%)</th><th class="p-3 pr-4 text-right">Comisión Pagar</th></tr>
                             </thead>
                             <tbody id="gus-table-influencers" class="divide-y divide-slate-100 text-sm"></tbody>
                         </table>
@@ -643,10 +643,11 @@
                                 <label class="text-xs font-bold mr-2 text-purple-200">Mes:</label><input type="month" id="inf-month-filter" onchange="updateAllViews()" class="bg-transparent text-sm font-bold text-white outline-none">
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
                             <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-sm border border-white/20"><p class="text-[10px] font-black text-purple-200 uppercase tracking-widest mb-1">Total Referidos</p><h3 class="text-3xl font-black text-white" id="inf-dash-qty">0</h3></div>
                             <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-sm border border-white/20"><p class="text-[10px] font-black text-purple-200 uppercase tracking-widest mb-1">Depósitos Red</p><h3 class="text-3xl font-black text-emerald-400" id="inf-dash-dep">$0.00</h3></div>
                             <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-sm border border-white/20"><p class="text-[10px] font-black text-purple-200 uppercase tracking-widest mb-1">Retiros Red</p><h3 class="text-3xl font-black text-rose-400" id="inf-dash-ret">$0.00</h3></div>
+                            <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-sm border border-white/20"><p class="text-[10px] font-black text-purple-200 uppercase tracking-widest mb-1">Neto Red</p><h3 class="text-3xl font-black text-blue-400" id="inf-dash-neto">$0.00</h3></div>
                             <div class="bg-gradient-to-br from-amber-400 to-orange-500 p-5 rounded-2xl shadow-inner border border-amber-300 relative overflow-hidden"><i class="fas fa-coins absolute -right-2 -bottom-2 text-6xl text-white/20"></i><p class="text-[10px] font-black text-amber-900 uppercase tracking-widest mb-1 relative z-10" id="inf-dash-com-label">Mi Ganancia</p><h3 class="text-3xl font-black text-white relative z-10" id="inf-dash-com">$0.00</h3></div>
                         </div>
                     </div>
@@ -1341,6 +1342,7 @@
             if (isNaN(wonAmt) || wonAmt < 0) { showToast("Ingrese un valor numérico válido", "error"); return; }
             
             const btn = document.getElementById('btn-bono-win-confirm'); const orig = btn.innerHTML; btn.innerHTML = 'Guardando...'; btn.disabled = true;
+            const todayStr = new Date().toISOString().split('T')[0];
             
             if (pendingBonoWinId) {
                 const bId = String(pendingBonoWinId);
@@ -1670,8 +1672,11 @@
 
                 const elGusInfTable = document.getElementById('gus-table-influencers');
                 if (elGusInfTable) {
-                    const htmlGusInf = Object.entries(infStatsGus).map(([name, s]) => `<tr class="hover:bg-slate-50 transition-colors border-b border-slate-50"><td class="p-3 pl-4 text-xs font-bold text-indigo-600 uppercase" data-label="Influyente"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${name}</td><td class="p-3 text-xs font-bold text-slate-700 text-center" data-label="Total Referidos">${s.refs}</td><td class="p-3 text-sm font-black text-emerald-500" data-label="Depósitos">${fmt(s.dep)}</td><td class="p-3 text-sm font-black text-rose-500" data-label="Retiros">${fmt(s.ret)}</td><td class="p-3 text-sm font-black text-slate-800" data-label="Neto">${fmt(s.net)}</td><td class="p-3 pr-4 text-sm font-black text-purple-600 text-right" data-label="Comisión Pagar">${fmt(s.com)}</td></tr>`).join('');
-                    elGusInfTable.innerHTML = htmlGusInf || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">No hay datos de influyentes para este mes.</td></tr>`;
+                    const htmlGusInf = Object.entries(infStatsGus).map(([name, s]) => {
+                        const comPlataforma = s.net * 0.05;
+                        return `<tr class="hover:bg-slate-50 transition-colors border-b border-slate-50"><td class="p-3 pl-4 text-xs font-bold text-indigo-600 uppercase" data-label="Influyente"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${name}</td><td class="p-3 text-xs font-bold text-slate-700 text-center" data-label="Total Referidos">${s.refs}</td><td class="p-3 text-sm font-black text-emerald-500" data-label="Depósitos">${fmt(s.dep)}</td><td class="p-3 text-sm font-black text-rose-500" data-label="Retiros">${fmt(s.ret)}</td><td class="p-3 text-sm font-black text-slate-800" data-label="Neto">${fmt(s.net)}</td><td class="p-3 text-sm font-black text-blue-600 text-right" data-label="Comisión Plataforma (5%)">${fmt(comPlataforma)}</td><td class="p-3 pr-4 text-sm font-black text-purple-600 text-right" data-label="Comisión Pagar">${fmt(s.com)}</td></tr>`;
+                    }).join('');
+                    elGusInfTable.innerHTML = htmlGusInf || `<tr><td colspan="7" class="p-6 text-center text-sm text-slate-400">No hay datos de influyentes para este mes.</td></tr>`;
                 }
 
                 let displayGiros = [...giros];
@@ -1835,6 +1840,7 @@
                 const elInfQty = document.getElementById('inf-dash-qty'); if(elInfQty) elInfQty.innerText = myReferrals.length;
                 const elInfDep = document.getElementById('inf-dash-dep'); if(elInfDep) elInfDep.innerText = fmt(myRendimientos.reduce((s, r) => s + r.depositos, 0));
                 const elInfRet = document.getElementById('inf-dash-ret'); if(elInfRet) elInfRet.innerText = fmt(myRendimientos.reduce((s, r) => s + r.retiros, 0));
+                const elInfNeto = document.getElementById('inf-dash-neto'); if(elInfNeto) elInfNeto.innerText = fmt(myRendimientos.reduce((s, r) => s + r.neto, 0));
                 const elInfCom = document.getElementById('inf-dash-com'); if(elInfCom) elInfCom.innerText = fmt(myRendimientos.reduce((s, r) => s + (r.neto * customRate), 0));
 
                 const labelGanancia = document.getElementById('inf-dash-com-label');
