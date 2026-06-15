@@ -162,7 +162,7 @@
                         <h2 class="text-sm font-black text-slate-800"><i class="fas fa-chart-line text-indigo-500 mr-2"></i> Rendimiento Mensual</h2>
                         <p class="text-[10px] text-slate-400 mt-1">Mostrando datos del mes seleccionado.</p>
                     </div>
-                    <input type="month" id="dash-month-filter" onchange="updateAllViews()" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 w-full sm:w-auto">
+                    <input type="month" id="dash-month-filter" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 w-full sm:w-auto">
                 </div>
 
                 <!-- PANELES Y GRÁFICOS PRIVADOS (JESÚS Y TITO) -->
@@ -250,6 +250,7 @@
                                 <tbody id="dash-table-body"></tbody>
                             </table>
                         </div>
+                        <div id="pagination-dash" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-dash">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('dash', -1)" id="btn-prev-dash" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-dash">1</span> / <span id="page-tot-dash">1</span></span><button onclick="changePage('dash', 1)" id="btn-next-dash" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                         <div id="dash-empty-state" class="hidden flex-col items-center justify-center p-12 text-center"><div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 text-2xl mb-4"><i class="fas fa-inbox"></i></div><h3 class="text-sm font-bold text-slate-700">No hay registros este mes</h3></div>
                     </div>
                 </div>
@@ -309,6 +310,7 @@
                                 <tbody id="audit-table-body"></tbody>
                             </table>
                         </div>
+                        <div id="pagination-audit" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-audit">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('audit', -1)" id="btn-prev-audit" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-audit">1</span> / <span id="page-tot-audit">1</span></span><button onclick="changePage('audit', 1)" id="btn-next-audit" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                         <div id="audit-empty-state" class="hidden flex-col items-center justify-center p-12 text-center"><div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 text-2xl mb-4"><i class="fas fa-search"></i></div><h3 class="text-sm font-bold text-slate-700">No hay registros con estos filtros</h3></div>
                     </div>
                 </div>
@@ -327,7 +329,7 @@
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
                         <div class="px-6 py-4 bg-slate-50/50 flex items-center justify-between">
                             <h3 class="text-sm font-black text-slate-700">Historial de Adelantos</h3>
-                            <input type="month" id="gus-month-filter" onchange="updateAllViews()" class="bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold outline-none focus:border-amber-500">
+                            <input type="month" id="gus-month-filter" class="bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold outline-none focus:border-amber-500">
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse resp-table">
@@ -337,6 +339,7 @@
                                 <tbody id="table-gussepy-advances"></tbody>
                             </table>
                         </div>
+                        <div id="pagination-gussepy" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-gussepy">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('gussepy', -1)" id="btn-prev-gussepy" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-gussepy">1</span> / <span id="page-tot-gussepy">1</span></span><button onclick="changePage('gussepy', 1)" id="btn-next-gussepy" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                     </div>
                 </div>
             </div>
@@ -346,7 +349,7 @@
                 <div class="max-w-6xl mx-auto space-y-6">
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-rose-100 flex items-center justify-between">
                         <h2 class="text-sm font-black text-rose-900"><i class="fas fa-calendar-alt text-rose-500 mr-2"></i> Mes a Consultar:</h2>
-                        <input type="month" id="bonos-month-filter" onchange="updateAllViews()" class="bg-rose-50 border border-rose-200 rounded-xl px-4 py-2 text-sm font-bold text-rose-800 outline-none focus:border-rose-500">
+                        <input type="month" id="bonos-month-filter" class="bg-rose-50 border border-rose-200 rounded-xl px-4 py-2 text-sm font-bold text-rose-800 outline-none focus:border-rose-500">
                     </div>
 
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -409,6 +412,7 @@
                                 <tbody id="table-bonos-list"></tbody>
                             </table>
                         </div>
+                        <div id="pagination-bonos" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-bonos">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('bonos', -1)" id="btn-prev-bonos" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-bonos">1</span> / <span id="page-tot-bonos">1</span></span><button onclick="changePage('bonos', 1)" id="btn-next-bonos" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                     </div>
                 </div>
             </div>
@@ -469,6 +473,7 @@
                                 <tbody id="table-giros-list"></tbody>
                             </table>
                         </div>
+                        <div id="pagination-giros" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-giros">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('giros', -1)" id="btn-prev-giros" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-giros">1</span> / <span id="page-tot-giros">1</span></span><button onclick="changePage('giros', 1)" id="btn-next-giros" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                     </div>
                 </div>
             </div>
@@ -521,6 +526,7 @@
                                 <tbody id="table-ref-list"></tbody>
                             </table>
                         </div>
+                        <div id="pagination-ref" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-ref">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('ref', -1)" id="btn-prev-ref" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-ref">1</span> / <span id="page-tot-ref">1</span></span><button onclick="changePage('ref', 1)" id="btn-next-ref" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                     </div>
                 </div>
             </div>
@@ -610,6 +616,7 @@
                                 <tbody id="mel-table-history"></tbody>
                             </table>
                         </div>
+                        <div id="pagination-mel" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-mel">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('mel', -1)" id="btn-prev-mel" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-mel">1</span> / <span id="page-tot-mel">1</span></span><button onclick="changePage('mel', 1)" id="btn-next-mel" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                     </div>
                 </div>
             </div>
@@ -629,6 +636,7 @@
                                 <tbody id="table-inactivos-list"></tbody>
                             </table>
                         </div>
+                        <div id="pagination-inactivos" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-inactivos">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('inactivos', -1)" id="btn-prev-inactivos" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-inactivos">1</span> / <span id="page-tot-inactivos">1</span></span><button onclick="changePage('inactivos', 1)" id="btn-next-inactivos" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                     </div>
                 </div>
             </div>
@@ -640,7 +648,7 @@
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
                             <h2 class="text-2xl font-black mb-1">Mi Panel de Afiliado VIP</h2>
                             <div class="flex items-center bg-white/10 p-2 rounded-xl border border-white/20">
-                                <label class="text-xs font-bold mr-2 text-purple-200">Mes:</label><input type="month" id="inf-month-filter" onchange="updateAllViews()" class="bg-transparent text-sm font-bold text-white outline-none">
+                                <label class="text-xs font-bold mr-2 text-purple-200">Mes:</label><input type="month" id="inf-month-filter" class="bg-transparent text-sm font-bold text-white outline-none">
                             </div>
                         </div>
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
@@ -652,7 +660,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-white border border-slate-200 p-3 rounded-2xl shadow-sm mb-4"><div class="flex items-center w-full"><input type="text" id="inf-search" onkeyup="updateAllViews()" placeholder="Buscar jugador referido..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-purple-500"></div></div>
+                    <div class="bg-white border border-slate-200 p-3 rounded-2xl shadow-sm mb-4"><div class="flex items-center w-full"><input type="text" id="inf-search" placeholder="Buscar jugador referido..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-purple-500"></div></div>
 
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
                         <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50"><h3 class="text-lg font-black text-slate-800">Desglose de Ganancias por Jugador</h3><p class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">Haz clic en un jugador para ver el historial diario</p></div>
@@ -664,6 +672,7 @@
                                 <tbody id="inf-table-body"></tbody>
                             </table>
                         </div>
+                        <div id="pagination-infdash" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-infdash">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('infdash', -1)" id="btn-prev-infdash" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-infdash">1</span> / <span id="page-tot-infdash">1</span></span><button onclick="changePage('infdash', 1)" id="btn-next-infdash" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                     </div>
                 </div>
             </div>
@@ -677,10 +686,10 @@
                             <p class="text-xs text-purple-200">Revisa los movimientos diarios de tus afiliados.</p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                            <select id="inf-detail-player" onchange="updateAllViews()" class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-bold text-white outline-none w-full sm:w-48">
+                            <select id="inf-detail-player" onchange="resetPagesAndUpdate()" class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-bold text-white outline-none w-full sm:w-48">
                                 <option value="" class="text-slate-800">Seleccionar Jugador...</option>
                             </select>
-                            <input type="month" id="inf-detail-month" onchange="updateAllViews()" class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-bold text-white outline-none w-full sm:w-auto">
+                            <input type="month" id="inf-detail-month" class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-bold text-white outline-none w-full sm:w-auto">
                         </div>
                     </div>
 
@@ -696,6 +705,7 @@
                                 <tbody id="inf-detail-table-body"></tbody>
                             </table>
                         </div>
+                        <div id="pagination-infdetail" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-infdetail">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('infdetail', -1)" id="btn-prev-infdetail" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-infdetail">1</span> / <span id="page-tot-infdetail">1</span></span><button onclick="changePage('infdetail', 1)" id="btn-next-infdetail" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                     </div>
                 </div>
             </div>
@@ -804,12 +814,63 @@
         const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
         const fmtDate = dStr => { if(!dStr) return ''; const d = new Date(dStr); d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }); };
 
+        // SISTEMA DE PAGINACIÓN
+        const PAGE_SIZE = 15;
+        let pages = { dash: 1, audit: 1, gussepy: 1, bonos: 1, giros: 1, ref: 1, mel: 1, inactivos: 1, infdash: 1, infdetail: 1 };
+
+        function resetPagesAndUpdate() {
+            Object.keys(pages).forEach(k => pages[k] = 1);
+            updateAllViews();
+        }
+
+        function changePage(type, delta) {
+            pages[type] += delta;
+            updateAllViews();
+        }
+
+        function paginate(dataArray, type) {
+            const total = dataArray.length;
+            const totalPages = Math.ceil(total / PAGE_SIZE) || 1;
+            if (pages[type] > totalPages) pages[type] = totalPages;
+            if (pages[type] < 1) pages[type] = 1;
+            
+            const start = (pages[type] - 1) * PAGE_SIZE;
+            const end = start + PAGE_SIZE;
+            
+            const elNum = document.getElementById(`page-num-${type}`);
+            const elTot = document.getElementById(`page-tot-${type}`);
+            const elTotalReg = document.getElementById(`total-reg-${type}`);
+            const btnPrev = document.getElementById(`btn-prev-${type}`);
+            const btnNext = document.getElementById(`btn-next-${type}`);
+            const container = document.getElementById(`pagination-${type}`);
+            
+            if(elNum) elNum.innerText = pages[type];
+            if(elTot) elTot.innerText = totalPages;
+            if(elTotalReg) elTotalReg.innerText = total;
+            
+            if(btnPrev) btnPrev.disabled = pages[type] === 1;
+            if(btnNext) btnNext.disabled = pages[type] === totalPages;
+            
+            if (container) {
+                if (total === 0) container.classList.add('hidden');
+                else { container.classList.remove('hidden'); container.classList.add('flex'); }
+            }
+            
+            return dataArray.slice(start, end);
+        }
+
         window.onload = () => {
             const savedData = localStorage.getItem('sb_user_data');
             if (savedData) { const ud = JSON.parse(savedData); if (ud.baseType === 'superadmin') { isSuperAdmin = true; currentUser = ud.id; loginUI(USERS[ud.id] || ud); } else { currentUser = ud.id; loginUI(ud); } } else { showScreen('login'); }
             
             const now = new Date(); const currentMonthStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-            ['dash-month-filter', 'bonos-month-filter', 'mel-month-filter', 'inf-month-filter', 'giros-month-filter', 'gus-month-filter', 'inf-detail-month'].forEach(id => { const el = document.getElementById(id); if (el) el.value = currentMonthStr; });
+            ['dash-month-filter', 'bonos-month-filter', 'mel-month-filter', 'inf-month-filter', 'giros-month-filter', 'gus-month-filter', 'inf-detail-month'].forEach(id => { 
+                const el = document.getElementById(id); 
+                if (el) { el.value = currentMonthStr; el.onchange = resetPagesAndUpdate; } 
+            });
+
+            const searchInf = document.getElementById('inf-search');
+            if (searchInf) searchInf.onkeyup = resetPagesAndUpdate;
 
             const todayStr = now.toISOString().split('T')[0]; 
             ['reg-date', 'gus-date', 'bono-date', 'ref-date', 'rend-date', 'giro-date', 'upload-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = todayStr; });
@@ -1005,7 +1066,7 @@
                         });
                     }
                     records = data.data || []; advances = data.advances || []; bonos = data.bonos || []; giros = data.giros || []; referrals = data.referrals || []; rendimientos = data.rendimientos || []; 
-                    updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns(); 
+                    resetPagesAndUpdate(); updateBonoDatalist(); updateMelanieDropdowns(); 
                 }
             } catch (err) { console.error(err); if (!isBackground) showToast("Aviso: Conectando en modo local/cache. Verifica tu red.", "error"); } 
             finally {
@@ -1204,10 +1265,26 @@
             let amt = parseFloat(document.getElementById('reg-amount').value.replace(',', '.'));
             if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); btn.innerHTML = orig; btn.disabled = false; return; }
             const isDebit = document.querySelector('input[name="reg-type"]:checked').value === 'debito'; if (isDebit) amt = -Math.abs(amt);
-            const ud = JSON.parse(localStorage.getItem('sb_user_data')); let assigned = currentUser;
-            if (ud && (ud.type === 'admin' || isSuperAdmin)) { const assignRadio = document.querySelector('input[name="reg-assign"]:checked'); assigned = assignRadio ? assignRadio.value : currentUser; }
+            
+            const ud = JSON.parse(localStorage.getItem('sb_user_data')); 
+            let assigned = currentUser;
+            const adminSelectUserBlock = document.getElementById('admin-select-user');
+            
+            if (ud && (ud.type === 'admin' || isSuperAdmin)) {
+                if (adminSelectUserBlock && !adminSelectUserBlock.classList.contains('hidden')) {
+                    const assignRadio = document.querySelector('input[name="reg-assign"]:checked');
+                    if (assignRadio) assigned = assignRadio.value;
+                }
+            }
+            
             const newTx = { id: 'TX' + Date.now(), date: document.getElementById('reg-date').value, amount: amt, concept: document.getElementById('reg-concept').value.trim() || (isDebit ? 'Débito' : 'Ingreso'), assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: '' };
-            records.unshift(newTx); updateAllViews(); document.getElementById('reg-amount').value = ''; document.getElementById('reg-concept').value = ''; document.querySelector('input[name="reg-type"][value="ingreso"]').checked = true; toggleAmountStyle();
+            records.unshift(newTx); updateAllViews(); 
+            
+            document.getElementById('reg-amount').value = ''; 
+            document.getElementById('reg-concept').value = ''; 
+            document.querySelector('input[name="reg-type"][value="ingreso"]').checked = true; 
+            toggleAmountStyle();
+            
             btn.innerHTML = orig; btn.disabled = false;
             pushData('add', newTx).then(res => { if (res.success) showToast('Registro guardado', 'success'); });
         }
@@ -1388,15 +1465,15 @@
             }
         }
 
-        function applyFilters() { filters.date = document.getElementById('filter-date')?.value || ''; const fUser = document.getElementById('filter-user'); filters.user = fUser ? fUser.value : 'all'; filters.status = document.getElementById('filter-status')?.value || 'all'; filters.amount = document.getElementById('filter-amount')?.value.replace(',', '.') || ''; updateAllViews(); }
-        function clearFilters() { filters = { date: '', user: 'all', status: 'all', amount: '' }; if(document.getElementById('filter-date')) document.getElementById('filter-date').value = ''; const fUser = document.getElementById('filter-user'); if(fUser) fUser.value = 'all'; if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all'; if(document.getElementById('filter-amount')) document.getElementById('filter-amount').value = ''; updateAllViews(); }
+        function applyFilters() { filters.date = document.getElementById('filter-date')?.value || ''; const fUser = document.getElementById('filter-user'); filters.user = fUser ? fUser.value : 'all'; filters.status = document.getElementById('filter-status')?.value || 'all'; filters.amount = document.getElementById('filter-amount')?.value.replace(',', '.') || ''; pages.audit = 1; updateAllViews(); }
+        function clearFilters() { filters = { date: '', user: 'all', status: 'all', amount: '' }; if(document.getElementById('filter-date')) document.getElementById('filter-date').value = ''; const fUser = document.getElementById('filter-user'); if(fUser) fUser.value = 'all'; if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all'; if(document.getElementById('filter-amount')) document.getElementById('filter-amount').value = ''; pages.audit = 1; updateAllViews(); }
         
         function applyBonoFilters() { 
             bonoFilters.date = document.getElementById('filter-bono-date')?.value || ''; 
             bonoFilters.dest = document.getElementById('filter-bono-dest')?.value.trim().toLowerCase() || ''; 
             bonoFilters.amount = document.getElementById('filter-bono-amount')?.value.replace(',', '.') || ''; 
             bonoFilters.agency = document.getElementById('filter-bono-agency')?.value || 'all';
-            updateAllViews(); 
+            pages.bonos = 1; updateAllViews(); 
         }
         function clearBonoFilters() { 
             bonoFilters = { date: '', dest: '', amount: '', agency: 'all' }; 
@@ -1404,7 +1481,7 @@
             if(document.getElementById('filter-bono-dest')) document.getElementById('filter-bono-dest').value = ''; 
             if(document.getElementById('filter-bono-amount')) document.getElementById('filter-bono-amount').value = ''; 
             if(document.getElementById('filter-bono-agency')) document.getElementById('filter-bono-agency').value = 'all'; 
-            updateAllViews(); 
+            pages.bonos = 1; updateAllViews(); 
         }
         
         function applyRefFilters() { 
@@ -1412,7 +1489,7 @@
             refFilters.name = document.getElementById('filter-ref-name')?.value.trim().toLowerCase() || ''; 
             refFilters.cedula = document.getElementById('filter-ref-cedula')?.value.trim() || ''; 
             refFilters.agency = document.getElementById('filter-ref-agency')?.value || 'all';
-            updateAllViews(); 
+            pages.ref = 1; updateAllViews(); 
         }
         function clearRefFilters() { 
             refFilters = { date: '', name: '', cedula: '', agency: 'all' }; 
@@ -1420,35 +1497,35 @@
             if(document.getElementById('filter-ref-name')) document.getElementById('filter-ref-name').value = ''; 
             if(document.getElementById('filter-ref-cedula')) document.getElementById('filter-ref-cedula').value = ''; 
             if(document.getElementById('filter-ref-agency')) document.getElementById('filter-ref-agency').value = 'all'; 
-            updateAllViews(); 
+            pages.ref = 1; updateAllViews(); 
         }
 
         function applyGiroFilters() { 
             giroFilters.date = document.getElementById('filter-giro-date')?.value || ''; 
             giroFilters.dest = document.getElementById('filter-giro-dest')?.value.trim().toLowerCase() || ''; 
             giroFilters.agency = document.getElementById('filter-giro-agency')?.value || 'all';
-            updateAllViews(); 
+            pages.giros = 1; updateAllViews(); 
         }
         function clearGiroFilters() { 
             giroFilters = { date: '', dest: '', agency: 'all' }; 
             if(document.getElementById('filter-giro-date')) document.getElementById('filter-giro-date').value = ''; 
             if(document.getElementById('filter-giro-dest')) document.getElementById('filter-giro-dest').value = ''; 
             if(document.getElementById('filter-giro-agency')) document.getElementById('filter-giro-agency').value = 'all'; 
-            updateAllViews(); 
+            pages.giros = 1; updateAllViews(); 
         }
 
         function applyMelFilters() {
             melFilters.date = document.getElementById('filter-rend-date')?.value || '';
             melFilters.inf = document.getElementById('filter-rend-inf')?.value.trim().toLowerCase() || '';
             melFilters.jug = document.getElementById('filter-rend-jug')?.value.trim().toLowerCase() || '';
-            updateAllViews();
+            pages.mel = 1; updateAllViews();
         }
         function clearRendFilters() {
             melFilters = { date: '', inf: '', jug: '' };
             if(document.getElementById('filter-rend-date')) document.getElementById('filter-rend-date').value = ''; 
             if(document.getElementById('filter-rend-inf')) document.getElementById('filter-rend-inf').value = ''; 
             if(document.getElementById('filter-rend-jug')) document.getElementById('filter-rend-jug').value = '';
-            updateAllViews();
+            pages.mel = 1; updateAllViews();
         }
 
         function viewPlayerDetails(playerName) {
@@ -1467,6 +1544,7 @@
             const mainMonth = document.getElementById('inf-month-filter').value;
             if (document.getElementById('inf-detail-month')) document.getElementById('inf-detail-month').value = mainMonth;
             
+            pages.infdetail = 1;
             switchTab('tab-influencer-details');
             updateAllViews();
         }
@@ -1576,7 +1654,8 @@
                 if (userType === 'user') dashRecords = dashRecords.filter(r => r.assignedTo === currentUser);
                 if (userType === 'master') dashRecords = dashRecords.filter(r => r.amount > 0);
                 dashRecords.sort((a,b) => String(b.id).localeCompare(String(a.id)));
-                renderRecordsTable('dash-table-body', 'dash-empty-state', dashRecords, userType);
+                const paginatedDash = paginate(dashRecords, 'dash');
+                renderRecordsTable('dash-table-body', 'dash-empty-state', paginatedDash, userType);
 
                 let auditRecords = [...records];
                 if (filters.date) {
@@ -1594,19 +1673,21 @@
                 if (filters.status !== 'all') auditRecords = auditRecords.filter(r => r.status === filters.status);
                 if (filters.amount && !isNaN(parseFloat(filters.amount))) auditRecords = auditRecords.filter(r => Math.abs(r.amount) === parseFloat(filters.amount));
                 auditRecords.sort((a,b) => String(b.id).localeCompare(String(a.id)));
-                renderRecordsTable('audit-table-body', 'audit-empty-state', auditRecords, userType);
+                const paginatedAudit = paginate(auditRecords, 'audit');
+                renderRecordsTable('audit-table-body', 'audit-empty-state', paginatedAudit, userType);
 
                 const tbodyGus = document.getElementById('table-gussepy-advances'); 
                 const fAdv = advances.filter(a => isSameMonth(a.date, document.getElementById('gus-month-filter')?.value || globalMF)); fAdv.sort((a,b) => String(b.id).localeCompare(String(a.id)));
                 if (tbodyGus) {
-                    tbodyGus.innerHTML = fAdv.map(a => {
+                    const paginatedGus = paginate(fAdv, 'gussepy');
+                    tbodyGus.innerHTML = paginatedGus.map(a => {
                         let badge = a.status === 'Autorizado' ? `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-crown mr-1"></i>Autorizado</span>` : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Pendiente</span>`;
                         let actions = '';
                         if ((userType === 'master' || isSuperAdmin) && a.status === 'Pendiente') actions = `<button onclick="actionAuthorizeAdvance('${a.id}')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black uppercase rounded-lg">Autorizar</button>`;
                         else if (userType === 'admin' || isSuperAdmin) actions = `<button onclick="actionDelete('${a.id}', 'advance')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>`;
                         else if (userType === 'master') actions = `<span class="text-[10px] text-slate-400 font-bold">Ok</span>`;
                         return `<tr class="hover:bg-slate-50 border-b border-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(a.date)}</td><td class="p-4 text-sm font-black text-amber-600">${fmt(a.amount)}</td><td class="p-4 text-xs font-medium text-slate-600">${a.concept}</td><td class="p-4">${badge}</td><td class="p-4 text-[10px] font-bold text-slate-400 italic">${a.detail || '-'}</td><td class="p-4 pr-6 text-center">${actions}</td></tr>`;
-                    }).join('') || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">Sin adelantos.</td></tr>`;
+                    }).join('') || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">Sin adelantos para mostrar.</td></tr>`;
                 }
             }
 
@@ -1688,7 +1769,8 @@
                 
                 const elTableGiros = document.getElementById('table-giros-list');
                 if(elTableGiros) {
-                    elTableGiros.innerHTML = displayGiros.map(g => {
+                    const paginatedGiros = paginate(displayGiros, 'giros');
+                    elTableGiros.innerHTML = paginatedGiros.map(g => {
                         let statusBadge = (g.status === 'Ganado') ? `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase"><i class="fas fa-trophy mr-1"></i> Ganó ${fmt(g.amountWon)}</span>` : `<span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-[10px] font-black uppercase">Entregado</span>`;
                         let btnAction = (userType === 'bonos' || isSuperAdmin) ? `<div class="flex justify-center gap-2">${g.status !== 'Ganado' ? `<button onclick="actionGiroWin('${g.id}')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase rounded-lg shadow-sm">Ganar</button>` : ''}<button onclick="actionDelete('${g.id}', 'giro')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg flex items-center justify-center"><i class="fas fa-trash"></i></button></div>` : `<span class="text-[10px] text-slate-400 font-bold">Sin Acción</span>`;
                         return `<tr class="hover:bg-slate-50 transition-colors border-b border-rose-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600" data-label="Fecha">${fmtDate(g.date)}</td><td class="p-4 text-xs font-bold text-indigo-600 uppercase flex items-center flex-wrap gap-1" data-label="Jugador"><i class="fas fa-user mr-1 text-slate-400"></i> ${g.dest} <span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">${g.company || 'Sepybet'}</span></td><td class="p-4 text-xs font-bold text-slate-800" data-label="Juego">${g.game}</td><td class="p-4 text-sm font-black text-slate-800" data-label="Giros">${g.qty} <i class="fas fa-sync text-indigo-300"></i></td><td class="p-4" data-label="Estado">${statusBadge}</td><td class="p-4 pr-6 text-center" data-label="Acción">${btnAction}</td></tr>`;
@@ -1705,7 +1787,8 @@
                 
                 const elTableBonos = document.getElementById('table-bonos-list');
                 if(elTableBonos) {
-                    elTableBonos.innerHTML = displayBonos.map(b => {
+                    const paginatedBonos = paginate(displayBonos, 'bonos');
+                    elTableBonos.innerHTML = paginatedBonos.map(b => {
                         let statusBadge = (b.status === 'Ganado') ? `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase"><i class="fas fa-trophy mr-1"></i> Ganó ${fmt(b.amountWon)}</span>` : `<span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-[10px] font-black uppercase">Entregado</span>`;
                         let companyBadge = b.company === 'Chichesepy' ? `<span class="bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-2">Chiche</span>` : `<span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-2">Sepybet</span>`;
                         let btnAction = (userType === 'bonos' || isSuperAdmin) ? `<div class="flex justify-center gap-2">${b.status !== 'Ganado' ? `<button onclick="actionBonoWin('${b.id}')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase rounded-lg shadow-sm">Ganar</button>` : ''}<button onclick="actionDelete('${b.id}', 'bono')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg flex items-center justify-center"><i class="fas fa-trash"></i></button></div>` : `<span class="text-[10px] text-slate-400 font-bold">Sin Acción</span>`;
@@ -1723,7 +1806,8 @@
 
                 const elTableRef = document.getElementById('table-ref-list');
                 if(elTableRef) {
-                    elTableRef.innerHTML = displayRef.map(r => {
+                    const paginatedRef = paginate(displayRef, 'ref');
+                    elTableRef.innerHTML = paginatedRef.map(r => {
                         let btnActionRef = (userType === 'bonos' || isSuperAdmin) ? `<button onclick="actionDelete('${r.id}', 'referral')" class="w-8 h-8 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-lg flex items-center justify-center mx-auto"><i class="fas fa-trash"></i></button>` : `<span class="text-[10px] text-slate-400 font-bold">Sin Acción</span>`;
                         let infBadge = r.isInfluencer ? `<span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">VIP</span>` : '';
                         let companyBadge = (r.company === 'Chichesepy') ? `<span class="bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">Chiche</span>` : `<span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ml-1">Sepybet</span>`;
@@ -1763,7 +1847,8 @@
                     if(melFilters.jug) fRendHist = fRendHist.filter(r => r.referred.toLowerCase().includes(melFilters.jug));
                     fRendHist.sort((a,b) => String(b.id).localeCompare(String(a.id)));
 
-                    elMelHistory.innerHTML = fRendHist.map(r => {
+                    const paginatedMel = paginate(fRendHist, 'mel');
+                    elMelHistory.innerHTML = paginatedMel.map(r => {
                         const rKey = String(r.referrer).trim().toLowerCase();
                         let rate = USERS[rKey] && USERS[rKey].comision ? parseFloat(USERS[rKey].comision) : 20;
                         if (rate > 1) rate = rate / 100;
@@ -1777,7 +1862,7 @@
                         }
 
                         return `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-4 pl-6 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td><td class="p-4 text-xs font-bold text-pink-600 uppercase"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${r.referrer}</td><td class="p-4 text-xs font-bold text-slate-800 uppercase">${r.referred}</td><td class="p-4 text-sm font-black text-emerald-500">${fmt(r.depositos)}</td><td class="p-4 text-sm font-black text-rose-500">${fmt(r.retiros)}</td><td class="p-4 text-sm font-black text-pink-600">${fmt(dynamicComision)}</td><td class="p-4 pr-6 text-center">${btnActions}</td></tr>`;
-                    }).join('') || `<tr><td colspan="7" class="p-6 text-center text-sm text-slate-400">No hay movimientos cargados este mes.</td></tr>`;
+                    }).join('') || `<tr><td colspan="7" class="p-6 text-center text-sm text-slate-400">No hay movimientos cargados en esta vista.</td></tr>`;
                 }
             }
 
@@ -1813,7 +1898,8 @@
 
                 const tbodyInactivos = document.getElementById('table-inactivos-list');
                 if (tbodyInactivos) {
-                    tbodyInactivos.innerHTML = inactiveData.map(d => `
+                    const paginatedInactivos = paginate(inactiveData, 'inactivos');
+                    tbodyInactivos.innerHTML = paginatedInactivos.map(d => `
                         <tr class="hover:bg-slate-50 border-b border-slate-50 transition-colors">
                             <td class="p-4 pl-6 text-xs font-bold text-indigo-600 uppercase" data-label="Influencer"><i class="fas fa-bullhorn mr-1 text-slate-400"></i> ${d.referrer}</td>
                             <td class="p-4 text-xs font-bold text-slate-800 uppercase" data-label="Jugador">${d.player}</td>
@@ -1857,9 +1943,9 @@
 
                 const tbodyInf = document.getElementById('inf-table-body');
                 if (tbodyInf) {
-                    const htmlRend = Object.entries(playersRend)
-                        .filter(([name, d]) => name.toLowerCase().includes(searchTxt))
-                        .map(([name, d]) => `<tr class="border-b border-slate-50 hover:bg-slate-100 cursor-pointer transition-colors group" onclick="viewPlayerDetails('${name}')"><td class="p-4 pl-6 text-xs font-bold text-slate-800 uppercase" data-label="Jugador"><i class="fas fa-user mr-1 text-slate-400"></i> ${name}</td><td class="p-4 text-sm font-black text-emerald-500" data-label="Depósitos">${fmt(d.dep)}</td><td class="p-4 text-sm font-black text-rose-500" data-label="Retiros">${fmt(d.ret)}</td><td class="p-4 text-sm font-black text-slate-700" data-label="Neto">${fmt(d.net)}</td><td class="p-4 pr-6 text-right text-sm font-black text-indigo-600" data-label="Comisión">${fmt(d.com)}</td><td class="p-4 text-center hidden md:table-cell text-slate-300 group-hover:text-purple-600 transition-colors"><i class="fas fa-chevron-circle-right"></i></td></tr>`).join('');
+                    const filteredRendEntries = Object.entries(playersRend).filter(([name, d]) => name.toLowerCase().includes(searchTxt));
+                    const paginatedInfDash = paginate(filteredRendEntries, 'infdash');
+                    const htmlRend = paginatedInfDash.map(([name, d]) => `<tr class="border-b border-slate-50 hover:bg-slate-100 cursor-pointer transition-colors group" onclick="viewPlayerDetails('${name}')"><td class="p-4 pl-6 text-xs font-bold text-slate-800 uppercase" data-label="Jugador"><i class="fas fa-user mr-1 text-slate-400"></i> ${name}</td><td class="p-4 text-sm font-black text-emerald-500" data-label="Depósitos">${fmt(d.dep)}</td><td class="p-4 text-sm font-black text-rose-500" data-label="Retiros">${fmt(d.ret)}</td><td class="p-4 text-sm font-black text-slate-700" data-label="Neto">${fmt(d.net)}</td><td class="p-4 pr-6 text-right text-sm font-black text-indigo-600" data-label="Comisión">${fmt(d.com)}</td><td class="p-4 text-center hidden md:table-cell text-slate-300 group-hover:text-purple-600 transition-colors"><i class="fas fa-chevron-circle-right"></i></td></tr>`).join('');
                     tbodyInf.innerHTML = htmlRend || `<tr><td colspan="6" class="p-6 text-center text-sm text-slate-400">Aún no hay datos de rendimiento para este mes.</td></tr>`;
                 }
 
@@ -1883,7 +1969,8 @@
                     if (!detailPlayer && detailRend.length === 0) {
                         tbodyDetail.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">Selecciona un jugador o mes para ver sus movimientos.</td></tr>`;
                     } else {
-                        tbodyDetail.innerHTML = detailRend.map(r => {
+                        const paginatedInfDetail = paginate(detailRend, 'infdetail');
+                        tbodyDetail.innerHTML = paginatedInfDetail.map(r => {
                             const dynCom = r.neto * customRate;
                             return `<tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors"><td class="p-4 pl-6 text-xs font-bold text-slate-600 whitespace-nowrap" data-label="Fecha">${fmtDate(r.date)} <span class="block md:hidden text-[9px] text-purple-500 uppercase mt-0.5">${r.referred}</span></td><td class="p-4 text-sm font-black text-emerald-500" data-label="Depósitos">${fmt(r.depositos)}</td><td class="p-4 text-sm font-black text-rose-500" data-label="Retiros">${fmt(r.retiros)}</td><td class="p-4 text-sm font-black text-slate-700" data-label="Neto">${fmt(r.neto)}</td><td class="p-4 pr-6 text-right text-sm font-black text-purple-600" data-label="Comisión">${fmt(dynCom)}</td></tr>`;
                         }).join('') || `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-400">No hay movimientos registrados en esta fecha.</td></tr>`;
@@ -1995,7 +2082,7 @@
                 }
             }
             
-            updateAllViews();
+            resetPagesAndUpdate();
             showToast(`Carga masiva completa: ${successCount} registrados.`, 'success');
             const container = document.getElementById('upload-preview-container');
             container.classList.add('hidden');
