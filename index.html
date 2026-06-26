@@ -11,7 +11,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
-        .glass-dark { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transform: translateZ(0); }
+        .glass-dark { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); transform: translateZ(0); }
         .login-bg { background: radial-gradient(circle at top right, #1e1b4b, #0f172a 40%, #020617); }
         * { -webkit-tap-highlight-color: transparent; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -26,8 +26,6 @@
         .theme-maria .text-indigo-600 { color: #e11d48 !important; }
         input[type="date"], input[type="month"], input[type="datetime-local"] { -webkit-appearance: none; appearance: none; min-width: 0; width: 100%; background-color: transparent; }
         input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type="number"] { -moz-appearance: textfield; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
         .toggle-checkbox:checked { right: 0; border-color: #4f46e5; }
         .toggle-checkbox:checked + .toggle-label { background-color: #4f46e5; }
         .toggle-checkbox:checked + .toggle-label::after { transform: translateX(100%); border-color: white; }
@@ -39,19 +37,15 @@
             .resp-table td:last-child { border-bottom: none !important; justify-content: center; padding-top: 1rem !important; }
             .resp-table td::before { content: attr(data-label); font-size: 0.65rem; font-weight: 900; text-transform: uppercase; color: #94a3b8; text-align: left; margin-right: 1rem;}
         }
-        .sidebar { transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
-        .sidebar.open { transform: translateX(0); }
-        .overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease-in-out; }
-        .overlay.open { opacity: 1; pointer-events: auto; }
     </style>
 </head>
 <body class="text-slate-800 antialiased selection:bg-indigo-200">
     <div id="toast-container" class="fixed bottom-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
+    <!-- PANTALLA LOGIN -->
     <div id="screen-login" class="fixed inset-0 z-40 login-bg flex flex-col items-center justify-center p-4">
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div class="absolute -top-[30%] -left-[10%] w-[70%] h-[70%] rounded-full bg-blue-600/20 blur-[100px]"></div>
-            <div class="absolute bottom-[10%] -right-[10%] w-[60%] h-[60%] rounded-full bg-indigo-600/20 blur-[100px]"></div>
         </div>
         <div class="w-full max-w-sm glass-dark border border-slate-700/50 rounded-3xl shadow-2xl p-8 relative z-10 fade-in">
             <div class="text-center mb-8">
@@ -60,26 +54,14 @@
                 <p class="text-slate-400 text-xs font-medium uppercase tracking-widest">Plataforma Integral</p>
             </div>
             <form id="login-form" class="space-y-5">
-                <div>
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Usuario / ID</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fas fa-user-shield"></i></div>
-                        <input type="text" id="login-user" required placeholder="Usuario..." class="block w-full pl-10 pr-4 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl text-sm font-bold text-slate-200 outline-none focus:border-indigo-500">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Clave</label>
-                    <div class="relative flex items-center">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fas fa-lock"></i></div>
-                        <input type="password" id="login-pass" required placeholder="••••••••" class="block w-full pl-10 pr-10 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl text-sm font-bold text-slate-200 outline-none focus:border-indigo-500">
-                        <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300"><i class="fas fa-eye" id="eye-icon"></i></button>
-                    </div>
-                </div>
+                <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Usuario / ID</label><div class="relative"><div class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fas fa-user-shield"></i></div><input type="text" id="login-user" required placeholder="Usuario..." class="block w-full pl-10 pr-4 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl text-sm font-bold text-slate-200 outline-none focus:border-indigo-500"></div></div>
+                <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Clave</label><div class="relative flex items-center"><div class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fas fa-lock"></i></div><input type="password" id="login-pass" required placeholder="••••••••" class="block w-full pl-10 pr-10 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl text-sm font-bold text-slate-200 outline-none focus:border-indigo-500"><button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300"><i class="fas fa-eye" id="eye-icon"></i></button></div></div>
                 <button type="submit" class="w-full py-3.5 mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-sm font-bold rounded-xl shadow-lg transition-transform active:scale-[0.98]">Ingresar</button>
             </form>
         </div>
     </div>
 
+    <!-- APP PRINCIPAL -->
     <div id="screen-app" class="hidden min-h-screen flex flex-col">
         <nav class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-30 shadow-sm text-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -475,7 +457,7 @@
     <div id="modal-superadmin" class="fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in border border-slate-700"><div class="p-6 text-center border-b border-slate-100 bg-slate-800"><h3 class="text-lg font-black text-white">Panel de Supervisor</h3></div><div class="p-6 space-y-4"><select id="superadmin-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700"><option value="1311397689">Vista Global (Supervisor)</option></select><div class="flex gap-3"><button onclick="closeSuperAdminSwitcher()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cerrar</button><button onclick="confirmSwitchUser()" class="flex-1 py-3 bg-slate-800 text-white rounded-xl font-bold">Ingresar</button></div></div></div></div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyAENqjNyYjr749Hr3GOOLmdl-xUvhVdv87kFXgOxlDJUdvkM_AS5I_xUAnH6Vw6YtUqg/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyUx3G_kaO_X--M7-c3MnFgL7dlT7QvcnOH27VqzQQCtXHyc44Vox1AtbkP4tjikgrOsg/exec';
 
         let USERS = { 'michelle': { name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600', comision: 20 }, 'jesus': { name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]', comision: 20 }, 'tito': { name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]', comision: 20 }, 'gussepy': { name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600', comision: 20 }, 'emilia': { name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600', comision: 20 }, 'melanie': { name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500', comision: 20 }, 'admin': { name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600', comision: 20 }, '1311397689': { name: 'Supervisor', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800', comision: 20 } };
         
@@ -488,30 +470,54 @@
 
         const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
         
-        // CORRECCIÓN: Fechas seguras para Safari y móviles evitando saltos de zona horaria
+        function parseExcelDate(dateVal) {
+            if (!dateVal) return new Date();
+            if (typeof dateVal === 'number') {
+                return new Date(1899, 11, 30 + dateVal);
+            }
+            let s = String(dateVal).trim().replace(/"/g, '');
+            let datePart = s;
+            let timePart = "12:00";
+            
+            if (s.includes(',')) {
+                let parts = s.split(',');
+                datePart = parts[0].trim();
+                timePart = parts[1].trim();
+            } else if (s.includes(' ')) {
+                let parts = s.split(' ');
+                datePart = parts[0].trim();
+                timePart = parts.slice(1).join(' ').trim();
+            }
+            
+            let dParts = datePart.split(/[-/]/);
+            let y = 0, m = 0, d = 0;
+            if (dParts.length === 3) {
+                y = parseInt(dParts[0]);
+                if (y < 100) y += 2000;
+                m = parseInt(dParts[1]) - 1;
+                d = parseInt(dParts[2]);
+            } else {
+                let fd = new Date(s.replace(/-/g, '/'));
+                return isNaN(fd.getTime()) ? new Date() : fd;
+            }
+            
+            let tParts = timePart.match(/(\d+):(\d+)\s*(AM|PM|am|pm)?/i);
+            let h = 12, min = 0;
+            if (tParts) {
+                h = parseInt(tParts[1]);
+                min = parseInt(tParts[2]);
+                let ampm = tParts[3] ? tParts[3].toUpperCase() : null;
+                if (ampm === 'PM' && h < 12) h += 12;
+                if (ampm === 'AM' && h === 12) h = 0;
+            }
+            
+            return new Date(y, m, d, h, min, 0);
+        }
+        
         function excelToISO(serial) {
-            if (!serial) return new Date().toISOString().slice(0, 16);
-            if (typeof serial === 'number') {
-                const excelEpoch = new Date(1899, 11, 30);
-                const date = new Date(excelEpoch.getTime() + serial * 86400000);
-                return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-            }
-            
-            // Si es un string (como lo bota el banco de Guayaquil/Pichincha) lo parseamos manual
-            let strDate = String(serial).trim().replace(/\//g, '-');
-            
-            // Safari detesta formatos como "2026-6-25 10:00" y los vuelve Invalid Date, así que forzamos la T
-            if(strDate.includes(' ') && !strDate.includes('T')) {
-                strDate = strDate.replace(' ', 'T');
-            }
-            
-            // Si solo es fecha "YYYY-MM-DD", agregamos hora neutra
-            if(!strDate.includes('T')) strDate += "T12:00:00"; 
-            
-            let d = new Date(strDate);
-            if (isNaN(d.getTime())) return new Date().toISOString().slice(0, 16);
-            
-            return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            let d = parseExcelDate(serial);
+            const pad = n => n.toString().padStart(2, '0');
+            return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
         }
 
         const fmtDate = dStr => { 
@@ -760,7 +766,6 @@
                     }
                     
                     bankUploadData.forEach(tx => { if(!tx.receipt) tx.receipt = "Sin Ref"; });
-                    
                     renderBankPreview(); showToast(`Detectados ${bankUploadData.length} registros`, 'success');
                 } catch(err) { showToast("Error leyendo archivo", "error"); console.error(err); }
             };
@@ -776,7 +781,8 @@
 
         async function submitBankData() {
             if(!bankUploadData.length) return;
-            const btn = document.getElementById('btn-upload-bank'); btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo Lote de Registros...'; btn.disabled = true;
+            const btn = document.getElementById('btn-upload-bank'); 
+            btn.disabled = true;
             
             let assigned = currentUser; 
             const adminBlockBank = document.getElementById('admin-select-user-bank');
@@ -785,29 +791,46 @@
                 if (assignRadio) assigned = assignRadio.value;
             }
 
+            // Ordenamiento estricto cronológico
             bankUploadData.sort((a, b) => new Date(a.date) - new Date(b.date));
 
             let newTxs = [];
             for(let i=0; i<bankUploadData.length; i++) {
                 const r = bankUploadData[i];
-                newTxs.push({ id: 'TX_BNK_' + Date.now() + '_' + i, date: r.date, amount: r.amount, concept: r.concept, assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: r.receipt });
+                newTxs.push({ id: 'TX_BNK_' + Date.now() + '_' + i, date: r.date, amount: r.amount, concept: r.concept, assignedTo: assigned, createdBy: currentUser, status: 'Verificado', receipt: r.receipt });
             }
 
-            const res = await pushData('add_multiple', newTxs); 
-            if(res.success) { 
-                records = [...newTxs.reverse(), ...records];
-                records.sort((a,b) => new Date(b.date) - new Date(a.date));
-                resetPagesAndUpdate(); 
-                showToast(`Carga masiva ultra-rápida completada: ${newTxs.length} registros.`, 'success');
-            } else {
-                showToast("Hubo un error guardando el lote", "error");
+            // CARGA EN BLOQUES DE 50 (Evita bloqueos de Google por payload gigante)
+            let successCount = 0;
+            const CHUNK_SIZE = 50;
+            
+            for (let i = 0; i < newTxs.length; i += CHUNK_SIZE) {
+                const chunk = newTxs.slice(i, i + CHUNK_SIZE);
+                btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo lote ${Math.floor(i/CHUNK_SIZE)+1}...`;
+                
+                const res = await pushData('add_multiple', chunk); 
+                if(res.success) { 
+                    records = [...chunk.reverse(), ...records];
+                    successCount += chunk.length;
+                } else {
+                    showToast("Error en lote, cambiando a subida lenta...", "warning");
+                    // FALLBACK: Sube uno a uno si el lote falla
+                    for (let j = 0; j < chunk.length; j++) {
+                        btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo ${i+j+1}/${newTxs.length}...`;
+                        const singleRes = await pushData('add', chunk[j]);
+                        if(singleRes.success) { records.unshift(chunk[j]); successCount++; }
+                    }
+                }
             }
+
+            records.sort((a,b) => new Date(b.date) - new Date(a.date));
+            resetPagesAndUpdate(); 
+            showToast(`Carga masiva completada: ${successCount} registros.`, 'success');
             
             document.getElementById('bank-preview-container').classList.add('hidden'); document.getElementById('bank-preview-container').classList.remove('flex');
             document.getElementById('upload-bank-file').value = ''; bankUploadData = []; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Subir Registros al Sistema'; btn.disabled = false;
         }
 
-        // ARCHIVOS EXCEL: MELANIE
         function handleMelanieUpload(e) {
             const file = e.target.files[0]; if(!file) return; const reader = new FileReader();
             reader.onload = function(evt) {
@@ -821,8 +844,8 @@
                     for(let i=0; i<Math.min(30, rows.length); i++) {
                         const r = Array.from(rows[i] || []).map(x => x ? String(x).toLowerCase() : "");
                         const f = r.findIndex(x => x.includes('fech'));
-                        const inf = r.findIndex(x => x.includes('influencer') || x.includes('referente') || x.includes('inf') || x.includes('nom'));
-                        const jug = r.findIndex(x => x.includes('jugador') || x.includes('usuario') || x.includes('usu'));
+                        const inf = r.findIndex(x => x.includes('influencer') || x.includes('referente') || (x.includes('nombre') && !x.includes('usuario')));
+                        const jug = r.findIndex(x => x.includes('jugador') || x.includes('usuario') || (x.includes('nombre') && !x.includes('influencer')));
                         const dep = r.findIndex(x => x.includes('deposito') || x.includes('depósito') || x.includes('ingreso') || x.includes('dep'));
                         const ret = r.findIndex(x => x.includes('retiro') || x.includes('egreso') || x.includes('ret'));
                         
@@ -867,7 +890,7 @@
 
         async function submitMelanieUploadData() {
             if(!uploadData.length) return;
-            const btn = document.getElementById('btn-upload-data'); btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo Lote de Registros...'; btn.disabled = true;
+            const btn = document.getElementById('btn-upload-data'); btn.disabled = true;
             const uploadDate = new Date().toISOString().split('T')[0];
             
             uploadData.sort((a, b) => new Date(a.date || uploadDate) - new Date(b.date || uploadDate));
@@ -878,15 +901,32 @@
                 newRends.push({ id: 'RND_XL_' + Date.now() + '_' + i, date: r.date || uploadDate, referrer: r.influencer, referred: r.jugador, depositos: r.depositos, retiros: r.retiros, neto: r.neto, comision: r.comision, createdBy: currentUser });
             }
 
-            const res = await pushData('add_rendimiento_multiple', newRends); 
-            if(res.success) { 
-                rendimientos = [...newRends.reverse(), ...rendimientos]; 
-                rendimientos.sort((a,b) => new Date(b.date) - new Date(a.date));
-                resetPagesAndUpdate(); 
-                showToast(`Carga masiva ultra-rápida completada: ${newRends.length} registros.`, 'success');
-            } else {
-                showToast("Hubo un error guardando el lote", "error");
+            // CARGA EN BLOQUES DE 50 (Evita bloqueos de Google por payload gigante)
+            let successCount = 0;
+            const CHUNK_SIZE = 50;
+            
+            for (let i = 0; i < newRends.length; i += CHUNK_SIZE) {
+                const chunk = newRends.slice(i, i + CHUNK_SIZE);
+                btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo lote ${Math.floor(i/CHUNK_SIZE)+1}...`;
+                
+                const res = await pushData('add_rendimiento_multiple', chunk); 
+                if(res.success) { 
+                    rendimientos = [...chunk.reverse(), ...rendimientos]; 
+                    successCount += chunk.length;
+                } else {
+                    showToast("Error en lote, cambiando a subida lenta...", "warning");
+                    // FALLBACK: Sube uno a uno si el lote falla
+                    for (let j = 0; j < chunk.length; j++) {
+                        btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo ${i+j+1}/${newRends.length}...`;
+                        const singleRes = await pushData('add_rendimiento', chunk[j]);
+                        if(singleRes.success) { rendimientos.unshift(chunk[j]); successCount++; }
+                    }
+                }
             }
+
+            rendimientos.sort((a,b) => new Date(b.date) - new Date(a.date));
+            resetPagesAndUpdate(); 
+            showToast(`Carga masiva completada: ${successCount} registros.`, 'success');
             
             document.getElementById('upload-preview-container').classList.add('hidden'); document.getElementById('upload-preview-container').classList.remove('flex');
             document.getElementById('upload-file').value = ''; uploadData = []; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Confirmar y Subir Registros'; btn.disabled = false;
@@ -932,7 +972,7 @@
         }
 
         // CORRECCIÓN: Filtro de Mes
-        // Se cambió el isSameMonth para ignorar de manera segura las zonas horarias y basarse en el prefijo (YYYY-MM).
+        // Se cambió el isSameMonth para ignorar de manera segura las zonas horarias y basarse en el patrón de cadena "YYYY-MM"
         function isSameMonth(dateStr, filterValue) { 
             if (!filterValue) return true; 
             if (!dateStr) return false; 
@@ -948,6 +988,8 @@
             } catch(e) { return true; } 
         }
         
+        // CORRECCIÓN: Filtro Fecha Exacta
+        // Evita el uso de getMonth/Date que varía por zona horaria de Safari y usa match exacto del String.
         function isExactDate(dateStr, exactDate) { 
             if (!exactDate) return true; 
             if (!dateStr) return false; 
@@ -1223,8 +1265,8 @@
                         const a = pag[i];
                         let badge = a.status === 'Autorizado' ? `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-crown"></i> Autorizado</span>` : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Pendiente</span>`;
                         let actions = '';
-                        if ((userType === 'master' || isSuperAdmin) && a.status === 'Pendiente') actions = `<button onclick="actionAuthorizeAdvance('${a.id}')" class="px-3 py-1 bg-amber-500 text-white text-[10px] font-black rounded-lg">Autorizar</button>`;
-                        else if (userType === 'admin' || isSuperAdmin) actions = `<button onclick="actionDelete('${a.id}', 'advance')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded-lg mx-auto"><i class="fas fa-trash"></i></button>`;
+                        if ((userType === 'master' || isSuperAdmin) && a.status === 'Pendiente') actions = `<button onclick="actionAuthorizeAdvance('${a.id}')" class="px-3 py-1 bg-amber-50 text-amber-600 rounded"><i class="fas fa-check"></i></button>`;
+                        else if (userType === 'admin' || isSuperAdmin) actions = `<button onclick="actionDelete('${a.id}', 'advance')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded"><i class="fas fa-trash"></i></button>`;
                         htmlA += `<tr class="border-b border-slate-50"><td class="p-3 text-xs font-bold">${fmtDate(a.date)}</td><td class="p-3 text-sm font-black text-amber-600">${fmt(a.amount)}</td><td class="p-3 text-xs text-slate-600">${a.concept}</td><td class="p-3">${badge}</td><td class="p-3 text-[10px] text-slate-400 italic">${a.detail || '-'}</td><td class="p-3 text-center">${actions}</td></tr>`;
                     }
                     tbodyGus.innerHTML = htmlA || `<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">Sin adelantos.</td></tr>`;
@@ -1340,8 +1382,8 @@
             if (userType === 'cajero_afiliados' || isSuperAdmin || userType === 'admin') {
                 let displayRend = [...rendimientos];
                 if (melFilters.date) displayRend = displayRend.filter(r => isExactDate(r.date, melFilters.date));
-                if (melFilters.inf) displayRend = displayRend.filter(r => r.referrer.toLowerCase().includes(melFilters.inf));
-                if (melFilters.jug) displayRend = displayRend.filter(r => r.referred.toLowerCase().includes(melFilters.jug));
+                if (melFilters.inf) displayRend = displayRend.filter(r => String(r.referrer).toLowerCase().includes(melFilters.inf));
+                if (melFilters.jug) displayRend = displayRend.filter(r => String(r.referred).toLowerCase().includes(melFilters.jug));
                 
                 const elTableRend = document.getElementById('mel-table-history');
                 if(elTableRend) {
@@ -1360,16 +1402,16 @@
                 const currUserName = (USERS[currentUser]?.name || '').toLowerCase();
                 
                 const myRefs = referrals.filter(r => {
-                    const refName = (r.referrer||'').toLowerCase();
-                    return refName === currentUser.toLowerCase() || refName === currUserName;
+                    const refName = String(r.referrer||'').toLowerCase().trim();
+                    return refName === currentUser.toLowerCase() || refName === currUserName || refName.includes(currUserName) || currUserName.includes(refName);
                 });
                 const elQty = document.getElementById('inf-dash-qty'); if(elQty) elQty.innerText = myRefs.length;
                 
                 let myDep = 0, myRet = 0, myNeto = 0, myCom = 0; const playerStats = {};
                 
                 rendimientos.filter(r => {
-                    const refName = (r.referrer||'').toLowerCase();
-                    return (refName === currentUser.toLowerCase() || refName === currUserName) && isSameMonth(r.date, myMonth);
+                    const refName = String(r.referrer||'').toLowerCase().trim();
+                    return (refName === currentUser.toLowerCase() || refName === currUserName || refName.includes(currUserName) || currUserName.includes(refName)) && isSameMonth(r.date, myMonth);
                 }).forEach(r => {
                     myDep += r.depositos; myRet += r.retiros; myNeto += r.neto; myCom += r.comision;
                     if(!playerStats[r.referred]) playerStats[r.referred] = { dep: 0, ret: 0, neto: 0, com: 0 };
@@ -1402,8 +1444,8 @@
                     document.getElementById('inf-detail-title').innerHTML = `Movimientos de <span class="text-indigo-600">${detailPlayer}</span>`;
                     
                     let detailData = rendimientos.filter(r => {
-                        const refName = (r.referrer||'').toLowerCase();
-                        return (refName === currentUser.toLowerCase() || refName === currUserName) && r.referred === detailPlayer && isSameMonth(r.date, detailMonth);
+                        const refName = String(r.referrer||'').toLowerCase().trim();
+                        return (refName === currentUser.toLowerCase() || refName === currUserName || refName.includes(currUserName) || currUserName.includes(refName)) && r.referred === detailPlayer && isSameMonth(r.date, detailMonth);
                     });
                     
                     const tbodyDet = document.getElementById('inf-detail-table-body');
@@ -1425,7 +1467,7 @@
                 
                 for(let i=0; i<allPlayers.length; i++) {
                     const p = allPlayers[i];
-                    const pRends = rendimientos.filter(r => r.referred === p).sort((a,b) => new Date(b.date) - new Date(a.date));
+                    const pRends = rendimientos.filter(r => r.referred === p);
                     if (pRends.length > 0) {
                         const lastMov = new Date(pRends[0].date);
                         if (lastMov < limitDate) {
