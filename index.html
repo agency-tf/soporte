@@ -916,16 +916,17 @@
         }
 
         // CORRECCIÓN: Filtro de Mes
-        // En la versión anterior los bonos nuevos venían con T00:00:00 y la zona horaria causaba que cayeran en otro mes. 
-        // Se cambió el isSameMonth para ignorar de manera segura las zonas horarias.
+        // Se cambió el isSameMonth para ignorar de manera segura las zonas horarias y basarse en el prefijo (YYYY-MM).
         function isSameMonth(dateStr, filterValue) { 
             if (!filterValue) return true; 
             if (!dateStr) return false; 
             try { 
+                const str = String(dateStr);
+                if (str.match(/^\d{4}-\d{2}/)) {
+                    return str.startsWith(filterValue);
+                }
                 const d = new Date(dateStr); 
                 if(isNaN(d.getTime())) return true; 
-                // Asegurar que usa la fecha local, no UTC, para evitar que "Junio 1 00:00:00 UTC" se lea como Mayo
-                d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
                 const [y, m] = filterValue.split('-'); 
                 return d.getFullYear() === parseInt(y, 10) && (d.getMonth() + 1) === parseInt(m, 10); 
             } catch(e) { return true; } 
@@ -935,9 +936,12 @@
             if (!exactDate) return true; 
             if (!dateStr) return false; 
             try { 
+                const str = String(dateStr);
+                if (str.match(/^\d{4}-\d{2}-\d{2}/)) {
+                    return str.startsWith(exactDate);
+                }
                 const d1 = new Date(dateStr); 
                 if (isNaN(d1.getTime())) return false; 
-                d1.setMinutes(d1.getMinutes() + d1.getTimezoneOffset());
                 const pad = n => n.toString().padStart(2, '0'); 
                 return `${d1.getFullYear()}-${pad(d1.getMonth()+1)}-${pad(d1.getDate())}` === exactDate; 
             } catch(e) { return true; } 
