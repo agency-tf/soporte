@@ -134,7 +134,7 @@
             <div id="tab-dashboard" class="hidden fade-in space-y-6 tab-content">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div><h2 class="text-sm font-black text-slate-800"><i class="fas fa-chart-line text-indigo-500 mr-2"></i> Rendimiento Mensual</h2><p class="text-[10px] text-slate-400 mt-1">Mes seleccionado.</p></div>
-                    <input type="month" id="dash-month-filter" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none w-full sm:w-auto">
+                    <input type="month" id="dash-month-filter" onchange="updateAllViews()" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none w-full sm:w-auto">
                 </div>
 
                 <div id="panel-personal" class="hidden mb-6 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -265,7 +265,7 @@
             <!-- DASHBOARD BONOS -->
             <div id="tab-maria-dash" class="hidden fade-in theme-maria tab-content">
                 <div class="max-w-6xl mx-auto space-y-6">
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-rose-100 flex items-center justify-between"><h2 class="text-sm font-black text-rose-900"><i class="fas fa-calendar-alt text-rose-500 mr-2"></i> Mes a Consultar:</h2><input type="month" id="bonos-month-filter" class="bg-rose-50 border border-rose-200 rounded-xl px-4 py-2 text-sm font-bold text-rose-800 outline-none"></div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-rose-100 flex items-center justify-between"><h2 class="text-sm font-black text-rose-900"><i class="fas fa-calendar-alt text-rose-500 mr-2"></i> Mes a Consultar:</h2><input type="month" id="bonos-month-filter" onchange="updateAllViews()" class="bg-rose-50 border border-rose-200 rounded-xl px-4 py-2 text-sm font-bold text-rose-800 outline-none"></div>
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100"><p class="text-[10px] font-black text-slate-500 uppercase">Bonos Emitidos</p><h3 class="text-3xl font-black text-slate-800" id="dash-bonos-qty">0</h3></div>
                         <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100"><p class="text-[10px] font-black text-slate-500 uppercase">Inversión Total</p><h3 class="text-3xl font-black text-rose-600" id="dash-bonos-val">$0.00</h3></div>
@@ -475,7 +475,7 @@
     <div id="modal-superadmin" class="fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in border border-slate-700"><div class="p-6 text-center border-b border-slate-100 bg-slate-800"><h3 class="text-lg font-black text-white">Panel de Supervisor</h3></div><div class="p-6 space-y-4"><select id="superadmin-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700"><option value="1311397689">Vista Global (Supervisor)</option></select><div class="flex gap-3"><button onclick="closeSuperAdminSwitcher()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cerrar</button><button onclick="confirmSwitchUser()" class="flex-1 py-3 bg-slate-800 text-white rounded-xl font-bold">Ingresar</button></div></div></div></div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyUx3G_kaO_X--M7-c3MnFgL7dlT7QvcnOH27VqzQQCtXHyc44Vox1AtbkP4tjikgrOsg/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyAENqjNyYjr749Hr3GOOLmdl-xUvhVdv87kFXgOxlDJUdvkM_AS5I_xUAnH6Vw6YtUqg/exec';
 
         let USERS = { 'michelle': { name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600', comision: 20 }, 'jesus': { name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]', comision: 20 }, 'tito': { name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]', comision: 20 }, 'gussepy': { name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600', comision: 20 }, 'emilia': { name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600', comision: 20 }, 'melanie': { name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500', comision: 20 }, 'admin': { name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600', comision: 20 }, '1311397689': { name: 'Supervisor', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800', comision: 20 } };
         
@@ -488,6 +488,7 @@
 
         const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
         
+        // CORRECCIÓN: Fechas seguras para Safari y móviles evitando saltos de zona horaria
         function excelToISO(serial) {
             if (!serial) return new Date().toISOString().slice(0, 16);
             if (typeof serial === 'number') {
@@ -495,8 +496,21 @@
                 const date = new Date(excelEpoch.getTime() + serial * 86400000);
                 return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
             }
-            let d = new Date(serial);
+            
+            // Si es un string (como lo bota el banco de Guayaquil/Pichincha) lo parseamos manual
+            let strDate = String(serial).trim().replace(/\//g, '-');
+            
+            // Safari detesta formatos como "2026-6-25 10:00" y los vuelve Invalid Date, así que forzamos la T
+            if(strDate.includes(' ') && !strDate.includes('T')) {
+                strDate = strDate.replace(' ', 'T');
+            }
+            
+            // Si solo es fecha "YYYY-MM-DD", agregamos hora neutra
+            if(!strDate.includes('T')) strDate += "T12:00:00"; 
+            
+            let d = new Date(strDate);
             if (isNaN(d.getTime())) return new Date().toISOString().slice(0, 16);
+            
             return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
         }
 
@@ -693,6 +707,7 @@
         function clearPlayerSelection() { const input = document.getElementById('rend-referred'); if(input) { input.value = ''; input.focus(); } filterPlayerDropdown(); openPlayerDropdown(); }
         document.addEventListener('click', function(e) { const input = document.getElementById('rend-referred'); const dropdown = document.getElementById('custom-player-dropdown'); const btnClear = document.getElementById('btn-clear-player'); if (input && dropdown) { if (!input.contains(e.target) && !dropdown.contains(e.target) && (!btnClear || !btnClear.contains(e.target))) closePlayerDropdown(); } });
 
+        // ARCHIVOS EXCEL: BANCO TITO/JESUS
         function handleBankUpload(e) {
             const file = e.target.files[0]; if(!file) return; const reader = new FileReader();
             reader.onload = function(evt) {
@@ -792,6 +807,7 @@
             document.getElementById('upload-bank-file').value = ''; bankUploadData = []; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Subir Registros al Sistema'; btn.disabled = false;
         }
 
+        // ARCHIVOS EXCEL: MELANIE
         function handleMelanieUpload(e) {
             const file = e.target.files[0]; if(!file) return; const reader = new FileReader();
             reader.onload = function(evt) {
@@ -1409,7 +1425,7 @@
                 
                 for(let i=0; i<allPlayers.length; i++) {
                     const p = allPlayers[i];
-                    const pRends = rendimientos.filter(r => r.referred === p);
+                    const pRends = rendimientos.filter(r => r.referred === p).sort((a,b) => new Date(b.date) - new Date(a.date));
                     if (pRends.length > 0) {
                         const lastMov = new Date(pRends[0].date);
                         if (lastMov < limitDate) {
