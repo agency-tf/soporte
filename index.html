@@ -11,24 +11,33 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
-        .glass-dark { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); transform: translateZ(0); }
+        .glass-dark { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transform: translateZ(0); }
         .login-bg { background: radial-gradient(circle at top right, #1e1b4b, #0f172a 40%, #020617); }
+
         * { -webkit-tap-highlight-color: transparent; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .toast-enter { animation: toastIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards; }
         @keyframes toastIn { from { opacity: 0; transform: translateY(100%) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        
         .theme-maria { background-color: #fff1f2; }
         .theme-maria .bg-indigo-600 { background-color: #e11d48 !important; }
         .theme-maria .text-indigo-600 { color: #e11d48 !important; }
+
         input[type="date"], input[type="month"], input[type="datetime-local"] { -webkit-appearance: none; appearance: none; min-width: 0; width: 100%; background-color: transparent; }
         input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+
         .toggle-checkbox:checked { right: 0; border-color: #4f46e5; }
         .toggle-checkbox:checked + .toggle-label { background-color: #4f46e5; }
         .toggle-checkbox:checked + .toggle-label::after { transform: translateX(100%); border-color: white; }
+
         @media (max-width: 768px) {
             .resp-table thead { display: none; }
             .resp-table, .resp-table tbody, .resp-table tr, .resp-table td { display: block; width: 100%; }
@@ -37,15 +46,22 @@
             .resp-table td:last-child { border-bottom: none !important; justify-content: center; padding-top: 1rem !important; }
             .resp-table td::before { content: attr(data-label); font-size: 0.65rem; font-weight: 900; text-transform: uppercase; color: #94a3b8; text-align: left; margin-right: 1rem;}
         }
+
+        .sidebar { transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
+        .sidebar.open { transform: translateX(0); }
+        .overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease-in-out; }
+        .overlay.open { opacity: 1; pointer-events: auto; }
     </style>
 </head>
 <body class="text-slate-800 antialiased selection:bg-indigo-200">
+
     <div id="toast-container" class="fixed bottom-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- PANTALLA LOGIN -->
+    <!-- LOGIN -->
     <div id="screen-login" class="fixed inset-0 z-40 login-bg flex flex-col items-center justify-center p-4">
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div class="absolute -top-[30%] -left-[10%] w-[70%] h-[70%] rounded-full bg-blue-600/20 blur-[100px]"></div>
+            <div class="absolute bottom-[10%] -right-[10%] w-[60%] h-[60%] rounded-full bg-indigo-600/20 blur-[100px]"></div>
         </div>
         <div class="w-full max-w-sm glass-dark border border-slate-700/50 rounded-3xl shadow-2xl p-8 relative z-10 fade-in">
             <div class="text-center mb-8">
@@ -54,14 +70,27 @@
                 <p class="text-slate-400 text-xs font-medium uppercase tracking-widest">Plataforma Integral</p>
             </div>
             <form id="login-form" class="space-y-5">
-                <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Usuario / ID</label><div class="relative"><div class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fas fa-user-shield"></i></div><input type="text" id="login-user" required placeholder="Usuario..." class="block w-full pl-10 pr-4 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl text-sm font-bold text-slate-200 outline-none focus:border-indigo-500"></div></div>
-                <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Clave</label><div class="relative flex items-center"><div class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fas fa-lock"></i></div><input type="password" id="login-pass" required placeholder="••••••••" class="block w-full pl-10 pr-10 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl text-sm font-bold text-slate-200 outline-none focus:border-indigo-500"><button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300"><i class="fas fa-eye" id="eye-icon"></i></button></div></div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Usuario / ID</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fas fa-user-shield"></i></div>
+                        <input type="text" id="login-user" required placeholder="Usuario..." class="block w-full pl-10 pr-4 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl text-sm font-bold text-slate-200 outline-none focus:border-indigo-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Clave</label>
+                    <div class="relative flex items-center">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fas fa-lock"></i></div>
+                        <input type="password" id="login-pass" required placeholder="••••••••" class="block w-full pl-10 pr-10 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl text-sm font-bold text-slate-200 outline-none focus:border-indigo-500">
+                        <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300"><i class="fas fa-eye" id="eye-icon"></i></button>
+                    </div>
+                </div>
                 <button type="submit" class="w-full py-3.5 mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-sm font-bold rounded-xl shadow-lg transition-transform active:scale-[0.98]">Ingresar</button>
             </form>
         </div>
     </div>
 
-    <!-- APP PRINCIPAL -->
+    <!-- MAIN APP -->
     <div id="screen-app" class="hidden min-h-screen flex flex-col">
         <nav class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-30 shadow-sm text-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -222,7 +251,7 @@
                     </div>
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
                         <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50"><h2 class="text-lg font-black text-slate-800">Historial Completo</h2><div class="flex gap-2"><button onclick="exportToCSV('records')" class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center"><i class="fas fa-file-excel text-xs"></i></button><button onclick="fetchData(true)" class="w-9 h-9 rounded-full bg-slate-100 text-slate-600 hover:text-indigo-600 flex items-center justify-center"><i class="fas fa-sync-alt text-xs"></i></button></div></div>
-                        <div class="overflow-x-auto"><table class="w-full text-left border-collapse resp-table"><thead class="bg-slate-50 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-header-group"><tr><th class="p-4 pl-6">Fecha y Hora</th><th class="p-4">Monto</th><th class="p-4">Concepto</th><th class="p-4">Cuenta</th><th class="p-4">Estado</th><th class="p-4">Ref/Comp</th><th class="p-4 pr-6 text-center">Acción</th></tr></thead><tbody id="audit-table-body"></tbody></table></div>
+                        <div class="overflow-x-auto"><table class="w-full text-left border-collapse resp-table"><thead class="bg-slate-50 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-header-group"><tr><th class="p-4 pl-6">Fecha y Hora</th><th class="p-4">Monto</th><th class="p-4">Concepto</th><th class="p-4">Cuenta</th><th class="p-4">Estado</th><th class="p-4">Ref/Comp</th><th class="p-4">Comentario</th><th class="p-4 pr-6 text-center">Acción</th></tr></thead><tbody id="audit-table-body"></tbody></table></div>
                         <div id="pagination-audit" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-audit">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('audit', -1)" id="btn-prev-audit" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-audit">1</span> / <span id="page-tot-audit">1</span></span><button onclick="changePage('audit', 1)" id="btn-next-audit" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                         <div id="audit-empty-state" class="hidden flex-col items-center justify-center p-12 text-center"><div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 text-2xl mb-4"><i class="fas fa-search"></i></div><h3 class="text-sm font-bold text-slate-700">No hay registros</h3></div>
                     </div>
@@ -451,7 +480,7 @@
     <div id="modal-password" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-slate-50"><h3 class="text-lg font-black text-slate-800">Cambiar Contraseña</h3></div><form id="form-password" class="p-6 space-y-4"><input type="password" id="new-password" required minlength="4" placeholder="Nueva Clave..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold"><div class="flex gap-3"><button type="button" onclick="closePasswordModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button type="submit" class="flex-1 py-3 bg-slate-800 text-white rounded-xl font-bold">Actualizar</button></div></form></div></div>
     <div id="modal-edit" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-slate-50"><h3 class="text-lg font-black text-slate-800">Editar Registro</h3></div><div class="p-6 space-y-4"><input type="hidden" id="edit-id"><input type="datetime-local" id="edit-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><input type="text" id="edit-amount" inputmode="decimal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><input type="text" id="edit-concept" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeEditModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-edit-confirm" onclick="confirmEdit()" class="flex-1 py-3 bg-blue-500 text-white rounded-xl font-bold">Guardar</button></div></div></div></div>
     <div id="modal-edit-rend" class="fixed inset-0 z-[55] bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in border border-pink-200"><div class="p-6 text-center border-b border-pink-50 bg-pink-50"><h3 class="text-lg font-black text-slate-800">Modificar Rendimiento</h3></div><div class="p-6 space-y-4"><input type="hidden" id="edit-rend-id"><input type="date" id="edit-rend-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><input type="text" id="edit-rend-dep" inputmode="decimal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><input type="text" id="edit-rend-ret" inputmode="decimal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeEditRendModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-edit-rend-confirm" onclick="confirmEditRend()" class="flex-1 py-3 bg-pink-600 text-white rounded-xl font-bold">Actualizar</button></div></div></div></div>
-    <div id="modal-comprobante" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-slate-50"><h3 class="text-lg font-black text-slate-800">Dar Visto Bueno</h3></div><div class="p-6 space-y-4"><input type="text" id="input-receipt" placeholder="Nº Comprobante / Ref..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-verify-confirm" onclick="confirmVerify()" class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-bold">Aprobar</button></div></div></div></div>
+    <div id="modal-comprobante" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-slate-50"><h3 class="text-lg font-black text-slate-800">Dar Visto Bueno</h3></div><div class="p-6 space-y-4"><input type="text" id="input-receipt" placeholder="Comentario u Observación..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-verify-confirm" onclick="confirmVerify()" class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-bold">Aprobar</button></div></div></div></div>
     <div id="modal-gussepy" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-amber-50"><h3 class="text-lg font-black text-slate-800">Autorizar Adelanto</h3></div><div class="p-6 space-y-4"><input type="text" id="input-gussepy-detail" placeholder="Detalle..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeGussepyModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-gussepy-confirm" onclick="confirmGussepyAuth()" class="flex-1 py-3 bg-amber-500 text-white rounded-xl font-bold">Autorizar</button></div></div></div></div>
     <div id="modal-bono-ganado" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-emerald-100 bg-emerald-50"><h3 class="text-lg font-black text-slate-800" id="title-bono-win">Liquidación</h3></div><div class="p-6 space-y-4"><input type="text" id="input-bono-win-amount" inputmode="decimal" placeholder="Ganancia Real ($)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-2xl font-black text-center text-emerald-600"><div class="flex gap-3"><button onclick="closeBonoWinModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-bono-win-confirm" onclick="confirmBonoWin()" class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-bold">Guardar</button></div></div></div></div>
     <div id="modal-superadmin" class="fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in border border-slate-700"><div class="p-6 text-center border-b border-slate-100 bg-slate-800"><h3 class="text-lg font-black text-white">Panel de Supervisor</h3></div><div class="p-6 space-y-4"><select id="superadmin-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700"><option value="1311397689">Vista Global (Supervisor)</option></select><div class="flex gap-3"><button onclick="closeSuperAdminSwitcher()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cerrar</button><button onclick="confirmSwitchUser()" class="flex-1 py-3 bg-slate-800 text-white rounded-xl font-bold">Ingresar</button></div></div></div></div>
@@ -666,6 +695,7 @@
                             else USERS[k] = { ...data.users[k], comision: com || 20 };
                         });
                     }
+                    // IMPORTANTE: Al obtener los datos, almacenamos la columna 7 (comentario en H) de forma explícita.
                     records = data.data || []; advances = data.advances || []; bonos = data.bonos || []; giros = data.giros || []; referrals = data.referrals || []; rendimientos = data.rendimientos || []; 
                     
                     records.sort((a,b) => new Date(b.date) - new Date(a.date));
@@ -766,6 +796,7 @@
                     }
                     
                     bankUploadData.forEach(tx => { if(!tx.receipt) tx.receipt = "Sin Ref"; });
+                    
                     renderBankPreview(); showToast(`Detectados ${bankUploadData.length} registros`, 'success');
                 } catch(err) { showToast("Error leyendo archivo", "error"); console.error(err); }
             };
@@ -791,16 +822,15 @@
                 if (assignRadio) assigned = assignRadio.value;
             }
 
-            // Ordenamiento estricto cronológico
             bankUploadData.sort((a, b) => new Date(a.date) - new Date(b.date));
 
             let newTxs = [];
             for(let i=0; i<bankUploadData.length; i++) {
                 const r = bankUploadData[i];
-                newTxs.push({ id: 'TX_BNK_' + Date.now() + '_' + i, date: r.date, amount: r.amount, concept: r.concept, assignedTo: assigned, createdBy: currentUser, status: 'Verificado', receipt: r.receipt });
+                // Las cargas masivas siempre entran como 'Pendiente'
+                newTxs.push({ id: 'TX_BNK_' + Date.now() + '_' + i, date: r.date, amount: r.amount, concept: r.concept, assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: r.receipt });
             }
 
-            // CARGA EN BLOQUES DE 50 (Evita bloqueos de Google por payload gigante)
             let successCount = 0;
             const CHUNK_SIZE = 50;
             
@@ -814,7 +844,6 @@
                     successCount += chunk.length;
                 } else {
                     showToast("Error en lote, cambiando a subida lenta...", "warning");
-                    // FALLBACK: Sube uno a uno si el lote falla
                     for (let j = 0; j < chunk.length; j++) {
                         btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo ${i+j+1}/${newTxs.length}...`;
                         const singleRes = await pushData('add', chunk[j]);
@@ -825,12 +854,13 @@
 
             records.sort((a,b) => new Date(b.date) - new Date(a.date));
             resetPagesAndUpdate(); 
-            showToast(`Carga masiva completada: ${successCount} registros.`, 'success');
+            showToast(`Carga masiva completada: ${successCount} registros en Pendiente.`, 'success');
             
             document.getElementById('bank-preview-container').classList.add('hidden'); document.getElementById('bank-preview-container').classList.remove('flex');
             document.getElementById('upload-bank-file').value = ''; bankUploadData = []; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Subir Registros al Sistema'; btn.disabled = false;
         }
 
+        // ARCHIVOS EXCEL: MELANIE
         function handleMelanieUpload(e) {
             const file = e.target.files[0]; if(!file) return; const reader = new FileReader();
             reader.onload = function(evt) {
@@ -901,7 +931,6 @@
                 newRends.push({ id: 'RND_XL_' + Date.now() + '_' + i, date: r.date || uploadDate, referrer: r.influencer, referred: r.jugador, depositos: r.depositos, retiros: r.retiros, neto: r.neto, comision: r.comision, createdBy: currentUser });
             }
 
-            // CARGA EN BLOQUES DE 50 (Evita bloqueos de Google por payload gigante)
             let successCount = 0;
             const CHUNK_SIZE = 50;
             
@@ -915,7 +944,6 @@
                     successCount += chunk.length;
                 } else {
                     showToast("Error en lote, cambiando a subida lenta...", "warning");
-                    // FALLBACK: Sube uno a uno si el lote falla
                     for (let j = 0; j < chunk.length; j++) {
                         btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo ${i+j+1}/${newRends.length}...`;
                         const singleRes = await pushData('add_rendimiento', chunk[j]);
@@ -971,8 +999,6 @@
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = filename; link.click();
         }
 
-        // CORRECCIÓN: Filtro de Mes
-        // Se cambió el isSameMonth para ignorar de manera segura las zonas horarias y basarse en el patrón de cadena "YYYY-MM"
         function isSameMonth(dateStr, filterValue) { 
             if (!filterValue) return true; 
             if (!dateStr) return false; 
@@ -988,8 +1014,6 @@
             } catch(e) { return true; } 
         }
         
-        // CORRECCIÓN: Filtro Fecha Exacta
-        // Evita el uso de getMonth/Date que varía por zona horaria de Safari y usa match exacto del String.
         function isExactDate(dateStr, exactDate) { 
             if (!exactDate) return true; 
             if (!dateStr) return false; 
@@ -1166,6 +1190,7 @@
             pages.infdetail = 1; switchTab('tab-influencer-details'); updateAllViews();
         }
 
+        // TABLAS RENDERIZADO (Ahora muestra el Comentario separado del Comprobante)
         function renderRecordsTable(tbodyId, emptyId, dataArray, userType) {
             const tbody = document.getElementById(tbodyId); const emptyState = document.getElementById(emptyId);
             if (!tbody) return;
@@ -1195,7 +1220,11 @@
                     } else actions = `<span class="text-[10px] font-bold text-slate-400">-</span>`;
 
                     const isNeg = r.amount < 0; const amtColor = r.status === 'Denegado' ? 'text-slate-400 line-through' : (isNeg ? 'text-rose-600' : 'text-slate-800');
-                    rowsHTML += `<tr class="border-b border-slate-50"><td class="p-3 text-xs font-bold text-slate-600 whitespace-nowrap">${fmtDate(r.date)}</td><td class="p-3 text-sm font-black ${amtColor}">${fmt(r.amount)}</td><td class="p-3 text-xs text-slate-600">${r.concept}</td><td class="p-3 text-xs font-bold text-indigo-600 uppercase">${USERS[r.assignedTo]?.name || r.assignedTo}</td><td class="p-3">${badge}</td><td class="p-3 text-[10px] text-slate-400 font-bold">${r.receipt || '-'}</td><td class="p-3 text-center">${actions}</td></tr>`;
+                    
+                    // Modificado para Auditoría: Muestra la columna "Ref/Comp" y también "Comentario"
+                    let ext = tbodyId === 'audit-table-body' ? `<td class="p-3 text-[10px] text-slate-400 font-bold">${r.comment || '-'}</td>` : '';
+                    
+                    rowsHTML += `<tr class="border-b border-slate-50"><td class="p-3 text-xs font-bold text-slate-600 whitespace-nowrap">${fmtDate(r.date)}</td><td class="p-3 text-sm font-black ${amtColor}">${fmt(r.amount)}</td><td class="p-3 text-xs text-slate-600">${r.concept}</td><td class="p-3 text-xs font-bold text-indigo-600 uppercase">${USERS[r.assignedTo]?.name || r.assignedTo}</td><td class="p-3">${badge}</td><td class="p-3 text-[10px] text-slate-400 font-bold">${r.receipt || '-'}</td>${ext}<td class="p-3 text-center">${actions}</td></tr>`;
                 }
                 tbody.innerHTML = rowsHTML;
             }
@@ -1467,7 +1496,7 @@
                 
                 for(let i=0; i<allPlayers.length; i++) {
                     const p = allPlayers[i];
-                    const pRends = rendimientos.filter(r => r.referred === p);
+                    const pRends = rendimientos.filter(r => r.referred === p).sort((a,b) => new Date(b.date) - new Date(a.date));
                     if (pRends.length > 0) {
                         const lastMov = new Date(pRends[0].date);
                         if (lastMov < limitDate) {
