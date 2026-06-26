@@ -80,7 +80,6 @@
         </div>
     </div>
 
-    <!-- APP PRINCIPAL -->
     <div id="screen-app" class="hidden min-h-screen flex flex-col">
         <nav class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-30 shadow-sm text-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -220,7 +219,7 @@
                         </div>
                         <div><input type="file" id="upload-bank-file" accept=".xlsx, .xls, .csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer border-2 border-slate-200 rounded-xl" onchange="handleBankUpload(event)"></div>
                         <div id="bank-preview-container" class="hidden flex-col gap-4 mt-6">
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 overflow-x-auto max-h-60"><table class="w-full text-left text-xs"><thead class="text-[10px] font-black text-slate-500 uppercase border-b border-slate-200"><tr><th class="pb-2">Fecha y Hora</th><th class="pb-2">Concepto</th><th class="pb-2 text-right">Monto</th><th class="pb-2 text-center"><i class="fas fa-cog"></i></th></tr></thead><tbody id="bank-preview-body" class="divide-y divide-slate-100"></tbody></table></div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 overflow-x-auto max-h-60"><table class="w-full text-left text-xs"><thead class="text-[10px] font-black text-slate-500 uppercase border-b border-slate-200"><tr><th class="pb-2">Fecha y Hora</th><th class="pb-2">Concepto</th><th class="pb-2 text-right">Monto</th><th class="pb-2 text-center">Ref/Comp</th><th class="pb-2 text-center"><i class="fas fa-cog"></i></th></tr></thead><tbody id="bank-preview-body" class="divide-y divide-slate-100"></tbody></table></div>
                             <button type="button" id="btn-upload-bank" onclick="submitBankData()" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition-colors"><i class="fas fa-upload mr-2"></i> Subir Registros al Sistema</button>
                         </div>
                     </div>
@@ -476,7 +475,7 @@
     <div id="modal-superadmin" class="fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in border border-slate-700"><div class="p-6 text-center border-b border-slate-100 bg-slate-800"><h3 class="text-lg font-black text-white">Panel de Supervisor</h3></div><div class="p-6 space-y-4"><select id="superadmin-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700"><option value="1311397689">Vista Global (Supervisor)</option></select><div class="flex gap-3"><button onclick="closeSuperAdminSwitcher()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cerrar</button><button onclick="confirmSwitchUser()" class="flex-1 py-3 bg-slate-800 text-white rounded-xl font-bold">Ingresar</button></div></div></div></div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_BI7oDNe2gpnBWf3bQK-4AaQE-ps6iyxl_JvG4H35NpmY6cm301tWGLZX22pQRfsaRg/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyUx3G_kaO_X--M7-c3MnFgL7dlT7QvcnOH27VqzQQCtXHyc44Vox1AtbkP4tjikgrOsg/exec';
 
         let USERS = { 'michelle': { name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600', comision: 20 }, 'jesus': { name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]', comision: 20 }, 'tito': { name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]', comision: 20 }, 'gussepy': { name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600', comision: 20 }, 'emilia': { name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600', comision: 20 }, 'melanie': { name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500', comision: 20 }, 'admin': { name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600', comision: 20 }, '1311397689': { name: 'Supervisor', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800', comision: 20 } };
         
@@ -648,6 +647,14 @@
                         });
                     }
                     records = data.data || []; advances = data.advances || []; bonos = data.bonos || []; giros = data.giros || []; referrals = data.referrals || []; rendimientos = data.rendimientos || []; 
+                    
+                    records.sort((a,b) => new Date(b.date) - new Date(a.date));
+                    advances.sort((a,b) => new Date(b.date) - new Date(a.date));
+                    bonos.sort((a,b) => new Date(b.date) - new Date(a.date));
+                    giros.sort((a,b) => new Date(b.date) - new Date(a.date));
+                    referrals.sort((a,b) => new Date(b.date) - new Date(a.date));
+                    rendimientos.sort((a,b) => new Date(b.date) - new Date(a.date));
+
                     resetPagesAndUpdate(); updateBonoDatalist(); updateMelanieDropdowns(); 
                 }
             } catch (err) { console.error(err); if (!isBackground) showToast("Conectando en modo caché.", "warning"); } 
@@ -693,7 +700,7 @@
                     const workbook = XLSX.read(evt.target.result, {type: 'binary'});
                     const sheet = workbook.Sheets[workbook.SheetNames[0]];
                     const rows = XLSX.utils.sheet_to_json(sheet, {header: 1});
-                    let hIdx = -1, cIdx = {f: -1, c: -1, m: -1, t: -1};
+                    let hIdx = -1, cIdx = {f: -1, c: -1, m: -1, t: -1, ref: -1};
                     
                     for(let i=0; i<Math.min(30, rows.length); i++) {
                         const r = Array.from(rows[i] || []).map(x => x ? String(x).toLowerCase() : "");
@@ -701,29 +708,44 @@
                         const c = r.findIndex(x => x.includes('concepto') || x.includes('descrip') || x.includes('detalle'));
                         const m = r.findIndex(x => x.includes('monto') || x.includes('valor'));
                         const t = r.findIndex(x => x.includes('tipo'));
-                        if(f !== -1 && m !== -1) { hIdx = i; cIdx = {f, c: c!==-1?c:1, m, t}; break; }
+                        const ref = r.findIndex(x => x.includes('referencia') || x.includes('documento') || x.includes('comprobante') || x.includes('transaccion'));
+                        if(f !== -1 && m !== -1) { hIdx = i; cIdx = {f, c: c!==-1?c:1, m, t, ref}; break; }
                     }
                     if(hIdx === -1) { showToast("No se detectaron columnas Fecha/Monto", "error"); return; }
 
                     bankUploadData = [];
+                    let currentTx = null;
+
                     for(let i=hIdx+1; i<rows.length; i++) {
-                        const row = rows[i]||[]; if(row[cIdx.f] === undefined || row[cIdx.m] === undefined) continue;
+                        const row = rows[i]||[];
                         
-                        let montoStr = String(row[cIdx.m]).replace(/[^0-9,-]/g, '').replace(',', '.');
-                        let monto = parseFloat(montoStr);
-                        if(isNaN(monto) || monto === 0) continue;
-                        
-                        if(cIdx.t !== -1 && row[cIdx.t] !== undefined) {
-                            const tipo = String(row[cIdx.t]).toLowerCase();
-                            if(tipo.includes('deb')||tipo.includes('déb')) monto = -Math.abs(monto);
-                            else if(tipo.includes('cred')||tipo.includes('créd')) monto = Math.abs(monto);
+                        if(row[cIdx.f] !== undefined && row[cIdx.m] !== undefined) {
+                            let montoStr = String(row[cIdx.m]).replace(/[^0-9,-]/g, '').replace(',', '.');
+                            let monto = parseFloat(montoStr);
+                            if(isNaN(monto) || monto === 0) continue;
+                            
+                            if(cIdx.t !== -1 && row[cIdx.t] !== undefined) {
+                                const tipo = String(row[cIdx.t]).toLowerCase();
+                                if(tipo.includes('deb')||tipo.includes('déb')) monto = -Math.abs(monto);
+                                else if(tipo.includes('cred')||tipo.includes('créd')) monto = Math.abs(monto);
+                            }
+                            
+                            let localDate = excelToISO(row[cIdx.f]);
+                            let conceptStr = row[cIdx.c] !== undefined ? String(row[cIdx.c]).trim() : 'Movimiento Banco';
+                            let refStr = (cIdx.ref !== -1 && row[cIdx.ref] !== undefined && String(row[cIdx.ref]).trim() !== "") ? String(row[cIdx.ref]).trim() : '';
+                            
+                            currentTx = { date: localDate, concept: conceptStr, amount: monto, receipt: refStr };
+                            bankUploadData.push(currentTx);
+                        } else if (currentTx && row.length > 0) {
+                            let possibleRef = Array.from(row).find(x => x && String(x).trim().match(/^[0-9]+$/) && String(x).trim().length >= 5);
+                            if (possibleRef && !currentTx.receipt) {
+                                currentTx.receipt = String(possibleRef).trim();
+                            }
                         }
-                        
-                        let localDate = excelToISO(row[cIdx.f]);
-                        let conceptStr = row[cIdx.c] !== undefined ? String(row[cIdx.c]).trim() : 'Movimiento Banco';
-                        
-                        bankUploadData.push({ date: localDate, concept: conceptStr, amount: monto });
                     }
+                    
+                    bankUploadData.forEach(tx => { if(!tx.receipt) tx.receipt = "Sin Ref"; });
+                    
                     renderBankPreview(); showToast(`Detectados ${bankUploadData.length} registros`, 'success');
                 } catch(err) { showToast("Error leyendo archivo", "error"); console.error(err); }
             };
@@ -733,21 +755,39 @@
         function renderBankPreview() {
             const tbody = document.getElementById('bank-preview-body'); const cont = document.getElementById('bank-preview-container');
             if(!bankUploadData.length) { cont.classList.add('hidden'); cont.classList.remove('flex'); return; }
-            tbody.innerHTML = bankUploadData.map((r, i) => `<tr><td class="py-2 text-[10px] font-bold">${r.date.replace('T', ' ')}</td><td class="py-2 text-[10px]">${r.concept}</td><td class="py-2 text-[10px] font-black text-right ${r.amount<0?'text-rose-600':'text-emerald-600'}">${fmt(r.amount)}</td><td class="py-2 text-center"><button onclick="bankUploadData.splice(${i},1); renderBankPreview()" class="text-rose-500"><i class="fas fa-times"></i></button></td></tr>`).join('');
+            tbody.innerHTML = bankUploadData.map((r, i) => `<tr><td class="py-2 text-[10px] font-bold">${r.date.replace('T', ' ')}</td><td class="py-2 text-[10px]">${r.concept}</td><td class="py-2 text-[10px] font-black text-right ${r.amount<0?'text-rose-600':'text-emerald-600'}">${fmt(r.amount)}</td><td class="py-2 text-[10px] font-bold text-center text-slate-500">${r.receipt}</td><td class="py-2 text-center"><button onclick="bankUploadData.splice(${i},1); renderBankPreview()" class="text-rose-500"><i class="fas fa-times"></i></button></td></tr>`).join('');
             cont.classList.remove('hidden'); cont.classList.add('flex');
         }
 
         async function submitBankData() {
             if(!bankUploadData.length) return;
-            const btn = document.getElementById('btn-upload-bank'); btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo...'; btn.disabled = true;
-            let assigned = currentUser; const assignRadio = document.querySelector('input[name="bank-assign"]:checked'); if (assignRadio) assigned = assignRadio.value;
-            let successCount = 0;
+            const btn = document.getElementById('btn-upload-bank'); btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo Lote de Registros...'; btn.disabled = true;
+            
+            let assigned = currentUser; 
+            const adminBlockBank = document.getElementById('admin-select-user-bank');
+            if (adminBlockBank && !adminBlockBank.classList.contains('hidden')) {
+                const assignRadio = document.querySelector('input[name="bank-assign"]:checked'); 
+                if (assignRadio) assigned = assignRadio.value;
+            }
+
+            bankUploadData.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            let newTxs = [];
             for(let i=0; i<bankUploadData.length; i++) {
                 const r = bankUploadData[i];
-                const newTx = { id: 'TX_BNK_' + Date.now() + i, date: r.date, amount: r.amount, concept: r.concept, assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: 'Carga Masiva' };
-                const res = await pushData('add', newTx); if(res.success) { records.unshift(newTx); successCount++; }
+                newTxs.push({ id: 'TX_BNK_' + Date.now() + '_' + i, date: r.date, amount: r.amount, concept: r.concept, assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: r.receipt });
             }
-            resetPagesAndUpdate(); showToast(`Carga masiva completa: ${successCount} registros.`, 'success');
+
+            const res = await pushData('add_multiple', newTxs); 
+            if(res.success) { 
+                records = [...newTxs.reverse(), ...records];
+                records.sort((a,b) => new Date(b.date) - new Date(a.date));
+                resetPagesAndUpdate(); 
+                showToast(`Carga masiva ultra-rápida completada: ${newTxs.length} registros.`, 'success');
+            } else {
+                showToast("Hubo un error guardando el lote", "error");
+            }
+            
             document.getElementById('bank-preview-container').classList.add('hidden'); document.getElementById('bank-preview-container').classList.remove('flex');
             document.getElementById('upload-bank-file').value = ''; bankUploadData = []; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Subir Registros al Sistema'; btn.disabled = false;
         }
@@ -765,10 +805,10 @@
                     for(let i=0; i<Math.min(30, rows.length); i++) {
                         const r = Array.from(rows[i] || []).map(x => x ? String(x).toLowerCase() : "");
                         const f = r.findIndex(x => x.includes('fech'));
-                        const inf = r.findIndex(x => x.includes('influencer') || x.includes('referente'));
-                        const jug = r.findIndex(x => x.includes('jugador') || x.includes('usuario'));
-                        const dep = r.findIndex(x => x.includes('deposito') || x.includes('depósito') || x.includes('ingreso'));
-                        const ret = r.findIndex(x => x.includes('retiro') || x.includes('egreso'));
+                        const inf = r.findIndex(x => x.includes('influencer') || x.includes('referente') || x.includes('inf') || x.includes('nom'));
+                        const jug = r.findIndex(x => x.includes('jugador') || x.includes('usuario') || x.includes('usu'));
+                        const dep = r.findIndex(x => x.includes('deposito') || x.includes('depósito') || x.includes('ingreso') || x.includes('dep'));
+                        const ret = r.findIndex(x => x.includes('retiro') || x.includes('egreso') || x.includes('ret'));
                         
                         if(f !== -1 && inf !== -1 && jug !== -1 && dep !== -1 && ret !== -1) { 
                             hIdx = i; cIdx = {f, inf, jug, dep, ret}; break; 
@@ -811,17 +851,27 @@
 
         async function submitMelanieUploadData() {
             if(!uploadData.length) return;
-            const btn = document.getElementById('btn-upload-data'); btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo...'; btn.disabled = true;
-            let successCount = 0;
+            const btn = document.getElementById('btn-upload-data'); btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo Lote de Registros...'; btn.disabled = true;
             const uploadDate = new Date().toISOString().split('T')[0];
             
+            uploadData.sort((a, b) => new Date(a.date || uploadDate) - new Date(b.date || uploadDate));
+
+            let newRends = [];
             for(let i=0; i<uploadData.length; i++) {
-                btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo ${i + 1} de ${uploadData.length}...`;
                 const r = uploadData[i];
-                const newRend = { id: 'RND_XL_' + Date.now() + i, date: r.date || uploadDate, referrer: r.influencer, referred: r.jugador, depositos: r.depositos, retiros: r.retiros, neto: r.neto, comision: r.comision, createdBy: currentUser };
-                const res = await pushData('add_rendimiento', newRend); if(res.success) { rendimientos.unshift(newRend); successCount++; }
+                newRends.push({ id: 'RND_XL_' + Date.now() + '_' + i, date: r.date || uploadDate, referrer: r.influencer, referred: r.jugador, depositos: r.depositos, retiros: r.retiros, neto: r.neto, comision: r.comision, createdBy: currentUser });
             }
-            resetPagesAndUpdate(); showToast(`Carga masiva completa: ${successCount} registros.`, 'success');
+
+            const res = await pushData('add_rendimiento_multiple', newRends); 
+            if(res.success) { 
+                rendimientos = [...newRends.reverse(), ...rendimientos]; 
+                rendimientos.sort((a,b) => new Date(b.date) - new Date(a.date));
+                resetPagesAndUpdate(); 
+                showToast(`Carga masiva ultra-rápida completada: ${newRends.length} registros.`, 'success');
+            } else {
+                showToast("Hubo un error guardando el lote", "error");
+            }
+            
             document.getElementById('upload-preview-container').classList.add('hidden'); document.getElementById('upload-preview-container').classList.remove('flex');
             document.getElementById('upload-file').value = ''; uploadData = []; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Confirmar y Subir Registros'; btn.disabled = false;
         }
@@ -836,27 +886,27 @@
                 else if (filters.user !== 'all') dataArr = dataArr.filter(r => r.assignedTo === filters.user);
                 if (filters.status !== 'all') dataArr = dataArr.filter(r => r.status === filters.status);
                 if (filters.amount && !isNaN(parseFloat(filters.amount))) dataArr = dataArr.filter(r => Math.abs(r.amount) === parseFloat(filters.amount));
-                dataArr.sort((a,b) => String(b.id).localeCompare(String(a.id))); filename = 'movimientos.csv'; 
+                filename = 'movimientos.csv'; 
             } else if(type === 'bonos') { 
                 dataArr = [...bonos];
                 if (bonoFilters.date) dataArr = dataArr.filter(b => isExactDate(b.date, bonoFilters.date));
                 if (bonoFilters.dest) dataArr = dataArr.filter(b => (b.assignedTo || '').toLowerCase().includes(bonoFilters.dest));
                 if (bonoFilters.amount && !isNaN(parseFloat(bonoFilters.amount))) dataArr = dataArr.filter(b => Math.abs(b.amount) === parseFloat(bonoFilters.amount));
                 if (bonoFilters.agency && bonoFilters.agency !== 'all') dataArr = dataArr.filter(b => b.company && b.company.toLowerCase() === bonoFilters.agency.toLowerCase());
-                dataArr.sort((a,b) => String(b.id).localeCompare(String(a.id))); filename = 'bonos.csv'; 
+                filename = 'bonos.csv'; 
             } else if (type === 'giros') { 
                 dataArr = [...giros];
                 if (giroFilters.date) dataArr = dataArr.filter(g => isExactDate(g.date, giroFilters.date));
                 if (giroFilters.dest) dataArr = dataArr.filter(g => (g.dest || '').toLowerCase().includes(giroFilters.dest));
                 if (giroFilters.agency && giroFilters.agency !== 'all') dataArr = dataArr.filter(g => g.company && g.company.toLowerCase() === giroFilters.agency.toLowerCase());
-                dataArr.sort((a,b) => String(b.id).localeCompare(String(a.id))); filename = 'giros.csv'; 
+                filename = 'giros.csv'; 
             } else if(type === 'referrals') { 
                 dataArr = [...referrals];
                 if (refFilters.date) dataArr = dataArr.filter(r => isExactDate(r.date, refFilters.date));
                 if (refFilters.name) dataArr = dataArr.filter(r => r.referrer.toLowerCase().includes(refFilters.name) || r.referred.toLowerCase().includes(refFilters.name));
                 if (refFilters.cedula) dataArr = dataArr.filter(r => r.cedula.includes(refFilters.cedula));
                 if (refFilters.agency && refFilters.agency !== 'all') dataArr = dataArr.filter(r => r.company && r.company.toLowerCase() === refFilters.agency.toLowerCase());
-                dataArr.sort((a,b) => String(b.id).localeCompare(String(a.id))); filename = 'referidos.csv'; 
+                filename = 'referidos.csv'; 
             }
             if(!dataArr.length) { showToast('No hay datos con los filtros actuales', 'warning'); return; }
             const headers = Object.keys(dataArr[0]).join(';');
@@ -865,18 +915,51 @@
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = filename; link.click();
         }
 
-        function isSameMonth(dateStr, filterValue) { if (!filterValue) return true; if (!dateStr) return false; try { const d = new Date(dateStr); if(isNaN(d.getTime())) return true; const [y, m] = filterValue.split('-'); return d.getFullYear() === parseInt(y, 10) && (d.getMonth() + 1) === parseInt(m, 10); } catch(e) { return true; } }
-        function isExactDate(dateStr, exactDate) { if (!exactDate) return true; if (!dateStr) return false; try { const d1 = new Date(dateStr); if (isNaN(d1.getTime())) return false; const pad = n => n.toString().padStart(2, '0'); return `${d1.getFullYear()}-${pad(d1.getMonth()+1)}-${pad(d1.getDate())}` === exactDate; } catch(e) { return true; } }
+        // CORRECCIÓN: Filtro de Mes
+        // En la versión anterior los bonos nuevos venían con T00:00:00 y la zona horaria causaba que cayeran en otro mes. 
+        // Se cambió el isSameMonth para ignorar de manera segura las zonas horarias.
+        function isSameMonth(dateStr, filterValue) { 
+            if (!filterValue) return true; 
+            if (!dateStr) return false; 
+            try { 
+                const d = new Date(dateStr); 
+                if(isNaN(d.getTime())) return true; 
+                // Asegurar que usa la fecha local, no UTC, para evitar que "Junio 1 00:00:00 UTC" se lea como Mayo
+                d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
+                const [y, m] = filterValue.split('-'); 
+                return d.getFullYear() === parseInt(y, 10) && (d.getMonth() + 1) === parseInt(m, 10); 
+            } catch(e) { return true; } 
+        }
+        
+        function isExactDate(dateStr, exactDate) { 
+            if (!exactDate) return true; 
+            if (!dateStr) return false; 
+            try { 
+                const d1 = new Date(dateStr); 
+                if (isNaN(d1.getTime())) return false; 
+                d1.setMinutes(d1.getMinutes() + d1.getTimezoneOffset());
+                const pad = n => n.toString().padStart(2, '0'); 
+                return `${d1.getFullYear()}-${pad(d1.getMonth()+1)}-${pad(d1.getDate())}` === exactDate; 
+            } catch(e) { return true; } 
+        }
 
         async function handleRegister(e) {
             e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); const orig = btn.innerHTML; btn.innerHTML = 'Guardando...'; btn.disabled = true;
             let amt = parseFloat(document.getElementById('reg-amount').value.replace(',', '.')); if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); btn.innerHTML = orig; btn.disabled = false; return; }
             const isDebit = document.querySelector('input[name="reg-type"]:checked').value === 'debito'; if (isDebit) amt = -Math.abs(amt);
-            const ud = JSON.parse(localStorage.getItem('sb_user_data')); let assigned = currentUser;
+            
+            let assigned = currentUser;
             const adminSelectUserBlock = document.getElementById('admin-select-user');
-            if (ud && (ud.type === 'admin' || isSuperAdmin)) { if (adminSelectUserBlock && !adminSelectUserBlock.classList.contains('hidden')) { const assignRadio = document.querySelector('input[name="reg-assign"]:checked'); if (assignRadio) assigned = assignRadio.value; } }
+            const ud = JSON.parse(localStorage.getItem('sb_user_data'));
+            if (ud && (ud.type === 'admin' || isSuperAdmin)) { 
+                if (adminSelectUserBlock && !adminSelectUserBlock.classList.contains('hidden')) { 
+                    const assignRadio = document.querySelector('input[name="reg-assign"]:checked'); 
+                    if (assignRadio) assigned = assignRadio.value; 
+                } 
+            }
+            
             const newTx = { id: 'TX' + Date.now(), date: document.getElementById('reg-date').value, amount: amt, concept: document.getElementById('reg-concept').value.trim() || (isDebit ? 'Débito' : 'Ingreso'), assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: '' };
-            records.unshift(newTx); updateAllViews(); document.getElementById('reg-amount').value = ''; document.getElementById('reg-concept').value = ''; document.querySelector('input[name="reg-type"][value="ingreso"]').checked = true; toggleAmountStyle();
+            records.unshift(newTx); records.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); document.getElementById('reg-amount').value = ''; document.getElementById('reg-concept').value = ''; document.querySelector('input[name="reg-type"][value="ingreso"]').checked = true; toggleAmountStyle();
             btn.innerHTML = orig; btn.disabled = false; pushData('add', newTx).then(res => { if (res.success) showToast('Registro guardado', 'success'); });
         }
 
@@ -884,7 +967,7 @@
             e.preventDefault(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; btn.innerHTML = 'Procesando...'; btn.disabled = true;
             const amt = parseFloat(document.getElementById('gus-amount').value.replace(',', '.')); if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); btn.innerHTML = orig; btn.disabled = false; return; }
             const newAdv = { id: 'ADV' + Date.now(), date: document.getElementById('gus-date').value, amount: amt, concept: document.getElementById('gus-concept').value.trim() || 'Adelanto', createdBy: currentUser, status: 'Pendiente', detail: '' };
-            advances.unshift(newAdv); updateAllViews(); document.getElementById('form-gussepy').reset(); document.getElementById('gus-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
+            advances.unshift(newAdv); advances.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); document.getElementById('form-gussepy').reset(); document.getElementById('gus-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
             pushData('add_advance', newAdv).then(res => { if(res.success) showToast('Adelanto registrado', 'success'); });
         }
 
@@ -893,7 +976,7 @@
             const amt = parseFloat(document.getElementById('bono-amount').value.replace(',', '.')); if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); btn.innerHTML = orig; btn.disabled = false; return; }
             const companyRadio = document.querySelector('input[name="bono-company"]:checked'); const company = companyRadio ? companyRadio.value : 'Sepybet';
             const newBono = { id: 'BN' + Date.now(), date: document.getElementById('bono-date').value, amount: amt, assignedTo: document.getElementById('bono-dest').value.trim(), concept: document.getElementById('bono-concept').value.trim() || 'Emisión', createdBy: currentUser, status: 'Entregado', amountWon: 0, company: company };
-            bonos.unshift(newBono); updateAllViews(); updateBonoDatalist(); document.getElementById('form-bonos').reset(); document.getElementById('bono-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
+            bonos.unshift(newBono); bonos.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); updateBonoDatalist(); document.getElementById('form-bonos').reset(); document.getElementById('bono-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
             pushData('add_bono', newBono).then(res => { if(res.success) showToast('Bono emitido', 'success'); });
         }
 
@@ -902,7 +985,7 @@
             const qty = parseInt(document.getElementById('giro-qty').value); if (isNaN(qty) || qty <= 0) { showToast('Cantidad inválida', 'error'); btn.innerHTML = orig; btn.disabled = false; return; }
             const companyRadio = document.querySelector('input[name="giro-company"]:checked'); const company = companyRadio ? companyRadio.value : 'Sepybet';
             const newGiro = { id: 'GR' + Date.now(), date: document.getElementById('giro-date').value, company: company, dest: document.getElementById('giro-dest').value.trim(), game: document.getElementById('giro-game').value, qty: qty, status: 'Entregado', amountWon: 0, createdBy: currentUser };
-            giros.unshift(newGiro); updateAllViews(); updateBonoDatalist(); document.getElementById('form-giros').reset(); document.getElementById('giro-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
+            giros.unshift(newGiro); giros.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); updateBonoDatalist(); document.getElementById('form-giros').reset(); document.getElementById('giro-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
             pushData('add_giro', newGiro).then(res => { if(res.success) showToast('Giros registrados con éxito', 'success'); });
         }
 
@@ -914,7 +997,7 @@
             const referrer = document.getElementById('ref-referrer').value.trim(); const referred = document.getElementById('ref-referred').value.trim(); const dateVal = document.getElementById('ref-date').value; const rId = 'REF' + Date.now();
             const newRef = { id: rId, date: dateVal, amount: amt, referrer: referrer, referred: referred, cedula: cedula, createdBy: currentUser, isInfluencer: isInfluencer, company: company };
             const newBonoFromRef = { id: rId + '_B', date: dateVal, amount: amt, assignedTo: referrer, concept: "Referido: " + referred, createdBy: currentUser, status: 'Entregado', amountWon: 0, company: company };
-            referrals.unshift(newRef); bonos.unshift(newBonoFromRef); updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns();
+            referrals.unshift(newRef); bonos.unshift(newBonoFromRef); referrals.sort((a,b) => new Date(b.date) - new Date(a.date)); bonos.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns();
             document.getElementById('form-referrals').reset(); document.getElementById('ref-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
             pushData('add_referral', { ...newRef, company: company, isInfluencer: isInfluencer }).then(res => { if(res.success) showToast('Referido guardado.', 'success'); });
         }
@@ -926,7 +1009,7 @@
             const depositos = parseFloat(document.getElementById('rend-dep').value.replace(',', '.')) || 0; const retiros = parseFloat(document.getElementById('rend-ret').value.replace(',', '.')) || 0; const neto = depositos - retiros; 
             const rateKey = String(referrer).trim().toLowerCase(); const rate = (USERS[rateKey] && USERS[rateKey].comision ? USERS[rateKey].comision : 20) / 100; const comision = neto * rate;
             const newRend = { id: 'RND' + Date.now(), date: document.getElementById('rend-date').value, referrer, referred, depositos, retiros, neto, comision, createdBy: currentUser };
-            rendimientos.unshift(newRend); updateAllViews(); document.getElementById('form-rendimiento').reset(); document.getElementById('rend-date').value = new Date().toISOString().split('T')[0]; clearPlayerSelection(); 
+            rendimientos.unshift(newRend); rendimientos.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); document.getElementById('form-rendimiento').reset(); document.getElementById('rend-date').value = new Date().toISOString().split('T')[0]; clearPlayerSelection(); 
             btn.innerHTML = orig; btn.disabled = false; pushData('add_rendimiento', newRend).then(res => { if(res.success) showToast('Rendimiento guardado.', 'success'); });
         }
 
@@ -949,7 +1032,7 @@
             const id = document.getElementById('edit-id').value; const tx = records.find(r => String(r.id) === id); if(!tx) return;
             const btn = document.getElementById('btn-edit-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
             tx.date = document.getElementById('edit-date').value; let nAmt = parseFloat(document.getElementById('edit-amount').value.replace(',', '.')); tx.amount = (tx.amount < 0) ? -nAmt : nAmt; tx.concept = document.getElementById('edit-concept').value;
-            updateAllViews(); closeEditModal(); pushData('edit_record', tx).then(res => { if(res.success) showToast("Editado con éxito", "success")}); btn.innerHTML = orig; btn.disabled = false;
+            records.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); closeEditModal(); pushData('edit_record', tx).then(res => { if(res.success) showToast("Editado con éxito", "success")}); btn.innerHTML = orig; btn.disabled = false;
         }
 
         function actionEditRend(id) { const rend = rendimientos.find(r => String(r.id) === String(id)); if(rend) { document.getElementById('edit-rend-id').value = rend.id; document.getElementById('edit-rend-date').value = rend.date; document.getElementById('edit-rend-dep').value = rend.depositos; document.getElementById('edit-rend-ret').value = rend.retiros; document.getElementById('modal-edit-rend').classList.replace('hidden', 'flex'); } }
@@ -959,7 +1042,7 @@
             const btn = document.getElementById('btn-edit-rend-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
             rend.date = document.getElementById('edit-rend-date').value; rend.depositos = parseFloat(document.getElementById('edit-rend-dep').value.replace(',', '.')) || 0; rend.retiros = parseFloat(document.getElementById('edit-rend-ret').value.replace(',', '.')) || 0; rend.neto = rend.depositos - rend.retiros; 
             const rateKey = String(rend.referrer).trim().toLowerCase(); const rate = (USERS[rateKey] && USERS[rateKey].comision ? USERS[rateKey].comision : 20) / 100; rend.comision = rend.neto * rate;
-            updateAllViews(); closeEditRendModal(); pushData('edit_rendimiento', rend).then(res => { if(res.success) showToast("Editado", "success")}); btn.innerHTML = orig; btn.disabled = false;
+            rendimientos.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); closeEditRendModal(); pushData('edit_rendimiento', rend).then(res => { if(res.success) showToast("Editado", "success")}); btn.innerHTML = orig; btn.disabled = false;
         }
 
         async function actionDeny(id) { if (confirm("¿DENEGAR?")) { const targetId = String(id); const tx = records.find(r => String(r.id) === targetId); if (tx) { tx.status = 'Denegado'; updateAllViews(); pushData('deny', { id: targetId }).then(res => { if(res.success) showToast("Denegado", "success")}); } } }
@@ -1100,7 +1183,6 @@
                 let dashRecords = [...fRecords];
                 if (userType === 'user') dashRecords = dashRecords.filter(r => r.assignedTo === currentUser);
                 if (userType === 'master') dashRecords = dashRecords.filter(r => r.amount > 0);
-                dashRecords.sort((a,b) => String(b.id).localeCompare(String(a.id)));
                 renderRecordsTable('dash-table-body', 'dash-empty-state', paginate(dashRecords, 'dash'), userType);
 
                 let auditRecords = [...records];
@@ -1110,11 +1192,10 @@
                 else if (filters.user !== 'all') auditRecords = auditRecords.filter(r => r.assignedTo === filters.user);
                 if (filters.status !== 'all') auditRecords = auditRecords.filter(r => r.status === filters.status);
                 if (filters.amount && !isNaN(parseFloat(filters.amount))) auditRecords = auditRecords.filter(r => Math.abs(r.amount) === parseFloat(filters.amount));
-                auditRecords.sort((a,b) => String(b.id).localeCompare(String(a.id)));
                 renderRecordsTable('audit-table-body', 'audit-empty-state', paginate(auditRecords, 'audit'), userType);
 
                 const tbodyGus = document.getElementById('table-gussepy-advances'); 
-                const fAdv = advances.filter(a => isSameMonth(a.date, document.getElementById('gus-month-filter')?.value || globalMF)); fAdv.sort((a,b) => String(b.id).localeCompare(String(a.id)));
+                const fAdv = advances.filter(a => isSameMonth(a.date, document.getElementById('gus-month-filter')?.value || globalMF));
                 if (tbodyGus) {
                     let htmlA = '';
                     const pag = paginate(fAdv, 'gussepy');
@@ -1187,7 +1268,6 @@
                 if (giroFilters.date) displayGiros = displayGiros.filter(g => isExactDate(g.date, giroFilters.date));
                 if (giroFilters.dest) displayGiros = displayGiros.filter(g => (g.dest || '').toLowerCase().includes(giroFilters.dest));
                 if (giroFilters.agency && giroFilters.agency !== 'all') displayGiros = displayGiros.filter(g => g.company && g.company.toLowerCase() === giroFilters.agency.toLowerCase());
-                displayGiros.sort((a,b) => String(b.id).localeCompare(String(a.id)));
                 
                 const elTableGiros = document.getElementById('table-giros-list');
                 if(elTableGiros) {
@@ -1206,7 +1286,6 @@
                 if (bonoFilters.dest) displayBonos = displayBonos.filter(b => (b.assignedTo || '').toLowerCase().includes(bonoFilters.dest));
                 if (bonoFilters.amount && !isNaN(parseFloat(bonoFilters.amount))) displayBonos = displayBonos.filter(b => Math.abs(b.amount) === parseFloat(bonoFilters.amount));
                 if (bonoFilters.agency && bonoFilters.agency !== 'all') displayBonos = displayBonos.filter(b => b.company && b.company.toLowerCase() === bonoFilters.agency.toLowerCase());
-                displayBonos.sort((a,b) => String(b.id).localeCompare(String(a.id)));
                 
                 const elTableBonos = document.getElementById('table-bonos-list');
                 if(elTableBonos) {
@@ -1225,7 +1304,6 @@
                 if (refFilters.name) displayRef = displayRef.filter(r => r.referrer.toLowerCase().includes(refFilters.name) || r.referred.toLowerCase().includes(refFilters.name));
                 if (refFilters.cedula) displayRef = displayRef.filter(r => r.cedula.includes(refFilters.cedula));
                 if (refFilters.agency && refFilters.agency !== 'all') displayRef = displayRef.filter(r => r.company && r.company.toLowerCase() === refFilters.agency.toLowerCase());
-                displayRef.sort((a,b) => String(b.id).localeCompare(String(a.id)));
                 
                 const elTableRef = document.getElementById('table-ref-list');
                 if(elTableRef) {
@@ -1244,7 +1322,6 @@
                 if (melFilters.date) displayRend = displayRend.filter(r => isExactDate(r.date, melFilters.date));
                 if (melFilters.inf) displayRend = displayRend.filter(r => r.referrer.toLowerCase().includes(melFilters.inf));
                 if (melFilters.jug) displayRend = displayRend.filter(r => r.referred.toLowerCase().includes(melFilters.jug));
-                displayRend.sort((a,b) => String(b.id).localeCompare(String(a.id)));
                 
                 const elTableRend = document.getElementById('mel-table-history');
                 if(elTableRend) {
@@ -1309,7 +1386,6 @@
                         return (refName === currentUser.toLowerCase() || refName === currUserName) && r.referred === detailPlayer && isSameMonth(r.date, detailMonth);
                     });
                     
-                    detailData.sort((a,b) => new Date(b.date) - new Date(a.date));
                     const tbodyDet = document.getElementById('inf-detail-table-body');
                     if (tbodyDet) {
                         let hDet = ''; const pagDet = paginate(detailData, 'infdetail');
@@ -1329,7 +1405,7 @@
                 
                 for(let i=0; i<allPlayers.length; i++) {
                     const p = allPlayers[i];
-                    const pRends = rendimientos.filter(r => r.referred === p).sort((a,b) => new Date(b.date) - new Date(a.date));
+                    const pRends = rendimientos.filter(r => r.referred === p);
                     if (pRends.length > 0) {
                         const lastMov = new Date(pRends[0].date);
                         if (lastMov < limitDate) {
