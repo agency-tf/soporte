@@ -303,7 +303,7 @@
                                     <label class="flex-1 relative cursor-pointer group"><input type="radio" name="bono-company" value="Chichesepy" class="peer sr-only"><div class="absolute inset-0 rounded-xl border-2 border-slate-200 peer-checked:border-orange-500 peer-checked:bg-orange-50 transition-all"></div><div class="relative p-3 text-center"><i class="fas fa-store text-slate-400 peer-checked:text-orange-600 mb-1"></i><div class="text-xs font-bold text-slate-600 peer-checked:text-orange-800">Chichesepy</div></div></label>
                                 </div>
                             </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6"><input type="date" id="bono-date" required class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-rose-500"><input type="text" id="bono-amount" inputmode="decimal" required placeholder="Monto Bono ($)" class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-lg font-black focus:border-rose-500"></div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6"><input type="datetime-local" id="bono-date" required class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-rose-500"><input type="text" id="bono-amount" inputmode="decimal" required placeholder="Monto Bono ($)" class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-lg font-black focus:border-rose-500"></div>
                             <input type="text" id="bono-dest" list="bonos-destinatarios" required placeholder="Jugador destinatario..." class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl font-bold focus:border-rose-500"><datalist id="bonos-destinatarios"></datalist>
                             <input type="text" id="bono-concept" placeholder="Concepto (Regalo, Recarga...)" class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl font-medium focus:border-rose-500">
                             <button type="submit" class="w-full py-4 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-lg">Guardar Bono</button>
@@ -343,7 +343,7 @@
                                 <label class="flex-1 relative cursor-pointer group"><input type="radio" name="giro-company" value="Chichesepy" class="peer sr-only"><div class="absolute inset-0 rounded-xl border-2 border-slate-200 peer-checked:border-orange-500 peer-checked:bg-orange-50 transition-all"></div><div class="relative p-3 text-center"><i class="fas fa-store text-slate-400 peer-checked:text-orange-600 mb-1"></i><div class="text-xs font-bold text-slate-600 peer-checked:text-orange-800">Chichesepy</div></div></label>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6"><input type="date" id="giro-date" required class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500"><input type="text" id="giro-dest" list="bonos-destinatarios" required placeholder="Jugador destinatario..." class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl font-bold focus:border-indigo-500"></div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6"><input type="datetime-local" id="giro-date" required class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500"><input type="text" id="giro-dest" list="bonos-destinatarios" required placeholder="Jugador destinatario..." class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl font-bold focus:border-indigo-500"></div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Juego Autorizado *</label><select id="giro-game" required class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl font-bold text-indigo-700 focus:border-indigo-500"><option value="THUNDER COINS">THUNDER COINS</option><option value="HOT TO BURN">HOT TO BURN</option><option value="SUPER TIKI STRIKE">SUPER TIKI STRIKE</option></select></div>
                             <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Cantidad de Giros *</label><input type="number" id="giro-qty" required placeholder="Ej. 10" class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl text-lg font-black focus:border-indigo-500"></div>
@@ -376,7 +376,7 @@
                     <div class="px-6 py-8 sm:p-10 border-b border-indigo-50 bg-gradient-to-br from-indigo-50 to-white"><h2 class="text-2xl font-black text-slate-800">Registrar Nuevo Referido</h2></div>
                     <form id="form-referrals" class="p-6 sm:p-10 space-y-6">
                         <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100 flex items-center justify-between gap-3"><div><h4 class="text-sm font-bold text-indigo-900">¿El referente es un Influyente VIP?</h4><p class="text-[10px] text-indigo-600 mt-0.5">Si se activa, el sistema creará cuenta de afiliado.</p></div><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="ref-is-influencer" class="sr-only toggle-checkbox"><div class="toggle-label w-11 h-6 bg-slate-300 rounded-full transition-colors relative after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div></label></div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6"><input type="date" id="ref-date" required class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl"><input type="text" id="ref-amount" inputmode="decimal" required placeholder="Premio al Referente ($)" class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-lg font-black"></div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6"><input type="datetime-local" id="ref-date" required class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl"><input type="text" id="ref-amount" inputmode="decimal" required placeholder="Premio al Referente ($)" class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-lg font-black"></div>
                         <input type="text" id="ref-referrer" list="ref-referrers-list" required placeholder="Referente (Quien invita)..." class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl font-bold"><datalist id="ref-referrers-list"></datalist>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6"><input type="text" id="ref-referred" required placeholder="Nuevo Referido" class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl"><input type="text" id="ref-cedula" required placeholder="Cédula" class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl font-bold text-indigo-700"></div>
                         <button type="submit" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg">Guardar Referido y Bono</button>
@@ -498,6 +498,16 @@
         let currentPlayersList = [], uploadData = [], bankUploadData = []; 
 
         const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
+        const getLocalIsoDatetime = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0,16);
+
+        // FUNCIÓN GLOBAL DE DOBLE ORDENAMIENTO (Fecha -> Timestamp incrustado en el ID)
+        function sortDataDesc(a, b) {
+            const dateDiff = new Date(b.date) - new Date(a.date);
+            if (dateDiff !== 0) return dateDiff;
+            const tA = parseInt((String(a.id).match(/\d+/) || [0])[0], 10);
+            const tB = parseInt((String(b.id).match(/\d+/) || [0])[0], 10);
+            return (tB || 0) - (tA || 0);
+        }
         
         function parseExcelDate(dateVal) {
             if (!dateVal) return new Date();
@@ -584,10 +594,14 @@
             ['dash-month-filter', 'bonos-month-filter', 'inf-month-filter', 'gus-month-filter', 'inf-detail-month'].forEach(id => { const el = document.getElementById(id); if (el) { el.value = currentMonthStr; el.onchange = resetPagesAndUpdate; } });
             
             const searchInf = document.getElementById('inf-search'); if (searchInf) searchInf.onkeyup = resetPagesAndUpdate;
-            const todayStr = now.toISOString().split('T')[0]; const nowLocalTimeStr = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0,16);
+            const todayStr = now.toISOString().split('T')[0];
+            const nowLocalTimeStr = getLocalIsoDatetime();
 
-            ['gus-date', 'bono-date', 'ref-date', 'rend-date', 'giro-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = todayStr; });
-            ['reg-date', 'edit-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = nowLocalTimeStr; });
+            // Módulos que siguen usando solo "Día Exacto"
+            ['gus-date', 'rend-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = todayStr; });
+            
+            // Módulos actualizados con Hora Exacta
+            ['reg-date', 'edit-date', 'bono-date', 'ref-date', 'giro-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = nowLocalTimeStr; });
             
             const forms = [{ id: 'login-form', handler: handleLogin }, { id: 'register-form', handler: handleRegister }, { id: 'form-gussepy', handler: handleGussepy }, { id: 'form-bonos', handler: handleBono }, { id: 'form-giros', handler: handleGiro }, { id: 'form-referrals', handler: handleReferral }, { id: 'form-rendimiento', handler: handleRendimiento }];
             forms.forEach(form => { const el = document.getElementById(form.id); if (el) el.addEventListener('submit', form.handler); });
@@ -695,15 +709,15 @@
                             else USERS[k] = { ...data.users[k], comision: com || 20 };
                         });
                     }
-                    // IMPORTANTE: Al obtener los datos, almacenamos la columna 7 (comentario en H) de forma explícita.
                     records = data.data || []; advances = data.advances || []; bonos = data.bonos || []; giros = data.giros || []; referrals = data.referrals || []; rendimientos = data.rendimientos || []; 
                     
-                    records.sort((a,b) => new Date(b.date) - new Date(a.date));
-                    advances.sort((a,b) => new Date(b.date) - new Date(a.date));
-                    bonos.sort((a,b) => new Date(b.date) - new Date(a.date));
-                    giros.sort((a,b) => new Date(b.date) - new Date(a.date));
-                    referrals.sort((a,b) => new Date(b.date) - new Date(a.date));
-                    rendimientos.sort((a,b) => new Date(b.date) - new Date(a.date));
+                    // Doble Ordenamiento aplicado a todos los arrays
+                    records.sort(sortDataDesc);
+                    advances.sort(sortDataDesc);
+                    bonos.sort(sortDataDesc);
+                    giros.sort(sortDataDesc);
+                    referrals.sort(sortDataDesc);
+                    rendimientos.sort(sortDataDesc);
 
                     resetPagesAndUpdate(); updateBonoDatalist(); updateMelanieDropdowns(); 
                 }
@@ -827,7 +841,6 @@
             let newTxs = [];
             for(let i=0; i<bankUploadData.length; i++) {
                 const r = bankUploadData[i];
-                // Las cargas masivas siempre entran como 'Pendiente'
                 newTxs.push({ id: 'TX_BNK_' + Date.now() + '_' + i, date: r.date, amount: r.amount, concept: r.concept, assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: r.receipt });
             }
 
@@ -852,7 +865,7 @@
                 }
             }
 
-            records.sort((a,b) => new Date(b.date) - new Date(a.date));
+            records.sort(sortDataDesc);
             resetPagesAndUpdate(); 
             showToast(`Carga masiva completada: ${successCount} registros en Pendiente.`, 'success');
             
@@ -952,7 +965,7 @@
                 }
             }
 
-            rendimientos.sort((a,b) => new Date(b.date) - new Date(a.date));
+            rendimientos.sort(sortDataDesc);
             resetPagesAndUpdate(); 
             showToast(`Carga masiva completada: ${successCount} registros.`, 'success');
             
@@ -1045,7 +1058,8 @@
             }
             
             const newTx = { id: 'TX' + Date.now(), date: document.getElementById('reg-date').value, amount: amt, concept: document.getElementById('reg-concept').value.trim() || (isDebit ? 'Débito' : 'Ingreso'), assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: '' };
-            records.unshift(newTx); records.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); document.getElementById('reg-amount').value = ''; document.getElementById('reg-concept').value = ''; document.querySelector('input[name="reg-type"][value="ingreso"]').checked = true; toggleAmountStyle();
+            records.unshift(newTx); records.sort(sortDataDesc); updateAllViews(); document.getElementById('reg-amount').value = ''; document.getElementById('reg-concept').value = ''; document.querySelector('input[name="reg-type"][value="ingreso"]').checked = true; toggleAmountStyle();
+            document.getElementById('reg-date').value = getLocalIsoDatetime();
             btn.innerHTML = orig; btn.disabled = false; pushData('add', newTx).then(res => { if (res.success) showToast('Registro guardado', 'success'); });
         }
 
@@ -1053,7 +1067,7 @@
             e.preventDefault(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; btn.innerHTML = 'Procesando...'; btn.disabled = true;
             const amt = parseFloat(document.getElementById('gus-amount').value.replace(',', '.')); if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); btn.innerHTML = orig; btn.disabled = false; return; }
             const newAdv = { id: 'ADV' + Date.now(), date: document.getElementById('gus-date').value, amount: amt, concept: document.getElementById('gus-concept').value.trim() || 'Adelanto', createdBy: currentUser, status: 'Pendiente', detail: '' };
-            advances.unshift(newAdv); advances.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); document.getElementById('form-gussepy').reset(); document.getElementById('gus-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
+            advances.unshift(newAdv); advances.sort(sortDataDesc); updateAllViews(); document.getElementById('form-gussepy').reset(); document.getElementById('gus-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
             pushData('add_advance', newAdv).then(res => { if(res.success) showToast('Adelanto registrado', 'success'); });
         }
 
@@ -1062,7 +1076,7 @@
             const amt = parseFloat(document.getElementById('bono-amount').value.replace(',', '.')); if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); btn.innerHTML = orig; btn.disabled = false; return; }
             const companyRadio = document.querySelector('input[name="bono-company"]:checked'); const company = companyRadio ? companyRadio.value : 'Sepybet';
             const newBono = { id: 'BN' + Date.now(), date: document.getElementById('bono-date').value, amount: amt, assignedTo: document.getElementById('bono-dest').value.trim(), concept: document.getElementById('bono-concept').value.trim() || 'Emisión', createdBy: currentUser, status: 'Entregado', amountWon: 0, company: company };
-            bonos.unshift(newBono); bonos.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); updateBonoDatalist(); document.getElementById('form-bonos').reset(); document.getElementById('bono-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
+            bonos.unshift(newBono); bonos.sort(sortDataDesc); updateAllViews(); updateBonoDatalist(); document.getElementById('form-bonos').reset(); document.getElementById('bono-date').value = getLocalIsoDatetime(); btn.innerHTML = orig; btn.disabled = false;
             pushData('add_bono', newBono).then(res => { if(res.success) showToast('Bono emitido', 'success'); });
         }
 
@@ -1071,7 +1085,7 @@
             const qty = parseInt(document.getElementById('giro-qty').value); if (isNaN(qty) || qty <= 0) { showToast('Cantidad inválida', 'error'); btn.innerHTML = orig; btn.disabled = false; return; }
             const companyRadio = document.querySelector('input[name="giro-company"]:checked'); const company = companyRadio ? companyRadio.value : 'Sepybet';
             const newGiro = { id: 'GR' + Date.now(), date: document.getElementById('giro-date').value, company: company, dest: document.getElementById('giro-dest').value.trim(), game: document.getElementById('giro-game').value, qty: qty, status: 'Entregado', amountWon: 0, createdBy: currentUser };
-            giros.unshift(newGiro); giros.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); updateBonoDatalist(); document.getElementById('form-giros').reset(); document.getElementById('giro-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
+            giros.unshift(newGiro); giros.sort(sortDataDesc); updateAllViews(); updateBonoDatalist(); document.getElementById('form-giros').reset(); document.getElementById('giro-date').value = getLocalIsoDatetime(); btn.innerHTML = orig; btn.disabled = false;
             pushData('add_giro', newGiro).then(res => { if(res.success) showToast('Giros registrados con éxito', 'success'); });
         }
 
@@ -1083,8 +1097,8 @@
             const referrer = document.getElementById('ref-referrer').value.trim(); const referred = document.getElementById('ref-referred').value.trim(); const dateVal = document.getElementById('ref-date').value; const rId = 'REF' + Date.now();
             const newRef = { id: rId, date: dateVal, amount: amt, referrer: referrer, referred: referred, cedula: cedula, createdBy: currentUser, isInfluencer: isInfluencer, company: company };
             const newBonoFromRef = { id: rId + '_B', date: dateVal, amount: amt, assignedTo: referrer, concept: "Referido: " + referred, createdBy: currentUser, status: 'Entregado', amountWon: 0, company: company };
-            referrals.unshift(newRef); bonos.unshift(newBonoFromRef); referrals.sort((a,b) => new Date(b.date) - new Date(a.date)); bonos.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns();
-            document.getElementById('form-referrals').reset(); document.getElementById('ref-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = orig; btn.disabled = false;
+            referrals.unshift(newRef); bonos.unshift(newBonoFromRef); referrals.sort(sortDataDesc); bonos.sort(sortDataDesc); updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns();
+            document.getElementById('form-referrals').reset(); document.getElementById('ref-date').value = getLocalIsoDatetime(); btn.innerHTML = orig; btn.disabled = false;
             pushData('add_referral', { ...newRef, company: company, isInfluencer: isInfluencer }).then(res => { if(res.success) showToast('Referido guardado.', 'success'); });
         }
 
@@ -1095,7 +1109,7 @@
             const depositos = parseFloat(document.getElementById('rend-dep').value.replace(',', '.')) || 0; const retiros = parseFloat(document.getElementById('rend-ret').value.replace(',', '.')) || 0; const neto = depositos - retiros; 
             const rateKey = String(referrer).trim().toLowerCase(); const rate = (USERS[rateKey] && USERS[rateKey].comision ? USERS[rateKey].comision : 20) / 100; const comision = neto * rate;
             const newRend = { id: 'RND' + Date.now(), date: document.getElementById('rend-date').value, referrer, referred, depositos, retiros, neto, comision, createdBy: currentUser };
-            rendimientos.unshift(newRend); rendimientos.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); document.getElementById('form-rendimiento').reset(); document.getElementById('rend-date').value = new Date().toISOString().split('T')[0]; clearPlayerSelection(); 
+            rendimientos.unshift(newRend); rendimientos.sort(sortDataDesc); updateAllViews(); document.getElementById('form-rendimiento').reset(); document.getElementById('rend-date').value = new Date().toISOString().split('T')[0]; clearPlayerSelection(); 
             btn.innerHTML = orig; btn.disabled = false; pushData('add_rendimiento', newRend).then(res => { if(res.success) showToast('Rendimiento guardado.', 'success'); });
         }
 
@@ -1118,7 +1132,7 @@
             const id = document.getElementById('edit-id').value; const tx = records.find(r => String(r.id) === id); if(!tx) return;
             const btn = document.getElementById('btn-edit-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
             tx.date = document.getElementById('edit-date').value; let nAmt = parseFloat(document.getElementById('edit-amount').value.replace(',', '.')); tx.amount = (tx.amount < 0) ? -nAmt : nAmt; tx.concept = document.getElementById('edit-concept').value;
-            records.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); closeEditModal(); pushData('edit_record', tx).then(res => { if(res.success) showToast("Editado con éxito", "success")}); btn.innerHTML = orig; btn.disabled = false;
+            records.sort(sortDataDesc); updateAllViews(); closeEditModal(); pushData('edit_record', tx).then(res => { if(res.success) showToast("Editado con éxito", "success")}); btn.innerHTML = orig; btn.disabled = false;
         }
 
         function actionEditRend(id) { const rend = rendimientos.find(r => String(r.id) === String(id)); if(rend) { document.getElementById('edit-rend-id').value = rend.id; document.getElementById('edit-rend-date').value = rend.date; document.getElementById('edit-rend-dep').value = rend.depositos; document.getElementById('edit-rend-ret').value = rend.retiros; document.getElementById('modal-edit-rend').classList.replace('hidden', 'flex'); } }
@@ -1128,7 +1142,7 @@
             const btn = document.getElementById('btn-edit-rend-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
             rend.date = document.getElementById('edit-rend-date').value; rend.depositos = parseFloat(document.getElementById('edit-rend-dep').value.replace(',', '.')) || 0; rend.retiros = parseFloat(document.getElementById('edit-rend-ret').value.replace(',', '.')) || 0; rend.neto = rend.depositos - rend.retiros; 
             const rateKey = String(rend.referrer).trim().toLowerCase(); const rate = (USERS[rateKey] && USERS[rateKey].comision ? USERS[rateKey].comision : 20) / 100; rend.comision = rend.neto * rate;
-            rendimientos.sort((a,b) => new Date(b.date) - new Date(a.date)); updateAllViews(); closeEditRendModal(); pushData('edit_rendimiento', rend).then(res => { if(res.success) showToast("Editado", "success")}); btn.innerHTML = orig; btn.disabled = false;
+            rendimientos.sort(sortDataDesc); updateAllViews(); closeEditRendModal(); pushData('edit_rendimiento', rend).then(res => { if(res.success) showToast("Editado", "success")}); btn.innerHTML = orig; btn.disabled = false;
         }
 
         async function actionDeny(id) { if (confirm("¿DENEGAR?")) { const targetId = String(id); const tx = records.find(r => String(r.id) === targetId); if (tx) { tx.status = 'Denegado'; updateAllViews(); pushData('deny', { id: targetId }).then(res => { if(res.success) showToast("Denegado", "success")}); } } }
@@ -1496,7 +1510,7 @@
                 
                 for(let i=0; i<allPlayers.length; i++) {
                     const p = allPlayers[i];
-                    const pRends = rendimientos.filter(r => r.referred === p).sort((a,b) => new Date(b.date) - new Date(a.date));
+                    const pRends = rendimientos.filter(r => r.referred === p).sort(sortDataDesc);
                     if (pRends.length > 0) {
                         const lastMov = new Date(pRends[0].date);
                         if (lastMov < limitDate) {
