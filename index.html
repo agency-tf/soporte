@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -180,7 +180,7 @@
                 <div id="panel-dash-movimientos" class="hidden">
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col mt-8">
                         <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50"><h2 class="text-lg font-black text-slate-800">Últimos Movimientos (Mes)</h2></div>
-                        <div class="overflow-x-auto"><table class="w-full text-left border-collapse resp-table"><thead class="bg-slate-50 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-header-group"><tr><th class="p-4 pl-6">Fecha y Hora</th><th class="p-4">Monto</th><th class="p-4">Concepto</th><th class="p-4">Cuenta</th><th class="p-4">Estado</th><th class="p-4">Ref/Comp</th><th class="p-4">Comentario</th><th class="p-4 pr-6 text-center">Acción</th></tr></thead><tbody id="dash-table-body"></tbody></table></div>
+                        <div class="overflow-x-auto"><table class="w-full text-left border-collapse resp-table"><thead class="bg-slate-50 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-header-group"><tr><th class="p-4 pl-6">Fecha y Hora</th><th class="p-4">Monto</th><th class="p-4">Concepto</th><th class="p-4">Cuenta</th><th class="p-4">Estado</th><th class="p-4">Ref/Comp</th><th class="p-4 pr-6 text-center">Acción</th></tr></thead><tbody id="dash-table-body"></tbody></table></div>
                         <div id="pagination-dash" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-dash">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('dash', -1)" id="btn-prev-dash" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-dash">1</span> / <span id="page-tot-dash">1</span></span><button onclick="changePage('dash', 1)" id="btn-next-dash" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                         <div id="dash-empty-state" class="hidden flex-col items-center justify-center p-12 text-center"><div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 text-2xl mb-4"><i class="fas fa-inbox"></i></div><h3 class="text-sm font-bold text-slate-700">No hay registros este mes</h3></div>
                     </div>
@@ -241,14 +241,12 @@
             <div id="tab-auditoria" class="hidden fade-in tab-content">
                 <div class="max-w-7xl mx-auto">
                     <div class="bg-white border border-slate-200 p-3 rounded-2xl shadow-sm mb-6">
-                        <!-- NUEVOS FILTROS CON BÚSQUEDA DE REF O COMENTARIO -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3 w-full items-end">
-                            <div class="w-full"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Día Exacto</label><input type="date" id="filter-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"></div>
-                            <div class="w-full" id="filter-user-container"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta</label><select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"><option value="all">Todas</option><option value="jesus">Jesús</option><option value="tito">Tito</option></select></div>
-                            <div class="w-full"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Estado</label><select id="filter-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"><option value="all">Todos</option><option value="Pendiente">Pendientes</option><option value="Verificado">Verificados</option><option value="Denegado">Denegados</option></select></div>
-                            <div class="w-full"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto ($)</label><div class="relative"><div class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 font-bold">$</div><input type="text" id="filter-amount" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-4 py-2.5 text-sm font-bold text-slate-700 outline-none"></div></div>
-                            <div class="w-full lg:col-span-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Ref / Comentario</label><input type="text" id="filter-ref-comment" placeholder="Buscar..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"></div>
-                            <div class="flex gap-2 w-full lg:col-span-1"><button onclick="applyFilters()" class="flex-1 px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearFilters()" class="flex-1 px-4 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div>
+                        <div class="flex flex-col lg:flex-row items-end gap-3 w-full">
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Día Exacto</label><input type="date" id="filter-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"></div>
+                            <div class="w-full lg:w-auto flex-1" id="filter-user-container"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta</label><select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"><option value="all">Todas</option><option value="jesus">Jesús</option><option value="tito">Tito</option></select></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Estado</label><select id="filter-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"><option value="all">Todos</option><option value="Pendiente">Pendientes</option><option value="Verificado">Verificados</option><option value="Denegado">Denegados</option></select></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto Exacto</label><div class="relative"><div class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 font-bold">$</div><input type="text" id="filter-amount" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-4 py-2.5 text-sm font-bold text-slate-700 outline-none"></div></div>
+                            <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div>
                         </div>
                     </div>
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
@@ -482,26 +480,19 @@
     <div id="modal-password" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-slate-50"><h3 class="text-lg font-black text-slate-800">Cambiar Contraseña</h3></div><form id="form-password" class="p-6 space-y-4"><input type="password" id="new-password" required minlength="4" placeholder="Nueva Clave..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold"><div class="flex gap-3"><button type="button" onclick="closePasswordModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button type="submit" class="flex-1 py-3 bg-slate-800 text-white rounded-xl font-bold">Actualizar</button></div></form></div></div>
     <div id="modal-edit" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-slate-50"><h3 class="text-lg font-black text-slate-800">Editar Registro</h3></div><div class="p-6 space-y-4"><input type="hidden" id="edit-id"><input type="datetime-local" id="edit-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><input type="text" id="edit-amount" inputmode="decimal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><input type="text" id="edit-concept" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeEditModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-edit-confirm" onclick="confirmEdit()" class="flex-1 py-3 bg-blue-500 text-white rounded-xl font-bold">Guardar</button></div></div></div></div>
     <div id="modal-edit-rend" class="fixed inset-0 z-[55] bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in border border-pink-200"><div class="p-6 text-center border-b border-pink-50 bg-pink-50"><h3 class="text-lg font-black text-slate-800">Modificar Rendimiento</h3></div><div class="p-6 space-y-4"><input type="hidden" id="edit-rend-id"><input type="date" id="edit-rend-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><input type="text" id="edit-rend-dep" inputmode="decimal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><input type="text" id="edit-rend-ret" inputmode="decimal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeEditRendModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-edit-rend-confirm" onclick="confirmEditRend()" class="flex-1 py-3 bg-pink-600 text-white rounded-xl font-bold">Actualizar</button></div></div></div></div>
-    <div id="modal-comprobante" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-slate-50"><h3 class="text-lg font-black text-slate-800">Aprobar y Comentar</h3></div><div class="p-6 space-y-4"><input type="text" id="input-comment" placeholder="Escribe un comentario o motivo..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-verify-confirm" onclick="confirmVerify()" class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-bold">Aprobar</button></div></div></div></div>
+    <div id="modal-comprobante" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-slate-50"><h3 class="text-lg font-black text-slate-800">Dar Visto Bueno</h3></div><div class="p-6 space-y-4"><input type="text" id="input-receipt" placeholder="Comentario u Observación..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-verify-confirm" onclick="confirmVerify()" class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-bold">Aprobar</button></div></div></div></div>
     <div id="modal-gussepy" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-amber-50"><h3 class="text-lg font-black text-slate-800">Autorizar Adelanto</h3></div><div class="p-6 space-y-4"><input type="text" id="input-gussepy-detail" placeholder="Detalle..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeGussepyModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-gussepy-confirm" onclick="confirmGussepyAuth()" class="flex-1 py-3 bg-amber-500 text-white rounded-xl font-bold">Autorizar</button></div></div></div></div>
     <div id="modal-bono-ganado" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-emerald-100 bg-emerald-50"><h3 class="text-lg font-black text-slate-800" id="title-bono-win">Liquidación</h3></div><div class="p-6 space-y-4"><input type="text" id="input-bono-win-amount" inputmode="decimal" placeholder="Ganancia Real ($)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-2xl font-black text-center text-emerald-600"><div class="flex gap-3"><button onclick="closeBonoWinModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-bono-win-confirm" onclick="confirmBonoWin()" class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-bold">Guardar</button></div></div></div></div>
     <div id="modal-superadmin" class="fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in border border-slate-700"><div class="p-6 text-center border-b border-slate-100 bg-slate-800"><h3 class="text-lg font-black text-white">Panel de Supervisor</h3></div><div class="p-6 space-y-4"><select id="superadmin-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700"><option value="1311397689">Vista Global (Supervisor)</option></select><div class="flex gap-3"><button onclick="closeSuperAdminSwitcher()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cerrar</button><button onclick="confirmSwitchUser()" class="flex-1 py-3 bg-slate-800 text-white rounded-xl font-bold">Ingresar</button></div></div></div></div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0vZtKwuFfODLM8MSa7yGo_Ixy4_WoXjFSpU04FImW6jGE_A1dKFFYy9tqrXu-tAou8Q/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyUx3G_kaO_X--M7-c3MnFgL7dlT7QvcnOH27VqzQQCtXHyc44Vox1AtbkP4tjikgrOsg/exec';
 
         let USERS = { 'michelle': { name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600', comision: 20 }, 'jesus': { name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]', comision: 20 }, 'tito': { name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]', comision: 20 }, 'gussepy': { name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600', comision: 20 }, 'emilia': { name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600', comision: 20 }, 'melanie': { name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500', comision: 20 }, 'admin': { name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600', comision: 20 }, '1311397689': { name: 'Supervisor', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800', comision: 20 } };
         
         let currentUser = null, isSuperAdmin = false;
         let records = [], advances = [], bonos = [], giros = [], referrals = [], rendimientos = [];
-        
-        // --- FILTRO AÑADIDO: TEXT PARA REF O COMENTARIO ---
-        let filters = { date: '', user: 'all', status: 'all', amount: '', text: '' };
-        let bonoFilters = { date: '', dest: '', amount: '', agency: 'all' };
-        let refFilters = { date: '', name: '', cedula: '', agency: 'all' };
-        let giroFilters = { date: '', dest: '', agency: 'all' };
-        let melFilters = { date: '', inf: '', jug: '' };
-        
+        let filters = { date: '', user: 'all', status: 'all', amount: '' }, bonoFilters = { date: '', dest: '', amount: '', agency: 'all' }, refFilters = { date: '', name: '', cedula: '', agency: 'all' }, giroFilters = { date: '', dest: '', agency: 'all' }, melFilters = { date: '', inf: '', jug: '' };
         let pendingVerifyId = null, pendingAuthId = null, pendingBonoWinId = null, pendingGiroWinId = null;
         let referidosChart = null, inactivityTimer, chartWeekInstance = null, chartMonthsInstance = null;
         let currentPlayersList = [], uploadData = [], bankUploadData = []; 
@@ -509,6 +500,7 @@
         const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
         const getLocalIsoDatetime = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0,16);
 
+        // FUNCIÓN GLOBAL DE DOBLE ORDENAMIENTO (Fecha -> Timestamp incrustado en el ID)
         function sortDataDesc(a, b) {
             const dateDiff = new Date(b.date) - new Date(a.date);
             if (dateDiff !== 0) return dateDiff;
@@ -519,18 +511,45 @@
         
         function parseExcelDate(dateVal) {
             if (!dateVal) return new Date();
-            if (typeof dateVal === 'number') { return new Date(1899, 11, 30 + dateVal); }
+            if (typeof dateVal === 'number') {
+                return new Date(1899, 11, 30 + dateVal);
+            }
             let s = String(dateVal).trim().replace(/"/g, '');
-            let datePart = s; let timePart = "12:00";
-            if (s.includes(',')) { let parts = s.split(','); datePart = parts[0].trim(); timePart = parts[1].trim(); } 
-            else if (s.includes(' ')) { let parts = s.split(' '); datePart = parts[0].trim(); timePart = parts.slice(1).join(' ').trim(); }
+            let datePart = s;
+            let timePart = "12:00";
+            
+            if (s.includes(',')) {
+                let parts = s.split(',');
+                datePart = parts[0].trim();
+                timePart = parts[1].trim();
+            } else if (s.includes(' ')) {
+                let parts = s.split(' ');
+                datePart = parts[0].trim();
+                timePart = parts.slice(1).join(' ').trim();
+            }
+            
             let dParts = datePart.split(/[-/]/);
             let y = 0, m = 0, d = 0;
-            if (dParts.length === 3) { y = parseInt(dParts[0]); if (y < 100) y += 2000; m = parseInt(dParts[1]) - 1; d = parseInt(dParts[2]); } 
-            else { let fd = new Date(s.replace(/-/g, '/')); return isNaN(fd.getTime()) ? new Date() : fd; }
+            if (dParts.length === 3) {
+                y = parseInt(dParts[0]);
+                if (y < 100) y += 2000;
+                m = parseInt(dParts[1]) - 1;
+                d = parseInt(dParts[2]);
+            } else {
+                let fd = new Date(s.replace(/-/g, '/'));
+                return isNaN(fd.getTime()) ? new Date() : fd;
+            }
+            
             let tParts = timePart.match(/(\d+):(\d+)\s*(AM|PM|am|pm)?/i);
             let h = 12, min = 0;
-            if (tParts) { h = parseInt(tParts[1]); min = parseInt(tParts[2]); let ampm = tParts[3] ? tParts[3].toUpperCase() : null; if (ampm === 'PM' && h < 12) h += 12; if (ampm === 'AM' && h === 12) h = 0; }
+            if (tParts) {
+                h = parseInt(tParts[1]);
+                min = parseInt(tParts[2]);
+                let ampm = tParts[3] ? tParts[3].toUpperCase() : null;
+                if (ampm === 'PM' && h < 12) h += 12;
+                if (ampm === 'AM' && h === 12) h = 0;
+            }
+            
             return new Date(y, m, d, h, min, 0);
         }
         
@@ -556,9 +575,11 @@
             const total = dataArray.length; const totalPages = Math.ceil(total / PAGE_SIZE) || 1;
             if (pages[type] > totalPages) pages[type] = totalPages; if (pages[type] < 1) pages[type] = 1;
             const start = (pages[type] - 1) * PAGE_SIZE; const end = start + PAGE_SIZE;
+            
             const elNum = document.getElementById(`page-num-${type}`), elTot = document.getElementById(`page-tot-${type}`), elTotalReg = document.getElementById(`total-reg-${type}`);
             const btnPrev = document.getElementById(`btn-prev-${type}`), btnNext = document.getElementById(`btn-next-${type}`);
             const container = document.getElementById(`pagination-${type}`);
+            
             if(elNum) elNum.innerText = pages[type]; if(elTot) elTot.innerText = totalPages; if(elTotalReg) elTotalReg.innerText = total;
             if(btnPrev) btnPrev.disabled = pages[type] === 1; if(btnNext) btnNext.disabled = pages[type] === totalPages;
             if (container) { if (total === 0) { container.classList.add('hidden'); container.classList.remove('flex'); } else { container.classList.remove('hidden'); container.classList.add('flex'); } }
@@ -568,13 +589,20 @@
         window.onload = () => {
             const savedData = localStorage.getItem('sb_user_data');
             if (savedData) { const ud = JSON.parse(savedData); if (ud.baseType === 'superadmin') { isSuperAdmin = true; currentUser = ud.id; loginUI(USERS[ud.id] || ud); } else { currentUser = ud.id; loginUI(ud); } } else { showScreen('login'); }
+            
             const now = new Date(); const currentMonthStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
             ['dash-month-filter', 'bonos-month-filter', 'inf-month-filter', 'gus-month-filter', 'inf-detail-month'].forEach(id => { const el = document.getElementById(id); if (el) { el.value = currentMonthStr; el.onchange = resetPagesAndUpdate; } });
+            
             const searchInf = document.getElementById('inf-search'); if (searchInf) searchInf.onkeyup = resetPagesAndUpdate;
             const todayStr = now.toISOString().split('T')[0];
             const nowLocalTimeStr = getLocalIsoDatetime();
+
+            // Módulos que siguen usando solo "Día Exacto"
             ['gus-date', 'rend-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = todayStr; });
+            
+            // Módulos actualizados con Hora Exacta
             ['reg-date', 'edit-date', 'bono-date', 'ref-date', 'giro-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = nowLocalTimeStr; });
+            
             const forms = [{ id: 'login-form', handler: handleLogin }, { id: 'register-form', handler: handleRegister }, { id: 'form-gussepy', handler: handleGussepy }, { id: 'form-bonos', handler: handleBono }, { id: 'form-giros', handler: handleGiro }, { id: 'form-referrals', handler: handleReferral }, { id: 'form-rendimiento', handler: handleRendimiento }];
             forms.forEach(form => { const el = document.getElementById(form.id); if (el) el.addEventListener('submit', form.handler); });
             ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(evt => document.addEventListener(evt, resetInactivityTimer));
@@ -955,7 +983,6 @@
                 else if (filters.user !== 'all') dataArr = dataArr.filter(r => r.assignedTo === filters.user);
                 if (filters.status !== 'all') dataArr = dataArr.filter(r => r.status === filters.status);
                 if (filters.amount && !isNaN(parseFloat(filters.amount))) dataArr = dataArr.filter(r => Math.abs(r.amount) === parseFloat(filters.amount));
-                if (filters.text) { const st = filters.text.toLowerCase(); dataArr = dataArr.filter(r => (r.receipt && r.receipt.toLowerCase().includes(st)) || (r.comment && r.comment.toLowerCase().includes(st))); }
                 filename = 'movimientos.csv'; 
             } else if(type === 'bonos') { 
                 dataArr = [...bonos];
@@ -1030,7 +1057,7 @@
                 } 
             }
             
-            const newTx = { id: 'TX' + Date.now(), date: document.getElementById('reg-date').value, amount: amt, concept: document.getElementById('reg-concept').value.trim() || (isDebit ? 'Débito' : 'Ingreso'), assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: '', comment: '' };
+            const newTx = { id: 'TX' + Date.now(), date: document.getElementById('reg-date').value, amount: amt, concept: document.getElementById('reg-concept').value.trim() || (isDebit ? 'Débito' : 'Ingreso'), assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: '' };
             records.unshift(newTx); records.sort(sortDataDesc); updateAllViews(); document.getElementById('reg-amount').value = ''; document.getElementById('reg-concept').value = ''; document.querySelector('input[name="reg-type"][value="ingreso"]').checked = true; toggleAmountStyle();
             document.getElementById('reg-date').value = getLocalIsoDatetime();
             btn.innerHTML = orig; btn.disabled = false; pushData('add', newTx).then(res => { if (res.success) showToast('Registro guardado', 'success'); });
@@ -1086,26 +1113,12 @@
             btn.innerHTML = orig; btn.disabled = false; pushData('add_rendimiento', newRend).then(res => { if(res.success) showToast('Rendimiento guardado.', 'success'); });
         }
 
-        function actionVerify(id) { pendingVerifyId = String(id); document.getElementById('input-comment').value = ''; document.getElementById('modal-comprobante').classList.replace('hidden', 'flex'); }
+        function actionVerify(id) { pendingVerifyId = String(id); document.getElementById('input-receipt').value = ''; document.getElementById('modal-comprobante').classList.replace('hidden', 'flex'); }
         function closeModal() { document.getElementById('modal-comprobante').classList.replace('flex', 'hidden'); pendingVerifyId = null; }
-        
         function confirmVerify() {
-            if (!pendingVerifyId) return; 
-            const targetId = String(pendingVerifyId); 
-            const commentText = document.getElementById('input-comment').value.trim(); 
-            const btn = document.getElementById('btn-verify-confirm');
-            const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true; 
-            const tx = records.find(r => String(r.id) === targetId);
-            
-            if (tx) { 
-                tx.status = 'Verificado'; 
-                tx.comment = commentText; // Guarda localmente el comentario sin afectar el receipt
-                updateAllViews(); 
-                closeModal(); 
-                pushData('verify', { id: targetId, comment: commentText }).then(res => { if(res.success) showToast("Aprobado y comentado", "success")}); 
-            } else {
-                closeModal();
-            }
+            if (!pendingVerifyId) return; const targetId = String(pendingVerifyId); const receipt = document.getElementById('input-receipt').value.trim(); const btn = document.getElementById('btn-verify-confirm');
+            const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true; const tx = records.find(r => String(r.id) === targetId);
+            if (tx) { tx.status = 'Verificado'; tx.receipt = receipt; updateAllViews(); closeModal(); pushData('verify', { id: targetId, receipt: receipt }).then(res => { if(res.success) showToast("Aprobado", "success")}); } else closeModal();
             btn.innerHTML = orig; btn.disabled = false; 
         }
 
@@ -1168,24 +1181,8 @@
             }
         }
 
-        // --- ACTUALIZACIÓN DE FILTROS ---
-        function applyFilters() { 
-            filters.date = document.getElementById('filter-date')?.value || ''; 
-            const fUser = document.getElementById('filter-user'); 
-            filters.user = fUser ? fUser.value : 'all'; 
-            filters.status = document.getElementById('filter-status')?.value || 'all'; 
-            filters.amount = document.getElementById('filter-amount')?.value.replace(',', '.') || ''; 
-            filters.text = document.getElementById('filter-ref-comment')?.value.trim() || ''; // Nuevo Filtro
-            pages.audit = 1; updateAllViews(); 
-        }
-        function clearFilters() { 
-            filters = { date: '', user: 'all', status: 'all', amount: '', text: '' }; 
-            ['filter-date', 'filter-amount', 'filter-ref-comment'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = ''; });
-            if(document.getElementById('filter-user')) document.getElementById('filter-user').value = 'all'; 
-            if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all'; 
-            pages.audit = 1; updateAllViews(); 
-        }
-
+        function applyFilters() { filters.date = document.getElementById('filter-date')?.value || ''; const fUser = document.getElementById('filter-user'); filters.user = fUser ? fUser.value : 'all'; filters.status = document.getElementById('filter-status')?.value || 'all'; filters.amount = document.getElementById('filter-amount')?.value.replace(',', '.') || ''; pages.audit = 1; updateAllViews(); }
+        function clearFilters() { filters = { date: '', user: 'all', status: 'all', amount: '' }; if(document.getElementById('filter-date')) document.getElementById('filter-date').value = ''; const fUser = document.getElementById('filter-user'); if(fUser) fUser.value = 'all'; if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all'; if(document.getElementById('filter-amount')) document.getElementById('filter-amount').value = ''; pages.audit = 1; updateAllViews(); }
         function applyBonoFilters() { bonoFilters.date = document.getElementById('filter-bono-date')?.value || ''; bonoFilters.dest = document.getElementById('filter-bono-dest')?.value.trim().toLowerCase() || ''; bonoFilters.amount = document.getElementById('filter-bono-amount')?.value.replace(',', '.') || ''; bonoFilters.agency = document.getElementById('filter-bono-agency')?.value || 'all'; pages.bonos = 1; updateAllViews(); }
         function clearBonoFilters() { bonoFilters = { date: '', dest: '', amount: '', agency: 'all' }; if(document.getElementById('filter-bono-date')) document.getElementById('filter-bono-date').value = ''; if(document.getElementById('filter-bono-dest')) document.getElementById('filter-bono-dest').value = ''; if(document.getElementById('filter-bono-amount')) document.getElementById('filter-bono-amount').value = ''; if(document.getElementById('filter-bono-agency')) document.getElementById('filter-bono-agency').value = 'all'; pages.bonos = 1; updateAllViews(); }
         function applyRefFilters() { refFilters.date = document.getElementById('filter-ref-date')?.value || ''; refFilters.name = document.getElementById('filter-ref-name')?.value.trim().toLowerCase() || ''; refFilters.agency = document.getElementById('filter-ref-agency')?.value || 'all'; pages.ref = 1; updateAllViews(); }
@@ -1207,7 +1204,7 @@
             pages.infdetail = 1; switchTab('tab-influencer-details'); updateAllViews();
         }
 
-        // --- RENDERIZADO DE TABLA (Separa claramente Comentario y Comprobante) ---
+        // TABLAS RENDERIZADO (Ahora muestra el Comentario separado del Comprobante)
         function renderRecordsTable(tbodyId, emptyId, dataArray, userType) {
             const tbody = document.getElementById(tbodyId); const emptyState = document.getElementById(emptyId);
             if (!tbody) return;
@@ -1238,20 +1235,10 @@
 
                     const isNeg = r.amount < 0; const amtColor = r.status === 'Denegado' ? 'text-slate-400 line-through' : (isNeg ? 'text-rose-600' : 'text-slate-800');
                     
-                    // 🚨 AQUÍ ESTÁ LA MAGIA VISUAL: Ambas columnas se renderizan
-                    let receiptText = (r.receipt && r.receipt !== 'undefined' && r.receipt !== 'null') ? r.receipt : '-';
-                    let commentText = (r.comment && r.comment !== 'undefined' && r.comment !== 'null') ? r.comment : '-';
+                    // Modificado para Auditoría: Muestra la columna "Ref/Comp" y también "Comentario"
+                    let ext = tbodyId === 'audit-table-body' ? `<td class="p-3 text-[10px] text-slate-400 font-bold">${r.comment || '-'}</td>` : '';
                     
-                    rowsHTML += `<tr class="border-b border-slate-50">
-                        <td class="p-3 text-xs font-bold text-slate-600 whitespace-nowrap">${fmtDate(r.date)}</td>
-                        <td class="p-3 text-sm font-black ${amtColor}">${fmt(r.amount)}</td>
-                        <td class="p-3 text-xs text-slate-600">${r.concept}</td>
-                        <td class="p-3 text-xs font-bold text-indigo-600 uppercase">${USERS[r.assignedTo]?.name || r.assignedTo}</td>
-                        <td class="p-3">${badge}</td>
-                        <td class="p-3 text-[10px] text-slate-500 font-black">${receiptText}</td>
-                        <td class="p-3 text-[10px] text-slate-500 font-bold max-w-[120px] truncate" title="${commentText}">${commentText}</td>
-                        <td class="p-3 text-center">${actions}</td>
-                    </tr>`;
+                    rowsHTML += `<tr class="border-b border-slate-50"><td class="p-3 text-xs font-bold text-slate-600 whitespace-nowrap">${fmtDate(r.date)}</td><td class="p-3 text-sm font-black ${amtColor}">${fmt(r.amount)}</td><td class="p-3 text-xs text-slate-600">${r.concept}</td><td class="p-3 text-xs font-bold text-indigo-600 uppercase">${USERS[r.assignedTo]?.name || r.assignedTo}</td><td class="p-3">${badge}</td><td class="p-3 text-[10px] text-slate-400 font-bold">${r.receipt || '-'}</td>${ext}<td class="p-3 text-center">${actions}</td></tr>`;
                 }
                 tbody.innerHTML = rowsHTML;
             }
@@ -1310,16 +1297,6 @@
                 else if (filters.user !== 'all') auditRecords = auditRecords.filter(r => r.assignedTo === filters.user);
                 if (filters.status !== 'all') auditRecords = auditRecords.filter(r => r.status === filters.status);
                 if (filters.amount && !isNaN(parseFloat(filters.amount))) auditRecords = auditRecords.filter(r => Math.abs(r.amount) === parseFloat(filters.amount));
-                
-                // --- APLICAR EL NUEVO FILTRO TEXTO (REF O COMENTARIO) ---
-                if (filters.text) { 
-                    const st = filters.text.toLowerCase(); 
-                    auditRecords = auditRecords.filter(r => 
-                        (r.receipt && r.receipt.toLowerCase().includes(st)) || 
-                        (r.comment && r.comment.toLowerCase().includes(st))
-                    ); 
-                }
-                
                 renderRecordsTable('audit-table-body', 'audit-empty-state', paginate(auditRecords, 'audit'), userType);
 
                 const tbodyGus = document.getElementById('table-gussepy-advances'); 
