@@ -683,7 +683,14 @@
                     }
                     records = data.data || []; advances = data.advances || []; bonos = data.bonos || []; giros = data.giros || []; referrals = data.referrals || []; rendimientos = data.rendimientos || []; 
                     
-                    records.sort(sortDataDesc); advances.sort(sortDataDesc); bonos.sort(sortDataDesc); giros.sort(sortDataDesc); referrals.sort(sortDataDesc); rendimientos.sort(sortDataDesc);
+                    // Doble Ordenamiento aplicado a todos los arrays
+                    records.sort(sortDataDesc);
+                    advances.sort(sortDataDesc);
+                    bonos.sort(sortDataDesc);
+                    giros.sort(sortDataDesc);
+                    referrals.sort(sortDataDesc);
+                    rendimientos.sort(sortDataDesc);
+
                     resetPagesAndUpdate(); updateBonoDatalist(); updateMelanieDropdowns(); 
                 }
             } catch (err) { console.error(err); if (!isBackground) showToast("Conectando en modo caché.", "warning"); } 
@@ -1079,15 +1086,8 @@
             btn.innerHTML = orig; btn.disabled = false; pushData('add_rendimiento', newRend).then(res => { if(res.success) showToast('Rendimiento guardado.', 'success'); });
         }
 
-        function actionVerify(id) { 
-            pendingVerifyId = String(id); 
-            document.getElementById('input-comment').value = ''; 
-            document.getElementById('modal-comprobante').classList.replace('hidden', 'flex'); 
-        }
-        function closeModal() { 
-            document.getElementById('modal-comprobante').classList.replace('flex', 'hidden'); 
-            pendingVerifyId = null; 
-        }
+        function actionVerify(id) { pendingVerifyId = String(id); document.getElementById('input-comment').value = ''; document.getElementById('modal-comprobante').classList.replace('hidden', 'flex'); }
+        function closeModal() { document.getElementById('modal-comprobante').classList.replace('flex', 'hidden'); pendingVerifyId = null; }
         
         function confirmVerify() {
             if (!pendingVerifyId) return; 
