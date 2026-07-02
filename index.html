@@ -240,6 +240,7 @@
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Día Exacto</label><input type="date" id="filter-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"></div>
                             <div class="w-full lg:w-auto flex-1" id="filter-user-container"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta</label><select id="filter-user" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"><option value="all">Todas</option><option value="jesus">Jesús</option><option value="tito">Tito</option></select></div>
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Estado</label><select id="filter-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"><option value="all">Todos</option><option value="Pendiente">Pendientes</option><option value="Verificado">Verificados</option><option value="Denegado">Denegados</option></select></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Tipo</label><select id="filter-type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"><option value="all">Todos</option><option value="deposit">Depósitos (+)</option><option value="withdrawal">Retiros (-)</option></select></div>
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto Exacto</label><div class="relative"><div class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 font-bold">$</div><input type="text" id="filter-amount" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-4 py-2.5 text-sm font-bold text-slate-700 outline-none"></div></div>
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar (Comprobante/Comentario)</label><input type="text" id="filter-ref-comment" oninput="applyFilters()" placeholder="Buscar..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"></div>
                             <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div>
@@ -251,7 +252,6 @@
                             <div class="flex gap-2 items-center">
                                 <input type="text" id="mass-comment" placeholder="Comentario global..." class="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs outline-none hidden md:block">
                                 <button onclick="approveSelected()" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 text-xs font-bold transition-colors shadow-sm hidden md:block"><i class="fas fa-check-double mr-1"></i> Aprobar Sel.</button>
-                                <button onclick="exportToCSV('records')" class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center"><i class="fas fa-file-excel text-xs"></i></button>
                                 <button onclick="fetchData(true)" class="w-9 h-9 rounded-full bg-slate-100 text-slate-600 hover:text-indigo-600 flex items-center justify-center"><i class="fas fa-sync-alt text-xs"></i></button>
                             </div>
                         </div>
@@ -326,7 +326,7 @@
                         </div>
                     </div>
                     <div class="bg-white border border-rose-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-                        <div class="px-6 py-5 border-b border-rose-50 flex justify-between items-center bg-rose-50/30"><h3 class="text-lg font-black text-rose-900">Historial Bonos</h3><div class="flex gap-2"><button onclick="exportToCSV('bonos')" class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center"><i class="fas fa-file-excel text-xs"></i></button></div></div>
+                        <div class="px-6 py-5 border-b border-rose-50 flex justify-between items-center bg-rose-50/30"><h3 class="text-lg font-black text-rose-900">Historial Bonos</h3></div>
                         <div class="overflow-x-auto"><table class="w-full text-left border-collapse resp-table"><thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group"><tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Jugador</th><th class="p-4">Monto Inicial</th><th class="p-4">Detalle</th><th class="p-4">Estado / Liq.</th><th class="p-4 pr-6 text-center">Acción</th></tr></thead><tbody id="table-bonos-list"></tbody></table></div>
                         <div id="pagination-bonos" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-bonos">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('bonos', -1)" id="btn-prev-bonos" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-bonos">1</span> / <span id="page-tot-bonos">1</span></span><button onclick="changePage('bonos', 1)" id="btn-next-bonos" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                     </div>
@@ -364,7 +364,7 @@
                         </div>
                     </div>
                     <div class="bg-white border border-indigo-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-                        <div class="px-6 py-5 border-b border-indigo-50 flex justify-between items-center bg-indigo-50/30"><h3 class="text-lg font-black text-indigo-900">Historial Giros</h3><button onclick="exportToCSV('giros')" class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center"><i class="fas fa-file-excel text-xs"></i></button></div>
+                        <div class="px-6 py-5 border-b border-indigo-50 flex justify-between items-center bg-indigo-50/30"><h3 class="text-lg font-black text-indigo-900">Historial Giros</h3></div>
                         <div class="overflow-x-auto"><table class="w-full text-left border-collapse resp-table"><thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group"><tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Plataforma</th><th class="p-4">Jugador</th><th class="p-4">Juego</th><th class="p-4">Giros</th><th class="p-4">Estado / Real</th><th class="p-4 pr-6 text-center">Acción</th></tr></thead><tbody id="table-giros-list"></tbody></table></div>
                         <div id="pagination-giros" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-giros">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('giros', -1)" id="btn-prev-giros" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-giros">1</span> / <span id="page-tot-giros">1</span></span><button onclick="changePage('giros', 1)" id="btn-next-giros" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                     </div>
@@ -387,7 +387,7 @@
             <div id="tab-maria-ref-list" class="hidden fade-in theme-maria tab-content">
                 <div class="max-w-7xl mx-auto space-y-6">
                     <div class="bg-white border border-indigo-100 p-3 rounded-2xl shadow-sm mb-4"><div class="flex flex-col lg:flex-row items-end gap-3 w-full"><div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Nombre</label><input type="text" id="filter-ref-name" oninput="applyRefFilters()" placeholder="Buscar..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold"></div><div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyRefFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearRefFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div></div></div>
-                    <div class="bg-white border border-indigo-100 rounded-2xl shadow-sm overflow-hidden flex flex-col"><div class="px-6 py-5 border-b border-indigo-50 flex justify-between items-center bg-indigo-50/30"><h3 class="text-lg font-black text-indigo-900">Historial de Referidos</h3><button onclick="exportToCSV('referrals')" class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center"><i class="fas fa-file-excel text-xs"></i></button></div><div class="overflow-x-auto"><table class="w-full text-left border-collapse resp-table"><thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group"><tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Referente</th><th class="p-4">Nuevo Referido</th><th class="p-4">Cédula</th><th class="p-4">Pago</th><th class="p-4 pr-6 text-center">Acción</th></tr></thead><tbody id="table-ref-list"></tbody></table></div><div id="pagination-ref" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-ref">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('ref', -1)" id="btn-prev-ref" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-ref">1</span> / <span id="page-tot-ref">1</span></span><button onclick="changePage('ref', 1)" id="btn-next-ref" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-right text-xs"></i></button></div></div></div>
+                    <div class="bg-white border border-indigo-100 rounded-2xl shadow-sm overflow-hidden flex flex-col"><div class="px-6 py-5 border-b border-indigo-50 flex justify-between items-center bg-indigo-50/30"><h3 class="text-lg font-black text-indigo-900">Historial de Referidos</h3></div><div class="overflow-x-auto"><table class="w-full text-left border-collapse resp-table"><thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group"><tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Referente</th><th class="p-4">Nuevo Referido</th><th class="p-4">Cédula</th><th class="p-4">Pago</th><th class="p-4 pr-6 text-center">Acción</th></tr></thead><tbody id="table-ref-list"></tbody></table></div><div id="pagination-ref" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-ref">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('ref', -1)" id="btn-prev-ref" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-ref">1</span> / <span id="page-tot-ref">1</span></span><button onclick="changePage('ref', 1)" id="btn-next-ref" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-right text-xs"></i></button></div></div></div>
                 </div>
             </div>
 
@@ -487,14 +487,15 @@
         
         let currentUser = null, isSuperAdmin = false;
         let records = [], advances = [], bonos = [], giros = [], referrals = [], rendimientos = [], allReceipts = [];
-        let filters = { date: '', user: 'all', status: 'all', amount: '' }, bonoFilters = { date: '', dest: '', amount: '', agency: 'all' }, refFilters = { date: '', name: '', cedula: '', agency: 'all' }, giroFilters = { date: '', dest: '', agency: 'all' }, melFilters = { date: '', inf: '', jug: '' };
+        
+        let filters = { date: '', user: 'all', status: 'all', amount: '', text: '', type: 'all' }, bonoFilters = { date: '', dest: '', amount: '', agency: 'all' }, refFilters = { date: '', name: '', cedula: '', agency: 'all' }, giroFilters = { date: '', dest: '', agency: 'all' }, melFilters = { date: '', inf: '', jug: '' };
+        
         let pendingVerifyId = null, pendingAuthId = null, pendingBonoWinId = null, pendingGiroWinId = null;
         let referidosChart = null, inactivityTimer, chartWeekInstance = null, chartMonthsInstance = null;
         let currentPlayersList = [], uploadData = [], bankUploadData = []; 
 
         const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
         
-        // MATEMÁTICA ESTRICTA: Evita errores de suma con comas y textos.
         const getVal = (v) => {
             if(typeof v === 'number') return v;
             if(!v || v === '') return 0;
@@ -504,7 +505,6 @@
             return parseFloat(s) || 0;
         };
 
-        // EVALUADOR BOOLEANO ESTRICTO (Para influencers y Melanie)
         const isInf = (val) => { 
             if(val === true) return true;
             if(!val) return false;
@@ -572,13 +572,12 @@
             return dataArray.slice(start, end);
         }
 
-        // FUNCIÓN PRINCIPAL PARA CAMBIO DE MES (Sincroniza todos los selectores de mes y pide datos a la DB)
         function changeGlobalMonth(newMonth) {
             ['dash-month-filter', 'bonos-month-filter', 'inf-month-filter', 'gus-month-filter', 'inf-detail-month'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = newMonth;
             });
-            fetchData(false); // Carga del servidor sin caché
+            fetchData(false);
         }
 
         window.onload = () => {
@@ -588,10 +587,7 @@
             const now = new Date(); const currentMonthStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
             ['dash-month-filter', 'bonos-month-filter', 'inf-month-filter', 'gus-month-filter', 'inf-detail-month'].forEach(id => { 
                 const el = document.getElementById(id); 
-                if (el) { 
-                    el.value = currentMonthStr; 
-                    el.onchange = (e) => changeGlobalMonth(e.target.value); 
-                } 
+                if (el) { el.value = currentMonthStr; el.onchange = (e) => changeGlobalMonth(e.target.value); } 
             });
             
             const searchInf = document.getElementById('inf-search'); if (searchInf) searchInf.onkeyup = resetPagesAndUpdate;
@@ -643,15 +639,12 @@
             const elUserDisplay = document.getElementById('user-display'); 
             if (elUserDisplay) elUserDisplay.innerText = hardcodedUser.name + (isSuperAdmin ? " (Auditor)" : "");
             
-            // REPARACIÓN DE LOGOS DE USUARIO - BLOQUEO A VALORES VACÍOS
             const iconEl = document.getElementById('nav-icon'); 
             if (iconEl) { 
                 let finalIcon = hardcodedUser.icon;
                 if(!finalIcon || String(finalIcon).trim() === '' || finalIcon === 'undefined') finalIcon = 'fa-user';
-                
                 let finalColor = hardcodedUser.color;
                 if(!finalColor || String(finalColor).trim() === '' || finalColor === 'undefined') finalColor = 'bg-indigo-600';
-
                 iconEl.innerHTML = `<i class="fas ${finalIcon}"></i>`; 
                 iconEl.className = `w-10 h-10 rounded-xl text-white flex items-center justify-center text-lg shadow-md ${finalColor}`; 
             }
@@ -686,9 +679,7 @@
                 switchTab('tab-dashboard');
             }
             document.getElementById('login-pass').value = ''; showScreen('app'); 
-            
-            // ELIMINADA LA CARGA DE CACHÉ PARA EVITAR CONFLICTOS
-            fetchData(false); // Siempre descarga con la pantalla de Sincronizando
+            fetchData(false);
         }
 
         function switchTab(tabId) {
@@ -714,7 +705,6 @@
             if (!isBackground) document.getElementById('global-loader').classList.remove('hidden');
             else document.querySelectorAll('button[title="Recargar"] i, button[title="Recargar datos"] i').forEach(i => i.classList.add('fa-spin'));
             try {
-                // REGRESO A LA CARGA POR MES DE GOOGLE (Para evitar sobrecargas y leer datos completos del mes)
                 const selectedMonth = document.getElementById('dash-month-filter')?.value || '';
                 let fetchUrl = SCRIPT_URL;
                 if(selectedMonth) fetchUrl += (SCRIPT_URL.includes('?') ? '&' : '?') + 'month=' + selectedMonth;
@@ -731,7 +721,6 @@
                             let sUser = data.users[k];
                             let com = parseFloat(sUser.comision);
                             if (com > 0 && com <= 1) com = com * 100; 
-                            // PROTECCIÓN CONTRA VALORES VACIOS DEL SERVIDOR PARA ICONOS
                             if(USERS[k]) {
                                 USERS[k].comision = com || 20;
                             } else {
@@ -850,7 +839,7 @@
         function renderBankPreview() {
             const tbody = document.getElementById('bank-preview-body'); const cont = document.getElementById('bank-preview-container');
             if(!bankUploadData.length) { cont.classList.add('hidden'); cont.classList.remove('flex'); return; }
-            tbody.innerHTML = bankUploadData.map((r, i) => `<tr><td class="py-2 text-[10px] font-bold">${r.date.replace('T', ' ')}</td><td class="py-2 text-[10px]">${r.concept}</td><td class="py-2 text-[10px] font-black text-right ${r.amount<0?'text-rose-600':'text-emerald-600'}">${fmt(r.amount)}</td><td class="py-2 text-[10px] font-bold text-center text-slate-500">${r.receipt}</td><td class="py-2 text-center"><button onclick="bankUploadData.splice(${i},1); renderBankPreview()" class="text-rose-500"><i class="fas fa-times"></i></button></td></tr>`).join('');
+            tbody.innerHTML = bankUploadData.map((r, i) => `<tr><td data-label="Fecha y Hora" class="py-2 text-[10px] font-bold">${r.date.replace('T', ' ')}</td><td data-label="Concepto" class="py-2 text-[10px]">${r.concept}</td><td data-label="Monto" class="py-2 text-[10px] font-black text-right ${r.amount<0?'text-rose-600':'text-emerald-600'}">${fmt(r.amount)}</td><td data-label="Ref/Comp" class="py-2 text-[10px] font-bold text-center text-slate-500">${r.receipt}</td><td data-label="Acción" class="py-2 text-center"><button onclick="bankUploadData.splice(${i},1); renderBankPreview()" class="text-rose-500"><i class="fas fa-times"></i></button></td></tr>`).join('');
             cont.classList.remove('hidden'); cont.classList.add('flex');
         }
 
@@ -956,7 +945,7 @@
         function renderMelaniePreview() {
             const tbody = document.getElementById('upload-preview-body'); const cont = document.getElementById('upload-preview-container');
             if(!uploadData.length) { cont.classList.add('hidden'); cont.classList.remove('flex'); return; }
-            tbody.innerHTML = uploadData.map((r, i) => `<tr><td class="py-2 text-[10px] font-bold pl-2">${r.date}</td><td class="py-2 text-[10px] text-indigo-600 uppercase">${r.influencer}</td><td class="py-2 text-[10px] uppercase">${r.jugador}</td><td class="py-2 text-[10px] font-black text-right text-emerald-600">${fmt(r.depositos)}</td><td class="py-2 text-[10px] font-black text-right text-rose-600">${fmt(r.retiros)}</td><td class="py-2 text-[10px] font-black text-right text-purple-600">${fmt(r.comision)}</td><td class="py-2 text-center pr-2"><button onclick="uploadData.splice(${i},1); renderMelaniePreview()" class="text-rose-500"><i class="fas fa-times"></i></button></td></tr>`).join('');
+            tbody.innerHTML = uploadData.map((r, i) => `<tr><td data-label="Fecha" class="py-2 text-[10px] font-bold pl-2">${r.date}</td><td data-label="Influencer" class="py-2 text-[10px] text-indigo-600 uppercase">${r.influencer}</td><td data-label="Jugador" class="py-2 text-[10px] uppercase">${r.jugador}</td><td data-label="Depósitos" class="py-2 text-[10px] font-black text-right text-emerald-600">${fmt(r.depositos)}</td><td data-label="Retiros" class="py-2 text-[10px] font-black text-right text-rose-600">${fmt(r.retiros)}</td><td data-label="Comisión" class="py-2 text-[10px] font-black text-right text-purple-600">${fmt(r.comision)}</td><td data-label="Acción" class="py-2 text-center pr-2"><button onclick="uploadData.splice(${i},1); renderMelaniePreview()" class="text-rose-500"><i class="fas fa-times"></i></button></td></tr>`).join('');
             cont.classList.remove('hidden'); cont.classList.add('flex');
         }
 
@@ -1002,54 +991,12 @@
             document.getElementById('upload-file').value = ''; uploadData = []; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Confirmar y Subir Registros'; btn.disabled = false;
         }
 
-        function exportToCSV(type) {
-            const ud = JSON.parse(localStorage.getItem('sb_user_data')); if (!ud) return; const userType = ud.type;
-            let dataArr = []; let filename = '';
-            if(type === 'records') { 
-                dataArr = [...records];
-                if (filters.date) dataArr = dataArr.filter(r => isExactDate(r.date, filters.date));
-                if (userType === 'user') dataArr = dataArr.filter(r => r.assignedTo === currentUser);
-                else if (filters.user !== 'all') dataArr = dataArr.filter(r => r.assignedTo === filters.user);
-                if (filters.status !== 'all') dataArr = dataArr.filter(r => r.status === filters.status);
-                if (filters.amount && !isNaN(parseFloat(filters.amount))) dataArr = dataArr.filter(r => Math.abs(r.amount) === parseFloat(filters.amount));
-                if (filters.text) { const st = filters.text.toLowerCase(); dataArr = dataArr.filter(r => (r.receipt && String(r.receipt).toLowerCase().includes(st)) || (r.comment && String(r.comment).toLowerCase().includes(st)) || (r.assignedTo && String(r.assignedTo).toLowerCase().includes(st))); }
-                filename = 'movimientos.csv'; 
-            } else if(type === 'bonos') { 
-                dataArr = [...bonos];
-                if (bonoFilters.date) dataArr = dataArr.filter(b => isExactDate(b.date, bonoFilters.date));
-                if (bonoFilters.dest) dataArr = dataArr.filter(b => (b.assignedTo || '').toLowerCase().includes(bonoFilters.dest));
-                if (bonoFilters.amount && !isNaN(parseFloat(bonoFilters.amount))) dataArr = dataArr.filter(b => Math.abs(b.amount) === parseFloat(bonoFilters.amount));
-                if (bonoFilters.agency && bonoFilters.agency !== 'all') dataArr = dataArr.filter(b => b.company && b.company.toLowerCase() === bonoFilters.agency.toLowerCase());
-                filename = 'bonos.csv'; 
-            } else if (type === 'giros') { 
-                dataArr = [...giros];
-                if (giroFilters.date) dataArr = dataArr.filter(g => isExactDate(g.date, giroFilters.date));
-                if (giroFilters.dest) dataArr = dataArr.filter(g => (g.dest || '').toLowerCase().includes(giroFilters.dest));
-                if (giroFilters.agency && giroFilters.agency !== 'all') dataArr = dataArr.filter(g => g.company && g.company.toLowerCase() === giroFilters.agency.toLowerCase());
-                filename = 'giros.csv'; 
-            } else if(type === 'referrals') { 
-                dataArr = [...referrals];
-                if (refFilters.date) dataArr = dataArr.filter(r => isExactDate(r.date, refFilters.date));
-                if (refFilters.name) dataArr = dataArr.filter(r => r.referrer.toLowerCase().includes(refFilters.name) || r.referred.toLowerCase().includes(refFilters.name));
-                if (refFilters.cedula) dataArr = dataArr.filter(r => r.cedula.includes(refFilters.cedula));
-                if (refFilters.agency && refFilters.agency !== 'all') dataArr = dataArr.filter(r => r.company && r.company.toLowerCase() === refFilters.agency.toLowerCase());
-                filename = 'referidos.csv'; 
-            }
-            if(!dataArr.length) { showToast('No hay datos con los filtros actuales', 'warning'); return; }
-            const headers = Object.keys(dataArr[0]).join(';');
-            const rows = dataArr.map(obj => Object.values(obj).map(val => `"${String(val !== null && val !== undefined ? val : '').replace(/"/g, '""')}"`).join(';')).join('\n');
-            const csv = "\uFEFF" + headers + '\n' + rows;
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = filename; link.click();
-        }
-
         function isSameMonth(dateStr, filterValue) { 
             if (!filterValue) return true; 
             if (!dateStr) return false; 
             try { 
                 const str = String(dateStr);
-                if (str.match(/^\d{4}-\d{2}/)) {
-                    return str.startsWith(filterValue);
-                }
+                if (str.match(/^\d{4}-\d{2}/)) { return str.startsWith(filterValue); }
                 const d = new Date(dateStr); 
                 if(isNaN(d.getTime())) return true; 
                 const [y, m] = filterValue.split('-'); 
@@ -1062,9 +1009,7 @@
             if (!dateStr) return false; 
             try { 
                 const str = String(dateStr);
-                if (str.match(/^\d{4}-\d{2}-\d{2}/)) {
-                    return str.startsWith(exactDate);
-                }
+                if (str.match(/^\d{4}-\d{2}-\d{2}/)) { return str.startsWith(exactDate); }
                 const d1 = new Date(dateStr); 
                 if (isNaN(d1.getTime())) return false; 
                 const pad = n => n.toString().padStart(2, '0'); 
@@ -1161,11 +1106,8 @@
                 tx.comment = commentText; 
                 updateAllViews(); 
                 closeModal(); 
-                // Blindaje: Re-enviamos el comprobante intacto (tx.receipt) para evitar que el servidor lo borre
                 pushData('verify', { id: targetId, comment: commentText, receipt: tx.receipt }).then(res => { if(res.success) showToast("Aprobado y comentado", "success")}); 
-            } else {
-                closeModal();
-            }
+            } else { closeModal(); }
             btn.innerHTML = orig; btn.disabled = false; 
         }
 
@@ -1183,15 +1125,11 @@
             
             showToast(`Aprobando ${ids.length} registros...`, 'success');
             
-            ids.forEach(id => {
-                let tx = records.find(r => String(r.id) === id);
-                if(tx) { tx.status = 'Verificado'; tx.comment = commentVal; }
-            });
+            ids.forEach(id => { let tx = records.find(r => String(r.id) === id); if(tx) { tx.status = 'Verificado'; tx.comment = commentVal; } });
             updateAllViews();
             
             document.getElementById('mass-comment').value = '';
-            const checkAll = document.getElementById('check-all-audit');
-            if(checkAll) checkAll.checked = false;
+            const checkAll = document.getElementById('check-all-audit'); if(checkAll) checkAll.checked = false;
 
             const res = await pushData('verify_multiple', { ids: ids, comment: commentVal });
             if(res.success) showToast(`${res.procesados} registros guardados en sistema.`, 'success');
@@ -1221,14 +1159,8 @@
         }
 
         async function actionDeny(id) { 
-            const targetId = String(id); 
-            const tx = records.find(r => String(r.id) === targetId); 
-            if (tx) { 
-                tx.status = 'Denegado'; 
-                updateAllViews(); 
-                showToast("Denegado", "warning");
-                pushData('deny', { id: targetId }); 
-            } 
+            const targetId = String(id); const tx = records.find(r => String(r.id) === targetId); 
+            if (tx) { tx.status = 'Denegado'; updateAllViews(); showToast("Denegado", "warning"); pushData('deny', { id: targetId }); } 
         }
 
         function actionAuthorizeAdvance(id) { pendingAuthId = String(id); document.getElementById('input-gussepy-detail').value = ''; document.getElementById('modal-gussepy').classList.replace('hidden', 'flex'); }
@@ -1264,24 +1196,19 @@
             else if (type === 'rendimiento') { act = 'delete_rendimiento'; rendimientos = rendimientos.filter(r => String(r.id) !== tId); } 
             else { records = records.filter(r => String(r.id) !== tId); }
             
-            updateAllViews(); 
-            pushData(act, {id: tId}).then(res => { if(!res.success) showToast("Error al eliminar remoto", "error"); });
+            updateAllViews(); pushData(act, {id: tId}).then(res => { if(!res.success) showToast("Error al eliminar remoto", "error"); });
         }
 
         function applyFilters() { 
-            filters.date = document.getElementById('filter-date')?.value || ''; 
-            const fUser = document.getElementById('filter-user'); 
-            filters.user = fUser ? fUser.value : 'all'; 
-            filters.status = document.getElementById('filter-status')?.value || 'all'; 
-            filters.amount = document.getElementById('filter-amount')?.value.replace(',', '.') || ''; 
-            filters.text = document.getElementById('filter-ref-comment')?.value.trim() || ''; 
+            filters.date = document.getElementById('filter-date')?.value || ''; const fUser = document.getElementById('filter-user'); filters.user = fUser ? fUser.value : 'all'; 
+            filters.status = document.getElementById('filter-status')?.value || 'all'; filters.type = document.getElementById('filter-type')?.value || 'all'; 
+            filters.amount = document.getElementById('filter-amount')?.value.replace(',', '.') || ''; filters.text = document.getElementById('filter-ref-comment')?.value.trim() || ''; 
             pages.audit = 1; updateAllViews(); 
         }
         function clearFilters() { 
-            filters = { date: '', user: 'all', status: 'all', amount: '', text: '' }; 
+            filters = { date: '', user: 'all', status: 'all', amount: '', text: '', type: 'all' }; 
             ['filter-date', 'filter-amount', 'filter-ref-comment'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = ''; });
-            if(document.getElementById('filter-user')) document.getElementById('filter-user').value = 'all'; 
-            if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all'; 
+            if(document.getElementById('filter-user')) document.getElementById('filter-user').value = 'all'; if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all'; if(document.getElementById('filter-type')) document.getElementById('filter-type').value = 'all'; 
             pages.audit = 1; updateAllViews(); 
         }
 
@@ -1319,8 +1246,7 @@
                     if (r.status === 'Verificado') badge = `<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-check"></i> Verif</span>`;
                     if (r.status === 'Denegado') badge = `<span class="bg-rose-100 text-rose-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-times"></i> Deneg</span>`;
                     
-                    let actions = ''; const creator = (r.createdBy || '').toLowerCase().trim(); const assigned = (r.assignedTo || '').toLowerCase().trim();
-                    let checkColumn = '';
+                    let actions = ''; const creator = (r.createdBy || '').toLowerCase().trim(); const assigned = (r.assignedTo || '').toLowerCase().trim(); let checkColumn = '';
                     
                     if (userType === 'admin' || isSuperAdmin) {
                         if (r.status === 'Pendiente') {
@@ -1330,15 +1256,12 @@
                         } else { actions = `<div class="flex justify-center gap-1"><button onclick="actionEdit('${r.id}')" class="w-7 h-7 bg-blue-50 text-blue-600 rounded"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'record')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded"><i class="fas fa-trash"></i></button></div>`; }
                     } else if (userType === 'user') {
                         if (r.status === 'Pendiente') {
-                            let userBtns = '';
-                            if (assigned === currentUser && (creator === 'michelle' || creator === '1311397689')) { userBtns += `<button onclick="actionVerify('${r.id}')" class="w-7 h-7 bg-emerald-50 text-emerald-600 rounded"><i class="fas fa-check"></i></button><button onclick="actionDeny('${r.id}')" class="w-7 h-7 bg-orange-50 text-orange-600 rounded"><i class="fas fa-times"></i></button>`; }
-                            userBtns += `<button onclick="actionEdit('${r.id}')" class="w-7 h-7 bg-blue-50 text-blue-600 rounded"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'record')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded"><i class="fas fa-trash"></i></button>`;
+                            let userBtns = `<button onclick="actionEdit('${r.id}')" class="w-7 h-7 bg-blue-50 text-blue-600 rounded"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'record')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded"><i class="fas fa-trash"></i></button>`;
                             actions = `<div class="flex justify-center gap-1">${userBtns}</div>`;
                         } else actions = `<span class="text-[10px] font-bold text-slate-400"><i class="fas fa-lock"></i> Bloqueado</span>`;
                     } else actions = `<span class="text-[10px] font-bold text-slate-400">-</span>`;
 
                     const isNeg = r.amount < 0; const amtColor = r.status === 'Denegado' ? 'text-slate-400 line-through' : (isNeg ? 'text-rose-600' : 'text-slate-800');
-                    
                     let receiptText = (r.receipt && r.receipt !== 'undefined' && r.receipt !== 'null') ? r.receipt : '-';
                     let commentText = (r.comment && r.comment !== 'undefined' && r.comment !== 'null') ? r.comment : '-';
                     
@@ -1346,15 +1269,15 @@
                     if(isDuplicate && tbodyId === 'audit-table-body') receiptText = `<span class="text-rose-600 font-bold" title="Posible Duplicado"><i class="fas fa-exclamation-triangle"></i> ${receiptText}</span>`;
 
                     rowsHTML += `<tr class="border-b border-slate-50 ${isDuplicate && tbodyId === 'audit-table-body' ? 'bg-rose-50' : ''}">
-                        ${tbodyId === 'audit-table-body' ? `<td class="p-3">${checkColumn}</td>` : ''}
-                        <td class="p-3 text-xs font-bold text-slate-600 whitespace-nowrap">${fmtDate(r.date)}</td>
-                        <td class="p-3 text-sm font-black ${amtColor}">${fmt(r.amount)}</td>
-                        <td class="p-3 text-xs text-slate-600">${r.concept}</td>
-                        <td class="p-3 text-xs font-bold text-indigo-600 uppercase">${USERS[r.assignedTo]?.name || r.assignedTo}</td>
-                        <td class="p-3">${badge}</td>
-                        <td class="p-3 text-[10px] text-slate-500 font-black">${receiptText}</td>
-                        <td class="p-3 text-[10px] text-slate-500 font-bold max-w-[120px] truncate" title="${commentText}">${commentText}</td>
-                        <td class="p-3 text-center">${actions}</td>
+                        ${tbodyId === 'audit-table-body' ? `<td data-label="Sel." class="p-3">${checkColumn}</td>` : ''}
+                        <td data-label="Fecha" class="p-3 text-xs font-bold text-slate-600 whitespace-nowrap">${fmtDate(r.date)}</td>
+                        <td data-label="Monto" class="p-3 text-sm font-black ${amtColor}">${fmt(r.amount)}</td>
+                        <td data-label="Concepto" class="p-3 text-xs text-slate-600">${r.concept}</td>
+                        <td data-label="Cuenta" class="p-3 text-xs font-bold text-indigo-600 uppercase">${USERS[r.assignedTo]?.name || r.assignedTo}</td>
+                        <td data-label="Estado" class="p-3">${badge}</td>
+                        <td data-label="Ref/Comp" class="p-3 text-[10px] text-slate-500 font-black">${receiptText}</td>
+                        <td data-label="Comentario" class="p-3 text-[10px] text-slate-500 font-bold max-w-[120px] truncate" title="${commentText}">${commentText}</td>
+                        <td data-label="Acción" class="p-3 text-center">${actions}</td>
                     </tr>`;
                 }
                 tbody.innerHTML = rowsHTML;
@@ -1364,7 +1287,9 @@
         function updateAllViews() {
             const ud = JSON.parse(localStorage.getItem('sb_user_data')); if (!ud) return; const userType = ud.type;
             const dashMF = document.getElementById('dash-month-filter')?.value; const globalMF = dashMF; const bonoMF = document.getElementById('bonos-month-filter')?.value || dashMF;
-            
+
+            const normalizeInf = (rawName) => String(rawName || 'desconocido').toLowerCase().trim();
+
             if (userType === 'admin' || userType === 'master' || isSuperAdmin || userType === 'user') {
                 const fRecords = records.filter(r => isSameMonth(r.date, globalMF));
                 const elJesus = document.getElementById('dash-jesus'); if(elJesus) elJesus.innerText = fmt(fRecords.reduce((s, r) => s + (r.assignedTo === 'jesus' && r.status === 'Verificado' ? r.amount : 0), 0));
@@ -1414,7 +1339,8 @@
                 else if (filters.user !== 'all') auditRecords = auditRecords.filter(r => r.assignedTo === filters.user);
                 if (filters.status !== 'all') auditRecords = auditRecords.filter(r => r.status === filters.status);
                 if (filters.amount && !isNaN(parseFloat(filters.amount))) auditRecords = auditRecords.filter(r => Math.abs(r.amount) === parseFloat(filters.amount));
-                
+                if (filters.type === 'deposit') auditRecords = auditRecords.filter(r => r.amount > 0);
+                if (filters.type === 'withdrawal') auditRecords = auditRecords.filter(r => r.amount < 0);
                 if (filters.text) { 
                     const st = filters.text.toLowerCase(); 
                     auditRecords = auditRecords.filter(r => 
@@ -1424,21 +1350,19 @@
                         (USERS[r.assignedTo] && USERS[r.assignedTo].name.toLowerCase().includes(st))
                     ); 
                 }
-                
                 renderRecordsTable('audit-table-body', 'audit-empty-state', paginate(auditRecords, 'audit'), userType);
 
                 const tbodyGus = document.getElementById('table-gussepy-advances'); 
                 const fAdv = advances.filter(a => isSameMonth(a.date, document.getElementById('gus-month-filter')?.value || globalMF));
                 if (tbodyGus) {
-                    let htmlA = '';
-                    const pag = paginate(fAdv, 'gussepy');
+                    let htmlA = ''; const pag = paginate(fAdv, 'gussepy');
                     for(let i=0; i<pag.length; i++){
                         const a = pag[i];
                         let badge = a.status === 'Autorizado' ? `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-crown"></i> Autorizado</span>` : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Pendiente</span>`;
                         let actions = '';
                         if ((userType === 'master' || isSuperAdmin) && a.status === 'Pendiente') actions = `<button onclick="actionAuthorizeAdvance('${a.id}')" class="px-3 py-1 bg-amber-50 text-amber-600 rounded"><i class="fas fa-check"></i></button>`;
                         else if (userType === 'admin' || isSuperAdmin) actions = `<button onclick="actionDelete('${a.id}', 'advance')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded"><i class="fas fa-trash"></i></button>`;
-                        htmlA += `<tr class="border-b border-slate-50"><td class="p-3 text-xs font-bold">${fmtDate(a.date)}</td><td class="p-3 text-sm font-black text-amber-600">${fmt(getVal(a.amount))}</td><td class="p-3 text-xs text-slate-600">${a.concept}</td><td class="p-3">${badge}</td><td class="p-3 text-[10px] text-slate-400 italic">${a.detail || '-'}</td><td class="p-3 text-center">${actions}</td></tr>`;
+                        htmlA += `<tr class="border-b border-slate-50"><td data-label="Fecha" class="p-3 text-xs font-bold">${fmtDate(a.date)}</td><td data-label="Monto" class="p-3 text-sm font-black text-amber-600">${fmt(getVal(a.amount))}</td><td data-label="Concepto" class="p-3 text-xs text-slate-600">${a.concept}</td><td data-label="Estado" class="p-3">${badge}</td><td data-label="Detalle" class="p-3 text-[10px] text-slate-400 italic">${a.detail || '-'}</td><td data-label="Acción" class="p-3 text-center">${actions}</td></tr>`;
                     }
                     tbodyGus.innerHTML = htmlA || `<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">Sin adelantos.</td></tr>`;
                 }
@@ -1480,36 +1404,52 @@
                 const gusInfMF = document.getElementById('gus-inf-month-filter')?.value || dashMF;
                 const infStatsGus = {};
                 
-                referrals.filter(r => isSameMonth(r.date, gusInfMF) && isInf(r.isInfluencer)).forEach(r => { 
-                    if(!infStatsGus[r.referrer]) infStatsGus[r.referrer] = { refs: 0, dep: 0, ret: 0, net: 0, com: 0 }; 
-                    infStatsGus[r.referrer].refs++; 
+                referrals.forEach(r => { 
+                    const refKey = normalizeInf(r.referrer);
+                    if(!infStatsGus[refKey]) infStatsGus[refKey] = { name: USERS[refKey]?.name || r.referrer, refs: 0, dep: 0, ret: 0, net: 0, com: 0 }; 
+                    infStatsGus[refKey].refs++; 
                 });
                 
                 rendimientos.filter(r => isSameMonth(r.date, gusInfMF)).forEach(r => {
-                    const rKey = String(r.referrer).trim().toLowerCase(); 
-                    let rate = USERS[rKey] && USERS[rKey].comision ? parseFloat(USERS[rKey].comision) : 20; 
+                    const refKey = normalizeInf(r.referrer);
+                    let rate = USERS[refKey] && USERS[refKey].comision ? parseFloat(USERS[refKey].comision) : 20; 
                     if (rate > 1) rate = rate / 100;
-                    if(!infStatsGus[r.referrer]) infStatsGus[r.referrer] = { refs: 0, dep: 0, ret: 0, net: 0, com: 0 };
+                    if(!infStatsGus[refKey]) infStatsGus[refKey] = { name: USERS[refKey]?.name || r.referrer, refs: 0, dep: 0, ret: 0, net: 0, com: 0 };
                     
-                    let dep = getVal(r.depositos);
-                    let ret = getVal(r.retiros);
-                    let net = getVal(r.neto);
-                    
-                    infStatsGus[r.referrer].dep += dep; 
-                    infStatsGus[r.referrer].ret += ret; 
-                    infStatsGus[r.referrer].net += net; 
-                    infStatsGus[r.referrer].com += (net * rate);
+                    let dep = getVal(r.depositos); let ret = getVal(r.retiros); let net = getVal(r.neto); let com = getVal(r.comision);
+                    infStatsGus[refKey].dep += dep; infStatsGus[refKey].ret += ret; infStatsGus[refKey].net += net; infStatsGus[refKey].com += com;
                 });
 
                 const elGusInfTable = document.getElementById('gus-table-influencers');
                 if (elGusInfTable) {
-                    let hIG = '';
-                    const entries = Object.entries(infStatsGus);
+                    let hIG = ''; const entries = Object.values(infStatsGus);
+                    entries.sort((a,b) => b.com - a.com || b.refs - a.refs);
+                    
                     for(let i=0; i<entries.length; i++) {
-                        const [name, s] = entries[i];
-                        hIG += `<tr class="border-b border-slate-50"><td class="p-3 text-xs font-bold text-indigo-600 uppercase">${name}</td><td class="p-3 text-xs font-bold text-center">${s.refs}</td><td class="p-3 text-sm font-black text-emerald-500">${fmt(s.dep)}</td><td class="p-3 text-sm font-black text-rose-500">${fmt(s.ret)}</td><td class="p-3 text-sm font-black">${fmt(s.net)}</td><td class="p-3 text-sm font-black text-blue-600 text-right">${fmt(s.net * 0.05)}</td><td class="p-3 text-sm font-black text-purple-600 text-right">${fmt(s.com)}</td></tr>`;
+                        const s = entries[i];
+                        if (s.refs > 0 || s.dep > 0 || s.ret > 0) {
+                            hIG += `<tr class="border-b border-slate-50"><td data-label="Influyente" class="p-3 text-xs font-bold text-indigo-600 uppercase">${s.name}</td><td data-label="Total Ref." class="p-3 text-xs font-bold text-center">${s.refs}</td><td data-label="Depósitos" class="p-3 text-sm font-black text-emerald-500">${fmt(s.dep)}</td><td data-label="Retiros" class="p-3 text-sm font-black text-rose-500">${fmt(s.ret)}</td><td data-label="Neto" class="p-3 text-sm font-black">${fmt(s.net)}</td><td data-label="Com. Plat." class="p-3 text-sm font-black text-blue-600 text-right">${fmt(s.net * 0.05)}</td><td data-label="Com. Pagar" class="p-3 text-sm font-black text-purple-600 text-right">${fmt(s.com)}</td></tr>`;
+                        }
                     }
                     elGusInfTable.innerHTML = hIG || `<tr><td colspan="7" class="p-6 text-center text-sm text-slate-400">Sin datos de influyentes.</td></tr>`;
+                }
+
+                let displayBonos = [...bonos];
+                if (bonoFilters.date) displayBonos = displayBonos.filter(b => isExactDate(b.date, bonoFilters.date));
+                if (bonoFilters.dest) displayBonos = displayBonos.filter(b => (b.assignedTo || '').toLowerCase().includes(bonoFilters.dest));
+                if (bonoFilters.amount && !isNaN(parseFloat(bonoFilters.amount))) displayBonos = displayBonos.filter(b => Math.abs(b.amount) === parseFloat(bonoFilters.amount));
+                if (bonoFilters.agency && bonoFilters.agency !== 'all') displayBonos = displayBonos.filter(b => b.company && b.company.toLowerCase() === bonoFilters.agency.toLowerCase());
+                
+                const elTableBonos = document.getElementById('table-bonos-list');
+                if(elTableBonos) {
+                    let hB = ''; const pagB = paginate(displayBonos, 'bonos');
+                    for(let i=0; i<pagB.length; i++) {
+                        const b = pagB[i];
+                        let statusBadge = (b.status === 'Ganado') ? `<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-black uppercase">Ganó ${fmt(b.amountWon)}</span>` : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Entregado</span>`;
+                        let btnAction = (userType === 'bonos' || isSuperAdmin) ? `<div class="flex justify-center gap-1">${b.status !== 'Ganado' ? `<button onclick="actionBonoWin('${b.id}')" class="px-2 py-1 bg-emerald-500 text-white text-[10px] rounded">Ganar</button>` : ''}<button onclick="actionDelete('${b.id}', 'bono')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded"><i class="fas fa-trash"></i></button></div>` : `<span class="text-[10px] text-slate-400 font-bold">-</span>`;
+                        hB += `<tr class="border-b border-rose-50"><td data-label="Fecha" class="p-3 text-xs font-bold text-slate-600">${fmtDate(b.date)}</td><td data-label="Jugador" class="p-3 text-xs font-bold text-indigo-600 uppercase flex items-center gap-1">${b.assignedTo} <span class="bg-indigo-100 text-indigo-700 px-1 py-0.5 rounded text-[9px]">${b.company || 'Sepybet'}</span></td><td data-label="Monto Inicial" class="p-3 text-sm font-black">${fmt(b.amount)}</td><td data-label="Detalle" class="p-3 text-xs text-slate-500">${b.concept}</td><td data-label="Estado" class="p-3">${statusBadge}</td><td data-label="Acción" class="p-3 text-center">${btnAction}</td></tr>`;
+                    }
+                    elTableBonos.innerHTML = hB || `<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">Sin bonos.</td></tr>`;
                 }
 
                 let displayGiros = [...giros];
@@ -1524,7 +1464,7 @@
                         const g = pagG[i];
                         let statusBadge = (g.status === 'Ganado') ? `<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-black uppercase">Ganó ${fmt(g.amountWon)}</span>` : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Entregado</span>`;
                         let btnAction = (userType === 'bonos' || isSuperAdmin) ? `<div class="flex justify-center gap-1">${g.status !== 'Ganado' ? `<button onclick="actionGiroWin('${g.id}')" class="px-2 py-1 bg-emerald-500 text-white text-[10px] rounded">Ganar</button>` : ''}<button onclick="actionDelete('${g.id}', 'giro')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded"><i class="fas fa-trash"></i></button></div>` : `<span class="text-[10px] text-slate-400 font-bold">-</span>`;
-                        hG += `<tr class="border-b border-rose-50"><td class="p-3 text-xs font-bold text-slate-600">${fmtDate(g.date)}</td><td class="p-3 text-xs font-bold text-indigo-600 uppercase flex items-center gap-1">${g.dest} <span class="bg-indigo-100 text-indigo-700 px-1 py-0.5 rounded text-[9px]">${g.company || 'Sepybet'}</span></td><td class="p-3 text-xs font-bold">${g.game}</td><td class="p-3 text-sm font-black">${g.qty}</td><td class="p-3">${statusBadge}</td><td class="p-3 text-center">${btnAction}</td></tr>`;
+                        hG += `<tr class="border-b border-rose-50"><td data-label="Fecha" class="p-3 text-xs font-bold text-slate-600">${fmtDate(g.date)}</td><td data-label="Plataforma" class="p-3 text-xs font-bold text-indigo-600 uppercase flex items-center gap-1">${g.dest} <span class="bg-indigo-100 text-indigo-700 px-1 py-0.5 rounded text-[9px]">${g.company || 'Sepybet'}</span></td><td data-label="Juego" class="p-3 text-xs font-bold">${g.game}</td><td data-label="Giros" class="p-3 text-sm font-black">${g.qty}</td><td data-label="Estado" class="p-3">${statusBadge}</td><td data-label="Acción" class="p-3 text-center">${btnAction}</td></tr>`;
                     }
                     elTableGiros.innerHTML = hG || `<tr><td colspan="7" class="p-4 text-center text-sm text-slate-400">Sin giros.</td></tr>`;
                 }
@@ -1541,13 +1481,13 @@
                     for(let i=0; i<pagR.length; i++) {
                         const r = pagR[i];
                         let btnAction = (userType === 'bonos' || isSuperAdmin) ? `<button onclick="actionDelete('${r.id}', 'referral')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded mx-auto"><i class="fas fa-trash"></i></button>` : `<span class="text-[10px] text-slate-400 font-bold">Ok</span>`;
-                        hR += `<tr class="border-b border-indigo-50"><td class="p-3 text-xs font-bold">${fmtDate(r.date)}</td><td class="p-3 text-xs font-bold text-indigo-600 uppercase flex items-center gap-1">${r.referrer} <span class="bg-indigo-100 text-indigo-700 px-1 py-0.5 rounded text-[9px]">${r.company || 'Sepybet'}</span></td><td class="p-3 text-xs font-bold uppercase">${r.referred}</td><td class="p-3 text-xs font-mono">${r.cedula}</td><td class="p-3 text-sm font-black text-emerald-600">${fmt(r.amount)}</td><td class="p-3 text-center">${btnAction}</td></tr>`;
+                        hR += `<tr class="border-b border-indigo-50"><td data-label="Fecha" class="p-3 text-xs font-bold">${fmtDate(r.date)}</td><td data-label="Referente" class="p-3 text-xs font-bold text-indigo-600 uppercase flex items-center gap-1">${r.referrer} <span class="bg-indigo-100 text-indigo-700 px-1 py-0.5 rounded text-[9px]">${r.company || 'Sepybet'}</span></td><td data-label="Nuevo Referido" class="p-3 text-xs font-bold uppercase">${r.referred}</td><td data-label="Cédula" class="p-3 text-xs font-mono">${r.cedula}</td><td data-label="Pago" class="p-3 text-sm font-black text-emerald-600">${fmt(r.amount)}</td><td data-label="Acción" class="p-3 text-center">${btnAction}</td></tr>`;
                     }
                     elTableRef.innerHTML = hR || `<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">Sin referidos.</td></tr>`;
                 }
             }
 
-            if (userType === 'cajero_afiliados' || isSuperAdmin || userType === 'admin') {
+            if (userType === 'cajero_afiliados' || isSuperAdmin || userType === 'admin' || userType === 'master') {
                 let displayRend = [...rendimientos];
                 if (melFilters.date) displayRend = displayRend.filter(r => isExactDate(r.date, melFilters.date));
                 if (melFilters.inf) displayRend = displayRend.filter(r => String(r.referrer).toLowerCase().includes(melFilters.inf));
@@ -1559,74 +1499,79 @@
                     for(let i=0; i<pagM.length; i++) {
                         const r = pagM[i];
                         let btnAction = `<div class="flex justify-center gap-1"><button onclick="actionEditRend('${r.id}')" class="w-7 h-7 bg-blue-50 text-blue-600 rounded"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'rendimiento')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded"><i class="fas fa-trash"></i></button></div>`;
-                        hM += `<tr class="border-b border-pink-50"><td class="p-3 text-xs font-bold">${fmtDate(r.date)}</td><td class="p-3 text-xs font-bold text-indigo-600 uppercase">${r.referrer}</td><td class="p-3 text-xs font-bold">${r.referred}</td><td class="p-3 text-sm font-black text-emerald-600">${fmt(getVal(r.depositos))}</td><td class="p-3 text-sm font-black text-rose-600">${fmt(getVal(r.retiros))}</td><td class="p-3 text-sm font-black text-purple-600">${fmt(getVal(r.comision))}</td><td class="p-3 text-center">${btnAction}</td></tr>`;
+                        hM += `<tr class="border-b border-pink-50"><td data-label="Fecha" class="p-3 text-xs font-bold">${fmtDate(r.date)}</td><td data-label="Influyente" class="p-3 text-xs font-bold text-indigo-600 uppercase">${r.referrer}</td><td data-label="Jugador" class="p-3 text-xs font-bold">${r.referred}</td><td data-label="Depósitos" class="p-3 text-sm font-black text-emerald-600">${fmt(getVal(r.depositos))}</td><td data-label="Retiros" class="p-3 text-sm font-black text-rose-600">${fmt(getVal(r.retiros))}</td><td data-label="Comisión" class="p-3 text-sm font-black text-purple-600">${fmt(getVal(r.comision))}</td><td data-label="Acción" class="p-3 text-center">${btnAction}</td></tr>`;
                     }
                     elTableRend.innerHTML = hM || `<tr><td colspan="7" class="p-4 text-center text-sm text-slate-400">Sin rendimientos.</td></tr>`;
                 }
             }
 
-            if (userType === 'influencer' || userType === 'admin' || isSuperAdmin) {
+            if (userType === 'influencer' || userType === 'admin' || isSuperAdmin || userType === 'master') {
                 const myMonth = document.getElementById('inf-month-filter')?.value;
-                const currUserName = (USERS[currentUser]?.name || '').toLowerCase();
-                
-                const myRefs = referrals.filter(r => {
-                    if (userType === 'admin' || isSuperAdmin) return true;
-                    const refName = String(r.referrer||'').toLowerCase().trim();
-                    return refName === currentUser.toLowerCase() || (currUserName !== '' && (refName === currUserName || refName.includes(currUserName) || currUserName.includes(refName)));
-                });
-                const elQty = document.getElementById('inf-dash-qty'); if(elQty) elQty.innerText = myRefs.length;
-                
-                let myDep = 0, myRet = 0, myNeto = 0, myCom = 0; const playerStats = {};
-                
-                rendimientos.filter(r => {
-                    const passMonth = isSameMonth(r.date, myMonth);
-                    if (userType === 'admin' || isSuperAdmin) return passMonth;
-                    const refName = String(r.referrer||'').toLowerCase().trim();
-                    return (refName === currentUser.toLowerCase() || (currUserName !== '' && (refName === currUserName || refName.includes(currUserName) || currUserName.includes(refName)))) && passMonth;
-                }).forEach(r => {
-                    let dep = getVal(r.depositos); let ret = getVal(r.retiros); let neto = getVal(r.neto); let com = getVal(r.comision);
-                    myDep += dep; myRet += ret; myNeto += neto; myCom += com;
-                    if(!playerStats[r.referred]) playerStats[r.referred] = { dep: 0, ret: 0, neto: 0, com: 0, influencer: r.referrer };
-                    playerStats[r.referred].dep += dep; playerStats[r.referred].ret += ret; playerStats[r.referred].neto += neto; playerStats[r.referred].com += com;
-                });
-                
-                const elDep = document.getElementById('inf-dash-dep'); if(elDep) elDep.innerText = fmt(myDep);
-                const elRet = document.getElementById('inf-dash-ret'); if(elRet) elRet.innerText = fmt(myRet);
-                const elNeto = document.getElementById('inf-dash-neto'); if(elNeto) elNeto.innerText = fmt(myNeto);
-                const elCom = document.getElementById('inf-dash-com'); if(elCom) elCom.innerText = fmt(myCom);
+                const currentNormalKey = normalizeInf(currentUser);
+                const myNameStr = String(USERS[currentUser]?.name || currentUser).toLowerCase().trim();
 
-                const searchPlayer = document.getElementById('inf-search')?.value.toLowerCase().trim() || '';
-                let displayPlayers = Object.keys(playerStats);
-                if (searchPlayer) displayPlayers = displayPlayers.filter(p => p.toLowerCase().includes(searchPlayer));
-                displayPlayers.sort();
+                const isMyData = (rawRef) => {
+                    if (userType === 'admin' || isSuperAdmin || userType === 'master') return true;
+                    const refKey = normalizeInf(rawRef);
+                    return refKey === currentNormalKey || refKey === myNameStr;
+                };
 
-                const tbodyInf = document.getElementById('inf-table-body');
-                if (tbodyInf) {
-                    let hInf = ''; const pagInf = paginate(displayPlayers, 'infdash');
-                    for(let i=0; i<pagInf.length; i++) {
-                        const p = pagInf[i]; const stat = playerStats[p];
-                        hInf += `<tr class="border-b border-slate-50 cursor-pointer hover:bg-slate-50" onclick="viewPlayerDetails('${p}')"><td class="p-3 text-sm font-black text-indigo-600">${p}</td><td class="p-3 text-sm font-black text-emerald-500">${fmt(stat.dep)}</td><td class="p-3 text-sm font-black text-rose-500">${fmt(stat.ret)}</td><td class="p-3 text-sm font-black">${fmt(stat.neto)}</td><td class="p-3 text-sm font-black text-amber-500 text-right">${fmt(stat.com)}</td><td class="p-3 text-center hidden md:table-cell"><button class="text-indigo-500 hover:text-indigo-700"><i class="fas fa-chevron-right"></i></button></td></tr>`;
-                    }
-                    tbodyInf.innerHTML = hInf || `<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">Sin datos registrados.</td></tr>`;
-                }
-
-                const detailPlayer = document.getElementById('inf-detail-player')?.value;
-                if (detailPlayer) {
-                    const detailMonth = document.getElementById('inf-detail-month')?.value || dashMF;
-                    let pRecords = rendimientos.filter(r => r.referred === detailPlayer && isSameMonth(r.date, detailMonth));
+                // Actualizar Label de "Mi Ganancia"
+                if (userType === 'influencer' || userType === 'admin' || isSuperAdmin) {
+                    let rateVal = USERS[currentUser] && USERS[currentUser].comision ? parseFloat(USERS[currentUser].comision) : 20;
+                    const labelEl = document.getElementById('inf-dash-com-label');
+                    if (labelEl) labelEl.innerText = `Mi Ganancia (${rateVal}%)`;
                     
-                    const detailTitle = document.getElementById('inf-detail-title');
-                    if(detailTitle) detailTitle.innerText = `Movimientos Diarios - ${detailPlayer}`;
+                    const myRefs = referrals.filter(r => isMyData(r.referrer));
+                    const elQty = document.getElementById('inf-dash-qty'); if(elQty) elQty.innerText = myRefs.length;
                     
-                    const tbodyDetail = document.getElementById('inf-detail-table-body');
-                    if (tbodyDetail) {
-                        let hDet = ''; const pagDet = paginate(pRecords, 'infdetail');
-                        for(let i=0; i<pagDet.length; i++) {
-                            const r = pagDet[i];
-                            let dep = getVal(r.depositos); let ret = getVal(r.retiros); let neto = getVal(r.neto); let com = getVal(r.comision);
-                            hDet += `<tr class="border-b border-slate-50"><td class="p-3 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td><td class="p-3 text-sm font-black text-emerald-500">${fmt(dep)}</td><td class="p-3 text-sm font-black text-rose-500">${fmt(ret)}</td><td class="p-3 text-sm font-black">${fmt(neto)}</td><td class="p-3 text-sm font-black text-amber-500 text-right">${fmt(com)}</td></tr>`;
+                    let myDep = 0, myRet = 0, myNeto = 0, myCom = 0; const playerStats = {};
+                    
+                    rendimientos.filter(r => isSameMonth(r.date, myMonth) && isMyData(r.referrer)).forEach(r => {
+                        let dep = getVal(r.depositos); let ret = getVal(r.retiros); let neto = getVal(r.neto); let com = getVal(r.comision);
+                        myDep += dep; myRet += ret; myNeto += neto; myCom += com;
+                        if(!playerStats[r.referred]) playerStats[r.referred] = { dep: 0, ret: 0, neto: 0, com: 0, influencer: r.referrer };
+                        playerStats[r.referred].dep += dep; playerStats[r.referred].ret += ret; playerStats[r.referred].neto += neto; playerStats[r.referred].com += com;
+                    });
+                    
+                    const elDep = document.getElementById('inf-dash-dep'); if(elDep) elDep.innerText = fmt(myDep);
+                    const elRet = document.getElementById('inf-dash-ret'); if(elRet) elRet.innerText = fmt(myRet);
+                    const elNeto = document.getElementById('inf-dash-neto'); if(elNeto) elNeto.innerText = fmt(myNeto);
+                    const elCom = document.getElementById('inf-dash-com'); if(elCom) elCom.innerText = fmt(myCom);
+
+                    const searchPlayer = document.getElementById('inf-search')?.value.toLowerCase().trim() || '';
+                    let displayPlayers = Object.keys(playerStats);
+                    if (searchPlayer) displayPlayers = displayPlayers.filter(p => p.toLowerCase().includes(searchPlayer));
+                    displayPlayers.sort();
+
+                    const tbodyInf = document.getElementById('inf-table-body');
+                    if (tbodyInf) {
+                        let hInf = ''; const pagInf = paginate(displayPlayers, 'infdash');
+                        for(let i=0; i<pagInf.length; i++) {
+                            const p = pagInf[i]; const stat = playerStats[p];
+                            hInf += `<tr class="border-b border-slate-50 cursor-pointer hover:bg-slate-50" onclick="viewPlayerDetails('${p}')"><td data-label="Jugador (ID)" class="p-3 text-sm font-black text-indigo-600">${p}</td><td data-label="Depósitos" class="p-3 text-sm font-black text-emerald-500">${fmt(stat.dep)}</td><td data-label="Retiros" class="p-3 text-sm font-black text-rose-500">${fmt(stat.ret)}</td><td data-label="Neto Generado" class="p-3 text-sm font-black">${fmt(stat.neto)}</td><td data-label="Mi Comisión" class="p-3 text-sm font-black text-amber-500 text-right">${fmt(stat.com)}</td><td data-label="Detalle" class="p-3 text-center hidden md:table-cell"><button class="text-indigo-500 hover:text-indigo-700"><i class="fas fa-chevron-right"></i></button></td></tr>`;
                         }
-                        tbodyDetail.innerHTML = hDet || `<tr><td colspan="5" class="p-4 text-center text-sm text-slate-400">Sin movimientos.</td></tr>`;
+                        tbodyInf.innerHTML = hInf || `<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">Sin datos registrados.</td></tr>`;
+                    }
+
+                    const detailPlayer = document.getElementById('inf-detail-player')?.value;
+                    if (detailPlayer) {
+                        const detailMonth = document.getElementById('inf-detail-month')?.value || dashMF;
+                        let pRecords = rendimientos.filter(r => r.referred === detailPlayer && isSameMonth(r.date, detailMonth));
+                        
+                        const detailTitle = document.getElementById('inf-detail-title');
+                        if(detailTitle) detailTitle.innerText = `Movimientos Diarios - ${detailPlayer}`;
+                        
+                        const tbodyDetail = document.getElementById('inf-detail-table-body');
+                        if (tbodyDetail) {
+                            let hDet = ''; const pagDet = paginate(pRecords, 'infdetail');
+                            for(let i=0; i<pagDet.length; i++) {
+                                const r = pagDet[i];
+                                let dep = getVal(r.depositos); let ret = getVal(r.retiros); let neto = getVal(r.neto); let com = getVal(r.comision);
+                                hDet += `<tr class="border-b border-slate-50"><td data-label="Fecha" class="p-3 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td><td data-label="Depósitos" class="p-3 text-sm font-black text-emerald-500">${fmt(dep)}</td><td data-label="Retiros" class="p-3 text-sm font-black text-rose-500">${fmt(ret)}</td><td data-label="Neto Generado" class="p-3 text-sm font-black">${fmt(neto)}</td><td data-label="Mi Comisión" class="p-3 text-sm font-black text-amber-500 text-right">${fmt(com)}</td></tr>`;
+                            }
+                            tbodyDetail.innerHTML = hDet || `<tr><td colspan="5" class="p-4 text-center text-sm text-slate-400">Sin movimientos.</td></tr>`;
+                        }
                     }
                 }
 
@@ -1647,14 +1592,15 @@
                         const move = lastMoveMap[jugador];
                         const diffMs = nowMs - move.time;
                         const diffDays = Math.floor(diffMs / (24*60*60*1000));
+                        
+                        if (userType === 'influencer' || userType === 'user') {
+                            if (!isMyData(move.influencer)) return; 
+                        }
+
                         if (diffDays >= 10) {
                             listInactivos.push({ jugador: jugador, influencer: move.influencer, days: diffDays, lastMove: new Date(move.time).toISOString().split('T')[0] });
                         }
                     });
-
-                    if(userType === 'influencer' || userType === 'user') {
-                        listInactivos = listInactivos.filter(i => String(i.influencer).toLowerCase().includes(currUserName));
-                    }
 
                     listInactivos.sort((a,b) => b.days - a.days);
 
@@ -1662,7 +1608,7 @@
                     for(let i=0; i<pagInac.length; i++) {
                         const inac = pagInac[i];
                         let statusCls = inac.days >= 30 ? 'text-rose-600 bg-rose-100' : 'text-amber-600 bg-amber-100';
-                        hInac += `<tr class="border-b border-slate-50"><td class="p-3 text-xs font-bold text-indigo-600 uppercase">${inac.influencer}</td><td class="p-3 text-xs font-bold uppercase">${inac.jugador}</td><td class="p-3 text-xs font-bold text-slate-500">${fmtDate(inac.lastMove)}</td><td class="p-3 text-sm font-black text-center">${inac.days}</td><td class="p-3 text-center"><span class="px-2 py-1 rounded text-[10px] font-black uppercase ${statusCls}">Inactivo</span></td></tr>`;
+                        hInac += `<tr class="border-b border-slate-50"><td data-label="Influencer" class="p-3 text-xs font-bold text-indigo-600 uppercase">${inac.influencer}</td><td data-label="Jugador" class="p-3 text-xs font-bold uppercase">${inac.jugador}</td><td data-label="Último Mov." class="p-3 text-xs font-bold text-slate-500">${fmtDate(inac.lastMove)}</td><td data-label="Días Inactivo" class="p-3 text-sm font-black text-center">${inac.days}</td><td data-label="Estado" class="p-3 text-center"><span class="px-2 py-1 rounded text-[10px] font-black uppercase ${statusCls}">Inactivo</span></td></tr>`;
                     }
                     tbodyInactivos.innerHTML = hInac || `<tr><td colspan="5" class="p-4 text-center text-sm text-slate-400">No hay inactivos (+10 días)</td></tr>`;
                 }
