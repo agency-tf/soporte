@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sepybet - Sistema Integral Gerencial</title>
+    <title>Sepybet - Sistema Integral</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
@@ -48,6 +47,7 @@
 <body class="text-slate-800 antialiased selection:bg-indigo-200">
     <div id="toast-container" class="fixed bottom-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
+    <!-- PANTALLA LOGIN -->
     <div id="screen-login" class="fixed inset-0 z-40 login-bg flex flex-col items-center justify-center p-4">
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div class="absolute -top-[30%] -left-[10%] w-[70%] h-[70%] rounded-full bg-blue-600/20 blur-[100px]"></div>
@@ -80,6 +80,7 @@
         </div>
     </div>
 
+    <!-- APLICACIÓN PRINCIPAL -->
     <div id="screen-app" class="hidden min-h-screen flex flex-col">
         <nav class="bg-[#0f172a] border-b border-slate-800 sticky top-0 z-30 shadow-sm text-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -108,7 +109,7 @@
                 <hr class="my-2 border-slate-800 hidden" id="divider-1">
                 <button onclick="switchTab('tab-maria-dash')" id="btn-tab-maria-dash" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-trophy w-5 text-center text-rose-500"></i> Panel Bonos/Giros</button>
                 <button onclick="switchTab('tab-maria-add')" id="btn-tab-maria-add" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-gift w-5 text-center text-rose-400"></i> Emitir Bono</button>
-                <button onclick="switchTab('tab-maria-list')" id="btn-tab-maria-list" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-list-alt w-5 text-center text-rose-400"></i> Historial de Bonos</button>
+                <button onclick="switchTab('tab-maria-list')" id="btn-tab-maria-list" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-list-alt w-5 text-center text-rose-400"></i> Hist. Bonos y Ganadores</button>
                 <button onclick="switchTab('tab-giros-add')" id="btn-tab-giros-add" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-sync w-5 text-center text-indigo-400"></i> Otorgar Giros Gratis</button>
                 <button onclick="switchTab('tab-giros-list')" id="btn-tab-giros-list" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-history w-5 text-center text-indigo-400"></i> Historial Giros</button>
                 <hr class="my-2 border-slate-800 hidden" id="divider-2">
@@ -130,10 +131,11 @@
 
         <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 relative">
 
+            <!-- TAB DASHBOARD (Personal y Admin) -->
             <div id="tab-dashboard" class="hidden fade-in space-y-6 tab-content">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div><h2 class="text-sm font-black text-slate-800"><i class="fas fa-chart-line text-indigo-500 mr-2"></i> Rendimiento Mensual</h2><p class="text-[10px] text-slate-400 mt-1">Mes seleccionado.</p></div>
-                    <input type="month" id="dash-month-filter" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none w-full sm:w-auto">
+                    <input type="month" id="dash-month-filter" onchange="updateAllViews()" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none w-full sm:w-auto">
                 </div>
 
                 <div id="panel-personal" class="hidden mb-6 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -161,7 +163,7 @@
                         <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100"><p class="text-[10px] font-black text-slate-500 uppercase">Total Pagado</p><h3 class="text-3xl font-black text-emerald-600" id="gus-dash-val-ganados">$0.00</h3></div>
                     </div>
                     <div class="grid grid-cols-1 mt-6"><div class="bg-white border border-emerald-100 rounded-2xl shadow-sm overflow-hidden flex flex-col"><div class="px-6 py-4 bg-emerald-50/50"><h3 class="text-sm font-black text-emerald-900"><i class="fas fa-trophy mr-1 text-amber-500"></i>Top 5 Ganadores Históricos</h3></div><div class="overflow-x-auto"><table class="w-full text-left border-collapse"><tbody id="gus-table-top-ganadores" class="divide-y divide-slate-100"></tbody></table></div></div></div>
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-indigo-100 pb-2 mt-8 pt-4 gap-4"><h2 class="text-xl font-black text-indigo-900"><i class="fas fa-users-cog mr-2 text-indigo-500"></i>Rendimiento de Influyentes</h2><div class="flex items-center gap-2"><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mes:</label><input type="month" id="gus-inf-month-filter" class="bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-1.5 text-sm font-bold text-indigo-800 outline-none"></div></div>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-indigo-100 pb-2 mt-8 pt-4 gap-4"><h2 class="text-xl font-black text-indigo-900"><i class="fas fa-users-cog mr-2 text-indigo-500"></i>Rendimiento de Influyentes</h2><div class="flex items-center gap-2"><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mes:</label><input type="month" id="gus-inf-month-filter" onchange="updateAllViews()" class="bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-1.5 text-sm font-bold text-indigo-800 outline-none"></div></div>
                     <div class="overflow-x-auto mt-4"><table class="w-full text-left border-collapse resp-table"><thead class="bg-indigo-50 border-b border-indigo-100 text-[10px] font-black text-indigo-800 uppercase hidden md:table-header-group"><tr><th class="p-3 pl-4">Influyente</th><th class="p-3">Total Referidos</th><th class="p-3">Depósitos</th><th class="p-3">Retiros</th><th class="p-3">Neto</th><th class="p-3 text-right">Comisión Plat.</th><th class="p-3 pr-4 text-right">Comisión Pagar</th></tr></thead><tbody id="gus-table-influencers" class="divide-y divide-slate-100 text-sm"></tbody></table></div>
                 </div>
 
@@ -175,6 +177,7 @@
                 </div>
             </div>
 
+            <!-- REGISTRAR SALDO Y CARGA MASIVA BANCO -->
             <div id="tab-register" class="hidden fade-in tab-content">
                 <div class="max-w-2xl mx-auto bg-white border border-slate-200 rounded-3xl shadow-xl overflow-hidden">
                     <div class="px-6 py-8 sm:p-10 border-b border-slate-100 bg-gradient-to-br from-slate-50 to-white relative overflow-hidden"><h2 class="text-2xl font-black text-slate-800 relative z-10">Nuevo Registro Manual</h2></div>
@@ -224,6 +227,7 @@
                 </div>
             </div>
 
+            <!-- AUDITORIA -->
             <div id="tab-auditoria" class="hidden fade-in tab-content">
                 <div class="max-w-7xl mx-auto">
                     <div class="bg-white border border-slate-200 p-3 rounded-2xl shadow-sm mb-6">
@@ -233,7 +237,7 @@
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Estado</label><select id="filter-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"><option value="all">Todos</option><option value="Pendiente">Pendientes</option><option value="Verificado">Verificados</option><option value="Denegado">Denegados</option></select></div>
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Tipo</label><select id="filter-type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"><option value="all">Todos</option><option value="deposit">Depósitos (+)</option><option value="withdrawal">Retiros (-)</option></select></div>
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Monto Exacto</label><div class="relative"><div class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 font-bold">$</div><input type="text" id="filter-amount" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-4 py-2.5 text-sm font-bold text-slate-700 outline-none"></div></div>
-                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar</label><input type="text" id="filter-ref-comment" oninput="applyFilters()" placeholder="Buscar..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Buscar (Comprobante/Comentario)</label><input type="text" id="filter-ref-comment" oninput="applyFilters()" placeholder="Buscar..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none"></div>
                             <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div>
                         </div>
                     </div>
@@ -253,6 +257,7 @@
                 </div>
             </div>
 
+            <!-- ADELANTOS GUSSEPY -->
             <div id="tab-gussepy" class="hidden fade-in tab-content">
                 <div class="max-w-5xl mx-auto space-y-6">
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden" id="panel-add-gussepy">
@@ -267,9 +272,10 @@
                 </div>
             </div>
 
+            <!-- DASHBOARD BONOS (Gussepy/Emilia) -->
             <div id="tab-maria-dash" class="hidden fade-in theme-maria tab-content">
                 <div class="max-w-6xl mx-auto space-y-6">
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-rose-100 flex items-center justify-between"><h2 class="text-sm font-black text-rose-900"><i class="fas fa-calendar-alt text-rose-500 mr-2"></i> Mes a Consultar:</h2><input type="month" id="bonos-month-filter" class="bg-rose-50 border border-rose-200 rounded-xl px-4 py-2 text-sm font-bold text-rose-800 outline-none"></div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-rose-100 flex items-center justify-between"><h2 class="text-sm font-black text-rose-900"><i class="fas fa-calendar-alt text-rose-500 mr-2"></i> Mes a Consultar:</h2><input type="month" id="bonos-month-filter" onchange="updateAllViews()" class="bg-rose-50 border border-rose-200 rounded-xl px-4 py-2 text-sm font-bold text-rose-800 outline-none"></div>
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100"><p class="text-[10px] font-black text-slate-500 uppercase">Bonos Emitidos</p><h3 class="text-3xl font-black text-slate-800" id="dash-bonos-qty">0</h3></div>
                         <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100"><p class="text-[10px] font-black text-slate-500 uppercase">Inversión Total</p><h3 class="text-3xl font-black text-rose-600" id="dash-bonos-val">$0.00</h3></div>
@@ -283,6 +289,7 @@
                 </div>
             </div>
 
+            <!-- EMITIR BONO -->
             <div id="tab-maria-add" class="hidden fade-in theme-maria tab-content">
                 <div class="max-w-2xl mx-auto">
                     <div class="bg-white border border-rose-100 rounded-3xl shadow-xl overflow-hidden">
@@ -304,14 +311,15 @@
                 </div>
             </div>
 
+            <!-- HISTORIAL BONOS Y GANADORES -->
             <div id="tab-maria-list" class="hidden fade-in theme-maria tab-content">
                 <div class="max-w-6xl mx-auto space-y-6">
                     <div class="bg-white border border-rose-100 p-3 rounded-2xl shadow-sm mb-4">
                         <div class="flex flex-col lg:flex-row items-end gap-3 w-full">
-                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Fecha</label><input type="date" id="filter-bono-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none"></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Fecha Exacta</label><input type="date" id="filter-bono-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none"></div>
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Agencia</label><select id="filter-bono-agency" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none"><option value="all">Todas</option><option value="Sepybet">Sepybet</option><option value="Chichesepy">Chichesepy</option></select></div>
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Estado</label><select id="filter-bono-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none"><option value="all">Todos</option><option value="Ganado">Ganados</option><option value="Entregado">Entregados</option></select></div>
-                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Jugador</label><input type="text" id="filter-bono-dest" oninput="applyBonoFilters()" placeholder="ID Jugador..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none"></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Jugador</label><input type="text" id="filter-bono-dest" placeholder="ID Jugador..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none"></div>
                             <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyBonoFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-[#e11d48] text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearBonoFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div>
                         </div>
                     </div>
@@ -323,6 +331,7 @@
                 </div>
             </div>
 
+            <!-- OTORGAR GIROS -->
             <div id="tab-giros-add" class="hidden fade-in theme-maria tab-content">
                 <div class="max-w-2xl mx-auto bg-white border border-indigo-200 rounded-3xl shadow-xl overflow-hidden">
                     <div class="px-6 py-8 sm:p-10 border-b border-indigo-50 bg-gradient-to-br from-indigo-50 to-white"><h2 class="text-2xl font-black text-indigo-900"><i class="fas fa-sync-alt mr-2 text-indigo-500"></i>Otorgar Giros Gratis</h2></div>
@@ -344,12 +353,14 @@
                 </div>
             </div>
 
+            <!-- HISTORIAL GIROS -->
             <div id="tab-giros-list" class="hidden fade-in theme-maria tab-content">
                 <div class="max-w-6xl mx-auto space-y-6">
                     <div class="bg-white border border-indigo-100 p-3 rounded-2xl shadow-sm mb-4">
                         <div class="flex flex-col lg:flex-row items-end gap-3 w-full">
                             <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Fecha</label><input type="date" id="filter-giro-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none"></div>
-                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Jugador</label><input type="text" id="filter-giro-dest" oninput="applyGiroFilters()" placeholder="ID Jugador..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none"></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Estado</label><select id="filter-giro-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none"><option value="all">Todos</option><option value="Ganado">Ganados</option><option value="Entregado">Entregados</option></select></div>
+                            <div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Jugador</label><input type="text" id="filter-giro-dest" placeholder="ID Jugador..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none"></div>
                             <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyGiroFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearGiroFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div>
                         </div>
                     </div>
@@ -376,11 +387,12 @@
 
             <div id="tab-maria-ref-list" class="hidden fade-in theme-maria tab-content">
                 <div class="max-w-7xl mx-auto space-y-6">
-                    <div class="bg-white border border-indigo-100 p-3 rounded-2xl shadow-sm mb-4"><div class="flex flex-col lg:flex-row items-end gap-3 w-full"><div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Nombre</label><input type="text" id="filter-ref-name" oninput="applyRefFilters()" placeholder="Buscar..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold"></div><div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyRefFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearRefFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div></div></div>
+                    <div class="bg-white border border-indigo-100 p-3 rounded-2xl shadow-sm mb-4"><div class="flex flex-col lg:flex-row items-end gap-3 w-full"><div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Nombre</label><input type="text" id="filter-ref-name" placeholder="Buscar..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold"></div><div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyRefFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearRefFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div></div></div>
                     <div class="bg-white border border-indigo-100 rounded-2xl shadow-sm overflow-hidden flex flex-col"><div class="px-6 py-5 border-b border-indigo-50 flex justify-between items-center bg-indigo-50/30"><h3 class="text-lg font-black text-indigo-900">Historial de Referidos</h3></div><div class="overflow-x-auto"><table class="w-full text-left border-collapse resp-table"><thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group"><tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Referente</th><th class="p-4">Nuevo Referido</th><th class="p-4">Cédula</th><th class="p-4">Pago</th><th class="p-4 pr-6 text-center">Acción</th></tr></thead><tbody id="table-ref-list"></tbody></table></div><div id="pagination-ref" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-ref">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('ref', -1)" id="btn-prev-ref" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-ref">1</span> / <span id="page-tot-ref">1</span></span><button onclick="changePage('ref', 1)" id="btn-next-ref" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-right text-xs"></i></button></div></div></div>
                 </div>
             </div>
 
+            <!-- CARGA AFILIADOS -->
             <div id="tab-melanie-add" class="hidden fade-in tab-content">
                 <div class="max-w-6xl mx-auto space-y-6">
                     <div class="bg-white border border-pink-200 rounded-3xl shadow-xl overflow-hidden max-w-4xl mx-auto mt-8">
@@ -413,25 +425,28 @@
                 </div>
             </div>
 
+            <!-- HISTORIAL RENDIMIENTOS -->
             <div id="tab-melanie-list" class="hidden fade-in tab-content">
                 <div class="max-w-7xl mx-auto space-y-6">
-                    <div class="bg-white border border-pink-100 p-3 rounded-2xl shadow-sm mb-4"><div class="flex flex-col lg:flex-row items-end gap-3 w-full"><div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Influyente</label><input type="text" id="filter-rend-inf" oninput="applyMelFilters()" placeholder="Nombre..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-pink-500"></div><div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Jugador</label><input type="text" id="filter-rend-jug" oninput="applyMelFilters()" placeholder="Nombre..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-pink-500"></div><div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyMelFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-pink-600 text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearRendFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div></div></div>
+                    <div class="bg-white border border-pink-100 p-3 rounded-2xl shadow-sm mb-4"><div class="flex flex-col lg:flex-row items-end gap-3 w-full"><div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Influyente</label><input type="text" id="filter-rend-inf" placeholder="Nombre..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-pink-500"></div><div class="w-full lg:w-auto flex-1"><label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Jugador</label><input type="text" id="filter-rend-jug" placeholder="Nombre..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-pink-500"></div><div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0"><button onclick="applyMelFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-pink-600 text-white rounded-xl text-sm font-bold shadow-md">Filtrar</button><button onclick="clearRendFilters()" class="flex-1 lg:flex-none px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold">Limpiar</button></div></div></div>
                     <div class="bg-white border border-pink-100 rounded-2xl shadow-sm overflow-hidden flex flex-col mt-6"><div class="px-6 py-5 border-b border-pink-50 bg-pink-50/30 flex justify-between items-center"><h3 class="text-lg font-black text-pink-900">Historial Cargas</h3></div><div class="overflow-x-auto"><table class="w-full text-left border-collapse resp-table"><thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group"><tr><th class="p-4 pl-6">Fecha</th><th class="p-4">Influyente</th><th class="p-4">Jugador</th><th class="p-4">Depósitos</th><th class="p-4">Retiros</th><th class="p-4">Comisión</th><th class="p-4 pr-6 text-center">Acción</th></tr></thead><tbody id="mel-table-history"></tbody></table></div><div id="pagination-mel" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-mel">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('mel', -1)" id="btn-prev-mel" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-mel">1</span> / <span id="page-tot-mel">1</span></span><button onclick="changePage('mel', 1)" id="btn-next-mel" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-right text-xs"></i></button></div></div></div>
                 </div>
             </div>
 
+            <!-- INACTIVOS -->
             <div id="tab-inactivos" class="hidden fade-in tab-content">
                 <div class="max-w-6xl mx-auto space-y-6 mt-8">
                     <div class="bg-white border border-amber-200 rounded-3xl shadow-xl overflow-hidden">
                         <div class="px-6 py-5 border-b border-amber-100 bg-amber-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <h2 class="text-lg font-black text-amber-900"><i class="fas fa-user-clock mr-2 text-amber-500"></i>Jugadores Inactivos (+10 Días)</h2>
-                            <input type="text" id="filter-inactivos-jugador" oninput="updateAllViews()" placeholder="Buscar jugador..." class="bg-white border border-amber-200 rounded-xl px-4 py-2 text-sm font-bold outline-none focus:border-amber-500 w-full sm:w-64">
+                            <input type="text" id="filter-inactivos-jugador" oninput="updateAllViews()" placeholder="Buscar jugador o influencer..." class="bg-white border border-amber-200 rounded-xl px-4 py-2 text-sm font-bold outline-none focus:border-amber-500 w-full sm:w-64">
                         </div>
                         <div class="overflow-x-auto"><table class="w-full text-left border-collapse resp-table"><thead class="bg-white border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase hidden md:table-header-group"><tr><th class="p-4 pl-6">Influencer</th><th class="p-4">Jugador</th><th class="p-4">Último Mov.</th><th class="p-4">Días Inactivo</th><th class="p-4 text-center">Estado</th></tr></thead><tbody id="table-inactivos-list"></tbody></table></div><div id="pagination-inactivos" class="hidden px-6 py-4 border-t border-slate-100 bg-slate-50/50 justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total: <span id="total-reg-inactivos">0</span></span><div class="flex items-center gap-3"><button onclick="changePage('inactivos', -1)" id="btn-prev-inactivos" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-left text-xs"></i></button><span class="text-xs font-bold text-slate-600">Pág. <span id="page-num-inactivos">1</span> / <span id="page-tot-inactivos">1</span></span><button onclick="changePage('inactivos', 1)" id="btn-next-inactivos" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-100 disabled:opacity-50"><i class="fas fa-chevron-right text-xs"></i></button></div></div>
                     </div>
                 </div>
             </div>
 
+            <!-- PANEL VIP -->
             <div id="tab-influencer-dash" class="hidden fade-in tab-content">
                 <div class="max-w-5xl mx-auto space-y-6">
                     <div class="bg-gradient-to-r from-purple-800 to-indigo-900 rounded-3xl p-8 shadow-xl text-white">
@@ -460,7 +475,7 @@
                             <button onclick="switchTab('tab-influencer-dash')" class="mb-4 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold transition-colors"><i class="fas fa-arrow-left mr-2"></i> Volver al Panel</button>
                             <h2 class="text-xl font-black mb-1"><i class="fas fa-address-book mr-2"></i>Historial Detallado por Jugador</h2>
                         </div>
-                        <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto"><select id="inf-detail-player" onchange="resetPagesAndUpdate()" class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-bold text-white outline-none w-full sm:w-48"><option value="" class="text-slate-800">Seleccionar Jugador...</option></select><input type="month" id="inf-detail-month" class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-bold text-white outline-none w-full sm:w-auto"></div>
+                        <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto"><select id="inf-detail-player" onchange="resetPagesAndUpdate()" class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-bold text-white outline-none w-full sm:w-48"><option value="" class="text-slate-800">Seleccionar Jugador...</option></select><input type="month" id="inf-detail-month" onchange="updateAllViews()" class="bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-sm font-bold text-white outline-none w-full sm:w-auto"></div>
                     </div>
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
                         <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center"><h3 class="text-lg font-black text-slate-800" id="inf-detail-title">Movimientos Diarios</h3></div>
@@ -474,8 +489,9 @@
         </main>
     </div>
 
+    <!-- MODALES -->
     <div id="modal-password" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-slate-50"><h3 class="text-lg font-black text-slate-800">Cambiar Contraseña</h3></div><form id="form-password" class="p-6 space-y-4"><input type="password" id="new-password" required minlength="4" placeholder="Nueva Clave..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold"><div class="flex gap-3"><button type="button" onclick="closePasswordModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button type="submit" class="flex-1 py-3 bg-slate-800 text-white rounded-xl font-bold">Actualizar</button></div></form></div></div>
-    <div id="modal-edit" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-slate-50"><h3 class="text-lg font-black text-slate-800">Editar Registro</h3></div><div class="p-6 space-y-4"><input type="hidden" id="edit-id"><input type="datetime-local" id="edit-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><input type="text" id="edit-amount" inputmode="decimal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><input type="text" id="edit-concept" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeEditModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-edit-confirm" onclick="confirmEdit()" class="flex-1 py-3 bg-blue-50 text-white rounded-xl font-bold">Guardar</button></div></div></div></div>
+    <div id="modal-edit" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-slate-50"><h3 class="text-lg font-black text-slate-800">Editar Registro</h3></div><div class="p-6 space-y-4"><input type="hidden" id="edit-id"><input type="datetime-local" id="edit-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><input type="text" id="edit-amount" inputmode="decimal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><input type="text" id="edit-concept" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeEditModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-edit-confirm" onclick="confirmEdit()" class="flex-1 py-3 bg-blue-500 text-white rounded-xl font-bold">Guardar</button></div></div></div></div>
     <div id="modal-edit-rend" class="fixed inset-0 z-[55] bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in border border-pink-200"><div class="p-6 text-center border-b border-pink-50 bg-pink-50"><h3 class="text-lg font-black text-slate-800">Modificar Rendimiento</h3></div><div class="p-6 space-y-4"><input type="hidden" id="edit-rend-id"><input type="date" id="edit-rend-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><input type="text" id="edit-rend-dep" inputmode="decimal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><input type="text" id="edit-rend-ret" inputmode="decimal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeEditRendModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-edit-rend-confirm" onclick="confirmEditRend()" class="flex-1 py-3 bg-pink-600 text-white rounded-xl font-bold">Actualizar</button></div></div></div></div>
     <div id="modal-comprobante" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-slate-50"><h3 class="text-lg font-black text-slate-800">Dar Visto Bueno</h3></div><div class="p-6 space-y-4"><input type="text" id="input-receipt" placeholder="Comentario u Observación..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-verify-confirm" onclick="confirmVerify()" class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-bold">Aprobar</button></div></div></div></div>
     <div id="modal-gussepy" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in"><div class="p-6 text-center border-b border-slate-100 bg-amber-50"><h3 class="text-lg font-black text-slate-800">Autorizar Adelanto</h3></div><div class="p-6 space-y-4"><input type="text" id="input-gussepy-detail" placeholder="Detalle..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3"><div class="flex gap-3"><button onclick="closeGussepyModal()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cancelar</button><button id="btn-gussepy-confirm" onclick="confirmGussepyAuth()" class="flex-1 py-3 bg-amber-500 text-white rounded-xl font-bold">Autorizar</button></div></div></div></div>
@@ -489,73 +505,37 @@
         
         let currentUser = null, isSuperAdmin = false;
         let records = [], advances = [], bonos = [], giros = [], referrals = [], rendimientos = [], allReceipts = [];
-        
-        let filters = { date: '', user: 'all', status: 'all', amount: '', text: '', type: 'all' }, bonoFilters = { date: '', dest: '', amount: '', agency: 'all', status: 'all' }, refFilters = { date: '', name: '', cedula: '', agency: 'all' }, giroFilters = { date: '', dest: '', agency: 'all' }, melFilters = { date: '', inf: '', jug: '' };
+        let filters = { date: '', user: 'all', status: 'all', amount: '', text: '', type: 'all' };
+        let bonoFilters = { date: '', dest: '', amount: '', agency: 'all', status: 'all' };
+        let refFilters = { date: '', name: '', cedula: '', agency: 'all' };
+        let giroFilters = { date: '', dest: '', agency: 'all', status: 'all' };
+        let melFilters = { date: '', inf: '', jug: '' };
         
         let pendingVerifyId = null, pendingAuthId = null, pendingBonoWinId = null, pendingGiroWinId = null;
-        let referidosChart = null, inactivityTimer, chartWeekInstance = null, chartMonthsInstance = null;
+        let inactivityTimer, chartWeekInstance = null, chartMonthsInstance = null;
         let currentPlayersList = [], uploadData = [], bankUploadData = []; 
 
         const fmt = v => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
-        
-        const getVal = (v) => {
-            if(typeof v === 'number') return v;
-            if(!v || v === '') return 0;
-            let s = String(v).trim();
-            if(s.includes(',') && !s.includes('.')) s = s.replace(',', '.');
-            else s = s.replace(/,/g, '');
-            return parseFloat(s) || 0;
-        };
-
-        const isInf = (val) => { 
-            if(val === true) return true;
-            if(!val) return false;
-            const v = String(val).toLowerCase().trim(); 
-            return v==='true' || v==='verdadero' || v==='1' || v==='sí' || v==='si' || v==='yes'; 
-        };
-
+        const getVal = (v) => { if(typeof v === 'number') return v; if(!v || v === '') return 0; let s = String(v).trim(); if(s.includes(',') && !s.includes('.')) s = s.replace(',', '.'); else s = s.replace(/,/g, ''); return parseFloat(s) || 0; };
         const getLocalIsoDatetime = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0,16);
-
-        function sortDataDesc(a, b) {
-            const dateDiff = new Date(b.date) - new Date(a.date);
-            if (dateDiff !== 0) return dateDiff;
-            const tA = parseInt((String(a.id).match(/\d+/) || [0])[0], 10);
-            const tB = parseInt((String(b.id).match(/\d+/) || [0])[0], 10);
-            return (tB || 0) - (tA || 0);
-        }
+        function sortDataDesc(a, b) { const dateDiff = new Date(b.date) - new Date(a.date); if (dateDiff !== 0) return dateDiff; const tA = parseInt((String(a.id).match(/\d+/) || [0])[0], 10); const tB = parseInt((String(b.id).match(/\d+/) || [0])[0], 10); return (tB || 0) - (tA || 0); }
         
         function parseExcelDate(dateVal) {
             if (!dateVal) return new Date();
-            if (typeof dateVal === 'number') { return new Date(1899, 11, 30 + dateVal); }
-            let s = String(dateVal).trim().replace(/"/g, '');
-            let datePart = s; let timePart = "12:00";
-            if (s.includes(',')) { let parts = s.split(','); datePart = parts[0].trim(); timePart = parts[1].trim(); } 
-            else if (s.includes(' ')) { let parts = s.split(' '); datePart = parts[0].trim(); timePart = parts.slice(1).join(' ').trim(); }
-            let dParts = datePart.split(/[-/]/);
-            let y = 0, m = 0, d = 0;
-            if (dParts.length === 3) { y = parseInt(dParts[0]); if (y < 100) y += 2000; m = parseInt(dParts[1]) - 1; d = parseInt(dParts[2]); } 
-            else { let fd = new Date(s.replace(/-/g, '/')); return isNaN(fd.getTime()) ? new Date() : fd; }
-            let tParts = timePart.match(/(\d+):(\d+)\s*(AM|PM|am|pm)?/i);
-            let h = 12, min = 0;
+            if (typeof dateVal === 'number') return new Date(1899, 11, 30 + dateVal);
+            let s = String(dateVal).trim().replace(/"/g, ''); let datePart = s; let timePart = "12:00";
+            if (s.includes(',')) { let parts = s.split(','); datePart = parts[0].trim(); timePart = parts[1].trim(); } else if (s.includes(' ')) { let parts = s.split(' '); datePart = parts[0].trim(); timePart = parts.slice(1).join(' ').trim(); }
+            let dParts = datePart.split(/[-/]/); let y = 0, m = 0, d = 0;
+            if (dParts.length === 3) { y = parseInt(dParts[0]); if (y < 100) y += 2000; m = parseInt(dParts[1]) - 1; d = parseInt(dParts[2]); } else { let fd = new Date(s.replace(/-/g, '/')); return isNaN(fd.getTime()) ? new Date() : fd; }
+            let tParts = timePart.match(/(\d+):(\d+)\s*(AM|PM|am|pm)?/i); let h = 12, min = 0;
             if (tParts) { h = parseInt(tParts[1]); min = parseInt(tParts[2]); let ampm = tParts[3] ? tParts[3].toUpperCase() : null; if (ampm === 'PM' && h < 12) h += 12; if (ampm === 'AM' && h === 12) h = 0; }
             return new Date(y, m, d, h, min, 0);
         }
-        
-        function excelToISO(serial) {
-            let d = parseExcelDate(serial);
-            const pad = n => n.toString().padStart(2, '0');
-            return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-        }
-
-        const fmtDate = dStr => { 
-            if(!dStr) return ''; const d = new Date(dStr); 
-            if (dStr.includes('T') || dStr.includes(':')) return d.toLocaleString('es-ES', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-            d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }); 
-        };
+        function excelToISO(serial) { let d = parseExcelDate(serial); const pad = n => n.toString().padStart(2, '0'); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+        const fmtDate = dStr => { if(!dStr) return ''; const d = new Date(dStr); if (dStr.includes('T') || dStr.includes(':')) return d.toLocaleString('es-ES', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }); };
 
         const PAGE_SIZE = 15;
         let pages = { dash: 1, audit: 1, gussepy: 1, bonos: 1, giros: 1, ref: 1, mel: 1, inactivos: 1, infdash: 1, infdetail: 1 };
-
         function resetPagesAndUpdate() { Object.keys(pages).forEach(k => pages[k] = 1); updateAllViews(); }
         function changePage(type, delta) { pages[type] += delta; updateAllViews(); }
 
@@ -563,49 +543,33 @@
             const total = dataArray.length; const totalPages = Math.ceil(total / PAGE_SIZE) || 1;
             if (pages[type] > totalPages) pages[type] = totalPages; if (pages[type] < 1) pages[type] = 1;
             const start = (pages[type] - 1) * PAGE_SIZE; const end = start + PAGE_SIZE;
-            
             const elNum = document.getElementById(`page-num-${type}`), elTot = document.getElementById(`page-tot-${type}`), elTotalReg = document.getElementById(`total-reg-${type}`);
             const btnPrev = document.getElementById(`btn-prev-${type}`), btnNext = document.getElementById(`btn-next-${type}`);
             const container = document.getElementById(`pagination-${type}`);
-            
             if(elNum) elNum.innerText = pages[type]; if(elTot) elTot.innerText = totalPages; if(elTotalReg) elTotalReg.innerText = total;
             if(btnPrev) btnPrev.disabled = pages[type] === 1; if(btnNext) btnNext.disabled = pages[type] === totalPages;
             if (container) { if (total === 0) { container.classList.add('hidden'); container.classList.remove('flex'); } else { container.classList.remove('hidden'); container.classList.add('flex'); } }
             return dataArray.slice(start, end);
         }
 
-        function changeGlobalMonth(newMonth) {
-            ['dash-month-filter', 'bonos-month-filter', 'inf-month-filter', 'gus-month-filter', 'inf-detail-month'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = newMonth;
-            });
-            fetchData(false);
-        }
+        function changeGlobalMonth(newMonth) { ['dash-month-filter', 'bonos-month-filter', 'inf-month-filter', 'gus-month-filter', 'inf-detail-month'].forEach(id => { const el = document.getElementById(id); if (el) el.value = newMonth; }); fetchData(false); }
 
         window.onload = () => {
             const savedData = localStorage.getItem('sb_user_data');
             if (savedData) { const ud = JSON.parse(savedData); if (ud.baseType === 'superadmin') { isSuperAdmin = true; currentUser = ud.id; loginUI(USERS[ud.id] || ud); } else { currentUser = ud.id; loginUI(ud); } } else { showScreen('login'); }
-            
             const now = new Date(); const currentMonthStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-            ['dash-month-filter', 'bonos-month-filter', 'inf-month-filter', 'gus-month-filter', 'inf-detail-month'].forEach(id => { 
-                const el = document.getElementById(id); 
-                if (el) { el.value = currentMonthStr; el.onchange = (e) => changeGlobalMonth(e.target.value); } 
-            });
-            
+            ['dash-month-filter', 'bonos-month-filter', 'inf-month-filter', 'gus-month-filter', 'inf-detail-month'].forEach(id => { const el = document.getElementById(id); if (el) { el.value = currentMonthStr; el.onchange = (e) => changeGlobalMonth(e.target.value); } });
             const searchInf = document.getElementById('inf-search'); if (searchInf) searchInf.onkeyup = resetPagesAndUpdate;
-            const todayStr = now.toISOString().split('T')[0]; 
-            const nowLocalTimeStr = getLocalIsoDatetime();
-
+            const todayStr = now.toISOString().split('T')[0]; const nowLocalTimeStr = getLocalIsoDatetime();
             ['gus-date', 'bono-date', 'ref-date', 'rend-date', 'giro-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = todayStr; });
             ['reg-date', 'edit-date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = nowLocalTimeStr; });
-            
             const forms = [{ id: 'login-form', handler: handleLogin }, { id: 'register-form', handler: handleRegister }, { id: 'form-gussepy', handler: handleGussepy }, { id: 'form-bonos', handler: handleBono }, { id: 'form-giros', handler: handleGiro }, { id: 'form-referrals', handler: handleReferral }, { id: 'form-rendimiento', handler: handleRendimiento }];
             forms.forEach(form => { const el = document.getElementById(form.id); if (el) el.addEventListener('submit', form.handler); });
             ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(evt => document.addEventListener(evt, resetInactivityTimer));
         };
 
         function logout() { localStorage.removeItem('sb_user_data'); currentUser = null; clearTimeout(inactivityTimer); showScreen('login'); records = []; advances = []; bonos = []; giros = []; referrals = []; rendimientos = []; window.location.reload(); }
-        function resetInactivityTimer() { clearTimeout(inactivityTimer); if (currentUser) inactivityTimer = setTimeout(() => { showToast('Sesión cerrada por inactividad.', 'warning'); logout(); }, 15 * 60 * 1000); }
+        function resetInactivityTimer() { clearTimeout(inactivityTimer); if (currentUser) inactivityTimer = setTimeout(() => { alert('Sesión cerrada por inactividad.'); logout(); }, 15 * 60 * 1000); }
         function toggleMenu(forceOpen) { const sidebar = document.getElementById('sidebar-menu'); const overlay = document.getElementById('sidebar-overlay'); if(!sidebar || !overlay) return; const isOpen = !sidebar.classList.contains('-translate-x-full'); const shouldOpen = forceOpen !== undefined ? forceOpen : !isOpen; if (shouldOpen) { overlay.classList.remove('hidden'); setTimeout(() => overlay.classList.remove('opacity-0'), 10); sidebar.classList.remove('-translate-x-full'); } else { overlay.classList.add('opacity-0'); sidebar.classList.add('-translate-x-full'); setTimeout(() => overlay.classList.add('hidden'), 300); } }
         function togglePassword() { const passInput = document.getElementById('login-pass'); const icon = document.getElementById('eye-icon'); if (passInput.type === 'password') { passInput.type = 'text'; icon.classList.replace('fa-eye', 'fa-eye-slash'); } else { passInput.type = 'password'; icon.classList.replace('fa-eye-slash', 'fa-eye'); } }
         function showToast(msg, type = 'success') { const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast-enter flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-white text-sm font-bold ${type === 'success' ? 'bg-slate-800' : 'bg-rose-600'}`; toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle text-emerald-400' : 'fa-exclamation-circle'}"></i> ${msg}`; container.appendChild(toast); setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 4000); }
@@ -617,9 +581,7 @@
         const formPw = document.getElementById('form-password');
         if(formPw) { formPw.addEventListener('submit', async (e) => { e.preventDefault(); const newPass = document.getElementById('new-password').value.trim(); if(newPass.length < 4) { showToast("Mínimo 4 caracteres", "error"); return; } const btn = e.target.querySelector('button[type="submit"]'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true; const targetUser = isSuperAdmin ? document.getElementById('superadmin-select').value : currentUser; const res = await pushData('change_password', { user: targetUser, newPass: newPass }); if (res.success) { showToast("Clave actualizada", "success"); closePasswordModal(); } else { showToast("Error al cambiar clave", "error"); } btn.innerHTML = orig; btn.disabled = false; }); }
 
-        async function pushData(action, data) {
-            try { const response = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, data: data }) }); const text = await response.text(); if (text.includes("<html") || text.includes("<body")) { showToast("ERROR: Google Sheets bloqueó la conexión.", "error"); return { success: false, msg: "Permisos denegados." }; } try { const result = JSON.parse(text); return { success: result.status === 'success', msg: result.msg, user: result.user }; } catch(e) { return { success: true, msg: 'Procesado.' }; } } catch (err) { return { success: true, msg: 'Guardado localmente.' }; }
-        }
+        async function pushData(action, data) { try { const response = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, data: data }) }); const text = await response.text(); if (text.includes("<html") || text.includes("<body")) { showToast("ERROR: Google Sheets bloqueó la conexión.", "error"); return { success: false, msg: "Permisos denegados." }; } try { const result = JSON.parse(text); return { success: result.status === 'success', msg: result.msg, user: result.user }; } catch(e) { return { success: true, msg: 'Procesado.' }; } } catch (err) { return { success: true, msg: 'Guardado localmente.' }; } }
 
         async function handleLogin(e) {
             e.preventDefault(); const u = document.getElementById('login-user').value.toLowerCase().trim(); const p = document.getElementById('login-pass').value.trim(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Autenticando...'; btn.disabled = true;
@@ -637,20 +599,8 @@
         function confirmSwitchUser(overrideId = null) { const targetId = overrideId || document.getElementById('superadmin-select').value; const userObj = { ...USERS[targetId], id: targetId, baseType: 'superadmin' }; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = targetId; loginUI(userObj); document.getElementById('modal-superadmin').classList.replace('flex', 'hidden'); showToast('Vista cambiada exitosamente.', 'success');}
 
         function loginUI(user) {
-            const hardcodedUser = USERS[user.id ? user.id.toLowerCase() : currentUser.toLowerCase()] || user;
-            const elUserDisplay = document.getElementById('user-display'); 
-            if (elUserDisplay) elUserDisplay.innerText = hardcodedUser.name + (isSuperAdmin ? " (Auditor)" : "");
-            
-            const iconEl = document.getElementById('nav-icon'); 
-            if (iconEl) { 
-                let finalIcon = hardcodedUser.icon;
-                if(!finalIcon || String(finalIcon).trim() === '' || finalIcon === 'undefined') finalIcon = 'fa-user';
-                let finalColor = hardcodedUser.color;
-                if(!finalColor || String(finalColor).trim() === '' || finalColor === 'undefined') finalColor = 'bg-indigo-600';
-                iconEl.innerHTML = `<i class="fas ${finalIcon}"></i>`; 
-                iconEl.className = `w-10 h-10 rounded-xl text-white flex items-center justify-center text-lg shadow-md ${finalColor}`; 
-            }
-
+            const elUserDisplay = document.getElementById('user-display'); if (elUserDisplay) elUserDisplay.innerText = user.name + (isSuperAdmin ? " (Auditor)" : "");
+            const iconEl = document.getElementById('nav-icon'); if (iconEl) { iconEl.innerHTML = `<i class="fas ${user.icon || 'fa-user'}"></i>`; iconEl.className = `w-10 h-10 rounded-xl text-white flex items-center justify-center text-lg shadow-md ${user.color || 'bg-indigo-600'}`; }
             const btnSuper = document.getElementById('btn-superadmin'); if (btnSuper) { if (isSuperAdmin) btnSuper.classList.remove('hidden'); else btnSuper.classList.add('hidden'); }
             resetInactivityTimer();
             const allTabs = ['btn-tab-dashboard', 'btn-tab-register', 'btn-tab-gussepy', 'btn-tab-auditoria', 'btn-tab-maria-dash', 'btn-tab-maria-add', 'btn-tab-maria-list', 'btn-tab-giros-add', 'btn-tab-giros-list', 'btn-tab-maria-ref-add', 'btn-tab-maria-ref-list', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-influencer-dash', 'btn-tab-influencer-details', 'btn-tab-inactivos', 'divider-1', 'divider-2'];
@@ -680,8 +630,7 @@
                 ['panel-personal'].forEach(id=> { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); });
                 switchTab('tab-dashboard');
             }
-            document.getElementById('login-pass').value = ''; showScreen('app'); 
-            fetchData(false);
+            document.getElementById('login-pass').value = ''; showScreen('app'); fetchData(false);
         }
 
         function switchTab(tabId) {
@@ -707,40 +656,23 @@
             if (!isBackground) document.getElementById('global-loader').classList.remove('hidden');
             else document.querySelectorAll('button[title="Recargar"] i, button[title="Recargar datos"] i').forEach(i => i.classList.add('fa-spin'));
             try {
-                const selectedMonth = document.getElementById('dash-month-filter')?.value || '';
                 let fetchUrl = SCRIPT_URL;
-                if(selectedMonth) fetchUrl += (SCRIPT_URL.includes('?') ? '&' : '?') + 'month=' + selectedMonth;
                 fetchUrl += (fetchUrl.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
-
-                const res = await fetch(fetchUrl); 
-                const text = await res.text();
-                let data;
+                const res = await fetch(fetchUrl); const text = await res.text(); let data;
                 try { data = JSON.parse(text); } catch(e) { throw new Error("Google Sheets no devolvió un JSON válido. Verifique permisos."); }
                 
                 if (data.status === 'success') { 
                     if (data.users) {
                         Object.keys(data.users).forEach(k => {
-                            let sUser = data.users[k];
-                            let com = parseFloat(sUser.comision);
-                            if (com > 0 && com <= 1) com = com * 100; 
-                            if(USERS[k]) {
-                                USERS[k].comision = com || 20;
-                            } else {
-                                USERS[k] = { 
-                                    name: sUser.name && String(sUser.name).trim() !== '' ? sUser.name : k, 
-                                    type: sUser.type, 
-                                    icon: sUser.icon && String(sUser.icon).trim() !== '' ? sUser.icon : 'fa-user', 
-                                    color: sUser.color && String(sUser.color).trim() !== '' ? sUser.color : 'bg-slate-600', 
-                                    comision: com || 20 
-                                };
-                            }
+                            let sUser = data.users[k]; let com = parseFloat(sUser.comision); if (com > 0 && com <= 1) com = com * 100; 
+                            if(USERS[k]) USERS[k].comision = com || 20;
+                            else USERS[k] = { name: sUser.name || k, type: sUser.type, icon: sUser.icon || 'fa-user', color: sUser.color || 'bg-slate-600', comision: com || 20 };
                         });
                     }
                     records = data.data || []; advances = data.advances || []; bonos = data.bonos || []; giros = data.giros || []; referrals = data.referrals || []; rendimientos = data.rendimientos || []; 
                     if (data.allReceipts) allReceipts = data.allReceipts;
                     
                     records.sort(sortDataDesc); advances.sort(sortDataDesc); bonos.sort(sortDataDesc); giros.sort(sortDataDesc); referrals.sort(sortDataDesc); rendimientos.sort(sortDataDesc);
-
                     resetPagesAndUpdate(); updateBonoDatalist(); updateMelanieDropdowns(); 
                 }
             } catch (err) { console.error(err); showToast("Error al sincronizar base de datos.", "error"); } 
@@ -751,14 +683,12 @@
             const dlBono = document.getElementById('bonos-destinatarios'); const dlRef = document.getElementById('ref-referrers-list'); const dlGiro = document.getElementById('giro-dest');
             const p = [...new Set([...bonos.map(b=>b.assignedTo), ...giros.map(g=>g.dest), ...referrals.map(r=>r.referrer), ...referrals.map(r=>r.referred)])].filter(Boolean);
             const opts = p.map(n => `<option value="${n}">`).join('');
-            if(dlBono) dlBono.innerHTML = opts; if(dlRef) dlRef.innerHTML = opts;
-            if(dlGiro && dlBono) dlGiro.setAttribute('list', 'bonos-destinatarios');
+            if(dlBono) dlBono.innerHTML = opts; if(dlRef) dlRef.innerHTML = opts; if(dlGiro && dlBono) dlGiro.setAttribute('list', 'bonos-destinatarios');
         }
 
         function updateMelanieDropdowns() {
-            const refList = [...new Set(referrals.filter(r => isInf(r.isInfluencer)).map(r => r.referrer))].filter(Boolean);
-            const allInf = [...new Set([...refList, 'admin'])]; 
-            const selRef = document.getElementById('rend-referrer');
+            const refList = [...new Set(referrals.filter(r => r.isInfluencer).map(r => r.referrer))].filter(Boolean);
+            const allInf = [...new Set([...refList, 'admin'])]; const selRef = document.getElementById('rend-referrer');
             if (selRef) { selRef.innerHTML = '<option value="">Seleccione Influyente...</option>' + allInf.map(r => { const rKey = String(r).trim().toLowerCase(); const rate = (USERS[rKey] && USERS[rKey].comision ? USERS[rKey].comision : 20); return `<option value="${r}">${r} (${rate}%)</option>`; }).join(''); }
         }
 
@@ -767,8 +697,7 @@
             if (inputReferred) inputReferred.value = ''; 
             if (!referrer) { if (inputReferred) inputReferred.placeholder = 'Seleccione influyente primero...'; currentPlayersList = []; renderPlayerDropdown([]); return; }
             currentPlayersList = [...new Set(referrals.filter(r => r.referrer === referrer).map(r => r.referred))];
-            if (inputReferred) inputReferred.placeholder = 'Escriba o seleccione jugador...';
-            renderPlayerDropdown(currentPlayersList);
+            if (inputReferred) inputReferred.placeholder = 'Escriba o seleccione jugador...'; renderPlayerDropdown(currentPlayersList);
         }
 
         function renderPlayerDropdown(list) { const ul = document.getElementById('custom-player-dropdown'); if (!ul) return; if(list.length === 0) ul.innerHTML = '<li class="px-4 py-3 text-sm text-slate-500 italic">No se encontraron</li>'; else ul.innerHTML = list.map(u => `<li class="px-4 py-3 text-sm font-bold text-slate-700 hover:bg-pink-50 hover:text-pink-600 cursor-pointer" onclick="selectPlayer('${u.replace(/'/g, "\\'")}')">${u}</li>`).join(''); }
@@ -790,52 +719,30 @@
                     
                     for(let i=0; i<Math.min(30, rows.length); i++) {
                         const r = Array.from(rows[i] || []).map(x => x ? String(x).toLowerCase() : "");
-                        const f = r.findIndex(x => x.includes('fech'));
-                        const c = r.findIndex(x => x.includes('concepto') || x.includes('descrip') || x.includes('detalle'));
-                        const m = r.findIndex(x => x.includes('monto') || x.includes('valor'));
-                        const t = r.findIndex(x => x.includes('tipo'));
+                        const f = r.findIndex(x => x.includes('fech')); const c = r.findIndex(x => x.includes('concepto') || x.includes('descrip') || x.includes('detalle'));
+                        const m = r.findIndex(x => x.includes('monto') || x.includes('valor')); const t = r.findIndex(x => x.includes('tipo'));
                         const ref = r.findIndex(x => x.includes('referencia') || x.includes('documento') || x.includes('comprobante') || x.includes('transaccion'));
                         if(f !== -1 && m !== -1) { hIdx = i; cIdx = {f, c: c!==-1?c:1, m, t, ref}; break; }
                     }
                     if(hIdx === -1) { showToast("No se detectaron columnas Fecha/Monto", "error"); return; }
 
-                    bankUploadData = [];
-                    let currentTx = null;
-
+                    bankUploadData = []; let currentTx = null;
                     for(let i=hIdx+1; i<rows.length; i++) {
                         const row = rows[i]||[];
-                        
                         if(row[cIdx.f] !== undefined && row[cIdx.m] !== undefined) {
-                            let montoStr = String(row[cIdx.m]).replace(/[^0-9,-]/g, '').replace(',', '.');
-                            let monto = parseFloat(montoStr);
+                            let montoStr = String(row[cIdx.m]).replace(/[^0-9,-]/g, '').replace(',', '.'); let monto = parseFloat(montoStr);
                             if(isNaN(monto) || monto === 0) continue;
-                            
-                            if(cIdx.t !== -1 && row[cIdx.t] !== undefined) {
-                                const tipo = String(row[cIdx.t]).toLowerCase();
-                                if(tipo.includes('deb')||tipo.includes('déb')) monto = -Math.abs(monto);
-                                else if(tipo.includes('cred')||tipo.includes('créd')) monto = Math.abs(monto);
-                            }
-                            
-                            let localDate = excelToISO(row[cIdx.f]);
-                            let conceptStr = row[cIdx.c] !== undefined ? String(row[cIdx.c]).trim() : 'Movimiento Banco';
-                            let refStr = (cIdx.ref !== -1 && row[cIdx.ref] !== undefined && String(row[cIdx.ref]).trim() !== "") ? String(row[cIdx.ref]).trim() : '';
-                            
-                            currentTx = { date: localDate, concept: conceptStr, amount: monto, receipt: refStr };
-                            bankUploadData.push(currentTx);
+                            if(cIdx.t !== -1 && row[cIdx.t] !== undefined) { const tipo = String(row[cIdx.t]).toLowerCase(); if(tipo.includes('deb')||tipo.includes('déb')) monto = -Math.abs(monto); else if(tipo.includes('cred')||tipo.includes('créd')) monto = Math.abs(monto); }
+                            let localDate = excelToISO(row[cIdx.f]); let conceptStr = row[cIdx.c] !== undefined ? String(row[cIdx.c]).trim() : 'Movimiento Banco'; let refStr = (cIdx.ref !== -1 && row[cIdx.ref] !== undefined && String(row[cIdx.ref]).trim() !== "") ? String(row[cIdx.ref]).trim() : '';
+                            currentTx = { date: localDate, concept: conceptStr, amount: monto, receipt: refStr }; bankUploadData.push(currentTx);
                         } else if (currentTx && row.length > 0) {
                             let possibleRef = Array.from(row).find(x => x && String(x).trim().match(/^[0-9]+$/) && String(x).trim().length >= 5);
-                            if (possibleRef && !currentTx.receipt) {
-                                currentTx.receipt = String(possibleRef).trim();
-                            }
+                            if (possibleRef && !currentTx.receipt) currentTx.receipt = String(possibleRef).trim();
                         }
                     }
-                    
-                    bankUploadData.forEach(tx => { if(!tx.receipt) tx.receipt = "Sin Ref"; });
-                    
-                    renderBankPreview(); showToast(`Detectados ${bankUploadData.length} registros`, 'success');
+                    bankUploadData.forEach(tx => { if(!tx.receipt) tx.receipt = "Sin Ref"; }); renderBankPreview(); showToast(`Detectados ${bankUploadData.length} registros`, 'success');
                 } catch(err) { showToast("Error leyendo archivo", "error"); console.error(err); }
-            };
-            reader.readAsBinaryString(file);
+            }; reader.readAsBinaryString(file);
         }
         
         function renderBankPreview() {
@@ -846,52 +753,23 @@
         }
 
         async function submitBankData() {
-            if(!bankUploadData.length) return;
-            const btn = document.getElementById('btn-upload-bank'); 
-            btn.disabled = true;
-            
-            let assigned = currentUser; 
-            const adminBlockBank = document.getElementById('admin-select-user-bank');
-            if (adminBlockBank && !adminBlockBank.classList.contains('hidden')) {
-                const assignRadio = document.querySelector('input[name="bank-assign"]:checked'); 
-                if (assignRadio) assigned = assignRadio.value;
-            }
-
+            if(!bankUploadData.length) return; const btn = document.getElementById('btn-upload-bank'); btn.disabled = true;
+            let assigned = currentUser; const adminBlockBank = document.getElementById('admin-select-user-bank');
+            if (adminBlockBank && !adminBlockBank.classList.contains('hidden')) { const assignRadio = document.querySelector('input[name="bank-assign"]:checked'); if (assignRadio) assigned = assignRadio.value; }
             bankUploadData.sort((a, b) => new Date(a.date) - new Date(b.date));
-
             let newTxs = [];
-            for(let i=0; i<bankUploadData.length; i++) {
-                const r = bankUploadData[i];
-                newTxs.push({ id: 'TX_BNK_' + Date.now() + '_' + i, date: r.date, amount: r.amount, concept: r.concept, assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: r.receipt });
-            }
-
-            let successCount = 0;
-            const CHUNK_SIZE = 50;
-            
+            for(let i=0; i<bankUploadData.length; i++) { const r = bankUploadData[i]; newTxs.push({ id: 'TX_BNK_' + Date.now() + '_' + i, date: r.date, amount: r.amount, concept: r.concept, assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: r.receipt }); }
+            let successCount = 0; const CHUNK_SIZE = 50;
             for (let i = 0; i < newTxs.length; i += CHUNK_SIZE) {
-                const chunk = newTxs.slice(i, i + CHUNK_SIZE);
-                btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo lote ${Math.floor(i/CHUNK_SIZE)+1}...`;
-                
+                const chunk = newTxs.slice(i, i + CHUNK_SIZE); btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo lote ${Math.floor(i/CHUNK_SIZE)+1}...`;
                 const res = await pushData('add_multiple', chunk); 
-                if(res.success) { 
-                    records = [...chunk.reverse(), ...records];
-                    successCount += chunk.length;
-                } else {
+                if(res.success) { records = [...chunk.reverse(), ...records]; successCount += chunk.length; } else {
                     showToast("Error en lote, cambiando a subida lenta...", "warning");
-                    for (let j = 0; j < chunk.length; j++) {
-                        btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo ${i+j+1}/${newTxs.length}...`;
-                        const singleRes = await pushData('add', chunk[j]);
-                        if(singleRes.success) { records.unshift(chunk[j]); successCount++; }
-                    }
+                    for (let j = 0; j < chunk.length; j++) { btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo ${i+j+1}/${newTxs.length}...`; const singleRes = await pushData('add', chunk[j]); if(singleRes.success) { records.unshift(chunk[j]); successCount++; } }
                 }
             }
-
-            records.sort((a,b) => new Date(b.date) - new Date(a.date));
-            resetPagesAndUpdate(); 
-            showToast(`Carga masiva completada: ${successCount} registros en Pendiente.`, 'success');
-            
-            document.getElementById('bank-preview-container').classList.add('hidden'); document.getElementById('bank-preview-container').classList.remove('flex');
-            document.getElementById('upload-bank-file').value = ''; bankUploadData = []; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Subir Registros al Sistema'; btn.disabled = false;
+            records.sort((a,b) => new Date(b.date) - new Date(a.date)); resetPagesAndUpdate(); showToast(`Carga masiva completada: ${successCount} registros en Pendiente.`, 'success');
+            document.getElementById('bank-preview-container').classList.add('hidden'); document.getElementById('bank-preview-container').classList.remove('flex'); document.getElementById('upload-bank-file').value = ''; bankUploadData = []; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Subir Registros al Sistema'; btn.disabled = false;
         }
 
         function handleMelanieUpload(e) {
@@ -901,47 +779,27 @@
                     const workbook = XLSX.read(evt.target.result, {type: 'binary'});
                     const sheet = workbook.Sheets[workbook.SheetNames[0]];
                     const rows = XLSX.utils.sheet_to_json(sheet, {header: 1});
-                    uploadData = [];
-                    let hIdx = -1, cIdx = {f: -1, inf: -1, jug: -1, dep: -1, ret: -1};
-                    
+                    uploadData = []; let hIdx = -1, cIdx = {f: -1, inf: -1, jug: -1, dep: -1, ret: -1};
                     for(let i=0; i<Math.min(30, rows.length); i++) {
                         const r = Array.from(rows[i] || []).map(x => x ? String(x).toLowerCase() : "");
-                        const f = r.findIndex(x => x.includes('fech'));
-                        const inf = r.findIndex(x => x.includes('influencer') || x.includes('referente') || (x.includes('nombre') && !x.includes('usuario')));
+                        const f = r.findIndex(x => x.includes('fech')); const inf = r.findIndex(x => x.includes('influencer') || x.includes('referente') || (x.includes('nombre') && !x.includes('usuario')));
                         const jug = r.findIndex(x => x.includes('jugador') || x.includes('usuario') || (x.includes('nombre') && !x.includes('influencer')));
                         const dep = r.findIndex(x => x.includes('deposito') || x.includes('depósito') || x.includes('ingreso') || x.includes('dep'));
                         const ret = r.findIndex(x => x.includes('retiro') || x.includes('egreso') || x.includes('ret'));
-                        
-                        if(f !== -1 && inf !== -1 && jug !== -1 && dep !== -1 && ret !== -1) { 
-                            hIdx = i; cIdx = {f, inf, jug, dep, ret}; break; 
-                        }
+                        if(f !== -1 && inf !== -1 && jug !== -1 && dep !== -1 && ret !== -1) { hIdx = i; cIdx = {f, inf, jug, dep, ret}; break; }
                     }
                     if(hIdx === -1) { showToast("Formato incorrecto. Verifique columnas.", "error"); return; }
-                    
                     for(let i=hIdx+1; i<rows.length; i++) {
-                        const row = rows[i]||[];
-                        let fVal = row[cIdx.f], infVal = row[cIdx.inf], jugVal = row[cIdx.jug], depVal = row[cIdx.dep], retVal = row[cIdx.ret];
+                        const row = rows[i]||[]; let fVal = row[cIdx.f], infVal = row[cIdx.inf], jugVal = row[cIdx.jug], depVal = row[cIdx.dep], retVal = row[cIdx.ret];
                         if(fVal === undefined && jugVal === undefined && infVal === undefined) continue;
-                        
-                        let localDate = excelToISO(fVal).split('T')[0];
-                        let influencer = infVal !== undefined ? String(infVal).trim() : 'Desconocido';
-                        let jugador = jugVal !== undefined ? String(jugVal).trim() : 'Desconocido';
-                        
-                        let dep = getVal(depVal);
-                        let ret = getVal(retVal);
-                        let neto = dep - ret;
-                        
-                        const rateKey = influencer.toLowerCase();
-                        let rateUser = USERS[rateKey] || Object.values(USERS).find(u => u.name.toLowerCase() === rateKey);
-                        let rate = rateUser && rateUser.comision ? (parseFloat(rateUser.comision) / 100) : 0.20;
-                        let com = neto * rate;
-                        
+                        let localDate = excelToISO(fVal).split('T')[0]; let influencer = infVal !== undefined ? String(infVal).trim() : 'Desconocido'; let jugador = jugVal !== undefined ? String(jugVal).trim() : 'Desconocido';
+                        let dep = parseFloat(String(depVal || '0').replace(/[^0-9,-]/g, '').replace(',', '.')) || 0; let ret = parseFloat(String(retVal || '0').replace(/[^0-9,-]/g, '').replace(',', '.')) || 0; let neto = dep - ret;
+                        const rateKey = influencer.toLowerCase(); let rateUser = USERS[rateKey] || Object.values(USERS).find(u => u.name.toLowerCase() === rateKey); let rate = rateUser && rateUser.comision ? (rateUser.comision / 100) : 0.20; let com = neto * rate;
                         uploadData.push({ date: localDate, influencer: influencer, jugador: jugador, depositos: dep, retiros: ret, neto: neto, comision: com });
                     }
                     renderMelaniePreview(); showToast(`Detectados ${uploadData.length} registros`, 'success');
                 } catch(err) { showToast("Error leyendo archivo", "error"); console.error(err); }
-            };
-            reader.readAsBinaryString(file);
+            }; reader.readAsBinaryString(file);
         }
 
         function renderMelaniePreview() {
@@ -952,92 +810,21 @@
         }
 
         async function submitMelanieUploadData() {
-            if(!uploadData.length) return;
-            const btn = document.getElementById('btn-upload-data'); btn.disabled = true;
-            const uploadDate = new Date().toISOString().split('T')[0];
-            
+            if(!uploadData.length) return; const btn = document.getElementById('btn-upload-data'); btn.disabled = true; const uploadDate = new Date().toISOString().split('T')[0];
             uploadData.sort((a, b) => new Date(a.date || uploadDate) - new Date(b.date || uploadDate));
-
             let newRends = [];
-            for(let i=0; i<uploadData.length; i++) {
-                const r = uploadData[i];
-                newRends.push({ id: 'RND_XL_' + Date.now() + '_' + i, date: r.date || uploadDate, referrer: r.influencer, referred: r.jugador, depositos: r.depositos, retiros: r.retiros, neto: r.neto, comision: r.comision, createdBy: currentUser });
-            }
-
-            let successCount = 0;
-            const CHUNK_SIZE = 50;
-            
+            for(let i=0; i<uploadData.length; i++) { const r = uploadData[i]; newRends.push({ id: 'RND_XL_' + Date.now() + '_' + i, date: r.date || uploadDate, referrer: r.influencer, referred: r.jugador, depositos: r.depositos, retiros: r.retiros, neto: r.neto, comision: r.comision, createdBy: currentUser }); }
+            let successCount = 0; const CHUNK_SIZE = 50;
             for (let i = 0; i < newRends.length; i += CHUNK_SIZE) {
-                const chunk = newRends.slice(i, i + CHUNK_SIZE);
-                btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo lote ${Math.floor(i/CHUNK_SIZE)+1}...`;
-                
+                const chunk = newRends.slice(i, i + CHUNK_SIZE); btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo lote ${Math.floor(i/CHUNK_SIZE)+1}...`;
                 const res = await pushData('add_rendimiento_multiple', chunk); 
-                if(res.success) { 
-                    rendimientos = [...chunk.reverse(), ...rendimientos]; 
-                    successCount += chunk.length;
-                } else {
+                if(res.success) { rendimientos = [...chunk.reverse(), ...rendimientos]; successCount += chunk.length; } else {
                     showToast("Error en lote, subiendo individual...", "warning");
-                    for (let j = 0; j < chunk.length; j++) {
-                        btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo ${i+j+1}/${newRends.length}...`;
-                        const singleRes = await pushData('add_rendimiento', chunk[j]);
-                        if(singleRes.success) { rendimientos.unshift(chunk[j]); successCount++; }
-                    }
+                    for (let j = 0; j < chunk.length; j++) { btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo ${i+j+1}/${newRends.length}...`; const singleRes = await pushData('add_rendimiento', chunk[j]); if(singleRes.success) { rendimientos.unshift(chunk[j]); successCount++; } }
                 }
             }
-
-            rendimientos.sort(sortDataDesc);
-            resetPagesAndUpdate(); 
-            showToast(`Carga masiva completada: ${successCount} registros.`, 'success');
-            
-            document.getElementById('upload-preview-container').classList.add('hidden'); document.getElementById('upload-preview-container').classList.remove('flex');
-            document.getElementById('upload-file').value = ''; uploadData = []; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Confirmar y Subir Registros'; btn.disabled = false;
-        }
-
-        function applyFilters() { 
-            filters.date = document.getElementById('filter-date')?.value || ''; const fUser = document.getElementById('filter-user'); filters.user = fUser ? fUser.value : 'all'; 
-            filters.status = document.getElementById('filter-status')?.value || 'all'; filters.type = document.getElementById('filter-type')?.value || 'all'; 
-            filters.amount = document.getElementById('filter-amount')?.value.replace(',', '.') || ''; filters.text = document.getElementById('filter-ref-comment')?.value.trim() || ''; 
-            pages.audit = 1; updateAllViews(); 
-        }
-        function clearFilters() { 
-            filters = { date: '', user: 'all', status: 'all', amount: '', text: '', type: 'all' }; 
-            ['filter-date', 'filter-amount', 'filter-ref-comment'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = ''; });
-            if(document.getElementById('filter-user')) document.getElementById('filter-user').value = 'all'; if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all'; if(document.getElementById('filter-type')) document.getElementById('filter-type').value = 'all'; 
-            pages.audit = 1; updateAllViews(); 
-        }
-
-        function applyBonoFilters() { 
-            bonoFilters.date = document.getElementById('filter-bono-date')?.value || ''; 
-            bonoFilters.dest = document.getElementById('filter-bono-dest')?.value.trim().toLowerCase() || ''; 
-            bonoFilters.agency = document.getElementById('filter-bono-agency')?.value || 'all'; 
-            bonoFilters.status = document.getElementById('filter-bono-status')?.value || 'all'; 
-            pages.bonos = 1; updateAllViews(); 
-        }
-        function clearBonoFilters() { 
-            bonoFilters = { date: '', dest: '', amount: '', agency: 'all', status: 'all' }; 
-            if(document.getElementById('filter-bono-date')) document.getElementById('filter-bono-date').value = ''; 
-            if(document.getElementById('filter-bono-dest')) document.getElementById('filter-bono-dest').value = ''; 
-            if(document.getElementById('filter-bono-agency')) document.getElementById('filter-bono-agency').value = 'all'; 
-            if(document.getElementById('filter-bono-status')) document.getElementById('filter-bono-status').value = 'all'; 
-            pages.bonos = 1; updateAllViews(); 
-        }
-        function applyRefFilters() { refFilters.date = document.getElementById('filter-ref-date')?.value || ''; refFilters.name = document.getElementById('filter-ref-name')?.value.trim().toLowerCase() || ''; refFilters.agency = document.getElementById('filter-ref-agency')?.value || 'all'; pages.ref = 1; updateAllViews(); }
-        function clearRefFilters() { refFilters = { date: '', name: '', cedula: '', agency: 'all' }; if(document.getElementById('filter-ref-date')) document.getElementById('filter-ref-date').value = ''; if(document.getElementById('filter-ref-name')) document.getElementById('filter-ref-name').value = ''; if(document.getElementById('filter-ref-agency')) document.getElementById('filter-ref-agency').value = 'all'; pages.ref = 1; updateAllViews(); }
-        function applyGiroFilters() { giroFilters.date = document.getElementById('filter-giro-date')?.value || ''; giroFilters.dest = document.getElementById('filter-giro-dest')?.value.trim().toLowerCase() || ''; giroFilters.agency = document.getElementById('filter-giro-agency')?.value || 'all'; pages.giros = 1; updateAllViews(); }
-        function clearGiroFilters() { giroFilters = { date: '', dest: '', agency: 'all' }; if(document.getElementById('filter-giro-date')) document.getElementById('filter-giro-date').value = ''; if(document.getElementById('filter-giro-dest')) document.getElementById('filter-giro-dest').value = ''; if(document.getElementById('filter-giro-agency')) document.getElementById('filter-giro-agency').value = 'all'; pages.giros = 1; updateAllViews(); }
-        function applyMelFilters() { melFilters.date = document.getElementById('filter-rend-date')?.value || ''; melFilters.inf = document.getElementById('filter-rend-inf')?.value.trim().toLowerCase() || ''; melFilters.jug = document.getElementById('filter-rend-jug')?.value.trim().toLowerCase() || ''; pages.mel = 1; updateAllViews(); }
-        function clearRendFilters() { melFilters = { date: '', inf: '', jug: '' }; if(document.getElementById('filter-rend-date')) document.getElementById('filter-rend-date').value = ''; if(document.getElementById('filter-rend-inf')) document.getElementById('filter-rend-inf').value = ''; if(document.getElementById('filter-rend-jug')) document.getElementById('filter-rend-jug').value = ''; pages.mel = 1; updateAllViews(); }
-
-        function viewPlayerDetails(playerName) {
-            const select = document.getElementById('inf-detail-player');
-            if (select) {
-                let exists = false; for (let i = 0; i < select.options.length; i++) { if (select.options[i].value === playerName) exists = true; }
-                if (!exists) { const opt = document.createElement('option'); opt.value = playerName; opt.text = playerName; opt.className = "text-slate-800"; select.appendChild(opt); }
-                select.value = playerName;
-            }
-            const mainMonth = document.getElementById('inf-month-filter').value;
-            if (document.getElementById('inf-detail-month')) document.getElementById('inf-detail-month').value = mainMonth;
-            pages.infdetail = 1; switchTab('tab-influencer-details'); updateAllViews();
+            rendimientos.sort((a,b) => new Date(b.date) - new Date(a.date)); resetPagesAndUpdate(); showToast(`Carga masiva completada: ${successCount} registros.`, 'success');
+            document.getElementById('upload-preview-container').classList.add('hidden'); document.getElementById('upload-preview-container').classList.remove('flex'); document.getElementById('upload-file').value = ''; uploadData = []; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Confirmar y Subir Registros'; btn.disabled = false;
         }
 
         function isSameMonth(dateStr, filterValue) { 
@@ -1070,80 +857,39 @@
             e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); const orig = btn.innerHTML; 
             let amt = getVal(document.getElementById('reg-amount').value); if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); return; }
             const isDebit = document.querySelector('input[name="reg-type"]:checked').value === 'debito'; if (isDebit) amt = -Math.abs(amt);
-            
-            let assigned = currentUser;
-            const adminSelectUserBlock = document.getElementById('admin-select-user');
-            const ud = JSON.parse(localStorage.getItem('sb_user_data'));
-            if (ud && (ud.type === 'admin' || isSuperAdmin)) { 
-                if (adminSelectUserBlock && !adminSelectUserBlock.classList.contains('hidden')) { 
-                    const assignRadio = document.querySelector('input[name="reg-assign"]:checked'); 
-                    if (assignRadio) assigned = assignRadio.value; 
-                } 
-            }
+            let assigned = currentUser; const adminSelectUserBlock = document.getElementById('admin-select-user'); const ud = JSON.parse(localStorage.getItem('sb_user_data'));
+            if (ud && (ud.type === 'admin' || isSuperAdmin)) { if (adminSelectUserBlock && !adminSelectUserBlock.classList.contains('hidden')) { const assignRadio = document.querySelector('input[name="reg-assign"]:checked'); if (assignRadio) assigned = assignRadio.value; } }
             
             const newTx = { id: 'TX' + Date.now(), date: document.getElementById('reg-date').value, amount: amt, concept: document.getElementById('reg-concept').value.trim() || (isDebit ? 'Débito' : 'Ingreso'), assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: '', comment: '' };
-            
             records.unshift(newTx); records.sort(sortDataDesc); updateAllViews(); 
-            document.getElementById('reg-amount').value = ''; document.getElementById('reg-concept').value = ''; document.querySelector('input[name="reg-type"][value="ingreso"]').checked = true; toggleAmountStyle();
-            document.getElementById('reg-date').value = getLocalIsoDatetime();
-            
-            showToast('Guardando en la nube...', 'info');
-            btn.disabled = true;
-            pushData('add', newTx).then(res => { 
-                if (res.success) showToast('Registro guardado', 'success'); 
-                else showToast('Error al guardar en la nube', 'error');
-                btn.disabled = false;
-            });
+            document.getElementById('reg-amount').value = ''; document.getElementById('reg-concept').value = ''; document.querySelector('input[name="reg-type"][value="ingreso"]').checked = true; toggleAmountStyle(); document.getElementById('reg-date').value = getLocalIsoDatetime();
+            btn.innerHTML = 'Guardando...'; btn.disabled = true; pushData('add', newTx).then(res => { if (res.success) showToast('Registro guardado', 'success'); else showToast('Error al guardar', 'error'); btn.innerHTML = orig; btn.disabled = false; });
         }
 
         async function handleGussepy(e) {
             e.preventDefault(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; 
             const amt = getVal(document.getElementById('gus-amount').value); if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); return; }
-            
             const newAdv = { id: 'ADV' + Date.now(), date: document.getElementById('gus-date').value, amount: amt, concept: document.getElementById('gus-concept').value.trim() || 'Adelanto', createdBy: currentUser, status: 'Pendiente', detail: '' };
-            advances.unshift(newAdv); advances.sort(sortDataDesc); updateAllViews(); 
-            document.getElementById('form-gussepy').reset(); document.getElementById('gus-date').value = new Date().toISOString().split('T')[0]; 
-            
-            showToast('Procesando en la nube...', 'info');
-            btn.disabled = true;
-            pushData('add_advance', newAdv).then(res => { 
-                if(res.success) showToast('Adelanto registrado', 'success'); 
-                btn.disabled = false;
-            });
+            advances.unshift(newAdv); advances.sort(sortDataDesc); updateAllViews(); document.getElementById('form-gussepy').reset(); document.getElementById('gus-date').value = new Date().toISOString().split('T')[0]; 
+            btn.innerHTML = 'Procesando...'; btn.disabled = true; pushData('add_advance', newAdv).then(res => { if(res.success) showToast('Adelanto registrado', 'success'); btn.innerHTML = orig; btn.disabled = false; });
         }
 
         async function handleBono(e) {
             e.preventDefault(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; 
             const amt = getVal(document.getElementById('bono-amount').value); if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); return; }
             const companyRadio = document.querySelector('input[name="bono-company"]:checked'); const company = companyRadio ? companyRadio.value : 'Sepybet';
-            
             const newBono = { id: 'BN' + Date.now(), date: document.getElementById('bono-date').value, amount: amt, assignedTo: document.getElementById('bono-dest').value.trim(), concept: document.getElementById('bono-concept').value.trim() || 'Emisión', createdBy: currentUser, status: 'Entregado', amountWon: 0, company: company };
-            bonos.unshift(newBono); bonos.sort(sortDataDesc); updateAllViews(); updateBonoDatalist(); 
-            document.getElementById('form-bonos').reset(); document.getElementById('bono-date').value = getLocalIsoDatetime(); 
-            
-            showToast('Guardando en la nube...', 'info');
-            btn.disabled = true;
-            pushData('add_bono', newBono).then(res => { 
-                if(res.success) showToast('Bono emitido', 'success'); 
-                btn.disabled = false;
-            });
+            bonos.unshift(newBono); bonos.sort(sortDataDesc); updateAllViews(); updateBonoDatalist(); document.getElementById('form-bonos').reset(); document.getElementById('bono-date').value = getLocalIsoDatetime(); 
+            btn.innerHTML = 'Enviando...'; btn.disabled = true; pushData('add_bono', newBono).then(res => { if(res.success) showToast('Bono emitido', 'success'); btn.innerHTML = orig; btn.disabled = false; });
         }
 
         async function handleGiro(e) {
             e.preventDefault(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; 
             const qty = parseInt(document.getElementById('giro-qty').value); if (isNaN(qty) || qty <= 0) { showToast('Cantidad inválida', 'error'); return; }
             const companyRadio = document.querySelector('input[name="giro-company"]:checked'); const company = companyRadio ? companyRadio.value : 'Sepybet';
-            
             const newGiro = { id: 'GR' + Date.now(), date: document.getElementById('giro-date').value, company: company, dest: document.getElementById('giro-dest').value.trim(), game: document.getElementById('giro-game').value, qty: qty, status: 'Entregado', amountWon: 0, createdBy: currentUser };
-            giros.unshift(newGiro); giros.sort(sortDataDesc); updateAllViews(); updateBonoDatalist(); 
-            document.getElementById('form-giros').reset(); document.getElementById('giro-date').value = getLocalIsoDatetime(); 
-            
-            showToast('Guardando en la nube...', 'info');
-            btn.disabled = true;
-            pushData('add_giro', newGiro).then(res => { 
-                if(res.success) showToast('Giros registrados con éxito', 'success'); 
-                btn.disabled = false;
-            });
+            giros.unshift(newGiro); giros.sort(sortDataDesc); updateAllViews(); updateBonoDatalist(); document.getElementById('form-giros').reset(); document.getElementById('giro-date').value = getLocalIsoDatetime(); 
+            btn.innerHTML = 'Enviando...'; btn.disabled = true; pushData('add_giro', newGiro).then(res => { if(res.success) showToast('Giros registrados con éxito', 'success'); btn.innerHTML = orig; btn.disabled = false; });
         }
 
         async function handleReferral(e) {
@@ -1152,86 +898,41 @@
             const amt = getVal(document.getElementById('ref-amount').value); if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); return; }
             const isInfluencer = document.getElementById('ref-is-influencer').checked; const companyRadio = document.querySelector('input[name="ref-company"]:checked'); const company = companyRadio ? companyRadio.value : 'Sepybet';
             const referrer = document.getElementById('ref-referrer').value.trim(); const referred = document.getElementById('ref-referred').value.trim(); const dateVal = document.getElementById('ref-date').value; const rId = 'REF' + Date.now();
-            
             const newRef = { id: rId, date: dateVal, amount: amt, referrer: referrer, referred: referred, cedula: cedula, createdBy: currentUser, isInfluencer: isInfluencer, company: company };
             const newBonoFromRef = { id: rId + '_B', date: dateVal, amount: amt, assignedTo: referrer, concept: "Referido: " + referred, createdBy: currentUser, status: 'Entregado', amountWon: 0, company: company };
-            
             referrals.unshift(newRef); bonos.unshift(newBonoFromRef); referrals.sort(sortDataDesc); bonos.sort(sortDataDesc); updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns();
             document.getElementById('form-referrals').reset(); document.getElementById('ref-date').value = getLocalIsoDatetime(); 
-            
-            showToast('Guardando en la nube...', 'info');
-            btn.disabled = true;
-            pushData('add_referral', { ...newRef, company: company, isInfluencer: isInfluencer }).then(res => { 
-                if(res.success) showToast('Referido guardado.', 'success'); 
-                btn.disabled = false;
-            });
+            btn.innerHTML = 'Guardando...'; btn.disabled = true; pushData('add_referral', { ...newRef, company: company, isInfluencer: isInfluencer }).then(res => { if(res.success) showToast('Referido guardado.', 'success'); btn.innerHTML = orig; btn.disabled = false; });
         }
 
         async function handleRendimiento(e) {
             e.preventDefault(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; 
             const referrer = document.getElementById('rend-referrer').value; const referred = document.getElementById('rend-referred').value;
             if(!referrer || !referred) { showToast("Seleccione usuarios.", "error"); return; }
-            
-            const depositos = getVal(document.getElementById('rend-dep').value); 
-            const retiros = getVal(document.getElementById('rend-ret').value); 
-            const neto = depositos - retiros; 
+            const depositos = getVal(document.getElementById('rend-dep').value); const retiros = getVal(document.getElementById('rend-ret').value); const neto = depositos - retiros; 
             const rateKey = String(referrer).trim().toLowerCase(); const rate = (USERS[rateKey] && USERS[rateKey].comision ? parseFloat(USERS[rateKey].comision) : 20) / 100; const comision = neto * rate;
-            
             const newRend = { id: 'RND' + Date.now(), date: document.getElementById('rend-date').value, referrer, referred, depositos, retiros, neto, comision, createdBy: currentUser };
-            rendimientos.unshift(newRend); rendimientos.sort(sortDataDesc); updateAllViews(); 
-            document.getElementById('form-rendimiento').reset(); document.getElementById('rend-date').value = new Date().toISOString().split('T')[0]; clearPlayerSelection(); 
-            
-            showToast('Guardando en la nube...', 'info');
-            btn.disabled = true;
-            pushData('add_rendimiento', newRend).then(res => { 
-                if(res.success) showToast('Rendimiento guardado.', 'success'); 
-                btn.disabled = false;
-            });
+            rendimientos.unshift(newRend); rendimientos.sort(sortDataDesc); updateAllViews(); document.getElementById('form-rendimiento').reset(); document.getElementById('rend-date').value = new Date().toISOString().split('T')[0]; clearPlayerSelection(); 
+            btn.innerHTML = 'Guardando...'; btn.disabled = true; pushData('add_rendimiento', newRend).then(res => { if(res.success) showToast('Rendimiento guardado.', 'success'); btn.innerHTML = orig; btn.disabled = false; });
         }
 
         function actionVerify(id) { pendingVerifyId = String(id); document.getElementById('input-receipt').value = ''; document.getElementById('modal-comprobante').classList.replace('hidden', 'flex'); }
         function closeModal() { document.getElementById('modal-comprobante').classList.replace('flex', 'hidden'); pendingVerifyId = null; }
-        
         function confirmVerify() {
-            if (!pendingVerifyId) return; 
-            const targetId = String(pendingVerifyId); 
-            const commentText = document.getElementById('input-receipt').value.trim(); 
-            const btn = document.getElementById('btn-verify-confirm');
-            const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true; 
-            const tx = records.find(r => String(r.id) === targetId);
-            
-            if (tx) { 
-                tx.status = 'Verificado'; 
-                tx.comment = commentText; 
-                updateAllViews(); 
-                closeModal(); 
-                pushData('verify', { id: targetId, comment: commentText, receipt: tx.receipt }).then(res => { if(res.success) showToast("Aprobado y comentado", "success")}); 
-            } else { closeModal(); }
+            if (!pendingVerifyId) return; const targetId = String(pendingVerifyId); const commentText = document.getElementById('input-receipt').value.trim(); const btn = document.getElementById('btn-verify-confirm');
+            const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true; const tx = records.find(r => String(r.id) === targetId);
+            if (tx) { tx.status = 'Verificado'; tx.comment = commentText; updateAllViews(); closeModal(); pushData('verify', { id: targetId, comment: commentText, receipt: tx.receipt }).then(res => { if(res.success) showToast("Aprobado y comentado", "success")}); } else { closeModal(); }
             btn.innerHTML = orig; btn.disabled = false; 
         }
 
-        function toggleAllAuditChecks() {
-            const isChecked = document.getElementById('check-all-audit').checked;
-            document.querySelectorAll('.audit-chk').forEach(cb => cb.checked = isChecked);
-        }
-
+        function toggleAllAuditChecks() { const isChecked = document.getElementById('check-all-audit').checked; document.querySelectorAll('.audit-chk').forEach(cb => cb.checked = isChecked); }
         async function approveSelected() {
-            const checkedBoxes = document.querySelectorAll('.audit-chk:checked');
-            if(checkedBoxes.length === 0) return showToast('Selecciona al menos un registro', 'warning');
-            
-            const commentVal = document.getElementById('mass-comment').value.trim();
-            const ids = Array.from(checkedBoxes).map(cb => cb.value);
-            
+            const checkedBoxes = document.querySelectorAll('.audit-chk:checked'); if(checkedBoxes.length === 0) return showToast('Selecciona al menos un registro', 'warning');
+            const commentVal = document.getElementById('mass-comment').value.trim(); const ids = Array.from(checkedBoxes).map(cb => cb.value);
             showToast(`Aprobando ${ids.length} registros...`, 'success');
-            
             ids.forEach(id => { let tx = records.find(r => String(r.id) === id); if(tx) { tx.status = 'Verificado'; tx.comment = commentVal; } });
-            updateAllViews();
-            
-            document.getElementById('mass-comment').value = '';
-            const checkAll = document.getElementById('check-all-audit'); if(checkAll) checkAll.checked = false;
-
-            const res = await pushData('verify_multiple', { ids: ids, comment: commentVal });
-            if(res.success) showToast(`${res.procesados} registros guardados en sistema.`, 'success');
+            updateAllViews(); document.getElementById('mass-comment').value = ''; const checkAll = document.getElementById('check-all-audit'); if(checkAll) checkAll.checked = false;
+            const res = await pushData('verify_multiple', { ids: ids, comment: commentVal }); if(res.success) showToast(`${res.procesados} registros guardados en sistema.`, 'success');
         }
 
         function actionEdit(id) {
@@ -1257,11 +958,7 @@
             rendimientos.sort(sortDataDesc); updateAllViews(); closeEditRendModal(); pushData('edit_rendimiento', rend).then(res => { if(res.success) showToast("Editado", "success")}); btn.innerHTML = orig; btn.disabled = false;
         }
 
-        async function actionDeny(id) { 
-            const targetId = String(id); const tx = records.find(r => String(r.id) === targetId); 
-            if (tx) { tx.status = 'Denegado'; updateAllViews(); showToast("Denegado", "warning"); pushData('deny', { id: targetId }); } 
-        }
-
+        async function actionDeny(id) { const targetId = String(id); const tx = records.find(r => String(r.id) === targetId); if (tx) { tx.status = 'Denegado'; updateAllViews(); showToast("Denegado", "warning"); pushData('deny', { id: targetId }); } }
         function actionAuthorizeAdvance(id) { pendingAuthId = String(id); document.getElementById('input-gussepy-detail').value = ''; document.getElementById('modal-gussepy').classList.replace('hidden', 'flex'); }
         function closeGussepyModal() { document.getElementById('modal-gussepy').classList.replace('flex', 'hidden'); pendingAuthId = null; }
         async function confirmGussepyAuth() {
@@ -1285,15 +982,39 @@
         async function actionDelete(id, type = 'record') {
             const ud = JSON.parse(localStorage.getItem('sb_user_data'));
             if (type === 'record' && ud && ud.type === 'user') { const tx = records.find(r => String(r.id) === String(id)); if (tx && tx.status !== 'Pendiente') { showToast("No puedes eliminar registros procesados.", "error"); return; } }
-            showToast("Eliminando...", "warning");
-            const tId = String(id); let act = 'delete';
-            if(type === 'advance'){ act = 'delete_advance'; advances = advances.filter(r => String(r.id) !== tId); } 
-            else if(type === 'bono'){ act = 'delete_bono'; bonos = bonos.filter(r => String(r.id) !== tId); } 
-            else if(type === 'giro'){ act = 'delete_giro'; giros = giros.filter(r => String(r.id) !== tId); } 
-            else if(type === 'referral'){ act = 'delete_referral'; referrals = referrals.filter(r => String(r.id) !== tId); bonos = bonos.filter(b => String(b.id) !== tId + "_B"); } 
-            else if (type === 'rendimiento') { act = 'delete_rendimiento'; rendimientos = rendimientos.filter(r => String(r.id) !== tId); } 
-            else { records = records.filter(r => String(r.id) !== tId); }
-            updateAllViews(); pushData(act, {id: tId}).then(res => { if(!res.success) showToast("Error al eliminar remoto", "error"); });
+            if(confirm("🚨 ¿Seguro que desea eliminar permanentemente?")) {
+                const tId = String(id); let act = 'delete';
+                if(type === 'advance'){ act = 'delete_advance'; advances = advances.filter(r => String(r.id) !== tId); } 
+                else if(type === 'bono'){ act = 'delete_bono'; bonos = bonos.filter(r => String(r.id) !== tId); } 
+                else if(type === 'giro'){ act = 'delete_giro'; giros = giros.filter(r => String(r.id) !== tId); } 
+                else if(type === 'referral'){ act = 'delete_referral'; referrals = referrals.filter(r => String(r.id) !== tId); bonos = bonos.filter(b => String(b.id) !== tId + "_B"); } 
+                else if (type === 'rendimiento') { act = 'delete_rendimiento'; rendimientos = rendimientos.filter(r => String(r.id) !== tId); } 
+                else { records = records.filter(r => String(r.id) !== tId); }
+                updateAllViews(); pushData(act, {id: tId}).then(res => { if(res.success) showToast("Eliminado", "success"); });
+            }
+        }
+
+        function applyFilters() { filters.date = document.getElementById('filter-date')?.value || ''; const fUser = document.getElementById('filter-user'); filters.user = fUser ? fUser.value : 'all'; filters.status = document.getElementById('filter-status')?.value || 'all'; filters.type = document.getElementById('filter-type')?.value || 'all'; filters.amount = document.getElementById('filter-amount')?.value.replace(',', '.') || ''; filters.text = document.getElementById('filter-ref-comment')?.value.trim() || ''; pages.audit = 1; updateAllViews(); }
+        function clearFilters() { filters = { date: '', user: 'all', status: 'all', amount: '', text: '', type: 'all' }; ['filter-date', 'filter-amount', 'filter-ref-comment'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = ''; }); if(document.getElementById('filter-user')) document.getElementById('filter-user').value = 'all'; if(document.getElementById('filter-status')) document.getElementById('filter-status').value = 'all'; if(document.getElementById('filter-type')) document.getElementById('filter-type').value = 'all'; pages.audit = 1; updateAllViews(); }
+        function applyBonoFilters() { bonoFilters.date = document.getElementById('filter-bono-date')?.value || ''; bonoFilters.dest = document.getElementById('filter-bono-dest')?.value.trim().toLowerCase() || ''; bonoFilters.status = document.getElementById('filter-bono-status')?.value || 'all'; bonoFilters.agency = document.getElementById('filter-bono-agency')?.value || 'all'; pages.bonos = 1; updateAllViews(); }
+        function clearBonoFilters() { bonoFilters = { date: '', dest: '', amount: '', agency: 'all', status: 'all' }; if(document.getElementById('filter-bono-date')) document.getElementById('filter-bono-date').value = ''; if(document.getElementById('filter-bono-dest')) document.getElementById('filter-bono-dest').value = ''; if(document.getElementById('filter-bono-status')) document.getElementById('filter-bono-status').value = 'all'; if(document.getElementById('filter-bono-agency')) document.getElementById('filter-bono-agency').value = 'all'; pages.bonos = 1; updateAllViews(); }
+        function applyRefFilters() { refFilters.date = document.getElementById('filter-ref-date')?.value || ''; refFilters.name = document.getElementById('filter-ref-name')?.value.trim().toLowerCase() || ''; refFilters.agency = document.getElementById('filter-ref-agency')?.value || 'all'; pages.ref = 1; updateAllViews(); }
+        function clearRefFilters() { refFilters = { date: '', name: '', cedula: '', agency: 'all' }; if(document.getElementById('filter-ref-date')) document.getElementById('filter-ref-date').value = ''; if(document.getElementById('filter-ref-name')) document.getElementById('filter-ref-name').value = ''; if(document.getElementById('filter-ref-agency')) document.getElementById('filter-ref-agency').value = 'all'; pages.ref = 1; updateAllViews(); }
+        function applyGiroFilters() { giroFilters.date = document.getElementById('filter-giro-date')?.value || ''; giroFilters.dest = document.getElementById('filter-giro-dest')?.value.trim().toLowerCase() || ''; giroFilters.status = document.getElementById('filter-giro-status')?.value || 'all'; giroFilters.agency = document.getElementById('filter-giro-agency')?.value || 'all'; pages.giros = 1; updateAllViews(); }
+        function clearGiroFilters() { giroFilters = { date: '', dest: '', agency: 'all', status: 'all' }; if(document.getElementById('filter-giro-date')) document.getElementById('filter-giro-date').value = ''; if(document.getElementById('filter-giro-dest')) document.getElementById('filter-giro-dest').value = ''; if(document.getElementById('filter-giro-status')) document.getElementById('filter-giro-status').value = 'all'; if(document.getElementById('filter-giro-agency')) document.getElementById('filter-giro-agency').value = 'all'; pages.giros = 1; updateAllViews(); }
+        function applyMelFilters() { melFilters.date = document.getElementById('filter-rend-date')?.value || ''; melFilters.inf = document.getElementById('filter-rend-inf')?.value.trim().toLowerCase() || ''; melFilters.jug = document.getElementById('filter-rend-jug')?.value.trim().toLowerCase() || ''; pages.mel = 1; updateAllViews(); }
+        function clearRendFilters() { melFilters = { date: '', inf: '', jug: '' }; if(document.getElementById('filter-rend-date')) document.getElementById('filter-rend-date').value = ''; if(document.getElementById('filter-rend-inf')) document.getElementById('filter-rend-inf').value = ''; if(document.getElementById('filter-rend-jug')) document.getElementById('filter-rend-jug').value = ''; pages.mel = 1; updateAllViews(); }
+
+        function viewPlayerDetails(playerName) {
+            const select = document.getElementById('inf-detail-player');
+            if (select) {
+                let exists = false; for (let i = 0; i < select.options.length; i++) { if (select.options[i].value === playerName) exists = true; }
+                if (!exists) { const opt = document.createElement('option'); opt.value = playerName; opt.text = playerName; opt.className = "text-slate-800"; select.appendChild(opt); }
+                select.value = playerName;
+            }
+            const mainMonth = document.getElementById('inf-month-filter').value;
+            if (document.getElementById('inf-detail-month')) document.getElementById('inf-detail-month').value = mainMonth;
+            pages.infdetail = 1; switchTab('tab-influencer-details'); updateAllViews();
         }
 
         function renderRecordsTable(tbodyId, emptyId, dataArray, userType) {
@@ -1351,18 +1072,13 @@
             const ud = JSON.parse(localStorage.getItem('sb_user_data')); if (!ud) return; const userType = ud.type;
             const dashMF = document.getElementById('dash-month-filter')?.value; const globalMF = dashMF; const bonoMF = document.getElementById('bonos-month-filter')?.value || dashMF;
 
-            const normalizeInf = (rawName) => String(rawName || 'desconocido').toLowerCase().trim();
+            const myIdStr = String(currentUser).toLowerCase().trim();
+            const myNameStr = String(USERS[currentUser]?.name || '').toLowerCase().trim();
 
-            const isMyReferral = (refName) => {
-                if (userType === 'admin' || isSuperAdmin || userType === 'master' || userType === 'cajero_afiliados' || userType === 'bonos') return true; 
-                if (userType !== 'influencer') return false; 
-                if (!refName) return false;
-                
-                let cleanRef = normalizeInf(refName);
-                let myId = normalizeInf(currentUser);
-                let myName = normalizeInf(USERS[currentUser]?.name || '');
-                
-                return cleanRef === myId || (myName !== '' && cleanRef === myName);
+            const isMe = (refName) => {
+                if(!refName) return false;
+                const r = String(refName).toLowerCase().trim();
+                return r === myIdStr || (myNameStr !== '' && r === myNameStr);
             };
 
             if (userType === 'admin' || userType === 'master' || isSuperAdmin || userType === 'user') {
@@ -1481,14 +1197,14 @@
                 
                 referrals.forEach(r => { 
                     const rawRef = String(r.referrer || 'Desconocido').trim();
-                    const refKey = normalizeInf(rawRef);
+                    const refKey = rawRef.toLowerCase();
                     if(!infStatsGus[refKey]) infStatsGus[refKey] = { name: USERS[refKey]?.name || rawRef, refs: 0, dep: 0, ret: 0, net: 0, com: 0 }; 
                     infStatsGus[refKey].refs++; 
                 });
                 
                 rendimientos.filter(r => isSameMonth(r.date, gusInfMF)).forEach(r => {
                     const rawRef = String(r.referrer || 'Desconocido').trim();
-                    const refKey = normalizeInf(rawRef);
+                    const refKey = rawRef.toLowerCase();
                     let rate = USERS[refKey] && USERS[refKey].comision ? parseFloat(USERS[refKey].comision) : 20; 
                     if (rate > 1) rate = rate / 100;
                     if(!infStatsGus[refKey]) infStatsGus[refKey] = { name: USERS[refKey]?.name || rawRef, refs: 0, dep: 0, ret: 0, net: 0, com: 0 };
@@ -1517,7 +1233,7 @@
                 if (bonoFilters.amount && !isNaN(parseFloat(bonoFilters.amount))) displayBonos = displayBonos.filter(b => Math.abs(b.amount) === parseFloat(bonoFilters.amount));
                 if (bonoFilters.agency && bonoFilters.agency !== 'all') displayBonos = displayBonos.filter(b => b.company && b.company.toLowerCase() === bonoFilters.agency.toLowerCase());
                 if (bonoFilters.status && bonoFilters.status !== 'all') displayBonos = displayBonos.filter(b => b.status === bonoFilters.status);
-                
+
                 const elTableBonos = document.getElementById('table-bonos-list');
                 if(elTableBonos) {
                     let hB = ''; const pagB = paginate(displayBonos, 'bonos');
@@ -1534,7 +1250,8 @@
                 if (giroFilters.date) displayGiros = displayGiros.filter(g => isExactDate(g.date, giroFilters.date));
                 if (giroFilters.dest) displayGiros = displayGiros.filter(g => (g.dest || '').toLowerCase().includes(giroFilters.dest));
                 if (giroFilters.agency && giroFilters.agency !== 'all') displayGiros = displayGiros.filter(g => g.company && g.company.toLowerCase() === giroFilters.agency.toLowerCase());
-                
+                if (giroFilters.status && giroFilters.status !== 'all') displayGiros = displayGiros.filter(g => g.status === giroFilters.status);
+
                 const elTableGiros = document.getElementById('table-giros-list');
                 if(elTableGiros) {
                     let hG = ''; const pagG = paginate(displayGiros, 'giros');
@@ -1602,7 +1319,9 @@
                         const diffMs = nowMs - move.time;
                         const diffDays = Math.floor(diffMs / (24*60*60*1000));
                         
-                        if (!isMyReferral(move.influencer)) return; 
+                        if (userType === 'influencer') {
+                            if (!isMe(move.influencer)) return; 
+                        }
 
                         if (diffDays >= 10) {
                             listInactivos.push({ jugador: jugador, influencer: move.influencer, days: diffDays, lastMove: new Date(move.time).toISOString().split('T')[0] });
@@ -1625,20 +1344,19 @@
                     tbodyInactivos.innerHTML = hInac || `<tr><td colspan="5" class="p-4 text-center text-sm text-slate-400">No hay inactivos (+10 días)</td></tr>`;
                 }
 
-                if (userType === 'influencer' || userType === 'admin' || isSuperAdmin) {
+                if (userType === 'influencer') {
                     const myMonth = document.getElementById('inf-month-filter')?.value;
                     
                     let rateVal = USERS[currentUser] && USERS[currentUser].comision ? parseFloat(USERS[currentUser].comision) : 20;
                     const labelEl = document.getElementById('inf-dash-com-label');
-                    if (labelEl && userType === 'influencer') labelEl.innerText = `Mi Ganancia (${rateVal}%)`;
-                    else if (labelEl) labelEl.innerText = `Mi Ganancia`;
+                    if (labelEl) labelEl.innerText = `Mi Ganancia (${rateVal}%)`;
                     
-                    const myRefs = referrals.filter(r => isMyReferral(r.referrer));
+                    const myRefs = referrals.filter(r => isMe(r.referrer));
                     const elQty = document.getElementById('inf-dash-qty'); if(elQty) elQty.innerText = myRefs.length;
                     
                     let myDep = 0, myRet = 0, myNeto = 0, myCom = 0; const playerStats = {};
                     
-                    rendimientos.filter(r => isSameMonth(r.date, myMonth) && isMyReferral(r.referrer)).forEach(r => {
+                    rendimientos.filter(r => isSameMonth(r.date, myMonth) && isMe(r.referrer)).forEach(r => {
                         let dep = getVal(r.depositos); let ret = getVal(r.retiros); let neto = getVal(r.neto); let com = getVal(r.comision);
                         myDep += dep; myRet += ret; myNeto += neto; myCom += com;
                         if(!playerStats[r.referred]) playerStats[r.referred] = { dep: 0, ret: 0, neto: 0, com: 0, influencer: r.referrer };
@@ -1668,7 +1386,7 @@
                     const detailPlayer = document.getElementById('inf-detail-player')?.value;
                     if (detailPlayer) {
                         const detailMonth = document.getElementById('inf-detail-month')?.value || dashMF;
-                        let pRecords = rendimientos.filter(r => r.referred === detailPlayer && isSameMonth(r.date, detailMonth));
+                        let pRecords = rendimientos.filter(r => isMe(r.referrer) && r.referred === detailPlayer && isSameMonth(r.date, detailMonth));
                         
                         const detailTitle = document.getElementById('inf-detail-title');
                         if(detailTitle) detailTitle.innerText = `Movimientos Diarios - ${detailPlayer}`;
