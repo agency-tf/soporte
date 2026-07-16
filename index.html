@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Etiquetas PWA para iOS y Tema -->
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Sepybet">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzRmNDZlNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAwIiBmaWxsPSJ3aGl0ZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UzwvdGV4dD48L3N2Zz4=">
+    
     <title>Sepybet - Sistema Integral Gerencial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -89,6 +96,9 @@
                 <button onclick="switchTab('tab-inactivos')" id="btn-tab-inactivos" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-user-clock w-5 text-center text-amber-400"></i> Alerta Inactivos</button>
             </div>
             <div class="p-4 border-t border-slate-800 space-y-2">
+                <!-- Botón de instalación de la PWA (Aparece dinámicamente) -->
+                <button id="btn-install-pwa" onclick="installPWA()" class="hidden w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-emerald-400 hover:bg-slate-800 hover:text-emerald-300 transition-colors flex items-center gap-3"><i class="fas fa-download w-5 text-center"></i> Instalar App</button>
+                
                 <button onclick="openPasswordModal()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-300 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-key w-5 text-center"></i> Cambiar Clave</button>
                 <button onclick="logout()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-rose-500 hover:bg-rose-500 hover:text-white transition-colors flex items-center gap-3"><i class="fas fa-sign-out-alt w-5 text-center"></i> Cerrar Sesión</button>
             </div>
@@ -423,6 +433,63 @@
     <div id="modal-superadmin" class="fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in border border-slate-700"><div class="p-6 text-center border-b border-slate-100 bg-slate-800"><h3 class="text-lg font-black text-white">Panel de Supervisor</h3></div><div class="p-6 space-y-4"><select id="superadmin-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700"><option value="1311397689">Vista Global (Supervisor)</option></select><div class="flex gap-3"><button onclick="closeSuperAdminSwitcher()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cerrar</button><button onclick="confirmSwitchUser()" class="flex-1 py-3 bg-slate-800 text-white rounded-xl font-bold">Ingresar</button></div></div></div></div>
 
     <script>
+        // --- INICIO PWA CONFIGURACIÓN (Lógica Dinámica en 1 solo archivo) ---
+        const pwaIcon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzRmNDZlNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAwIiBmaWxsPSJ3aGl0ZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UzwvdGV4dD48L3N2Zz4=';
+        const manifest = {
+            "name": "Sepybet - Sistema Integral Gerencial",
+            "short_name": "Sepybet",
+            "start_url": window.location.href.split('?')[0],
+            "display": "standalone",
+            "background_color": "#0f172a",
+            "theme_color": "#4f46e5",
+            "icons": [{ "src": pwaIcon, "sizes": "512x512", "type": "image/svg+xml" }]
+        };
+        const stringManifest = JSON.stringify(manifest);
+        const blobManifest = new Blob([stringManifest], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blobManifest);
+        document.querySelector('head').insertAdjacentHTML('beforeend', `<link rel="manifest" href="${manifestURL}">`);
+
+        const swCode = `
+            const CACHE_NAME = 'sepybet-v1';
+            self.addEventListener('install', event => { self.skipWaiting(); });
+            self.addEventListener('activate', event => { event.waitUntil(clients.claim()); });
+            self.addEventListener('fetch', event => {
+                event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
+            });
+        `;
+        const blobSW = new Blob([swCode], {type: 'application/javascript'});
+        const swURL = URL.createObjectURL(blobSW);
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register(swURL).then(reg => {
+                    console.log('PWA Service Worker registrado correctamente.');
+                }).catch(err => console.log('Error registrando SW', err));
+            });
+        }
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const installBtn = document.getElementById('btn-install-pwa');
+            if(installBtn) installBtn.classList.remove('hidden');
+        });
+
+        function installPWA() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('App instalada con éxito');
+                }
+                deferredPrompt = null;
+                const installBtn = document.getElementById('btn-install-pwa');
+                if(installBtn) installBtn.classList.add('hidden');
+            });
+        }
+        // --- FIN PWA CONFIGURACIÓN ---
+
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyUx3G_kaO_X--M7-c3MnFgL7dlT7QvcnOH27VqzQQCtXHyc44Vox1AtbkP4tjikgrOsg/exec';
 
         let USERS = { 'michelle': { name: 'Michelle', type: 'admin', icon: 'fa-shield-alt', color: 'bg-indigo-600', comision: 20 }, 'jesus': { name: 'Jesús', type: 'user', icon: 'fa-user', color: 'bg-[#0284c7]', comision: 20 }, 'tito': { name: 'Tito', type: 'user', icon: 'fa-user-tie', color: 'bg-[#16a34a]', comision: 20 }, 'gussepy': { name: 'Gussepy', type: 'master', icon: 'fa-crown', color: 'bg-amber-600', comision: 20 }, 'emilia': { name: 'M. Emilia', type: 'bonos', icon: 'fa-gift', color: 'bg-rose-600', comision: 20 }, 'melanie': { name: 'Melanie', type: 'cajero_afiliados', icon: 'fa-calculator', color: 'bg-pink-500', comision: 20 }, 'admin': { name: 'Afiliado VIP', type: 'influencer', icon: 'fa-bullhorn', color: 'bg-purple-600', comision: 20 }, '1311397689': { name: 'Supervisor', type: 'superadmin', icon: 'fa-user-secret', color: 'bg-slate-800', comision: 20 } };
@@ -1015,7 +1082,6 @@
             }
         }
 
-        // Lógica súper estricta para influencers
         const normalizeInf = (rawName) => String(rawName || 'desconocido').toLowerCase().trim();
         const isMyReferral = (refName) => {
             const ud = JSON.parse(localStorage.getItem('sb_user_data'));
@@ -1248,117 +1314,130 @@
                     for(let i=0; i<pagM.length; i++) {
                         const r = pagM[i];
                         let btnAction = `<div class="flex justify-center gap-1"><button onclick="actionEditRend('${r.id}')" class="w-7 h-7 bg-blue-50 text-blue-600 rounded"><i class="fas fa-pen"></i></button><button onclick="actionDelete('${r.id}', 'rendimiento')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded"><i class="fas fa-trash"></i></button></div>`;
-                        hM += `<tr class="border-b border-pink-50"><td data-label="Fecha" class="p-3 text-xs font-bold">${fmtDate(r.date)}</td><td data-label="Influyente" class="p-3 text-xs font-bold text-indigo-600 uppercase">${r.referrer}</td><td data-label="Jugador" class="p-3 text-xs font-bold">${r.referred}</td><td data-label="Depósitos" class="p-3 text-sm font-black text-emerald-600">${fmt(getVal(r.depositos))}</td><td data-label="Retiros" class="p-3 text-sm font-black text-rose-600">${fmt(getVal(r.retiros))}</td><td data-label="Comisión" class="p-3 text-sm font-black text-purple-600">${fmt(getVal(r.comision))}</td><td data-label="Acción" class="p-3 text-center">${btnAction}</td></tr>`;
+                        hM += `<tr class="border-b border-pink-50"><td data-label="Fecha" class="p-3 text-xs font-bold pl-2">${fmtDate(r.date)}</td><td data-label="Influyente" class="p-3 text-xs font-bold text-indigo-600 uppercase">${r.referrer}</td><td data-label="Jugador" class="p-3 text-xs font-bold uppercase">${r.referred}</td><td data-label="Depósitos" class="p-3 text-sm font-black text-emerald-600">${fmt(r.depositos)}</td><td data-label="Retiros" class="p-3 text-sm font-black text-rose-600">${fmt(r.retiros)}</td><td data-label="Comisión" class="p-3 text-sm font-black text-purple-600">${fmt(r.comision)}</td><td data-label="Acción" class="p-3 text-center pr-2">${btnAction}</td></tr>`;
                     }
-                    elTableRend.innerHTML = hM || `<tr><td colspan="7" class="p-4 text-center text-sm text-slate-400">Sin rendimientos.</td></tr>`;
+                    elTableRend.innerHTML = hM || `<tr><td colspan="7" class="p-4 text-center text-sm text-slate-400">Sin cargas.</td></tr>`;
+                }
+
+                // Inactivos Logic
+                const inactivosList = [];
+                const tenDaysAgo = new Date(); tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+                const filterInac = document.getElementById('filter-inactivos-jugador')?.value.toLowerCase().trim() || '';
+                
+                const playerLastMove = {};
+                rendimientos.forEach(r => {
+                    if(!playerLastMove[r.referred] || new Date(r.date) > new Date(playerLastMove[r.referred].date)) {
+                        playerLastMove[r.referred] = { date: r.date, referrer: r.referrer, depositos: r.depositos };
+                    }
+                });
+
+                Object.keys(playerLastMove).forEach(jugador => {
+                    const lastMove = playerLastMove[jugador];
+                    const lastDate = new Date(lastMove.date);
+                    if (lastDate < tenDaysAgo) {
+                        const diffTime = Math.abs(new Date() - lastDate);
+                        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                        if (!filterInac || jugador.toLowerCase().includes(filterInac) || lastMove.referrer.toLowerCase().includes(filterInac)) {
+                            inactivosList.push({ jugador: jugador, influencer: lastMove.referrer, lastDate: lastMove.date, days: diffDays });
+                        }
+                    }
+                });
+
+                inactivosList.sort((a,b) => b.days - a.days);
+                
+                const elTableInactivos = document.getElementById('table-inactivos-list');
+                if(elTableInactivos) {
+                    let hI = ''; const pagI = paginate(inactivosList, 'inactivos');
+                    for(let i=0; i<pagI.length; i++) {
+                        const r = pagI[i];
+                        let statusColor = r.days > 30 ? 'text-rose-600 bg-rose-100' : 'text-amber-600 bg-amber-100';
+                        hI += `<tr class="border-b border-amber-50"><td data-label="Influencer" class="p-3 text-xs font-bold text-indigo-600 uppercase">${r.influencer}</td><td data-label="Jugador" class="p-3 text-xs font-bold uppercase">${r.jugador}</td><td data-label="Último Mov." class="p-3 text-xs text-slate-500">${fmtDate(r.lastDate)}</td><td data-label="Días Inactivo" class="p-3 text-sm font-black text-amber-600">${r.days} días</td><td data-label="Estado" class="p-3 text-center"><span class="px-2 py-1 rounded text-[10px] font-black uppercase ${statusColor}">Alerta</span></td></tr>`;
+                    }
+                    elTableInactivos.innerHTML = hI || `<tr><td colspan="5" class="p-4 text-center text-sm text-slate-400">Sin inactivos.</td></tr>`;
                 }
             }
 
-            if (userType === 'influencer' || userType === 'admin' || isSuperAdmin || userType === 'master') {
-                const tbodyInactivos = document.getElementById('table-inactivos-list');
-                if (tbodyInactivos) {
-                    let listInactivos = [];
-                    const nowMs = Date.now();
-                    const lastMoveMap = {};
+            if (userType === 'influencer' || isSuperAdmin) {
+                const infMonth = document.getElementById('inf-month-filter')?.value || globalMF;
+                const myId = normalizeInf(currentUser);
+                const myName = normalizeInf(USERS[currentUser]?.name || '');
 
-                    rendimientos.forEach(r => {
-                        const rTime = new Date(r.date).getTime();
-                        if(!lastMoveMap[r.referred] || rTime > lastMoveMap[r.referred].time) {
-                            lastMoveMap[r.referred] = { time: rTime, influencer: r.referrer };
-                        }
-                    });
+                const myReferrals = referrals.filter(r => normalizeInf(r.referrer) === myId || (myName !== '' && normalizeInf(r.referrer) === myName));
+                const myRendimientos = rendimientos.filter(r => (normalizeInf(r.referrer) === myId || (myName !== '' && normalizeInf(r.referrer) === myName)) && isSameMonth(r.date, infMonth));
 
-                    Object.keys(lastMoveMap).forEach(jugador => {
-                        const move = lastMoveMap[jugador];
-                        const diffMs = nowMs - move.time;
-                        const diffDays = Math.floor(diffMs / (24*60*60*1000));
-                        
-                        if (userType === 'influencer') {
-                            if (!isMyReferral(move.influencer)) return; 
-                        }
+                const elDashQty = document.getElementById('inf-dash-qty'); if(elDashQty) elDashQty.innerText = myReferrals.length;
 
-                        if (diffDays >= 10) {
-                            listInactivos.push({ jugador: jugador, influencer: move.influencer, days: diffDays, lastMove: new Date(move.time).toISOString().split('T')[0] });
-                        }
-                    });
+                let sumDep = 0, sumRet = 0, sumNet = 0, sumCom = 0;
+                const playerSummary = {};
 
-                    const searchInactivo = document.getElementById('filter-inactivos-jugador')?.value.toLowerCase().trim() || '';
-                    if (searchInactivo) {
-                        listInactivos = listInactivos.filter(i => i.jugador.toLowerCase().includes(searchInactivo) || i.influencer.toLowerCase().includes(searchInactivo));
+                myRendimientos.forEach(r => {
+                    const dep = getVal(r.depositos); const ret = getVal(r.retiros); const net = getVal(r.neto); const com = getVal(r.comision);
+                    sumDep += dep; sumRet += ret; sumNet += net; sumCom += com;
+                    if (!playerSummary[r.referred]) playerSummary[r.referred] = { name: r.referred, dep: 0, ret: 0, net: 0, com: 0 };
+                    playerSummary[r.referred].dep += dep; playerSummary[r.referred].ret += ret; playerSummary[r.referred].net += net; playerSummary[r.referred].com += com;
+                });
+
+                const elDashDep = document.getElementById('inf-dash-dep'); if(elDashDep) elDashDep.innerText = fmt(sumDep);
+                const elDashRet = document.getElementById('inf-dash-ret'); if(elDashRet) elDashRet.innerText = fmt(sumRet);
+                const elDashNeto = document.getElementById('inf-dash-neto'); if(elDashNeto) elDashNeto.innerText = fmt(sumNet);
+                const elDashCom = document.getElementById('inf-dash-com'); if(elDashCom) elDashCom.innerText = fmt(sumCom);
+
+                const searchInf = document.getElementById('inf-search')?.value.toLowerCase().trim() || '';
+                let summaryArray = Object.values(playerSummary);
+                if (searchInf) summaryArray = summaryArray.filter(p => p.name.toLowerCase().includes(searchInf));
+                summaryArray.sort((a,b) => b.com - a.com);
+
+                const tbodyInf = document.getElementById('inf-table-body');
+                if (tbodyInf) {
+                    let hInf = ''; const pagInf = paginate(summaryArray, 'infdash');
+                    for(let i=0; i<pagInf.length; i++) {
+                        const p = pagInf[i];
+                        hInf += `<tr class="border-b border-slate-50"><td data-label="Jugador" class="p-3 text-xs font-bold uppercase text-indigo-600">${p.name}</td><td data-label="Depósitos" class="p-3 text-sm font-black text-emerald-500">${fmt(p.dep)}</td><td data-label="Retiros" class="p-3 text-sm font-black text-rose-500">${fmt(p.ret)}</td><td data-label="Neto" class="p-3 text-sm font-black">${fmt(p.net)}</td><td data-label="Mi Comisión" class="p-3 text-sm font-black text-amber-500 text-right">${fmt(p.com)}</td><td data-label="Detalle" class="p-3 text-center hidden md:table-cell"><button onclick="viewPlayerDetails('${p.name}')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg font-bold"><i class="fas fa-search"></i> Ver</button></td></tr>`;
                     }
-
-                    listInactivos.sort((a,b) => b.days - a.days);
-
-                    let hInac = ''; const pagInac = paginate(listInactivos, 'inactivos');
-                    for(let i=0; i<pagInac.length; i++) {
-                        const inac = pagInac[i];
-                        let statusCls = inac.days >= 30 ? 'text-rose-600 bg-rose-100' : 'text-amber-600 bg-amber-100';
-                        hInac += `<tr class="border-b border-slate-50"><td data-label="Influencer" class="p-3 text-xs font-bold text-indigo-600 uppercase">${inac.influencer}</td><td data-label="Jugador" class="p-3 text-xs font-bold uppercase">${inac.jugador}</td><td data-label="Último Mov." class="p-3 text-xs font-bold text-slate-500">${fmtDate(inac.lastMove)}</td><td data-label="Días Inactivo" class="p-3 text-sm font-black text-center">${inac.days}</td><td data-label="Estado" class="p-3 text-center"><span class="px-2 py-1 rounded text-[10px] font-black uppercase ${statusCls}">Inactivo</span></td></tr>`;
-                    }
-                    tbodyInactivos.innerHTML = hInac || `<tr><td colspan="5" class="p-4 text-center text-sm text-slate-400">No hay inactivos (+10 días)</td></tr>`;
+                    tbodyInf.innerHTML = hInf || `<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">Sin movimientos.</td></tr>`;
                 }
 
-                if (userType === 'influencer' || userType === 'admin' || isSuperAdmin) {
-                    const myMonth = document.getElementById('inf-month-filter')?.value;
-                    
-                    let rateVal = USERS[currentUser] && USERS[currentUser].comision ? parseFloat(USERS[currentUser].comision) : 20;
-                    const labelEl = document.getElementById('inf-dash-com-label');
-                    if (labelEl && userType === 'influencer') labelEl.innerText = `Mi Ganancia (${rateVal}%)`;
-                    else if (labelEl) labelEl.innerText = `Mi Ganancia`;
-                    
-                    const myRefs = referrals.filter(r => isMyReferral(r.referrer));
-                    const elQty = document.getElementById('inf-dash-qty'); if(elQty) elQty.innerText = myRefs.length;
-                    
-                    let myDep = 0, myRet = 0, myNeto = 0, myCom = 0; const playerStats = {};
-                    
-                    rendimientos.filter(r => isSameMonth(r.date, myMonth) && isMyReferral(r.referrer)).forEach(r => {
-                        let dep = getVal(r.depositos); let ret = getVal(r.retiros); let neto = getVal(r.neto); let com = getVal(r.comision);
-                        myDep += dep; myRet += ret; myNeto += neto; myCom += com;
-                        if(!playerStats[r.referred]) playerStats[r.referred] = { dep: 0, ret: 0, neto: 0, com: 0, influencer: r.referrer };
-                        playerStats[r.referred].dep += dep; playerStats[r.referred].ret += ret; playerStats[r.referred].neto += neto; playerStats[r.referred].com += com;
-                    });
-                    
-                    const elDep = document.getElementById('inf-dash-dep'); if(elDep) elDep.innerText = fmt(myDep);
-                    const elRet = document.getElementById('inf-dash-ret'); if(elRet) elRet.innerText = fmt(myRet);
-                    const elNeto = document.getElementById('inf-dash-neto'); if(elNeto) elNeto.innerText = fmt(myNeto);
-                    const elCom = document.getElementById('inf-dash-com'); if(elCom) elCom.innerText = fmt(myCom);
+                const detailSelect = document.getElementById('inf-detail-player');
+                if (detailSelect) {
+                    const currentSel = detailSelect.value;
+                    const allMyPlayers = [...new Set(myReferrals.map(r => r.referred))];
+                    detailSelect.innerHTML = '<option value="" class="text-slate-800">Seleccionar Jugador...</option>' + allMyPlayers.map(p => `<option value="${p}" class="text-slate-800">${p}</option>`).join('');
+                    if (allMyPlayers.includes(currentSel)) detailSelect.value = currentSel;
+                }
 
-                    const searchPlayer = document.getElementById('inf-search')?.value.toLowerCase().trim() || '';
-                    let displayPlayers = Object.keys(playerStats);
-                    if (searchPlayer) displayPlayers = displayPlayers.filter(p => p.toLowerCase().includes(searchPlayer));
-                    displayPlayers.sort();
-
-                    const tbodyInf = document.getElementById('inf-table-body');
-                    if (tbodyInf) {
-                        let hInf = ''; const pagInf = paginate(displayPlayers, 'infdash');
-                        for(let i=0; i<pagInf.length; i++) {
-                            const p = pagInf[i]; const stat = playerStats[p];
-                            hInf += `<tr class="border-b border-slate-50 cursor-pointer hover:bg-slate-50" onclick="viewPlayerDetails('${p}')"><td data-label="Jugador (ID)" class="p-3 text-sm font-black text-indigo-600">${p}</td><td data-label="Depósitos" class="p-3 text-sm font-black text-emerald-500">${fmt(stat.dep)}</td><td data-label="Retiros" class="p-3 text-sm font-black text-rose-500">${fmt(stat.ret)}</td><td data-label="Neto Generado" class="p-3 text-sm font-black">${fmt(stat.neto)}</td><td data-label="Mi Comisión" class="p-3 text-sm font-black text-amber-500 text-right">${fmt(stat.com)}</td><td data-label="Detalle" class="p-3 text-center hidden md:table-cell"><button class="text-indigo-500 hover:text-indigo-700"><i class="fas fa-chevron-right"></i></button></td></tr>`;
+                const detailPlayer = document.getElementById('inf-detail-player')?.value;
+                const detailMonth = document.getElementById('inf-detail-month')?.value || globalMF;
+                if (detailPlayer) {
+                    const pRecords = rendimientos.filter(r => r.referred === detailPlayer && isSameMonth(r.date, detailMonth)).sort((a,b) => new Date(b.date) - new Date(a.date));
+                    
+                    const detailTitle = document.getElementById('inf-detail-title');
+                    if(detailTitle) detailTitle.innerText = `Movimientos Diarios - ${detailPlayer}`;
+                    
+                    const tbodyDetail = document.getElementById('inf-detail-table-body');
+                    if (tbodyDetail) {
+                        let hDet = ''; const pagDet = paginate(pRecords, 'infdetail');
+                        for(let i=0; i<pagDet.length; i++) {
+                            const r = pagDet[i];
+                            let dep = getVal(r.depositos); let ret = getVal(r.retiros); let neto = getVal(r.neto); let com = getVal(r.comision);
+                            hDet += `<tr class="border-b border-slate-50"><td data-label="Fecha" class="p-3 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td><td data-label="Depósitos" class="p-3 text-sm font-black text-emerald-500">${fmt(dep)}</td><td data-label="Retiros" class="p-3 text-sm font-black text-rose-500">${fmt(ret)}</td><td data-label="Neto Generado" class="p-3 text-sm font-black">${fmt(neto)}</td><td data-label="Mi Comisión" class="p-3 text-sm font-black text-amber-500 text-right">${fmt(com)}</td></tr>`;
                         }
-                        tbodyInf.innerHTML = hInf || `<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">Sin datos registrados.</td></tr>`;
+                        tbodyDetail.innerHTML = hDet || `<tr><td colspan="5" class="p-4 text-center text-sm text-slate-400">Sin registros en este mes.</td></tr>`;
                     }
-
-                    const detailPlayer = document.getElementById('inf-detail-player')?.value;
-                    if (detailPlayer) {
-                        const detailMonth = document.getElementById('inf-detail-month')?.value || dashMF;
-                        let pRecords = rendimientos.filter(r => isMyReferral(r.referrer) && r.referred === detailPlayer && isSameMonth(r.date, detailMonth));
-                        
-                        const detailTitle = document.getElementById('inf-detail-title');
-                        if(detailTitle) detailTitle.innerText = `Movimientos Diarios - ${detailPlayer}`;
-                        
-                        const tbodyDetail = document.getElementById('inf-detail-table-body');
-                        if (tbodyDetail) {
-                            let hDet = ''; const pagDet = paginate(pRecords, 'infdetail');
-                            for(let i=0; i<pagDet.length; i++) {
-                                const r = pagDet[i];
-                                let dep = getVal(r.depositos); let ret = getVal(r.retiros); let neto = getVal(r.neto); let com = getVal(r.comision);
-                                hDet += `<tr class="border-b border-slate-50"><td data-label="Fecha" class="p-3 text-xs font-bold text-slate-600">${fmtDate(r.date)}</td><td data-label="Depósitos" class="p-3 text-sm font-black text-emerald-500">${fmt(dep)}</td><td data-label="Retiros" class="p-3 text-sm font-black text-rose-500">${fmt(ret)}</td><td data-label="Neto Generado" class="p-3 text-sm font-black">${fmt(neto)}</td><td data-label="Mi Comisión" class="p-3 text-sm font-black text-amber-500 text-right">${fmt(com)}</td></tr>`;
-                            }
-                            tbodyDetail.innerHTML = hDet || `<tr><td colspan="5" class="p-4 text-center text-sm text-slate-400">Sin movimientos.</td></tr>`;
-                        }
-                    }
+                } else {
+                    const detailTitle = document.getElementById('inf-detail-title');
+                    if(detailTitle) detailTitle.innerText = `Movimientos Diarios`;
+                    const tbodyDetail = document.getElementById('inf-detail-table-body');
+                    if(tbodyDetail) tbodyDetail.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-sm text-slate-400">Seleccione un jugador.</td></tr>`;
+                    const pagCont = document.getElementById('pagination-infdetail');
+                    if(pagCont) { pagCont.classList.add('hidden'); pagCont.classList.remove('flex'); }
                 }
             }
+        }
+
+        function viewPlayerDetails(playerName) {
+            document.getElementById('inf-detail-player').value = playerName;
+            switchTab('tab-influencer-details');
+            updateAllViews();
         }
     </script>
 </body>
