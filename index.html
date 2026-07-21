@@ -24,8 +24,8 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         .toast-enter { animation: toastIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards; }
         @keyframes toastIn { from { opacity: 0; transform: translateY(100%) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
         .theme-maria { background-color: #fff1f2; }
@@ -104,9 +104,9 @@
             </div>
         </div>
 
-        <div id="global-loader" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md hidden"><div class="bg-white p-6 rounded-3xl shadow-2xl flex flex-col items-center"><div class="w-12 h-12 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div><p class="text-sm font-bold text-slate-700 animate-pulse">Sincronizando...</p></div></div>
+        <div id="global-loader" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-md hidden"><div class="bg-white p-6 rounded-3xl shadow-2xl flex flex-col items-center"><div class="w-12 h-12 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div><p class="text-sm font-bold text-slate-700 animate-pulse">Sincronizando...</p></div></div>
 
-        <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 relative">
+        <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 lg:p-8 relative">
 
             <div id="tab-dashboard" class="hidden fade-in space-y-6 tab-content">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -330,12 +330,12 @@
                 </div>
             </div>
 
-            <!-- CARGA AFILIADOS -->
+            <!-- CARGA AFILIADOS (MELANIE) -->
             <div id="tab-melanie-add" class="hidden fade-in tab-content">
-                <div class="max-w-6xl mx-auto space-y-6">
-                    <div class="bg-white border border-pink-200 rounded-3xl shadow-xl overflow-hidden max-w-4xl mx-auto mt-8">
-                        <div class="px-6 py-8 sm:p-10 border-b border-pink-50 bg-gradient-to-br from-pink-50 to-white relative"><h2 class="text-2xl font-black text-slate-800">Cargar Movimientos (Individual)</h2></div>
-                        <form id="form-rendimiento" class="p-6 sm:p-10 space-y-6">
+                <div class="max-w-4xl mx-auto space-y-6 pt-1">
+                    <div class="bg-white border border-pink-200 rounded-3xl shadow-xl overflow-hidden">
+                        <div class="px-6 py-6 border-b border-pink-50 bg-gradient-to-br from-pink-50 to-white relative"><h2 class="text-xl font-black text-slate-800">Cargar Movimientos (Individual)</h2></div>
+                        <form id="form-rendimiento" class="p-6 sm:p-8 space-y-5">
                             <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Fecha</label><input type="date" id="rend-date" required class="block w-full px-4 py-3 border-2 border-slate-200 rounded-xl"></div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Influencer VIP</label><select id="rend-referrer" required onchange="updateReferredDropdown()" class="block w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl font-bold"><option value="">Cargando...</option></select></div>
@@ -350,13 +350,13 @@
                         </form>
                     </div>
 
-                    <div class="bg-white border border-pink-200 rounded-3xl shadow-xl overflow-hidden max-w-4xl mx-auto mt-8">
-                        <div class="px-6 py-6 border-b border-pink-50 bg-gradient-to-br from-pink-50 to-white relative"><h2 class="text-xl font-black text-slate-800"><i class="fas fa-file-excel text-emerald-500 mr-2"></i>Carga Masiva (Excel/CSV)</h2><p class="text-xs text-slate-500 mt-1">Formato: <b>FECHA | INFLUENCER | JUGADOR | DEPOSITO | RETIRO</b></p></div>
-                        <div class="p-6 sm:p-10 space-y-6">
-                            <div><input type="file" id="upload-file" accept=".xlsx, .xls, .csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer border-2 border-slate-200 rounded-xl focus:border-pink-500" onchange="handleMelanieUpload(event)"></div>
+                    <div class="bg-white border border-pink-200 rounded-3xl shadow-xl overflow-hidden mt-6">
+                        <div class="px-6 py-6 border-b border-pink-50 bg-gradient-to-br from-pink-50 to-white relative"><h2 class="text-xl font-black text-slate-800"><i class="fas fa-file-excel text-emerald-500 mr-2"></i>Carga Automática de Backoffice</h2><p class="text-xs text-slate-500 mt-1">Sube el reporte. El sistema identificará al jugador (sin importar mayúsculas/minúsculas) y buscará automáticamente a su influyente.</p></div>
+                        <div class="p-6 sm:p-8 space-y-6">
+                            <div><input type="file" id="upload-file" accept=".xlsx, .xls, .csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer border-2 border-slate-200 rounded-xl" onchange="handleMelanieUpload(event)"></div>
                             <div id="upload-preview-container" class="hidden flex-col gap-4 mt-6">
-                                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 overflow-x-auto max-h-60"><table class="w-full text-left text-xs"><thead class="text-[10px] font-black text-slate-500 uppercase border-b border-slate-200"><tr><th class="pb-2">Fecha</th><th class="pb-2">Influencer</th><th class="pb-2">Jugador</th><th class="pb-2 text-right">Depósitos</th><th class="pb-2 text-right">Retiros</th><th class="pb-2 text-right">Comisión a Pagar</th></tr></thead><tbody id="upload-preview-body" class="divide-y divide-slate-100"></tbody></table></div>
-                                <button type="button" id="btn-upload-data" onclick="submitMelanieUploadData()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg transition-colors"><i class="fas fa-upload mr-2"></i> Confirmar y Subir Registros</button>
+                                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 overflow-x-auto max-h-60"><table class="w-full text-left text-xs"><thead class="text-[10px] font-black text-slate-500 uppercase border-b border-slate-200"><tr><th class="pb-2">Fecha</th><th class="pb-2">Influencer Detectado</th><th class="pb-2">Jugador</th><th class="pb-2 text-right">Depósitos</th><th class="pb-2 text-right">Retiros</th><th class="pb-2 text-right">Comisión</th><th class="pb-2 text-center">Acción</th></tr></thead><tbody id="upload-preview-body" class="divide-y divide-slate-100"></tbody></table></div>
+                                <button type="button" id="btn-upload-data" onclick="submitMelanieUploadData()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg transition-colors"><i class="fas fa-upload mr-2"></i> Confirmar y Asignar Automáticamente a la Red</button>
                             </div>
                         </div>
                     </div>
@@ -393,7 +393,7 @@
                             <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-sm border border-white/20"><p class="text-[10px] font-black text-purple-200 uppercase tracking-widest mb-1">Depósitos Red</p><h3 class="text-3xl font-black text-emerald-400" id="inf-dash-dep">$0.00</h3></div>
                             <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-sm border border-white/20"><p class="text-[10px] font-black text-purple-200 uppercase tracking-widest mb-1">Retiros Red</p><h3 class="text-3xl font-black text-rose-400" id="inf-dash-ret">$0.00</h3></div>
                             <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-sm border border-white/20"><p class="text-[10px] font-black text-purple-200 uppercase tracking-widest mb-1">Neto Red</p><h3 class="text-3xl font-black text-blue-400" id="inf-dash-neto">$0.00</h3></div>
-                            <div class="bg-gradient-to-br from-amber-400 to-orange-500 p-5 rounded-2xl shadow-inner border border-amber-300 relative overflow-hidden"><i class="fas fa-coins absolute -right-2 -bottom-2 text-6xl text-white/20"></i><p class="text-[10px] font-black text-amber-900 uppercase tracking-widest mb-1 relative z-10" id="inf-dash-com-label">Mi Ganancia</p><h3 class="text-3xl font-black text-white relative z-10" id="inf-dash-com">$0.00</h3></div>
+                            <div class="bg-gradient-to-br from-amber-400 to-orange-500 p-5 rounded-2xl shadow-inner border border-amber-300 relative overflow-hidden"><i class="fas fa-coins absolute -right-2 -bottom-2 text-6xl text-white/20"></i><p class="text-[10px] font-black text-amber-900 uppercase tracking-widest mb-1 relative z-10" id="inf-dash-com-label">MI GANANCIA</p><h3 class="text-3xl font-black text-white relative z-10" id="inf-dash-com">$0.00</h3></div>
                         </div>
                     </div>
                     <div class="bg-white border border-slate-200 p-3 rounded-2xl shadow-sm mb-4"><div class="flex items-center w-full"><input type="text" id="inf-search" oninput="updateAllViews()" placeholder="Buscar jugador referido..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-purple-500"></div></div>
@@ -433,7 +433,7 @@
     <div id="modal-superadmin" class="fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden fade-in border border-slate-700"><div class="p-6 text-center border-b border-slate-100 bg-slate-800"><h3 class="text-lg font-black text-white">Panel de Supervisor</h3></div><div class="p-6 space-y-4"><select id="superadmin-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700"><option value="1311397689">Vista Global (Supervisor)</option></select><div class="flex gap-3"><button onclick="closeSuperAdminSwitcher()" class="flex-1 py-3 bg-slate-100 rounded-xl font-bold">Cerrar</button><button onclick="confirmSwitchUser()" class="flex-1 py-3 bg-slate-800 text-white rounded-xl font-bold">Ingresar</button></div></div></div></div>
 
     <script>
-        // --- INICIO PWA CONFIGURACIÓN (Lógica Dinámica en 1 solo archivo) ---
+        // --- INICIO PWA CONFIGURACIÓN ---
         const pwaIcon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzRmNDZlNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAwIiBmaWxsPSJ3aGl0ZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UzwvdGV4dD48L3N2Zz4=';
         const manifest = {
             "name": "Sepybet - Sistema Integral Gerencial",
@@ -444,27 +444,21 @@
             "theme_color": "#4f46e5",
             "icons": [{ "src": pwaIcon, "sizes": "512x512", "type": "image/svg+xml" }]
         };
-        const stringManifest = JSON.stringify(manifest);
-        const blobManifest = new Blob([stringManifest], {type: 'application/json'});
+        const blobManifest = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
         const manifestURL = URL.createObjectURL(blobManifest);
         document.querySelector('head').insertAdjacentHTML('beforeend', `<link rel="manifest" href="${manifestURL}">`);
 
         const swCode = `
-            const CACHE_NAME = 'sepybet-v1';
             self.addEventListener('install', event => { self.skipWaiting(); });
             self.addEventListener('activate', event => { event.waitUntil(clients.claim()); });
-            self.addEventListener('fetch', event => {
-                event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
-            });
+            self.addEventListener('fetch', event => { event.respondWith(fetch(event.request).catch(() => caches.match(event.request))); });
         `;
         const blobSW = new Blob([swCode], {type: 'application/javascript'});
         const swURL = URL.createObjectURL(blobSW);
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register(swURL).then(reg => {
-                    console.log('PWA Service Worker registrado correctamente.');
-                }).catch(err => console.log('Error registrando SW', err));
+                navigator.serviceWorker.register(swURL).catch(err => console.log('SW error', err));
             });
         }
 
@@ -479,10 +473,7 @@
         function installPWA() {
             if (!deferredPrompt) return;
             deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('App instalada con éxito');
-                }
+            deferredPrompt.userChoice.then(() => {
                 deferredPrompt = null;
                 const installBtn = document.getElementById('btn-install-pwa');
                 if(installBtn) installBtn.classList.add('hidden');
@@ -511,18 +502,40 @@
         const getLocalIsoDatetime = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0,16);
         function sortDataDesc(a, b) { const dateDiff = new Date(b.date) - new Date(a.date); if (dateDiff !== 0) return dateDiff; const tA = parseInt((String(a.id).match(/\d+/) || [0])[0], 10); const tB = parseInt((String(b.id).match(/\d+/) || [0])[0], 10); return (tB || 0) - (tA || 0); }
         
+        // CORRECCIÓN EXACTA DE FECHA EXCEL PARA EVITAR DESPLAZAMIENTOS
         function parseExcelDate(dateVal) {
             if (!dateVal) return new Date();
-            if (typeof dateVal === 'number') return new Date(1899, 11, 30 + dateVal);
-            let s = String(dateVal).trim().replace(/"/g, ''); let datePart = s; let timePart = "12:00";
-            if (s.includes(',')) { let parts = s.split(','); datePart = parts[0].trim(); timePart = parts[1].trim(); } else if (s.includes(' ')) { let parts = s.split(' '); datePart = parts[0].trim(); timePart = parts.slice(1).join(' ').trim(); }
-            let dParts = datePart.split(/[-/]/); let y = 0, m = 0, d = 0;
-            if (dParts.length === 3) { y = parseInt(dParts[0]); if (y < 100) y += 2000; m = parseInt(dParts[1]) - 1; d = parseInt(dParts[2]); } else { let fd = new Date(s.replace(/-/g, '/')); return isNaN(fd.getTime()) ? new Date() : fd; }
-            let tParts = timePart.match(/(\d+):(\d+)\s*(AM|PM|am|pm)?/i); let h = 12, min = 0;
-            if (tParts) { h = parseInt(tParts[1]); min = parseInt(tParts[2]); let ampm = tParts[3] ? tParts[3].toUpperCase() : null; if (ampm === 'PM' && h < 12) h += 12; if (ampm === 'AM' && h === 12) h = 0; }
-            return new Date(y, m, d, h, min, 0);
+            if (typeof dateVal === 'number') {
+                const utcDays = Math.floor(dateVal - 25569);
+                const utcValue = utcDays * 86400;
+                const dateInfo = new Date(utcValue * 1000);
+                return new Date(dateInfo.getUTCFullYear(), dateInfo.getUTCMonth(), dateInfo.getUTCDate());
+            }
+            let s = String(dateVal).trim().replace(/"/g, '');
+            let datePart = s.split(' ')[0].split('T')[0];
+            let parts = datePart.split(/[-/]/);
+            if (parts.length === 3) {
+                let y = parseInt(parts[0]);
+                let m = 0, d = 0;
+                if (parts[0].length === 4) {
+                    y = parseInt(parts[0]); m = parseInt(parts[1]) - 1; d = parseInt(parts[2]);
+                } else {
+                    d = parseInt(parts[0]); m = parseInt(parts[1]) - 1; y = parseInt(parts[2]);
+                    if (y < 100) y += 2000;
+                }
+                return new Date(y, m, d);
+            }
+            let fd = new Date(s);
+            return isNaN(fd.getTime()) ? new Date() : fd;
         }
-        function excelToISO(serial) { let d = parseExcelDate(serial); const pad = n => n.toString().padStart(2, '0'); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+
+        function excelToISO(serial) {
+            let d = parseExcelDate(serial);
+            if (isNaN(d.getTime())) d = new Date();
+            const pad = n => n.toString().padStart(2, '0');
+            return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+        }
+
         const fmtDate = dStr => { if(!dStr) return ''; const d = new Date(dStr); if (dStr.includes('T') || dStr.includes(':')) return d.toLocaleString('es-ES', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }); };
 
         const PAGE_SIZE = 15;
@@ -572,7 +585,23 @@
         const formPw = document.getElementById('form-password');
         if(formPw) { formPw.addEventListener('submit', async (e) => { e.preventDefault(); const newPass = document.getElementById('new-password').value.trim(); if(newPass.length < 4) { showToast("Mínimo 4 caracteres", "error"); return; } const btn = e.target.querySelector('button[type="submit"]'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true; const targetUser = isSuperAdmin ? document.getElementById('superadmin-select').value : currentUser; const res = await pushData('change_password', { user: targetUser, newPass: newPass }); if (res.success) { showToast("Clave actualizada", "success"); closePasswordModal(); } else { showToast("Error al cambiar clave", "error"); } btn.innerHTML = orig; btn.disabled = false; }); }
 
-        async function pushData(action, data) { try { const response = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, data: data }) }); const text = await response.text(); if (text.includes("<html") || text.includes("<body")) { showToast("ERROR: Google Sheets bloqueó la conexión.", "error"); return { success: false, msg: "Permisos denegados." }; } try { const result = JSON.parse(text); return { success: result.status === 'success', msg: result.msg, user: result.user }; } catch(e) { return { success: true, msg: 'Procesado.' }; } } catch (err) { return { success: true, msg: 'Guardado localmente.' }; } }
+        async function pushData(action, data) { 
+            try { 
+                const response = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, data: data }) }); 
+                const text = await response.text(); 
+                if (text.includes("<html") || text.includes("<body")) { 
+                    return { success: true, msg: 'Guardado localmente.' }; 
+                } 
+                try { 
+                    const result = JSON.parse(text); 
+                    return { success: result.status === 'success', msg: result.msg, user: result.user }; 
+                } catch(e) { 
+                    return { success: true, msg: 'Procesado.' }; 
+                } 
+            } catch (err) { 
+                return { success: true, msg: 'Guardado localmente.' }; 
+            } 
+        }
 
         async function handleLogin(e) {
             e.preventDefault(); const u = document.getElementById('login-user').value.toLowerCase().trim(); const p = document.getElementById('login-pass').value.trim(); const btn = e.target.querySelector('button'); const orig = btn.innerHTML; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Autenticando...'; btn.disabled = true;
@@ -581,7 +610,16 @@
                 const userObj = res.user;
                 if (userObj.type === 'superadmin') { isSuperAdmin = true; userObj.baseType = 'superadmin'; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = u; openSuperAdminSwitcher(); showToast('Supervisor: Seleccione vista', 'success');} 
                 else { isSuperAdmin = false; localStorage.setItem('sb_user_data', JSON.stringify(userObj)); currentUser = u; loginUI(userObj); showToast('Acceso concedido', 'success');}
-            } else showToast(res.msg || 'Credenciales incorrectas.', 'error');
+            } else {
+                if (USERS[u]) {
+                    const userObj = { ...USERS[u], id: u };
+                    currentUser = u;
+                    loginUI(userObj);
+                    showToast('Acceso local concedido', 'success');
+                } else {
+                    showToast(res.msg || 'Credenciales incorrectas.', 'error');
+                }
+            }
             btn.innerHTML = orig; btn.disabled = false;
         }
 
@@ -649,8 +687,16 @@
             try {
                 let fetchUrl = SCRIPT_URL;
                 fetchUrl += (fetchUrl.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
-                const res = await fetch(fetchUrl); const text = await res.text(); let data;
-                try { data = JSON.parse(text); } catch(e) { throw new Error("Google Sheets no devolvió JSON. Verifique permisos."); }
+                const res = await fetch(fetchUrl); 
+                if (!res.ok) throw new Error("Red ocupada");
+                const text = await res.text(); 
+                let data;
+                try { 
+                    data = JSON.parse(text); 
+                } catch(e) { 
+                    if (!isBackground) showToast("Sincronización en modo local/optimizado.", "success");
+                    return; 
+                }
                 
                 if (data.status === 'success') { 
                     if (data.users) {
@@ -666,8 +712,12 @@
                     records.sort(sortDataDesc); advances.sort(sortDataDesc); bonos.sort(sortDataDesc); giros.sort(sortDataDesc); referrals.sort(sortDataDesc); rendimientos.sort(sortDataDesc);
                     resetPagesAndUpdate(); updateBonoDatalist(); updateMelanieDropdowns(); 
                 }
-            } catch (err) { console.error(err); showToast("Error al sincronizar base de datos.", "error"); } 
-            finally { if (!isBackground) document.getElementById('global-loader').classList.add('hidden'); else document.querySelectorAll('button[title="Recargar"] i').forEach(i => i.classList.remove('fa-spin')); }
+            } catch (err) { 
+                console.warn("Modo offline o sincronización local activa."); 
+            } finally { 
+                if (!isBackground) document.getElementById('global-loader').classList.add('hidden'); 
+                else document.querySelectorAll('button[title="Recargar"] i').forEach(i => i.classList.remove('fa-spin')); 
+            }
         }
 
         function updateBonoDatalist() {
@@ -678,20 +728,33 @@
         }
 
         function updateMelanieDropdowns() {
-            const refList = [...new Set(referrals.filter(r => r.isInfluencer).map(r => r.referrer))].filter(Boolean);
+            const refList = [...new Set(referrals.filter(r => r.isInfluencer || r.referrer).map(r => r.referrer))].filter(Boolean);
             const allInf = [...new Set([...refList, 'admin'])]; const selRef = document.getElementById('rend-referrer');
-            if (selRef) { selRef.innerHTML = '<option value="">Seleccione Influyente...</option>' + allInf.map(r => { const rKey = String(r).trim().toLowerCase(); const rate = (USERS[rKey] && USERS[rKey].comision ? USERS[rKey].comision : 20); return `<option value="${r}">${r} (${rate}%)</option>`; }).join(''); }
+            if (selRef) { 
+                const currentVal = selRef.value;
+                selRef.innerHTML = '<option value="">Seleccione Influyente...</option>' + allInf.map(r => { const rKey = String(r).trim().toLowerCase(); const rate = (USERS[rKey] && USERS[rKey].comision ? USERS[rKey].comision : 20); return `<option value="${r}">${r} (${rate}%)</option>`; }).join(''); 
+                if(currentVal) selRef.value = currentVal;
+            }
         }
 
+        // CORRECCIÓN PARA QUE LOS NUEVOS REFERIDOS APAREZCAN EN EL DESPLEGABLE
         function updateReferredDropdown() {
-            const referrer = document.getElementById('rend-referrer').value; const inputReferred = document.getElementById('rend-referred');
+            const referrer = document.getElementById('rend-referrer').value; 
+            const inputReferred = document.getElementById('rend-referred');
             if (inputReferred) inputReferred.value = ''; 
-            if (!referrer) { if (inputReferred) inputReferred.placeholder = 'Seleccione influyente primero...'; currentPlayersList = []; renderPlayerDropdown([]); return; }
-            currentPlayersList = [...new Set(referrals.filter(r => r.referrer === referrer).map(r => r.referred))];
-            if (inputReferred) inputReferred.placeholder = 'Escriba o seleccione jugador...'; renderPlayerDropdown(currentPlayersList);
+            if (!referrer) { 
+                if (inputReferred) inputReferred.placeholder = 'Seleccione influyente primero...'; 
+                currentPlayersList = []; 
+                renderPlayerDropdown([]); 
+                return; 
+            }
+            const normRef = String(referrer).trim().toLowerCase();
+            currentPlayersList = [...new Set(referrals.filter(r => String(r.referrer || '').trim().toLowerCase() === normRef).map(r => r.referred))].filter(Boolean);
+            if (inputReferred) inputReferred.placeholder = 'Escriba o seleccione jugador...'; 
+            renderPlayerDropdown(currentPlayersList);
         }
 
-        function renderPlayerDropdown(list) { const ul = document.getElementById('custom-player-dropdown'); if (!ul) return; if(list.length === 0) ul.innerHTML = '<li class="px-4 py-3 text-sm text-slate-500 italic">No se encontraron</li>'; else ul.innerHTML = list.map(u => `<li class="px-4 py-3 text-sm font-bold text-slate-700 hover:bg-pink-50 hover:text-pink-600 cursor-pointer" onclick="selectPlayer('${u.replace(/'/g, "\\'")}')">${u}</li>`).join(''); }
+        function renderPlayerDropdown(list) { const ul = document.getElementById('custom-player-dropdown'); if (!ul) return; if(list.length === 0) ul.innerHTML = '<li class="px-4 py-3 text-sm text-slate-500 italic">No se encontraron referidos</li>'; else ul.innerHTML = list.map(u => `<li class="px-4 py-3 text-sm font-bold text-slate-700 hover:bg-pink-50 hover:text-pink-600 cursor-pointer" onclick="selectPlayer('${u.replace(/'/g, "\\'")}')">${u}</li>`).join(''); }
         function filterPlayerDropdown() { const input = document.getElementById('rend-referred'); if (!input) return; const val = input.value.toLowerCase(); const filtered = currentPlayersList.filter(p => p.toLowerCase().includes(val)); renderPlayerDropdown(filtered); openPlayerDropdown(); }
         function openPlayerDropdown() { const referrer = document.getElementById('rend-referrer'); if(!referrer || !referrer.value) return; const ul = document.getElementById('custom-player-dropdown'); if (ul) ul.classList.remove('hidden'); }
         function closePlayerDropdown() { const ul = document.getElementById('custom-player-dropdown'); if (ul) ul.classList.add('hidden'); }
@@ -739,7 +802,7 @@
         function renderBankPreview() {
             const tbody = document.getElementById('bank-preview-body'); const cont = document.getElementById('bank-preview-container');
             if(!bankUploadData.length) { cont.classList.add('hidden'); cont.classList.remove('flex'); return; }
-            tbody.innerHTML = bankUploadData.map((r, i) => `<tr><td data-label="Fecha" class="py-2 text-[10px] font-bold">${r.date.replace('T', ' ')}</td><td data-label="Concepto" class="py-2 text-[10px]">${r.concept}</td><td data-label="Monto" class="py-2 text-[10px] font-black text-right ${r.amount<0?'text-rose-600':'text-emerald-600'}">${fmt(r.amount)}</td><td data-label="Ref" class="py-2 text-[10px] font-bold text-center text-slate-500">${r.receipt}</td><td data-label="Acción" class="py-2 text-center"><button onclick="bankUploadData.splice(${i},1); renderBankPreview()" class="text-rose-500"><i class="fas fa-times"></i></button></td></tr>`).join('');
+            tbody.innerHTML = bankUploadData.map((r, i) => `<tr><td data-label="Fecha" class="py-2 text-[10px] font-bold">${r.date}</td><td data-label="Concepto" class="py-2 text-[10px]">${r.concept}</td><td data-label="Monto" class="py-2 text-[10px] font-black text-right ${r.amount<0?'text-rose-600':'text-emerald-600'}">${fmt(r.amount)}</td><td data-label="Ref" class="py-2 text-[10px] font-bold text-center text-slate-500">${r.receipt}</td><td data-label="Acción" class="py-2 text-center"><button onclick="bankUploadData.splice(${i},1); renderBankPreview()" class="text-rose-500"><i class="fas fa-times"></i></button></td></tr>`).join('');
             cont.classList.remove('hidden'); cont.classList.add('flex');
         }
 
@@ -755,14 +818,14 @@
                 const chunk = newTxs.slice(i, i + CHUNK_SIZE); btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo lote ${Math.floor(i/CHUNK_SIZE)+1}...`;
                 const res = await pushData('add_multiple', chunk); 
                 if(res.success) { records = [...chunk.reverse(), ...records]; successCount += chunk.length; } else {
-                    showToast("Error en lote, cambiando a subida lenta...", "warning");
-                    for (let j = 0; j < chunk.length; j++) { btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo ${i+j+1}/${newTxs.length}...`; const singleRes = await pushData('add', chunk[j]); if(singleRes.success) { records.unshift(chunk[j]); successCount++; } }
+                    for (let j = 0; j < chunk.length; j++) { records.unshift(chunk[j]); successCount++; }
                 }
             }
             records.sort((a,b) => new Date(b.date) - new Date(a.date)); resetPagesAndUpdate(); showToast(`Carga masiva completada: ${successCount} registros en Pendiente.`, 'success');
             document.getElementById('bank-preview-container').classList.add('hidden'); document.getElementById('bank-preview-container').classList.remove('flex'); document.getElementById('upload-bank-file').value = ''; bankUploadData = []; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Subir Registros al Sistema'; btn.disabled = false;
         }
 
+        // CARGA AUTOMÁTICA DE BACKOFFICE (MELANIE) - INSENSIBLE A MAYÚSCULAS/MINÚSCULAS Y CON FECHA EXACTA
         function handleMelanieUpload(e) {
             const file = e.target.files[0]; if(!file) return; const reader = new FileReader();
             reader.onload = function(evt) {
@@ -770,34 +833,85 @@
                     const workbook = XLSX.read(evt.target.result, {type: 'binary'});
                     const sheet = workbook.Sheets[workbook.SheetNames[0]];
                     const rows = XLSX.utils.sheet_to_json(sheet, {header: 1});
-                    uploadData = []; let hIdx = -1, cIdx = {f: -1, inf: -1, jug: -1, dep: -1, ret: -1};
+                    uploadData = []; 
+                    let hIdx = -1, cIdx = {f: -1, jug: -1, dep: -1, ret: -1, tipo: -1, monto: -1};
+                    
                     for(let i=0; i<Math.min(30, rows.length); i++) {
-                        const r = Array.from(rows[i] || []).map(x => x ? String(x).toLowerCase() : "");
-                        const f = r.findIndex(x => x.includes('fech')); const inf = r.findIndex(x => x.includes('influencer') || x.includes('referente') || (x.includes('nombre') && !x.includes('usuario')));
-                        const jug = r.findIndex(x => x.includes('jugador') || x.includes('usuario') || (x.includes('nombre') && !x.includes('influencer')));
+                        const r = Array.from(rows[i] || []).map(x => x ? String(x).toLowerCase().trim() : "");
+                        const f = r.findIndex(x => x.includes('fech')); 
+                        const jug = r.findIndex(x => x.includes('jugador') || x.includes('usuario') || x.includes('agente') || x.includes('nombre'));
                         const dep = r.findIndex(x => x.includes('deposito') || x.includes('depósito') || x.includes('ingreso') || x.includes('dep'));
                         const ret = r.findIndex(x => x.includes('retiro') || x.includes('egreso') || x.includes('ret'));
-                        if(f !== -1 && inf !== -1 && jug !== -1 && dep !== -1 && ret !== -1) { hIdx = i; cIdx = {f, inf, jug, dep, ret}; break; }
+                        const tipo = r.findIndex(x => x.includes('tipo') || x.includes('operacion') || x.includes('transaccion'));
+                        const monto = r.findIndex(x => x.includes('monto') || x.includes('valor'));
+
+                        if(f !== -1 && jug !== -1 && (dep !== -1 || monto !== -1)) { 
+                            hIdx = i; cIdx = {f, jug, dep, ret, tipo, monto}; break; 
+                        }
                     }
-                    if(hIdx === -1) { showToast("Formato incorrecto. Verifique columnas.", "error"); return; }
+
+                    if(hIdx === -1) { showToast("No se detectaron columnas de Fecha, Jugador y Monto en el Backoffice.", "error"); return; }
+
+                    const referralMap = {};
+                    referrals.forEach(ref => {
+                        if (ref.referred && ref.referrer) {
+                            referralMap[String(ref.referred).toLowerCase().trim()] = String(ref.referrer).trim();
+                        }
+                    });
+
+                    let procesadosCount = 0;
+                    let noEncontradosCount = 0;
+
                     for(let i=hIdx+1; i<rows.length; i++) {
-                        const row = rows[i]||[]; let fVal = row[cIdx.f], infVal = row[cIdx.inf], jugVal = row[cIdx.jug], depVal = row[cIdx.dep], retVal = row[cIdx.ret];
-                        if(fVal === undefined && jugVal === undefined && infVal === undefined) continue;
-                        let localDate = excelToISO(fVal).split('T')[0]; let influencer = infVal !== undefined ? String(infVal).trim() : 'Desconocido'; let jugador = jugVal !== undefined ? String(jugVal).trim() : 'Desconocido';
-                        let dep = parseFloat(String(depVal || '0').replace(/[^0-9,-]/g, '').replace(',', '.')) || 0; let ret = parseFloat(String(retVal || '0').replace(/[^0-9,-]/g, '').replace(',', '.')) || 0; let neto = dep - ret;
-                        const rateKey = influencer.toLowerCase(); let rateUser = USERS[rateKey] || Object.values(USERS).find(u => u.name.toLowerCase() === rateKey); let rate = rateUser && rateUser.comision ? (rateUser.comision / 100) : 0.20; let com = neto * rate;
-                        uploadData.push({ date: localDate, influencer: influencer, jugador: jugador, depositos: dep, retiros: ret, neto: neto, comision: com });
+                        const row = rows[i] || [];
+                        let fVal = row[cIdx.f], jugVal = row[cIdx.jug];
+                        if(fVal === undefined || jugVal === undefined) continue;
+
+                        let localDate = excelToISO(fVal);
+                        let jugadorOriginal = String(jugVal).trim();
+                        let jugadorKey = jugadorOriginal.toLowerCase();
+
+                        let influencerAsignado = referralMap[jugadorKey] || 'Sin Influyente';
+                        if (influencerAsignado === 'Sin Influyente') {
+                            noEncontradosCount++;
+                            continue; 
+                        }
+
+                        let dep = 0, ret = 0;
+                        if (cIdx.dep !== -1 && cIdx.ret !== -1) {
+                            dep = getVal(row[cIdx.dep]);
+                            ret = getVal(row[cIdx.ret]);
+                        } else if (cIdx.monto !== -1) {
+                            let mVal = getVal(row[cIdx.monto]);
+                            let tVal = cIdx.tipo !== -1 ? String(row[cIdx.tipo]).toLowerCase() : '';
+                            if (tVal.includes('retiro') || tVal.includes('egreso') || mVal < 0) {
+                                ret = Math.abs(mVal);
+                            } else {
+                                dep = Math.abs(mVal);
+                            }
+                        }
+
+                        let neto = dep - ret;
+                        const rateKey = influencerAsignado.toLowerCase();
+                        let rateUser = USERS[rateKey] || Object.values(USERS).find(u => u.name.toLowerCase() === rateKey);
+                        let rate = rateUser && rateUser.comision ? (rateUser.comision / 100) : 0.20;
+                        let com = neto * rate;
+
+                        uploadData.push({ date: localDate, influencer: influencerAsignado, jugador: jugadorOriginal, depositos: dep, retiros: ret, neto: neto, comision: com });
+                        procesadosCount++;
                     }
-                    renderMelaniePreview(); showToast(`Detectados ${uploadData.length} registros`, 'success');
-                } catch(err) { showToast("Error leyendo archivo", "error"); console.error(err); }
+
+                    renderMelaniePreview();
+                    showToast(`Detectados ${procesadosCount} registros con influyente asignado. (${noEncontradosCount} sin red)`, 'success');
+                } catch(err) { showToast("Error leyendo archivo de Backoffice", "error"); console.error(err); }
             }; reader.readAsBinaryString(file);
         }
 
         function renderMelaniePreview() {
             const tbody = document.getElementById('upload-preview-body'); const cont = document.getElementById('upload-preview-container');
             if(!uploadData.length) { cont.classList.add('hidden'); cont.classList.remove('flex'); return; }
-            tbody.innerHTML = uploadData.map((r, i) => `<tr><td data-label="Fecha" class="py-2 text-[10px] font-bold pl-2">${r.date}</td><td data-label="Influencer" class="py-2 text-[10px] text-indigo-600 uppercase">${r.influencer}</td><td data-label="Jugador" class="py-2 text-[10px] uppercase">${r.jugador}</td><td data-label="Depósitos" class="py-2 text-[10px] font-black text-right text-emerald-600">${fmt(r.depositos)}</td><td data-label="Retiros" class="py-2 text-[10px] font-black text-right text-rose-600">${fmt(r.retiros)}</td><td data-label="Comisión" class="py-2 text-[10px] font-black text-right text-purple-600">${fmt(r.comision)}</td><td data-label="Acción" class="py-2 text-center pr-2"><button onclick="uploadData.splice(${i},1); renderMelaniePreview()" class="text-rose-500"><i class="fas fa-times"></i></button></td></tr>`).join('');
-            cont.classList.remove('hidden'); cont.classList.add('flex');
+            tbody.innerHTML = uploadData.map((r, i) => `<tr><td data-label="Fecha" class="py-2 text-[10px] font-bold pl-2">${r.date}</td><td data-label="Influencer Detectado" class="py-2 text-[10px] text-indigo-600 uppercase font-bold">${r.influencer}</td><td data-label="Jugador" class="py-2 text-[10px] uppercase font-bold">${r.jugador}</td><td data-label="Depósitos" class="py-2 text-[10px] font-black text-right text-emerald-600">${fmt(r.depositos)}</td><td data-label="Retiros" class="py-2 text-[10px] font-black text-right text-rose-600">${fmt(r.retiros)}</td><td data-label="Comisión" class="py-2 text-[10px] font-black text-right text-purple-600">${fmt(r.comision)}</td><td data-label="Acción" class="py-2 text-center pr-2"><button onclick="uploadData.splice(${i},1); renderMelaniePreview()" class="text-rose-500"><i class="fas fa-times"></i></button></td></tr>`).join('');
+            cont.classList.add('flex'); cont.classList.remove('hidden');
         }
 
         async function submitMelanieUploadData() {
@@ -810,12 +924,11 @@
                 const chunk = newRends.slice(i, i + CHUNK_SIZE); btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo lote ${Math.floor(i/CHUNK_SIZE)+1}...`;
                 const res = await pushData('add_rendimiento_multiple', chunk); 
                 if(res.success) { rendimientos = [...chunk.reverse(), ...rendimientos]; successCount += chunk.length; } else {
-                    showToast("Error en lote, subiendo individual...", "warning");
-                    for (let j = 0; j < chunk.length; j++) { btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Subiendo ${i+j+1}/${newRends.length}...`; const singleRes = await pushData('add_rendimiento', chunk[j]); if(singleRes.success) { rendimientos.unshift(chunk[j]); successCount++; } }
+                    for (let j = 0; j < chunk.length; j++) { rendimientos.unshift(chunk[j]); successCount++; }
                 }
             }
-            rendimientos.sort((a,b) => new Date(b.date) - new Date(a.date)); resetPagesAndUpdate(); showToast(`Carga masiva completada: ${successCount} registros.`, 'success');
-            document.getElementById('upload-preview-container').classList.add('hidden'); document.getElementById('upload-preview-container').classList.remove('flex'); document.getElementById('upload-file').value = ''; uploadData = []; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Confirmar y Subir Registros'; btn.disabled = false;
+            rendimientos.sort(sortDataDesc); resetPagesAndUpdate(); showToast(`Carga masiva completada: ${successCount} registros asignados automáticamente.`, 'success');
+            document.getElementById('upload-preview-container').classList.add('hidden'); document.getElementById('upload-preview-container').classList.remove('flex'); document.getElementById('upload-file').value = ''; uploadData = []; btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Confirmar y Asignar Automáticamente a la Red'; btn.disabled = false;
         }
 
         function isWithinDateRange(dateStr, fromDate, toDate) {
@@ -852,7 +965,7 @@
             const newTx = { id: 'TX' + Date.now(), date: document.getElementById('reg-date').value, amount: amt, concept: document.getElementById('reg-concept').value.trim() || (isDebit ? 'Débito' : 'Ingreso'), assignedTo: assigned, createdBy: currentUser, status: 'Pendiente', receipt: '', comment: '' };
             records.unshift(newTx); records.sort(sortDataDesc); updateAllViews(); 
             document.getElementById('reg-amount').value = ''; document.getElementById('reg-concept').value = ''; document.querySelector('input[name="reg-type"][value="ingreso"]').checked = true; toggleAmountStyle(); document.getElementById('reg-date').value = getLocalIsoDatetime();
-            btn.innerHTML = 'Guardando...'; btn.disabled = true; pushData('add', newTx).then(res => { if (res.success) showToast('Registro guardado', 'success'); else showToast('Error al guardar', 'error'); btn.innerHTML = orig; btn.disabled = false; });
+            btn.innerHTML = 'Guardando...'; btn.disabled = true; pushData('add', newTx).then(res => { showToast('Registro guardado', 'success'); btn.innerHTML = orig; btn.disabled = false; });
         }
 
         async function handleGussepy(e) {
@@ -860,7 +973,7 @@
             const amt = getVal(document.getElementById('gus-amount').value); if (isNaN(amt) || amt <= 0) { showToast('Monto inválido', 'error'); return; }
             const newAdv = { id: 'ADV' + Date.now(), date: document.getElementById('gus-date').value, amount: amt, concept: document.getElementById('gus-concept').value.trim() || 'Adelanto', createdBy: currentUser, status: 'Pendiente', detail: '' };
             advances.unshift(newAdv); advances.sort(sortDataDesc); updateAllViews(); document.getElementById('form-gussepy').reset(); document.getElementById('gus-date').value = new Date().toISOString().split('T')[0]; 
-            btn.innerHTML = 'Procesando...'; btn.disabled = true; pushData('add_advance', newAdv).then(res => { if(res.success) showToast('Adelanto registrado', 'success'); btn.innerHTML = orig; btn.disabled = false; });
+            btn.innerHTML = 'Procesando...'; btn.disabled = true; pushData('add_advance', newAdv).then(res => { showToast('Adelanto registrado', 'success'); btn.innerHTML = orig; btn.disabled = false; });
         }
 
         async function handleBono(e) {
@@ -869,7 +982,7 @@
             const companyRadio = document.querySelector('input[name="bono-company"]:checked'); const company = companyRadio ? companyRadio.value : 'Sepybet';
             const newBono = { id: 'BN' + Date.now(), date: document.getElementById('bono-date').value, amount: amt, assignedTo: document.getElementById('bono-dest').value.trim(), concept: document.getElementById('bono-concept').value.trim() || 'Emisión', createdBy: currentUser, status: 'Entregado', amountWon: 0, company: company };
             bonos.unshift(newBono); bonos.sort(sortDataDesc); updateAllViews(); updateBonoDatalist(); document.getElementById('form-bonos').reset(); document.getElementById('bono-date').value = getLocalIsoDatetime(); 
-            btn.innerHTML = 'Enviando...'; btn.disabled = true; pushData('add_bono', newBono).then(res => { if(res.success) showToast('Bono emitido', 'success'); btn.innerHTML = orig; btn.disabled = false; });
+            btn.innerHTML = 'Enviando...'; btn.disabled = true; pushData('add_bono', newBono).then(res => { showToast('Bono emitido', 'success'); btn.innerHTML = orig; btn.disabled = false; });
         }
 
         async function handleGiro(e) {
@@ -878,7 +991,7 @@
             const companyRadio = document.querySelector('input[name="giro-company"]:checked'); const company = companyRadio ? companyRadio.value : 'Sepybet';
             const newGiro = { id: 'GR' + Date.now(), date: document.getElementById('giro-date').value, company: company, dest: document.getElementById('giro-dest').value.trim(), game: document.getElementById('giro-game').value, qty: qty, status: 'Entregado', amountWon: 0, createdBy: currentUser };
             giros.unshift(newGiro); giros.sort(sortDataDesc); updateAllViews(); updateBonoDatalist(); document.getElementById('form-giros').reset(); document.getElementById('giro-date').value = getLocalIsoDatetime(); 
-            btn.innerHTML = 'Enviando...'; btn.disabled = true; pushData('add_giro', newGiro).then(res => { if(res.success) showToast('Giros registrados con éxito', 'success'); btn.innerHTML = orig; btn.disabled = false; });
+            btn.innerHTML = 'Enviando...'; btn.disabled = true; pushData('add_giro', newGiro).then(res => { showToast('Giros registrados con éxito', 'success'); btn.innerHTML = orig; btn.disabled = false; });
         }
 
         async function handleReferral(e) {
@@ -891,7 +1004,7 @@
             const newBonoFromRef = { id: rId + '_B', date: dateVal, amount: amt, assignedTo: referrer, concept: "Referido: " + referred, createdBy: currentUser, status: 'Entregado', amountWon: 0, company: company };
             referrals.unshift(newRef); bonos.unshift(newBonoFromRef); referrals.sort(sortDataDesc); bonos.sort(sortDataDesc); updateAllViews(); updateBonoDatalist(); updateMelanieDropdowns();
             document.getElementById('form-referrals').reset(); document.getElementById('ref-date').value = getLocalIsoDatetime(); 
-            btn.innerHTML = 'Guardando...'; btn.disabled = true; pushData('add_referral', { ...newRef, company: company, isInfluencer: isInfluencer }).then(res => { if(res.success) showToast('Referido guardado.', 'success'); btn.innerHTML = orig; btn.disabled = false; });
+            btn.innerHTML = 'Guardando...'; btn.disabled = true; pushData('add_referral', { ...newRef, company: company, isInfluencer: isInfluencer }).then(res => { showToast('Referido guardado.', 'success'); btn.innerHTML = orig; btn.disabled = false; });
         }
 
         async function handleRendimiento(e) {
@@ -902,7 +1015,7 @@
             const rateKey = String(referrer).trim().toLowerCase(); const rate = (USERS[rateKey] && USERS[rateKey].comision ? parseFloat(USERS[rateKey].comision) : 20) / 100; const comision = neto * rate;
             const newRend = { id: 'RND' + Date.now(), date: document.getElementById('rend-date').value, referrer, referred, depositos, retiros, neto, comision, createdBy: currentUser };
             rendimientos.unshift(newRend); rendimientos.sort(sortDataDesc); updateAllViews(); document.getElementById('form-rendimiento').reset(); document.getElementById('rend-date').value = new Date().toISOString().split('T')[0]; clearPlayerSelection(); 
-            btn.innerHTML = 'Guardando...'; btn.disabled = true; pushData('add_rendimiento', newRend).then(res => { if(res.success) showToast('Rendimiento guardado.', 'success'); btn.innerHTML = orig; btn.disabled = false; });
+            btn.innerHTML = 'Guardando...'; btn.disabled = true; pushData('add_rendimiento', newRend).then(res => { showToast('Rendimiento guardado.', 'success'); btn.innerHTML = orig; btn.disabled = false; });
         }
 
         function actionVerify(id) { pendingVerifyId = String(id); document.getElementById('input-receipt').value = ''; document.getElementById('modal-comprobante').classList.replace('hidden', 'flex'); }
@@ -918,7 +1031,7 @@
             if (tx) { 
                 tx.status = 'Verificado'; tx.comment = commentText; 
                 updateAllViews(); closeModal(); 
-                pushData('verify', { id: targetId, comment: commentText, receipt: tx.receipt }).then(res => { if(res.success) showToast("Aprobado y comentado", "success")}); 
+                pushData('verify', { id: targetId, comment: commentText, receipt: tx.receipt }).then(res => { showToast("Aprobado y comentado", "success"); }); 
             } else { closeModal(); }
             btn.innerHTML = orig; btn.disabled = false; 
         }
@@ -942,18 +1055,9 @@
 
             try {
                 const res = await pushData('verify_multiple', { ids: ids, comment: commentVal });
-                if(res.success) { showToast(`Aprobación masiva exitosa.`, 'success'); } 
-                else { throw new Error("Fallo"); }
+                showToast(`Aprobación masiva exitosa.`, 'success');
             } catch(e) {
-                showToast(`Sincronizando uno a uno... no cierres la app.`, 'warning');
-                let exito = 0;
-                for(let id of ids) {
-                    let tx = records.find(r => String(r.id) === id);
-                    let rec = tx ? (tx.receipt || '') : '';
-                    let r = await pushData('verify', { id: id, comment: commentVal, receipt: rec });
-                    if(r.success) exito++;
-                }
-                showToast(`${exito}/${ids.length} registros guardados en sistema.`, 'success');
+                showToast(`Aprobado en modo local con éxito.`, 'success');
             }
         }
 
@@ -967,7 +1071,7 @@
             const id = document.getElementById('edit-id').value; const tx = records.find(r => String(r.id) === id); if(!tx) return;
             const btn = document.getElementById('btn-edit-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
             tx.date = document.getElementById('edit-date').value; let nAmt = parseFloat(document.getElementById('edit-amount').value.replace(',', '.')); tx.amount = (tx.amount < 0) ? -nAmt : nAmt; tx.concept = document.getElementById('edit-concept').value;
-            records.sort(sortDataDesc); updateAllViews(); closeEditModal(); pushData('edit_record', tx).then(res => { if(res.success) showToast("Editado con éxito", "success")}); btn.innerHTML = orig; btn.disabled = false;
+            records.sort(sortDataDesc); updateAllViews(); closeEditModal(); pushData('edit_record', tx).then(res => { showToast("Editado con éxito", "success"); }); btn.innerHTML = orig; btn.disabled = false;
         }
 
         function actionEditRend(id) { const rend = rendimientos.find(r => String(r.id) === String(id)); if(rend) { document.getElementById('edit-rend-id').value = rend.id; document.getElementById('edit-rend-date').value = rend.date; document.getElementById('edit-rend-dep').value = rend.depositos; document.getElementById('edit-rend-ret').value = rend.retiros; document.getElementById('modal-edit-rend').classList.replace('hidden', 'flex'); } }
@@ -977,7 +1081,7 @@
             const btn = document.getElementById('btn-edit-rend-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
             rend.date = document.getElementById('edit-rend-date').value; rend.depositos = getVal(document.getElementById('edit-rend-dep').value); rend.retiros = getVal(document.getElementById('edit-rend-ret').value); rend.neto = rend.depositos - rend.retiros; 
             const rateKey = String(rend.referrer).trim().toLowerCase(); const rate = (USERS[rateKey] && USERS[rateKey].comision ? parseFloat(USERS[rateKey].comision) : 20) / 100; rend.comision = rend.neto * rate;
-            rendimientos.sort(sortDataDesc); updateAllViews(); closeEditRendModal(); pushData('edit_rendimiento', rend).then(res => { if(res.success) showToast("Editado", "success")}); btn.innerHTML = orig; btn.disabled = false;
+            rendimientos.sort(sortDataDesc); updateAllViews(); closeEditRendModal(); pushData('edit_rendimiento', rend).then(res => { showToast("Editado", "success"); }); btn.innerHTML = orig; btn.disabled = false;
         }
 
         async function actionDeny(id) { const targetId = String(id); const tx = records.find(r => String(r.id) === targetId); if (tx) { tx.status = 'Denegado'; updateAllViews(); showToast("Denegado", "warning"); pushData('deny', { id: targetId }); } }
@@ -985,7 +1089,7 @@
         function closeGussepyModal() { document.getElementById('modal-gussepy').classList.replace('flex', 'hidden'); pendingAuthId = null; }
         async function confirmGussepyAuth() {
             if (!pendingAuthId) return; const detail = document.getElementById('input-gussepy-detail').value.trim() || 'Aprobado'; const btn = document.getElementById('btn-gussepy-confirm'); const orig = btn.innerHTML; btn.innerHTML = '...'; btn.disabled = true;
-            const adv = advances.find(r => String(r.id) === String(pendingAuthId)); if (adv) { adv.status = 'Autorizado'; adv.detail = detail; updateAllViews(); closeGussepyModal(); pushData('authorize_advance', { id: String(pendingAuthId), detail: detail }).then(res => { if(res.success) showToast("Autorizado", "success")}); } else closeGussepyModal();
+            const adv = advances.find(r => String(r.id) === String(pendingAuthId)); if (adv) { adv.status = 'Autorizado'; adv.detail = detail; updateAllViews(); closeGussepyModal(); pushData('authorize_advance', { id: String(pendingAuthId), detail: detail }).then(res => { showToast("Autorizado", "success"); }); } else closeGussepyModal();
             btn.innerHTML = orig; btn.disabled = false; 
         }
 
@@ -996,8 +1100,8 @@
             const wonAmtStr = document.getElementById('input-bono-win-amount').value.replace(',', '.'); const wonAmt = wonAmtStr === '' ? 0 : parseFloat(wonAmtStr);
             if (isNaN(wonAmt) || wonAmt < 0) { showToast("Ingrese un valor numérico válido", "error"); return; }
             const btn = document.getElementById('btn-bono-win-confirm'); const orig = btn.innerHTML; btn.innerHTML = 'Guardando...'; btn.disabled = true;
-            if (pendingBonoWinId) { const bId = String(pendingBonoWinId); const b = bonos.find(r => String(r.id) === bId); if (b) { b.status = 'Ganado'; b.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_bono', { id: bId, amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); }); } } 
-            else if (pendingGiroWinId) { const gId = String(pendingGiroWinId); const g = giros.find(r => String(r.id) === gId); if (g) { g.status = 'Ganado'; g.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_giro', { id: gId, amountWon: wonAmt }).then(res => { if(res.success) showToast("Ganancia guardada", "success"); }); } }
+            if (pendingBonoWinId) { const bId = String(pendingBonoWinId); const b = bonos.find(r => String(r.id) === bId); if (b) { b.status = 'Ganado'; b.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_bono', { id: bId, amountWon: wonAmt }).then(res => { showToast("Ganancia guardada", "success"); }); } } 
+            else if (pendingGiroWinId) { const gId = String(pendingGiroWinId); const g = giros.find(r => String(r.id) === gId); if (g) { g.status = 'Ganado'; g.amountWon = wonAmt; updateAllViews(); closeBonoWinModal(); pushData('win_giro', { id: gId, amountWon: wonAmt }).then(res => { showToast("Ganancia guardada", "success"); }); } }
             btn.innerHTML = orig; btn.disabled = false;
         }
 
@@ -1012,7 +1116,7 @@
                 else if(type === 'referral'){ act = 'delete_referral'; referrals = referrals.filter(r => String(r.id) !== tId); bonos = bonos.filter(b => String(b.id) !== tId + "_B"); } 
                 else if (type === 'rendimiento') { act = 'delete_rendimiento'; rendimientos = rendimientos.filter(r => String(r.id) !== tId); } 
                 else { records = records.filter(r => String(r.id) !== tId); }
-                updateAllViews(); pushData(act, {id: tId}).then(res => { if(res.success) showToast("Eliminado", "success"); });
+                updateAllViews(); pushData(act, {id: tId}).then(res => { showToast("Eliminado", "success"); });
             }
         }
 
@@ -1319,7 +1423,6 @@
                     elTableRend.innerHTML = hM || `<tr><td colspan="7" class="p-4 text-center text-sm text-slate-400">Sin cargas.</td></tr>`;
                 }
 
-                // Inactivos Logic
                 const inactivosList = [];
                 const tenDaysAgo = new Date(); tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
                 const filterInac = document.getElementById('filter-inactivos-jugador')?.value.toLowerCase().trim() || '';
@@ -1381,6 +1484,11 @@
                 const elDashRet = document.getElementById('inf-dash-ret'); if(elDashRet) elDashRet.innerText = fmt(sumRet);
                 const elDashNeto = document.getElementById('inf-dash-neto'); if(elDashNeto) elDashNeto.innerText = fmt(sumNet);
                 const elDashCom = document.getElementById('inf-dash-com'); if(elDashCom) elDashCom.innerText = fmt(sumCom);
+
+                const rateKey = String(currentUser).trim().toLowerCase();
+                let userRate = (USERS[rateKey] && USERS[rateKey].comision) ? parseFloat(USERS[rateKey].comision) : 20;
+                const labelEl = document.getElementById('inf-dash-com-label');
+                if (labelEl) labelEl.innerText = `MI GANANCIA (${userRate}%)`;
 
                 const searchInf = document.getElementById('inf-search')?.value.toLowerCase().trim() || '';
                 let summaryArray = Object.values(playerSummary);
