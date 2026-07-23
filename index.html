@@ -333,22 +333,91 @@ function updateBonoDatalist(){
 }
 
 function updateMelanieDropdowns(){
-    const refList=[...new Set(referrals.filter(r=>r.isInfluencer||r.referrer).map(r=>r.referrer))].filter(Boolean);
-    const allInf=[...new Set([...refList,'admin'])];const selRef=document.getElementById('rend-referrer');
+    const rawList = [];
+
+    // 1. Filtrar únicamente referidores marcados como Influyente VIP por Emilia
+    referrals.forEach(r => {
+        if ((r.isInfluencer === true || r.isInfluencer === 'true' || r.isInfluencer === 1) && r.referrer) {
+            rawList.push(String(r.referrer).trim());
+        }
+    });
+
+    // 2. Incluir usuarios configurados con tipo 'influencer'
+    Object.keys(USERS).forEach(k => {
+        if (USERS[k].type === 'influencer') {
+            rawList.push(String(USERS[k].name || k).trim());
+        }
+    });
+
+    // 3. Deduplicar insensible a mayúsculas/minúsculas de forma limpia
+    const uniqueMap = new Map();
+    rawList.forEach(item => {
+        if (!item) return;
+        const key = item.toLowerCase();
+        if (!uniqueMap.has(key)) {
+            uniqueMap.set(key, item.toUpperCase());
+        }
+    });
+
+    const allInf = Array.from(uniqueMap.values()).sort();
+
+    const selRef = document.getElementById('rend-referrer');
     if(selRef){
-        const currentVal=selRef.value;
-        selRef.innerHTML='<option value="">Seleccione Influyente...</option>'+allInf.map(r=>{const rKey=String(r).trim().toLowerCase();const rate=(USERS[rKey]&&USERS[rKey].comision?USERS[rKey].comision:20);return `<option value="${r}">${r} (${rate}%)</option>`;}).join('');
-        if(currentVal)selRef.value=currentVal;
+        const currentVal = selRef.value;
+        selRef.innerHTML = '<option value="">Seleccione Influyente...</option>' + allInf.map(r => {
+            const rKey = String(r).trim().toLowerCase();
+            const userObj = USERS[rKey] || Object.values(USERS).find(u => u.name && u.name.toLowerCase() === rKey);
+            const rate = (userObj && userObj.comision) ? userObj.comision : 20;
+            return `<option value="${r}">${r} (${rate}%)</option>`;
+        }).join('');
+        if(currentVal) selRef.value = currentVal;
     }
 }
 
 function updateReferredDropdown(){
-    const referrer=document.getElementById('rend-referrer').value;const inputReferred=document.getElementById('rend-referred');
-    if(inputReferred)inputReferred.value='';
-    if(!referrer){if(inputReferred)inputReferred.placeholder='Seleccione influyente primero...';currentPlayersList=[];renderPlayerDropdown([]);return;}
-    const normRef=String(referrer).trim().toLowerCase();
-    currentPlayersList=[...new Set(referrals.filter(r=>String(r.referrer||'').trim().toLowerCase()===normRef).map(r=>r.referred))].filter(Boolean);
-    if(inputReferred)inputReferred.placeholder='Escriba o seleccione jugador...';renderPlayerDropdown(currentPlayersList);
+    const referrer = document.getElementById('rend-referrer').value;
+    const inputReferred = document.getElementById('rend-referred');
+    if(inputReferred) inputReferred.value = '';
+    if(!referrer){
+        if(inputReferred) inputReferred.placeholder = 'Seleccione influyente primero...';
+        currentPlayersList = [];
+        renderPlayerDropdown([]);
+        return;
+    }
+    const normRef = String(referrer).trim().toLowerCase();
+    
+    // Nombres equivalentes para relacionar ID y nombre del influyente
+    const matchedNames = new Set([normRef]);
+    Object.keys(USERS).forEach(k => {
+        if (k.toLowerCase() === normRef || (USERS[k].name && USERS[k].name.toLowerCase() === normRef)) {
+            matchedNames.add(k.toLowerCase());
+            if (USERS[k].name) matchedNames.add(USERS[k].name.toLowerCase());
+        }
+    });
+
+    const playersFromRef = referrals
+        .filter(r => r.referred && matchedNames.has(String(r.referrer || '').trim().toLowerCase()))
+        .map(r => String(r.referred).trim());
+        
+    const playersFromRend = rendimientos
+        .filter(r => r.referred && matchedNames.has(String(r.referrer || '').trim().toLowerCase()))
+        .map(r => String(r.referred).trim());
+
+    // Deduplicar e uniformar a MAYÚSCULAS para eliminar duplicados de caja/caso (p.ej. "juan" y "JUAN")
+    const uniquePlayersMap = new Map();
+    [...playersFromRef, ...playersFromRend].forEach(p => {
+        if (!p) return;
+        const cleanName = String(p).trim().toUpperCase();
+        if (!uniquePlayersMap.has(cleanName)) {
+            uniquePlayersMap.set(cleanName, cleanName);
+        }
+    });
+
+    currentPlayersList = Array.from(uniquePlayersMap.values()).sort();
+    
+    if(inputReferred) inputReferred.placeholder = currentPlayersList.length ? 'Escriba o seleccione jugador...' : 'Escriba nombre de jugador...';
+    renderPlayerDropdown(currentPlayersList);
+    openPlayerDropdown();
 }
 
 function renderPlayerDropdown(list){const ul=document.getElementById('custom-player-dropdown');if(!ul)return;if(list.length===0)ul.innerHTML='<li class="px-4 py-3 text-sm text-slate-500 italic">No se encontraron referidos</li>';else ul.innerHTML=list.map(u=>`<li class="px-4 py-3 text-sm font-bold text-slate-700 hover:bg-pink-50 hover:text-pink-600 cursor-pointer" onclick="selectPlayer('${u.replace(/'/g,"\\'")}')">${u}</li>`).join('');}
@@ -577,6 +646,7 @@ function confirmVerify(){
 }
 
 function toggleAllAuditChecks(){const isChecked=document.getElementById('check-all-audit').checked;document.querySelectorAll('.audit-chk').forEach(cb=>cb.checked=isChecked);}
+
 async function approveSelected(){
     const checkedBoxes=document.querySelectorAll('.audit-chk:checked');if(checkedBoxes.length===0)return showToast('Selecciona al menos un registro','warning');
     const commentVal=document.getElementById('mass-comment')?.value.trim()||'';const ids=Array.from(checkedBoxes).map(cb=>cb.value);
@@ -584,7 +654,18 @@ async function approveSelected(){
     ids.forEach(id=>{let tx=records.find(r=>String(r.id)===id);if(tx){tx.status='Verificado';tx.comment=commentVal;}});
     updateAllViews();if(document.getElementById('mass-comment'))document.getElementById('mass-comment').value='';
     const checkAll=document.getElementById('check-all-audit');if(checkAll)checkAll.checked=false;
-    try{const res=await pushData('verify_multiple',{ids:ids,comment:commentVal});showToast(`Aprobación masiva exitosa.`,'success');}catch(e){showToast(`Aprobado en modo local con éxito.`,'success');}
+    try{
+        // Push batch verification request
+        await pushData('verify_multiple',{ids:ids,comment:commentVal});
+        // Ensure individual record updates are sent to guarantee persistence in Google Apps Script
+        await Promise.all(ids.map(id => {
+            const tx = records.find(r => String(r.id) === String(id));
+            return pushData('verify', { id: id, comment: commentVal, receipt: tx ? tx.receipt : '' });
+        }));
+        showToast(`Aprobación masiva exitosa.`,'success');
+    }catch(e){
+        showToast(`Aprobado en modo local con éxito.`,'success');
+    }
 }
 
 function actionEdit(id){
