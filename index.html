@@ -2363,6 +2363,10 @@ async function handleLogin(e){
         const { data: userRow, error } = await db.from('users').select('*').eq('id', u).eq('pass', p).single();
         if (userRow && !error) {
             let userObj = { ...userRow, id: u };
+            
+            // CORRECCIÓN VITAL: Si Supabase manda un rol vacío o genérico, forzamos su rol correcto (ej. 'bonos')
+            if((!userObj.type || userObj.type === 'user') && USERS[u]) userObj.type = USERS[u].type; 
+            
             if(userObj.type==='superadmin'){
                 isSuperAdmin=true;userObj.baseType='superadmin';localStorage.setItem('sb_user_data',JSON.stringify(userObj));
                 currentUser=u;openSuperAdminSwitcher();showToast('Supervisor: Seleccione vista','success');
@@ -2382,7 +2386,6 @@ async function handleLogin(e){
     }
     btn.innerHTML=orig;btn.disabled=false;
 }
-
 function openSuperAdminSwitcher(){const select=document.getElementById('superadmin-select');select.innerHTML='<option value="1311397689">Vista Global (Supervisor)</option>';Object.keys(USERS).forEach(k=>{if(k!=='1311397689')select.innerHTML+=`<option value="${k}">${USERS[k].name} (${USERS[k].type})</option>`;});document.getElementById('modal-superadmin').classList.replace('hidden','flex');}
 function closeSuperAdminSwitcher(){if(document.getElementById('screen-app').classList.contains('hidden'))confirmSwitchUser('1311397689');else document.getElementById('modal-superadmin').classList.replace('flex','hidden');}
 function confirmSwitchUser(overrideId=null){const targetId=overrideId||document.getElementById('superadmin-select').value;const userObj={...USERS[targetId],id:targetId,baseType:'superadmin'};localStorage.setItem('sb_user_data',JSON.stringify(userObj));currentUser=targetId;loginUI(userObj);document.getElementById('modal-superadmin').classList.replace('flex','hidden');showToast('Vista cambiada exitosamente.','success');}
@@ -2460,10 +2463,12 @@ function loginUI(user){
         ['panel-admin','panel-dash-movimientos','panel-gussepy-bonos'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hidden');});
         switchTab('tab-dashboard');
     }else if(user.type==='bonos'){
-        ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list','btn-tab-giros-add','btn-tab-giros-list','divider-2','btn-tab-maria-ref-add','btn-tab-maria-ref-list','btn-tab-bonos-reales-add'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hidden');});
+        // Se agregó 'btn-tab-bonos-reales' para que ella pueda ver la tabla
+        ['btn-tab-maria-dash','btn-tab-maria-add','btn-tab-maria-list','btn-tab-giros-add','btn-tab-giros-list','divider-2','btn-tab-maria-ref-add','btn-tab-maria-ref-list','btn-tab-bonos-reales-add', 'btn-tab-bonos-reales'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hidden');});
         ['bonos-masivo-card'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hidden');});
         switchTab('tab-maria-dash');
-    }else if(user.type==='cajero_afiliados'){
+    }
+else if(user.type==='cajero_afiliados'){
         ['btn-tab-register', 'btn-tab-melanie-add', 'btn-tab-melanie-list', 'btn-tab-crm-contacts', 'btn-tab-crm-campaigns', 'btn-tab-bonos-reales', 'btn-tab-bonos-reales-add', 'btn-tab-maria-add'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hidden');});
         ['admin-select-user', 'admin-select-user-bank'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hidden');});
         switchTab('tab-melanie-add');
@@ -4264,6 +4269,7 @@ function updateAllViews(){
     const bonosReales = [...bonosRealesList];
     const recordsOperativos = [...records];
 
+    // 1. BLOQUE DASHBOARD PERSONAL Y ADMIN (Tito, Jesus, Superadmin, Master, Admin)
     if(userType==='admin'||userType==='master'||isSuperAdmin||userType==='user'){
         const fRecords=recordsOperativos.filter(r=>isSameMonth(r.date,globalMF));
         
@@ -4291,37 +4297,6 @@ function updateAllViews(){
         const fAdvances=advances.filter(a=>isSameMonth(a.date,globalMF));
         const elGussepy=document.getElementById('dash-gussepy');if(elGussepy)elGussepy.innerText=fmt(fAdvances.reduce((s,a)=>s+(getVal(a.amount)||0),0));
 
-        if(userType === 'admin' || userType === 'master' || isSuperAdmin) {
-            const bonosRealesMes = bonosReales.filter(b => isSameMonth(b.date, globalMF) && b.status === 'Verificado');
-            const cantidadBR = bonosRealesMes.length;
-            const valorBR = bonosRealesMes.reduce((s, b) => s + Math.abs(parseFloat(b.amount)||0), 0);
-            
-            ['dash-total-bonos-reales', 'gus-total-bonos-reales'].forEach(id => {
-                const el = document.getElementById(id); if (el) el.innerText = cantidadBR;
-            });
-            ['dash-valor-bonos-reales', 'gus-valor-bonos-reales'].forEach(id => {
-                const el = document.getElementById(id); if (el) el.innerText = fmt(valorBR);
-            });
-
-            let fBonosReal = [...bonosRealesList];
-            if(bonoRealFilters.dateFrom || bonoRealFilters.dateTo) fBonosReal = fBonosReal.filter(r => isWithinDateRange(r.date, bonoRealFilters.dateFrom, bonoRealFilters.dateTo));
-            if(bonoRealFilters.jugador) fBonosReal = fBonosReal.filter(r => String(r.jugador).toLowerCase().includes(bonoRealFilters.jugador) || String(r.concept).toLowerCase().includes(bonoRealFilters.jugador));
-            
-            const elTotalBonoReal = document.getElementById('bonoreal-total-sum');
-            if(elTotalBonoReal) elTotalBonoReal.innerText = fmt(fBonosReal.reduce((sum, r) => sum + Math.abs(r.amount), 0));
-
-            const elTableBonosReal = document.getElementById('table-bonos-real-list');
-            if(elTableBonosReal) {
-                let hBR = ''; const pagBR = paginate(fBonosReal, 'breales'); 
-                for(let i=0; i<pagBR.length; i++){
-                    const r = pagBR[i];
-                    let badge = r.status==='Verificado' ? `<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-check"></i> Verif</span>` : `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-black uppercase">Pendiente</span>`;
-                    hBR += `<tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors"><td data-label="Fecha" class="p-3 text-xs font-bold pl-2">${fmtDate(r.date)}</td><td data-label="Jugador" class="p-3 text-xs font-bold uppercase text-indigo-600">${r.jugador || '-'}</td><td data-label="Monto" class="p-3 text-sm font-black text-emerald-600">${fmt(Math.abs(r.amount))}</td><td data-label="Concepto" class="p-3 text-[10px] italic text-slate-500">${r.concept || '-'}</td><td data-label="Responsable" class="p-3 text-xs font-bold text-slate-600">${USERS[cleanStr(r.created_by)]?.name || r.created_by}</td><td data-label="Estado" class="p-3 text-center pr-2">${badge}</td></tr>`;
-                }
-                elTableBonosReal.innerHTML = hBR || `<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">No hay bonos de saldo real registrados.</td></tr>`;
-            }
-        }
-        
         if(cleanStr(currentUser) === 'tito' || cleanStr(currentUser) === 'jesus'){
             const elDashPersonal=document.getElementById('dash-personal');
             if(elDashPersonal)elDashPersonal.innerText=fmt(fRecords.reduce((sum,r)=>(cleanStr(r.assignedTo)===cleanStr(currentUser)&&r.status==='Verificado'&&!r.isSueldo)?sum+(parseFloat(r.amount)||0):sum,0));
@@ -4393,139 +4368,140 @@ function updateAllViews(){
             }
             tbodyGus.innerHTML=htmlA||`<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">Sin adelantos.</td></tr>`;
         }
-        
-        let totalComPlatAuto = 0;
+    } // FIN BLOQUE 1
+    
+    let totalComPlatAuto = 0;
 
-        if(userType==='master'||userType==='bonos'||isSuperAdmin||userType==='admin'){
-            const gusInfMF=document.getElementById('gus-inf-month-filter')?.value||dashMF;const infStatsGus={};
-            referrals.forEach(r=>{
-                const rawRef=String(r.referrer||'Desconocido').trim();const refKey=cleanStr(rawRef);
-                if(!infStatsGus[refKey])infStatsGus[refKey]={name:rawRef,refs:0,dep:0,ret:0,net:0,com:0};
-                infStatsGus[refKey].refs++;
-            });
-            rendimientos.filter(r=>isSameMonth(r.date,gusInfMF)).forEach(r=>{
-                const rawRef=String(r.referrer||'Desconocido').trim();const refKey=cleanStr(rawRef);
-                
-                let rateUser=USERS[refKey]||Object.values(USERS).find(u=>cleanStr(u.name)===refKey);
-                let rate=rateUser&&rateUser.comision?parseFloat(rateUser.comision):20;
-                if(rate>1)rate=rate/100;
-                
-                if(!infStatsGus[refKey])infStatsGus[refKey]={name:rawRef,refs:0,dep:0,ret:0,net:0,com:0};
-                let dep=getVal(r.depositos);let ret=getVal(r.retiros);let net=getVal(r.neto);let com=getVal(r.comision);
-                if (!com && net !== 0) com = net > 0 ? net * rate : 0;
-                infStatsGus[refKey].dep+=dep;infStatsGus[refKey].ret+=ret;infStatsGus[refKey].net+=net;infStatsGus[refKey].com+=com;
-            });
-
-            Object.values(infStatsGus).forEach(s => {
-                totalComPlatAuto += (s.net * 0.05);
-            });
-
-            const elComPlatInput = document.getElementById('ext-complat');
-            if(elComPlatInput) {
-                elComPlatInput.value = totalComPlatAuto.toFixed(2);
-            }
-
-            const elGusInfTable=document.getElementById('gus-table-influencers');
-            if(elGusInfTable){
-                let hIG='';const entries=Object.values(infStatsGus);entries.sort((a,b)=>b.com-a.com||b.refs-a.refs);
-                for(let i=0;i<entries.length;i++){
-                    const s=entries[i];
-                    if(s.refs>0||s.dep>0||s.ret>0)hIG+=`<tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors"><td data-label="Influyente" class="p-5 pl-6 text-xs font-bold text-indigo-600 uppercase">${s.name}</td><td data-label="Total Ref." class="p-5 text-xs font-black text-center text-slate-700">${s.refs}</td><td data-label="Depósitos" class="p-5 text-sm font-black text-emerald-500 text-right">${fmt(s.dep)}</td><td data-label="Retiros" class="p-5 text-sm font-black text-rose-500 text-right">${fmt(s.ret)}</td><td data-label="Neto" class="p-5 text-sm font-black text-slate-700 text-right">${fmt(s.net)}</td><td data-label="Com. Plat. (5%)" class="p-5 text-sm font-black text-blue-500 text-right">${fmt(s.net*0.05)}</td><td data-label="Com. Pagar" class="p-5 pr-6 text-sm font-black text-purple-600 text-right">${fmt(s.com)}</td></tr>`;
-                }
-                elGusInfTable.innerHTML=hIG||`<tr><td colspan="7" class="p-8 text-center text-sm font-bold text-slate-400">Sin datos de influyentes.</td></tr>`;
-            }
-
-            const fBonos=bonos.filter(b=>isSameMonth(b.date,bonoMF));const ganados=fBonos.filter(b=>b.status==='Ganado');
-            const valGanados=ganados.reduce((s,b)=>s+getVal(b.amountWon),0);const valEntregados=fBonos.reduce((s,b)=>s+getVal(b.amount),0);
-            const fGiros=giros.filter(g=>isSameMonth(g.date,bonoMF));const girosGanados=fGiros.filter(g=>g.status==='Ganado').reduce((s,g)=>s+getVal(g.amountWon),0);
-
-            const elBqty=document.getElementById('dash-bonos-qty');if(elBqty)elBqty.innerText=fBonos.length;
-            const elBval=document.getElementById('dash-bonos-val');if(elBval)elBval.innerText=fmt(valEntregados);
-            const elBwqty=document.getElementById('dash-bonos-won-qty');if(elBwqty)elBwqty.innerText=ganados.length+fGiros.filter(g=>g.status==='Ganado').length;
-            const elBwval=document.getElementById('dash-bonos-won-val');if(elBwval)elBwval.innerText=fmt(valGanados+girosGanados);
+    // 2. BLOQUE BONOS (Emilia, Superadmin, Master, Admin)
+    if(userType==='master'||userType==='bonos'||isSuperAdmin||userType==='admin'){
+        const gusInfMF=document.getElementById('gus-inf-month-filter')?.value||dashMF;const infStatsGus={};
+        referrals.forEach(r=>{
+            const rawRef=String(r.referrer||'Desconocido').trim();const refKey=cleanStr(rawRef);
+            if(!infStatsGus[refKey])infStatsGus[refKey]={name:rawRef,refs:0,dep:0,ret:0,net:0,com:0};
+            infStatsGus[refKey].refs++;
+        });
+        rendimientos.filter(r=>isSameMonth(r.date,gusInfMF)).forEach(r=>{
+            const rawRef=String(r.referrer||'Desconocido').trim();const refKey=cleanStr(rawRef);
+            let rateUser=USERS[refKey]||Object.values(USERS).find(u=>cleanStr(u.name)===refKey);
+            let rate=rateUser&&rateUser.comision?parseFloat(rateUser.comision):20;
+            if(rate>1)rate=rate/100;
             
-            const fBonosDash=bonos.filter(b=>isSameMonth(b.date,dashMF));const ganadosDash=fBonosDash.filter(b=>b.status==='Ganado');
-            const valGanadosDash=ganadosDash.reduce((s,b)=>s+getVal(b.amountWon),0);const valEntregadosDash=fBonosDash.reduce((s,b)=>s+getVal(b.amount),0);
-            const fGirosDash=giros.filter(g=>isSameMonth(g.date,dashMF));const girosGanadosDash=fGirosDash.filter(g=>g.status==='Ganado').reduce((s,g)=>s+getVal(g.amountWon),0);
+            if(!infStatsGus[refKey])infStatsGus[refKey]={name:rawRef,refs:0,dep:0,ret:0,net:0,com:0};
+            let dep=getVal(r.depositos);let ret=getVal(r.retiros);let net=getVal(r.neto);let com=getVal(r.comision);
+            if (!com && net !== 0) com = net > 0 ? net * rate : 0;
+            infStatsGus[refKey].dep+=dep;infStatsGus[refKey].ret+=ret;infStatsGus[refKey].net+=net;infStatsGus[refKey].com+=com;
+        });
 
-            const elGusBqty=document.getElementById('gus-dash-qty-entregados');if(elGusBqty)elGusBqty.innerText=fBonosDash.length;
-            const elGusBval=document.getElementById('gus-dash-val-entregados');if(elGusBval)elGusBval.innerText=fmt(valEntregadosDash);
-            const elGusBwqty=document.getElementById('gus-dash-qty-ganados');if(elGusBwqty)elGusBwqty.innerText=ganadosDash.length+fGirosDash.filter(g=>g.status==='Ganado').length;
-            const elGusBwval=document.getElementById('gus-dash-val-ganados');if(elGusBwval)elGusBwval.innerText=fmt(valGanadosDash+girosGanadosDash);
+        Object.values(infStatsGus).forEach(s => {
+            totalComPlatAuto += (s.net * 0.05);
+        });
 
-            const players={};
-            fBonos.forEach(b=>{if(!players[cleanStr(b.assignedTo)])players[cleanStr(b.assignedTo)]={name:b.assignedTo,totalWon:0,received:0,totalReceived:0};players[cleanStr(b.assignedTo)].received++;players[cleanStr(b.assignedTo)].totalReceived+=getVal(b.amount);if(b.status==='Ganado')players[cleanStr(b.assignedTo)].totalWon+=getVal(b.amountWon);});
-            fGiros.forEach(g=>{if(!players[cleanStr(g.dest)])players[cleanStr(g.dest)]={name:g.dest,totalWon:0,received:0,totalReceived:0};if(g.status==='Ganado')players[cleanStr(g.dest)].totalWon+=getVal(g.amountWon);});
+        const elComPlatInput = document.getElementById('ext-complat');
+        if(elComPlatInput) { elComPlatInput.value = totalComPlatAuto.toFixed(2); }
 
-            const topGanadores=Object.values(players).filter(p=>p.totalWon>0).sort((a,b)=>b.totalWon-a.totalWon).slice(0,5);
-            let htmlGanadores=topGanadores.length===0?`<tr><td colspan="3" class="p-4 text-center text-xs font-bold text-slate-400">Sin datos</td></tr>`:'';
-            for(let i=0;i<topGanadores.length;i++){const p=topGanadores[i];htmlGanadores+=`<tr class="border-b border-slate-50"><td class="p-2 text-xs font-black text-amber-500">#${i+1}</td><td class="p-2 text-xs font-bold uppercase">${p.name}</td><td class="p-2 text-right text-sm font-black text-emerald-600">${fmt(p.totalWon)}</td></tr>`;}
-            ['table-top-ganadores','dash-table-top-ganadores','gus-table-top-ganadores'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=htmlGanadores;});
-            
-            const topRecibidos=Object.values(players).filter(p=>p.totalReceived>0).sort((a,b)=>b.totalReceived-a.totalReceived).slice(0,5);
-            let htmlRecibidos=topRecibidos.length===0?`<tr><td colspan="3" class="p-4 text-center text-xs font-bold text-slate-400">Sin datos</td></tr>`:'';
-            for(let i=0;i<topRecibidos.length;i++){const p=topRecibidos[i];htmlRecibidos+=`<tr class="border-b border-slate-50"><td class="p-2 text-xs font-black text-slate-400">#${i+1}</td><td class="p-2 text-xs font-bold uppercase">${p.name} <span class="text-[10px] normal-case">(${p.received} bonos)</span></td><td class="p-2 text-right text-sm font-black text-rose-600">${fmt(p.totalReceived)}</td></tr>`;}
-            ['table-top-recibidos','dash-table-top-recibidos'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=htmlRecibidos;});
-
-            let displayBonos=[...bonos];
-            if(bonoFilters.dateFrom||bonoFilters.dateTo)displayBonos=displayBonos.filter(b=>isWithinDateRange(b.date,bonoFilters.dateFrom,bonoFilters.dateTo));
-            if(bonoFilters.dest)displayBonos=displayBonos.filter(b=>cleanStr(b.assignedTo).includes(cleanStr(bonoFilters.dest)));
-            if(bonoFilters.amount&&!isNaN(parseFloat(bonoFilters.amount)))displayBonos=displayBonos.filter(b=>Math.abs(parseFloat(b.amount)||0)===parseFloat(bonoFilters.amount));
-            if(bonoFilters.agency&&bonoFilters.agency!=='all')displayBonos=displayBonos.filter(b=>b.company&&b.company.toLowerCase()===bonoFilters.agency.toLowerCase());
-            if(bonoFilters.status&&bonoFilters.status!=='all')displayBonos=displayBonos.filter(b=>b.status===bonoFilters.status);
-            
-            const elTableBonos=document.getElementById('table-bonos-list');
-            if(elTableBonos){
-                let hB='';const pagB=paginate(displayBonos,'bonos');
-                for(let i=0;i<pagB.length;i++){
-                    const b=pagB[i];
-                    let statusBadge='';
-                    if(b.status==='Ganado') statusBadge=`<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-black uppercase">Ganó ${fmt(b.amountWon)}</span>`;
-                    else if(b.status==='Perdido') statusBadge=`<span class="bg-rose-100 text-rose-700 px-2 py-1 rounded text-[10px] font-black uppercase">Perdido</span>`;
-                    else statusBadge=`<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">${b.status || 'Entregado'}</span>`;
-                    
-                    let btnAction=(userType==='bonos'||isSuperAdmin)?`<div class="flex justify-center gap-1">${(b.status!=='Ganado' && b.status!=='Perdido')?`<button onclick="actionBonoWin('${b.id}')" class="px-2 py-1 bg-emerald-500 text-white text-[10px] rounded">Ganar</button>`:''}<button onclick="actionDelete('${b.id}', 'bono')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded"><i class="fas fa-trash"></i></button></div>`:`<span class="text-[10px] text-slate-400 font-bold">-</span>`;
-                    hB+=`<tr class="border-b border-rose-50 hover:bg-slate-50/50 transition-colors"><td data-label="Fecha" class="p-3 text-xs font-bold text-slate-600">${fmtDate(b.date)}</td><td data-label="Jugador" class="p-3 text-xs font-bold text-indigo-600 uppercase flex items-center gap-1">${b.assignedTo} <span class="bg-indigo-100 text-indigo-700 px-1 py-0.5 rounded text-[9px]">${b.company||'Sepybet'}</span></td><td data-label="Monto Inicial" class="p-3 text-sm font-black">${fmt(b.amount)}</td><td data-label="Detalle" class="p-3 text-xs text-slate-500">${b.concept}</td><td data-label="Estado" class="p-3">${statusBadge}</td><td data-label="Acción" class="p-3 text-center">${btnAction}</td></tr>`;
-                }
-                elTableBonos.innerHTML=hB||`<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">Sin bonos.</td></tr>`;
+        const elGusInfTable=document.getElementById('gus-table-influencers');
+        if(elGusInfTable){
+            let hIG='';const entries=Object.values(infStatsGus);entries.sort((a,b)=>b.com-a.com||b.refs-a.refs);
+            for(let i=0;i<entries.length;i++){
+                const s=entries[i];
+                if(s.refs>0||s.dep>0||s.ret>0)hIG+=`<tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors"><td data-label="Influyente" class="p-5 pl-6 text-xs font-bold text-indigo-600 uppercase">${s.name}</td><td data-label="Total Ref." class="p-5 text-xs font-black text-center text-slate-700">${s.refs}</td><td data-label="Depósitos" class="p-5 text-sm font-black text-emerald-500 text-right">${fmt(s.dep)}</td><td data-label="Retiros" class="p-5 text-sm font-black text-rose-500 text-right">${fmt(s.ret)}</td><td data-label="Neto" class="p-5 text-sm font-black text-slate-700 text-right">${fmt(s.net)}</td><td data-label="Com. Plat. (5%)" class="p-5 text-sm font-black text-blue-500 text-right">${fmt(s.net*0.05)}</td><td data-label="Com. Pagar" class="p-5 pr-6 text-sm font-black text-purple-600 text-right">${fmt(s.com)}</td></tr>`;
             }
-
-            let displayGiros=[...giros];
-            if(giroFilters.dateFrom||giroFilters.dateTo)displayGiros=displayGiros.filter(g=>isWithinDateRange(g.date,giroFilters.dateFrom,giroFilters.dateTo));
-            if(giroFilters.dest)displayGiros=displayGiros.filter(g=>cleanStr(g.dest).includes(cleanStr(giroFilters.dest)));
-            if(giroFilters.agency&&giroFilters.agency!=='all')displayGiros=displayGiros.filter(g=>g.company&&g.company.toLowerCase()===giroFilters.agency.toLowerCase());
-            if(giroFilters.status&&giroFilters.status!=='all')displayGiros=displayGiros.filter(g=>g.status===giroFilters.status);
-            
-            const elTableGiros=document.getElementById('table-giros-list');
-            if(elTableGiros){
-                let hG='';const pagG=paginate(displayGiros,'giros');
-                for(let i=0;i<pagG.length;i++){
-                    const g=pagG[i];
-                    let statusBadge=(g.status==='Ganado')?`<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-black uppercase">Ganó ${fmt(g.amountWon)}</span>`:`<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Entregado</span>`;
-                    let btnAction=(userType==='bonos'||isSuperAdmin)?`<div class="flex justify-center gap-1">${g.status!=='Ganado'?`<button onclick="actionGiroWin('${g.id}')" class="px-2 py-1 bg-emerald-500 text-white text-[10px] rounded">Ganar</button>`:''}<button onclick="actionDelete('${g.id}', 'giro')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded"><i class="fas fa-trash"></i></button></div>`:`<span class="text-[10px] text-slate-400 font-bold">-</span>`;
-                    hG+=`<tr class="border-b border-rose-50 hover:bg-slate-50/50 transition-colors"><td data-label="Fecha" class="p-3 text-xs font-bold text-slate-600">${fmtDate(g.date)}</td><td data-label="Plataforma" class="p-3 text-xs font-bold text-indigo-600 uppercase flex items-center gap-1">${g.dest} <span class="bg-indigo-100 text-indigo-700 px-1 py-0.5 rounded text-[9px]">${g.company||'Sepybet'}</span></td><td data-label="Juego" class="p-3 text-xs font-bold">${g.game}</td><td data-label="Giros" class="p-3 text-sm font-black">${g.qty}</td><td data-label="Estado" class="p-3">${statusBadge}</td><td data-label="Acción" class="p-3 text-center">${btnAction}</td></tr>`;
-                }
-                elTableGiros.innerHTML=hG||`<tr><td colspan="7" class="p-4 text-center text-sm text-slate-400">Sin giros.</td></tr>`;
-            }
-
-            let displayRef=[...referrals];
-            if(refFilters.dateFrom||refFilters.dateTo)displayRef=displayRef.filter(r=>isWithinDateRange(r.date,refFilters.dateFrom,refFilters.dateTo));
-            if(refFilters.name)displayRef=displayRef.filter(r=>cleanStr(r.referrer).includes(cleanStr(refFilters.name))||cleanStr(r.referred).includes(cleanStr(refFilters.name)));
-            if(refFilters.cedula)displayRef=displayRef.filter(r=>String(r.cedula||'').includes(refFilters.cedula));
-            if(refFilters.agency&&refFilters.agency!=='all')displayRef=displayRef.filter(r=>r.company&&r.company.toLowerCase()===refFilters.agency.toLowerCase());
-            
-            const elTableRef=document.getElementById('table-ref-list');
-            if(elTableRef){
-                let hR='';const pagR=paginate(displayRef,'ref');
-                for(let i=0;i<pagR.length;i++){
-                    const r=pagR[i];
-                    let btnAction=(userType==='bonos'||isSuperAdmin)?`<button onclick="actionDelete('${r.id}', 'referral')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded mx-auto"><i class="fas fa-trash"></i></button>`:`<span class="text-[10px] text-slate-400 font-bold">Ok</span>`;
-                    hR+=`<tr class="border-b border-indigo-50 hover:bg-slate-50/50 transition-colors"><td data-label="Fecha" class="p-3 text-xs font-bold">${fmtDate(r.date)}</td><td data-label="Referente" class="p-3 text-xs font-bold text-indigo-600 uppercase flex items-center gap-1">${r.referrer} <span class="bg-indigo-100 text-indigo-700 px-1 py-0.5 rounded text-[9px]">${r.company||'Sepybet'}</span></td><td data-label="Nuevo Referido" class="p-3 text-xs font-bold uppercase">${r.referred}</td><td data-label="Cédula" class="p-3 text-xs font-mono">${r.cedula}</td><td data-label="Pago" class="p-3 text-sm font-black text-emerald-600">${fmt(r.amount)}</td><td data-label="Acción" class="p-3 text-center">${btnAction}</td></tr>`;
-                }
-                elTableRef.innerHTML=hR||`<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">Sin referidos.</td></tr>`;
-            }
+            elGusInfTable.innerHTML=hIG||`<tr><td colspan="7" class="p-8 text-center text-sm font-bold text-slate-400">Sin datos de influyentes.</td></tr>`;
         }
 
+        const fBonos=bonos.filter(b=>isSameMonth(b.date,bonoMF));const ganados=fBonos.filter(b=>b.status==='Ganado');
+        const valGanados=ganados.reduce((s,b)=>s+getVal(b.amountWon),0);const valEntregados=fBonos.reduce((s,b)=>s+getVal(b.amount),0);
+        const fGiros=giros.filter(g=>isSameMonth(g.date,bonoMF));const girosGanados=fGiros.filter(g=>g.status==='Ganado').reduce((s,g)=>s+getVal(g.amountWon),0);
+
+        const elBqty=document.getElementById('dash-bonos-qty');if(elBqty)elBqty.innerText=fBonos.length;
+        const elBval=document.getElementById('dash-bonos-val');if(elBval)elBval.innerText=fmt(valEntregados);
+        const elBwqty=document.getElementById('dash-bonos-won-qty');if(elBwqty)elBwqty.innerText=ganados.length+fGiros.filter(g=>g.status==='Ganado').length;
+        const elBwval=document.getElementById('dash-bonos-won-val');if(elBwval)elBwval.innerText=fmt(valGanados+girosGanados);
+        
+        const fBonosDash=bonos.filter(b=>isSameMonth(b.date,dashMF));const ganadosDash=fBonosDash.filter(b=>b.status==='Ganado');
+        const valGanadosDash=ganadosDash.reduce((s,b)=>s+getVal(b.amountWon),0);const valEntregadosDash=fBonosDash.reduce((s,b)=>s+getVal(b.amount),0);
+        const fGirosDash=giros.filter(g=>isSameMonth(g.date,dashMF));const girosGanadosDash=fGirosDash.filter(g=>g.status==='Ganado').reduce((s,g)=>s+getVal(g.amountWon),0);
+
+        const elGusBqty=document.getElementById('gus-dash-qty-entregados');if(elGusBqty)elGusBqty.innerText=fBonosDash.length;
+        const elGusBval=document.getElementById('gus-dash-val-entregados');if(elGusBval)elGusBval.innerText=fmt(valEntregadosDash);
+        const elGusBwqty=document.getElementById('gus-dash-qty-ganados');if(elGusBwqty)elGusBwqty.innerText=ganadosDash.length+fGirosDash.filter(g=>g.status==='Ganado').length;
+        const elGusBwval=document.getElementById('gus-dash-val-ganados');if(elGusBwval)elGusBwval.innerText=fmt(valGanadosDash+girosGanadosDash);
+
+        const players={};
+        fBonos.forEach(b=>{if(!players[cleanStr(b.assignedTo)])players[cleanStr(b.assignedTo)]={name:b.assignedTo,totalWon:0,received:0,totalReceived:0};players[cleanStr(b.assignedTo)].received++;players[cleanStr(b.assignedTo)].totalReceived+=getVal(b.amount);if(b.status==='Ganado')players[cleanStr(b.assignedTo)].totalWon+=getVal(b.amountWon);});
+        fGiros.forEach(g=>{if(!players[cleanStr(g.dest)])players[cleanStr(g.dest)]={name:g.dest,totalWon:0,received:0,totalReceived:0};if(g.status==='Ganado')players[cleanStr(g.dest)].totalWon+=getVal(g.amountWon);});
+
+        const topGanadores=Object.values(players).filter(p=>p.totalWon>0).sort((a,b)=>b.totalWon-a.totalWon).slice(0,5);
+        let htmlGanadores=topGanadores.length===0?`<tr><td colspan="3" class="p-4 text-center text-xs font-bold text-slate-400">Sin datos</td></tr>`:'';
+        for(let i=0;i<topGanadores.length;i++){const p=topGanadores[i];htmlGanadores+=`<tr class="border-b border-slate-50"><td class="p-2 text-xs font-black text-amber-500">#${i+1}</td><td class="p-2 text-xs font-bold uppercase">${p.name}</td><td class="p-2 text-right text-sm font-black text-emerald-600">${fmt(p.totalWon)}</td></tr>`;}
+        ['table-top-ganadores','dash-table-top-ganadores','gus-table-top-ganadores'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=htmlGanadores;});
+        
+        const topRecibidos=Object.values(players).filter(p=>p.totalReceived>0).sort((a,b)=>b.totalReceived-a.totalReceived).slice(0,5);
+        let htmlRecibidos=topRecibidos.length===0?`<tr><td colspan="3" class="p-4 text-center text-xs font-bold text-slate-400">Sin datos</td></tr>`:'';
+        for(let i=0;i<topRecibidos.length;i++){const p=topRecibidos[i];htmlRecibidos+=`<tr class="border-b border-slate-50"><td class="p-2 text-xs font-black text-slate-400">#${i+1}</td><td class="p-2 text-xs font-bold uppercase">${p.name} <span class="text-[10px] normal-case">(${p.received} bonos)</span></td><td class="p-2 text-right text-sm font-black text-rose-600">${fmt(p.totalReceived)}</td></tr>`;}
+        ['table-top-recibidos','dash-table-top-recibidos'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=htmlRecibidos;});
+
+        let displayBonos=[...bonos];
+        if(bonoFilters.dateFrom||bonoFilters.dateTo)displayBonos=displayBonos.filter(b=>isWithinDateRange(b.date,bonoFilters.dateFrom,bonoFilters.dateTo));
+        if(bonoFilters.dest)displayBonos=displayBonos.filter(b=>cleanStr(b.assignedTo).includes(cleanStr(bonoFilters.dest)));
+        if(bonoFilters.amount&&!isNaN(parseFloat(bonoFilters.amount)))displayBonos=displayBonos.filter(b=>Math.abs(parseFloat(b.amount)||0)===parseFloat(bonoFilters.amount));
+        if(bonoFilters.agency&&bonoFilters.agency!=='all')displayBonos=displayBonos.filter(b=>b.company&&b.company.toLowerCase()===bonoFilters.agency.toLowerCase());
+        if(bonoFilters.status&&bonoFilters.status!=='all')displayBonos=displayBonos.filter(b=>b.status===bonoFilters.status);
+        
+        const elTableBonos=document.getElementById('table-bonos-list');
+        if(elTableBonos){
+            let hB='';const pagB=paginate(displayBonos,'bonos');
+            for(let i=0;i<pagB.length;i++){
+                const b=pagB[i];
+                let statusBadge='';
+                if(b.status==='Ganado') statusBadge=`<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-black uppercase">Ganó ${fmt(b.amountWon)}</span>`;
+                else if(b.status==='Perdido') statusBadge=`<span class="bg-rose-100 text-rose-700 px-2 py-1 rounded text-[10px] font-black uppercase">Perdido</span>`;
+                else statusBadge=`<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">${b.status || 'Entregado'}</span>`;
+                
+                let btnAction=(userType==='bonos'||isSuperAdmin)?`<div class="flex justify-center gap-1">${(b.status!=='Ganado' && b.status!=='Perdido')?`<button onclick="actionBonoWin('${b.id}')" class="px-2 py-1 bg-emerald-500 text-white text-[10px] rounded">Ganar</button>`:''}<button onclick="actionDelete('${b.id}', 'bono')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded"><i class="fas fa-trash"></i></button></div>`:`<span class="text-[10px] text-slate-400 font-bold">-</span>`;
+                hB+=`<tr class="border-b border-rose-50 hover:bg-slate-50/50 transition-colors"><td data-label="Fecha" class="p-3 text-xs font-bold text-slate-600">${fmtDate(b.date)}</td><td data-label="Jugador" class="p-3 text-xs font-bold text-indigo-600 uppercase flex items-center gap-1">${b.assignedTo} <span class="bg-indigo-100 text-indigo-700 px-1 py-0.5 rounded text-[9px]">${b.company||'Sepybet'}</span></td><td data-label="Monto Inicial" class="p-3 text-sm font-black">${fmt(b.amount)}</td><td data-label="Detalle" class="p-3 text-xs text-slate-500">${b.concept}</td><td data-label="Estado" class="p-3">${statusBadge}</td><td data-label="Acción" class="p-3 text-center">${btnAction}</td></tr>`;
+            }
+            elTableBonos.innerHTML=hB||`<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">Sin bonos.</td></tr>`;
+        }
+
+        let displayGiros=[...giros];
+        if(giroFilters.dateFrom||giroFilters.dateTo)displayGiros=displayGiros.filter(g=>isWithinDateRange(g.date,giroFilters.dateFrom,giroFilters.dateTo));
+        if(giroFilters.dest)displayGiros=displayGiros.filter(g=>cleanStr(g.dest).includes(cleanStr(giroFilters.dest)));
+        if(giroFilters.agency&&giroFilters.agency!=='all')displayGiros=displayGiros.filter(g=>g.company&&g.company.toLowerCase()===giroFilters.agency.toLowerCase());
+        if(giroFilters.status&&giroFilters.status!=='all')displayGiros=displayGiros.filter(g=>g.status===giroFilters.status);
+        
+        const elTableGiros=document.getElementById('table-giros-list');
+        if(elTableGiros){
+            let hG='';const pagG=paginate(displayGiros,'giros');
+            for(let i=0;i<pagG.length;i++){
+                const g=pagG[i];
+                let statusBadge=(g.status==='Ganado')?`<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-black uppercase">Ganó ${fmt(g.amountWon)}</span>`:`<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black uppercase">Entregado</span>`;
+                let btnAction=(userType==='bonos'||isSuperAdmin)?`<div class="flex justify-center gap-1">${g.status!=='Ganado'?`<button onclick="actionGiroWin('${g.id}')" class="px-2 py-1 bg-emerald-500 text-white text-[10px] rounded">Ganar</button>`:''}<button onclick="actionDelete('${g.id}', 'giro')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded"><i class="fas fa-trash"></i></button></div>`:`<span class="text-[10px] text-slate-400 font-bold">-</span>`;
+                hG+=`<tr class="border-b border-rose-50 hover:bg-slate-50/50 transition-colors"><td data-label="Fecha" class="p-3 text-xs font-bold text-slate-600">${fmtDate(g.date)}</td><td data-label="Plataforma" class="p-3 text-xs font-bold text-indigo-600 uppercase flex items-center gap-1">${g.dest} <span class="bg-indigo-100 text-indigo-700 px-1 py-0.5 rounded text-[9px]">${g.company||'Sepybet'}</span></td><td data-label="Juego" class="p-3 text-xs font-bold">${g.game}</td><td data-label="Giros" class="p-3 text-sm font-black">${g.qty}</td><td data-label="Estado" class="p-3">${statusBadge}</td><td data-label="Acción" class="p-3 text-center">${btnAction}</td></tr>`;
+            }
+            elTableGiros.innerHTML=hG||`<tr><td colspan="7" class="p-4 text-center text-sm text-slate-400">Sin giros.</td></tr>`;
+        }
+
+        let displayRef=[...referrals];
+        if(refFilters.dateFrom||refFilters.dateTo)displayRef=displayRef.filter(r=>isWithinDateRange(r.date,refFilters.dateFrom,refFilters.dateTo));
+        if(refFilters.name)displayRef=displayRef.filter(r=>cleanStr(r.referrer).includes(cleanStr(refFilters.name))||cleanStr(r.referred).includes(cleanStr(refFilters.name)));
+        if(refFilters.cedula)displayRef=displayRef.filter(r=>String(r.cedula||'').includes(refFilters.cedula));
+        if(refFilters.agency&&refFilters.agency!=='all')displayRef=displayRef.filter(r=>r.company&&r.company.toLowerCase()===refFilters.agency.toLowerCase());
+        
+        const elTableRef=document.getElementById('table-ref-list');
+        if(elTableRef){
+            let hR='';const pagR=paginate(displayRef,'ref');
+            for(let i=0;i<pagR.length;i++){
+                const r=pagR[i];
+                let btnAction=(userType==='bonos'||isSuperAdmin)?`<button onclick="actionDelete('${r.id}', 'referral')" class="w-7 h-7 bg-rose-50 text-rose-500 rounded mx-auto"><i class="fas fa-trash"></i></button>`:`<span class="text-[10px] text-slate-400 font-bold">Ok</span>`;
+                hR+=`<tr class="border-b border-indigo-50 hover:bg-slate-50/50 transition-colors"><td data-label="Fecha" class="p-3 text-xs font-bold">${fmtDate(r.date)}</td><td data-label="Referente" class="p-3 text-xs font-bold text-indigo-600 uppercase flex items-center gap-1">${r.referrer} <span class="bg-indigo-100 text-indigo-700 px-1 py-0.5 rounded text-[9px]">${r.company||'Sepybet'}</span></td><td data-label="Nuevo Referido" class="p-3 text-xs font-bold uppercase">${r.referred}</td><td data-label="Cédula" class="p-3 text-xs font-mono">${r.cedula}</td><td data-label="Pago" class="p-3 text-sm font-black text-emerald-600">${fmt(r.amount)}</td><td data-label="Acción" class="p-3 text-center">${btnAction}</td></tr>`;
+            }
+            elTableRef.innerHTML=hR||`<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">Sin referidos.</td></tr>`;
+        }
+    } // FIN BLOQUE 2
+
+    // 3. BLOQUE COMISIONES EXTERNAS Y BONOS REALES
+    if(userType==='master'||isSuperAdmin||userType==='admin'||userType==='user'){
         const extComMonth = externalCommissions.find(x => x.month === globalMF);
         const isTito = cleanStr(currentUser) === 'tito';
         const isJesus = cleanStr(currentUser) === 'jesus';
@@ -4569,6 +4545,38 @@ function updateAllViews(){
         }
     }
 
+    if(userType === 'admin' || userType === 'master' || isSuperAdmin || userType === 'bonos') {
+        const bonosRealesMes = bonosReales.filter(b => isSameMonth(b.date, globalMF) && b.status === 'Verificado');
+        const cantidadBR = bonosRealesMes.length;
+        const valorBR = bonosRealesMes.reduce((s, b) => s + Math.abs(parseFloat(b.amount)||0), 0);
+        
+        ['dash-total-bonos-reales', 'gus-total-bonos-reales'].forEach(id => {
+            const el = document.getElementById(id); if (el) el.innerText = cantidadBR;
+        });
+        ['dash-valor-bonos-reales', 'gus-valor-bonos-reales'].forEach(id => {
+            const el = document.getElementById(id); if (el) el.innerText = fmt(valorBR);
+        });
+
+        let fBonosReal = [...bonosRealesList];
+        if(bonoRealFilters.dateFrom || bonoRealFilters.dateTo) fBonosReal = fBonosReal.filter(r => isWithinDateRange(r.date, bonoRealFilters.dateFrom, bonoRealFilters.dateTo));
+        if(bonoRealFilters.jugador) fBonosReal = fBonosReal.filter(r => String(r.jugador).toLowerCase().includes(bonoRealFilters.jugador) || String(r.concept).toLowerCase().includes(bonoRealFilters.jugador));
+        
+        const elTotalBonoReal = document.getElementById('bonoreal-total-sum');
+        if(elTotalBonoReal) elTotalBonoReal.innerText = fmt(fBonosReal.reduce((sum, r) => sum + Math.abs(r.amount), 0));
+
+        const elTableBonosReal = document.getElementById('table-bonos-real-list');
+        if(elTableBonosReal) {
+            let hBR = ''; const pagBR = paginate(fBonosReal, 'breales'); 
+            for(let i=0; i<pagBR.length; i++){
+                const r = pagBR[i];
+                let badge = r.status==='Verificado' ? `<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-black uppercase"><i class="fas fa-check"></i> Verif</span>` : `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-black uppercase">Pendiente</span>`;
+                hBR += `<tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors"><td data-label="Fecha" class="p-3 text-xs font-bold pl-2">${fmtDate(r.date)}</td><td data-label="Jugador" class="p-3 text-xs font-bold uppercase text-indigo-600">${r.jugador || '-'}</td><td data-label="Monto" class="p-3 text-sm font-black text-emerald-600">${fmt(Math.abs(r.amount))}</td><td data-label="Concepto" class="p-3 text-[10px] italic text-slate-500">${r.concept || '-'}</td><td data-label="Responsable" class="p-3 text-xs font-bold text-slate-600">${USERS[cleanStr(r.created_by)]?.name || r.created_by}</td><td data-label="Estado" class="p-3 text-center pr-2">${badge}</td></tr>`;
+            }
+            elTableBonosReal.innerHTML = hBR || `<tr><td colspan="6" class="p-4 text-center text-sm text-slate-400">No hay bonos de saldo real registrados.</td></tr>`;
+        }
+    } // FIN BLOQUE 3
+
+    // 4. BLOQUE RENDIMIENTOS E INACTIVOS
     if(userType==='cajero_afiliados'||isSuperAdmin||userType==='admin'||userType==='master'){
         let displayRend=[...rendimientos];
         if(melFilters.dateFrom||melFilters.dateTo)displayRend=displayRend.filter(r=>isWithinDateRange(r.date,melFilters.dateFrom,melFilters.dateTo));
@@ -4611,8 +4619,9 @@ function updateAllViews(){
             }
             elTableInactivos.innerHTML=hI||`<tr><td colspan="5" class="p-4 text-center text-sm text-slate-400">Sin inactivos.</td></tr>`;
         }
-    }
+    } // FIN BLOQUE 4
 
+    // 5. BLOQUE INFLUENCER VIP
     if(userType==='influencer'||isSuperAdmin || userType==='admin'){
         const infMonth=document.getElementById('inf-month-filter')?.value||globalMF;
         
@@ -4724,7 +4733,8 @@ function updateAllViews(){
                 const elDetTitle=document.getElementById('inf-detail-title');if(elDetTitle)elDetTitle.innerHTML=`Movimientos Diarios: <span class="text-indigo-600 uppercase">${targetP}</span>`;
             }
         }
-    }
+    } // FIN BLOQUE 5
+
     updateLiveTimeline();
   } catch (err) { console.error("Error en updateAllViews:", err); }
 }
