@@ -1666,13 +1666,17 @@ input[type="number"] { -moz-appearance: textfield; }
 
                     <!-- BLOQUE 3: AUDIENCIA Y TABLA -->
                     <div class="bg-white border border-slate-100 rounded-[2.5rem] card-shadow overflow-hidden flex flex-col">
-                        <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                            <h3 class="text-lg font-extrabold text-slate-800 tracking-tight">Audiencia de la Campaña</h3>
-                            <div class="flex gap-2 w-full sm:w-auto">
+                       <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
+                            <h3 class="text-lg font-extrabold text-slate-800 tracking-tight shrink-0">Audiencia de la Campaña</h3>
+                            <div class="flex flex-wrap gap-2 w-full xl:w-auto justify-end">
+                                <input type="text" id="cd-search-text" oninput="renderCampaignDetails()" placeholder="Buscar nombre o número..." class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold outline-none focus:border-purple-500 shadow-sm w-full sm:w-auto">
                                 <select id="cd-filter-status" onchange="renderCampaignDetails()" class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold outline-none focus:border-purple-500 shadow-sm w-full sm:w-auto">
                                     <option value="all">Todos los usuarios</option>
-                                    <option value="deposited">Sí Recargaron</option>
-                                    <option value="not_deposited">No Recargaron</option>
+                                    <option value="deposited">💰 Sí Recargaron</option>
+                                    <option value="not_deposited">❌ No Recargaron</option>
+                                    <option value="wsp_leido">👀 WSP: Leídos</option>
+                                    <option value="wsp_entregado">📩 WSP: Entregados</option>
+                                    <option value="wsp_fallido">🚫 WSP: Fallidos</option>
                                 </select>
                                 <button onclick="openCampDownloadModal()" class="px-5 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-xl text-xs font-bold transition-colors shadow-sm w-full sm:w-auto"><i class="fas fa-download mr-1"></i> Exportar</button>
                             </div>
@@ -2015,31 +2019,31 @@ input[type="number"] { -moz-appearance: textfield; }
 <div id="modal-camp-download" class="fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden fade-in border border-purple-100">
         <div class="p-8 text-center border-b border-purple-50 bg-purple-50/50">
-            <h3 class="text-xl font-black text-purple-900 tracking-tight">Descargar Audiencia</h3>
+            <h3 class="text-xl font-black text-purple-900 tracking-tight">Descargar Excel Limpio</h3>
         </div>
         <div class="p-8 space-y-5">
             <input type="hidden" id="dw-camp-id">
             
             <div>
-                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 ml-1">Segmentar por Estado</label>
+                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 ml-1">Filtrar por Recargas</label>
                 <select id="dw-camp-type" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold text-sm outline-none focus:border-purple-500 shadow-sm">
-                    <option value="success">Los que SÍ recargaron (Conversiones)</option>
-                    <option value="fail">Los que NO recargaron (Pérdidas)</option>
                     <option value="all">Todos los contactados</option>
-                </select>
-            </div>
-            
-            <div>
-                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 ml-1">Formato de Descarga</label>
-                <select id="dw-camp-format" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold text-sm outline-none focus:border-purple-500 shadow-sm">
-                    <option value="user_phone">Nombres (Limpios/Base) y Teléfonos</option>
-                    <option value="user_only">Solo Nombres de Usuario Limpios</option>
+                    <option value="success">Solo los que SÍ recargaron</option>
+                    <option value="fail">Solo los que NO recargaron</option>
                 </select>
             </div>
 
+            <label class="flex items-center justify-between cursor-pointer bg-slate-50 p-4 rounded-2xl border border-slate-200 hover:bg-slate-100 transition-colors">
+                <div class="flex flex-col">
+                    <span class="text-sm font-extrabold text-slate-700">Omitir Fallidos (WSP)</span>
+                    <span class="text-[10px] font-bold text-slate-400 mt-0.5">Excluye números que no existen.</span>
+                </div>
+                <input type="checkbox" id="dw-omit-failed" checked class="w-5 h-5 rounded border-slate-300 text-purple-600 focus:ring-purple-500">
+            </label>
+
             <div class="flex gap-3 mt-4">
                 <button onclick="closeCampDownloadModal()" class="flex-1 py-4 bg-white border border-slate-200 text-slate-600 rounded-2xl font-bold shadow-sm">Cancelar</button>
-                <button onclick="confirmCampDownload()" class="flex-1 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-bold shadow-md flex items-center justify-center gap-2"><i class="fas fa-download"></i> Descargar</button>
+                <button onclick="confirmCampDownload()" class="flex-1 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-bold shadow-md flex items-center justify-center gap-2"><i class="fas fa-file-excel"></i> Descargar Reporte</button>
             </div>
         </div>
     </div>
@@ -2879,9 +2883,25 @@ function renderCampaignDetails() {
     }
 
     const filterVal = document.getElementById('cd-filter-status')?.value || 'all';
+    const searchVal = document.getElementById('cd-search-text')?.value.toLowerCase().trim() || '';
+
     let displayTargets = allTargets;
-    if(filterVal === 'deposited') displayTargets = allTargets.filter(t => t.deposited);
-    else if(filterVal === 'not_deposited') displayTargets = allTargets.filter(t => !t.deposited);
+
+    // Aplicar buscador de texto
+    if(searchVal) {
+        displayTargets = displayTargets.filter(t => 
+            t.username.toLowerCase().includes(searchVal) || 
+            (t.phone && t.phone.includes(searchVal)) || 
+            (t.original_name && t.original_name.toLowerCase().includes(searchVal))
+        );
+    }
+
+    // Aplicar filtros desplegables
+    if(filterVal === 'deposited') displayTargets = displayTargets.filter(t => t.deposited);
+    else if(filterVal === 'not_deposited') displayTargets = displayTargets.filter(t => !t.deposited);
+    else if(filterVal === 'wsp_leido') displayTargets = displayTargets.filter(t => t.wsp_status === 'Leído');
+    else if(filterVal === 'wsp_entregado') displayTargets = displayTargets.filter(t => t.wsp_status === 'Entregado' || t.wsp_status === 'Leído');
+    else if(filterVal === 'wsp_fallido') displayTargets = displayTargets.filter(t => t.wsp_status === 'Fallido');
 
     const tbody = document.getElementById('cd-table-body');
     if(!tbody) return;
@@ -3110,14 +3130,19 @@ function closeCampDownloadModal() {
 async function confirmCampDownload() {
     const id = document.getElementById('dw-camp-id').value;
     const type = document.getElementById('dw-camp-type').value; 
-    const format = document.getElementById('dw-camp-format').value; 
+    const omitFailed = document.getElementById('dw-omit-failed').checked;
+    
     const camp = campaignsList.find(c => c.id === id);
     if(!camp) return;
-    const targets = campaignTargetsList.filter(t => t.campaign_id === id);
-    let finalUsers = [];
-    if(type === 'success') finalUsers = targets.filter(t => t.deposited);
-    else if(type === 'fail') finalUsers = targets.filter(t => !t.deposited);
-    else finalUsers = targets;
+    
+    let finalUsers = campaignTargetsList.filter(t => t.campaign_id === id);
+    
+    if(type === 'success') finalUsers = finalUsers.filter(t => t.deposited);
+    else if(type === 'fail') finalUsers = finalUsers.filter(t => !t.deposited);
+    
+    if(omitFailed) {
+        finalUsers = finalUsers.filter(t => t.wsp_status !== 'Fallido');
+    }
     
     if(finalUsers.length === 0) return showToast("No hay usuarios en esta categoría", "warning");
     
@@ -3126,17 +3151,24 @@ async function confirmCampDownload() {
         let u = t.username;
         let phoneVal = t.phone || (contactsMap[u] ? contactsMap[u].phone : 'Sin Teléfono');
         let origName = t.original_name || (contactsMap[u] ? contactsMap[u].orig : u);
-        if(format === 'user_phone') exportData.push({ 'Nombre Base': origName, 'Usuario Limpio': u, 'Teléfono': phoneVal });
-        else exportData.push({ 'Nombre Base': origName, 'Usuario Limpio': u });
+        
+        exportData.push({ 
+            'Nombre Original': origName, 
+            'Usuario (Sistema)': u, 
+            'Teléfono': phoneVal,
+            'Estado de Envío WSP': t.wsp_status || 'Pendiente',
+            '¿Realizó Recarga?': t.deposited ? 'SÍ' : 'NO',
+            'Monto Depositado ($)': t.amount_deposited || 0
+        });
     });
     
     const ws = XLSX.utils.json_to_sheet(exportData);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Audiencia");
-    XLSX.writeFile(wb, `Campana_${camp.name}_${type}.xlsx`);
+    XLSX.utils.book_append_sheet(wb, ws, "Audiencia CRM");
+    XLSX.writeFile(wb, `Reporte_CRM_${camp.name}.xlsx`);
     
     closeCampDownloadModal();
-    showToast("Audiencia descargada con éxito", "success");
+    showToast("Reporte descargado con éxito", "success");
 }
 
 async function deleteCampaign(id) {
