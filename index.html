@@ -3368,8 +3368,10 @@ function handleBonosApuestasUpload(e) {
                     cIdx.id = cols.findIndex(x=>x === 'id apuesta' || x === 'id_tx' || x === 'id');
                     cIdx.jug = cols.findIndex(x=>x === 'jugador' || x === 'usuario' || (x.includes('jugador') && !x.includes('id')));
                     cIdx.monto = cols.findIndex(x=>x === 'monto' || x.includes('inversión') || x.includes('inversion'));
-                    cIdx.ganancia = cols.findIndex(x=>x === 'ganancia' || x === 'monto ganado'); 
-                    cIdx.gananciaPosible = cols.findIndex(x=>x === 'ganancia posible' || x.includes('posible'));
+                    
+                    // ESCÁNER ESTRICTO: Busca ganancia real y bloquea cualquier columna que diga "posible"
+                    cIdx.ganancia = cols.findIndex(x=>(x.includes('ganancia') || x.includes('monto ganado')) && !x.includes('posible')); 
+                    
                     cIdx.esBono = cols.findIndex(x=>x === 'es bono' || x === 'bono');
                     cIdx.estado = cols.findIndex(x=>x === 'resultado' || x === 'estado');
                     cIdx.fecha = cols.findIndex(x=>x.includes('fecha creación') || x.includes('fecha'));
@@ -3391,16 +3393,22 @@ function handleBonosApuestasUpload(e) {
                 
                 if(esBono === 'si' || esBono === 'yes') {
                     let rawMonto = getVal(row[cIdx.monto]);
-                    let rawGanancia = getVal(row[cIdx.ganancia]);
-                    let rawEstado = String(row[cIdx.estado]||'').trim();
+                    let rawGanancia = cIdx.ganancia !== -1 ? getVal(row[cIdx.ganancia]) : 0;
+                    
                     let stDisplay = 'Entregado';
-                    let resLow = rawEstado.toLowerCase();
+                    let resLow = cIdx.estado !== -1 ? String(row[cIdx.estado]||'').toLowerCase().trim() : '';
                     
-                    if (resLow.includes('won') || resLow.includes('ganado')) stDisplay = 'Ganado';
-                    else if (resLow.includes('lost') || resLow.includes('perdid') || resLow.includes('void') || resLow.includes('cancel')) stDisplay = 'Perdido';
-                    
-                    if (stDisplay === 'Ganado' && rawGanancia === 0 && cIdx.gananciaPosible !== -1) {
-                        rawGanancia = getVal(row[cIdx.gananciaPosible]);
+                    // LÓGICA INFALIBLE: Si la ganancia es 0, evalúa el estado del backoffice, jamás asume valores imaginarios
+                    if (rawGanancia > 0) {
+                        stDisplay = 'Ganado';
+                    } else {
+                        if (resLow.includes('lost') || resLow.includes('perdid') || resLow.includes('void') || resLow.includes('cancel')) {
+                            stDisplay = 'Perdido';
+                        } else if (resLow.includes('won') || resLow.includes('ganado')) {
+                            stDisplay = 'Perdido'; 
+                        } else {
+                            stDisplay = 'Entregado'; 
+                        }
                     }
 
                     let dateBase = excelToISO(row[cIdx.fecha]);
@@ -3428,7 +3436,6 @@ function handleBonosApuestasUpload(e) {
     };
     reader.readAsBinaryString(file);
 }
-
 function renderBonosApuestasPreview() {
     const tbody=document.getElementById('bonos-apuestas-preview-body');
     const cont=document.getElementById('bonos-apuestas-preview-container');
