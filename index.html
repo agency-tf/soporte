@@ -1561,20 +1561,25 @@ input[type="number"] { -moz-appearance: textfield; }
                             <p class="text-xs text-slate-500 mt-1 font-bold">Fecha de envío: <span id="cd-date" class="text-slate-700">--</span></p>
                         </div>
                         <div class="flex flex-col gap-4 w-full md:w-auto">
-                            <!-- PANEL RECARGAS -->
                             <div class="flex flex-col gap-2 w-full md:w-auto" id="cd-upload-panel">
-                                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest ml-1">Subir Reporte de Backoffice (Calcular ROI y Conversión)</label>
+                                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest ml-1">1. Reporte Backoffice (ROI y Conversión)</label>
                                 <div class="flex gap-2">
                                     <input type="file" id="upload-camp-analysis-file" accept=".xlsx, .xls, .csv" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:font-bold file:bg-purple-50 file:text-purple-700 cursor-pointer border border-slate-200 rounded-2xl bg-slate-50 transition-colors">
                                     <button onclick="analyzeCampaignFile()" class="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl text-xs font-bold shadow-md transition-colors whitespace-nowrap"><i class="fas fa-magic mr-1"></i> Analizar</button>
                                 </div>
                             </div>
-                            <!-- NUEVO PANEL WSP -->
+                            <div class="flex flex-col gap-2 w-full md:w-auto" id="cd-bono-panel">
+                                <label class="block text-[10px] font-extrabold text-rose-400 uppercase tracking-widest ml-1">2. Comparar Bonos (Identificar Regalos)</label>
+                                <div class="flex gap-2">
+                                    <input type="file" id="upload-bono-analysis-file" accept=".xlsx, .xls, .csv" class="block w-full text-xs text-rose-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:font-bold file:bg-rose-50 file:text-rose-700 cursor-pointer border border-rose-200 rounded-2xl bg-rose-50 transition-colors">
+                                    <button onclick="analyzeBonoFile()" class="px-6 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl text-xs font-bold shadow-md transition-colors whitespace-nowrap"><i class="fas fa-gift mr-1"></i> Comparar</button>
+                                </div>
+                            </div>
                             <div class="flex flex-col gap-2 w-full md:w-auto" id="cd-wsp-panel">
-                                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest ml-1">Subir Reporte WhatsApp (Leídos/Fallidos)</label>
+                                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest ml-1">3. Reporte WhatsApp (Leídos/Fallidos)</label>
                                 <div class="flex gap-2">
                                     <input type="file" id="upload-wsp-analysis-file" accept=".xlsx, .xls, .csv" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:font-bold file:bg-sky-50 file:text-sky-700 cursor-pointer border border-slate-200 rounded-2xl bg-slate-50 transition-colors">
-                                    <button onclick="analyzeWspFile()" class="px-6 py-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-2xl text-xs font-bold shadow-md transition-colors whitespace-nowrap"><i class="fas fa-comment-dots mr-1"></i> Actualizar WSP</button>
+                                    <button onclick="analyzeWspFile()" class="px-6 py-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-2xl text-xs font-bold shadow-md transition-colors whitespace-nowrap"><i class="fas fa-comment-dots mr-1"></i> Act. WSP</button>
                                 </div>
                             </div>
                         </div>
@@ -2829,103 +2834,118 @@ function viewCampaignDetails(id) {
 }
 
 function renderCampaignDetails() {
-    if(!currentCampaignId) return;
-    const allTargets = campaignTargetsList.filter(t => t.campaign_id === currentCampaignId);
-    const total = allTargets.length;
-    const conv = allTargets.filter(t => t.deposited).length;
-    const rev = allTargets.reduce((acc, t) => acc + parseFloat(t.amount_deposited || 0), 0);
-    const rate = total > 0 ? ((conv / total) * 100).toFixed(1) : 0;
+    try {
+        if(!currentCampaignId) return;
+        const allTargets = campaignTargetsList.filter(t => t.campaign_id === currentCampaignId);
+        const total = allTargets.length;
+        
+        // Excluye a los bonos del conteo de recargas reales
+        const conv = allTargets.filter(t => t.deposited && t.wsp_status !== 'Bono').length; 
+        const rev = allTargets.reduce((acc, t) => acc + parseFloat(t.amount_deposited || 0), 0);
+        
+        const elRoi = document.getElementById('cd-metric-roi'); if(elRoi) elRoi.innerText = fmt(rev);
 
-    const elRoi = document.getElementById('cd-metric-roi'); if(elRoi) elRoi.innerText = fmt(rev);
+        const leidos = allTargets.filter(t => t.wsp_status === 'Leído').length;
+        const entregados = allTargets.filter(t => t.wsp_status === 'Entregado' || t.wsp_status === 'Leído').length;
+        const fallidos = allTargets.filter(t => t.wsp_status === 'Fallido').length;
 
-    const leidos = allTargets.filter(t => t.wsp_status === 'Leído').length;
-    const entregados = allTargets.filter(t => t.wsp_status === 'Entregado' || t.wsp_status === 'Leído').length;
-    const fallidos = allTargets.filter(t => t.wsp_status === 'Fallido').length;
+        if(document.getElementById('funnel-total')) document.getElementById('funnel-total').innerText = total;
+        if(document.getElementById('funnel-entregados')) document.getElementById('funnel-entregados').innerText = entregados;
+        if(document.getElementById('funnel-leidos')) document.getElementById('funnel-leidos').innerText = leidos;
+        if(document.getElementById('funnel-recargos')) document.getElementById('funnel-recargos').innerText = conv;
 
-    document.getElementById('funnel-total').innerText = total;
-    document.getElementById('funnel-entregados').innerText = entregados;
-    document.getElementById('funnel-leidos').innerText = leidos;
-    document.getElementById('funnel-recargos').innerText = conv;
+        if(document.getElementById('funnel-base-1')) document.getElementById('funnel-base-1').innerText = total;
+        if(document.getElementById('funnel-base-2')) document.getElementById('funnel-base-2').innerText = total;
+        if(document.getElementById('funnel-base-3')) document.getElementById('funnel-base-3').innerText = total;
 
-    document.getElementById('funnel-base-1').innerText = total;
-    document.getElementById('funnel-base-2').innerText = total;
-    document.getElementById('funnel-base-3').innerText = total;
+        const pct1 = total > 0 ? ((entregados/total)*100).toFixed(0) : 0;
+        const pct2 = total > 0 ? ((leidos/total)*100).toFixed(0) : 0;
+        const pct3 = total > 0 ? ((conv/total)*100).toFixed(0) : 0;
 
-    const pct1 = total > 0 ? ((entregados/total)*100).toFixed(0) : 0;
-    const pct2 = total > 0 ? ((leidos/total)*100).toFixed(0) : 0;
-    const pct3 = total > 0 ? ((conv/total)*100).toFixed(0) : 0;
+        setTimeout(() => {
+            if(document.getElementById('funnel-bar-1')) document.getElementById('funnel-bar-1').style.width = pct1 + '%';
+            if(document.getElementById('funnel-pct-1')) document.getElementById('funnel-pct-1').innerText = pct1 + '%';
+            if(document.getElementById('funnel-bar-2')) document.getElementById('funnel-bar-2').style.width = pct2 + '%';
+            if(document.getElementById('funnel-pct-2')) document.getElementById('funnel-pct-2').innerText = pct2 + '%';
+            if(document.getElementById('funnel-bar-3')) document.getElementById('funnel-bar-3').style.width = pct3 + '%';
+            if(document.getElementById('funnel-pct-3')) document.getElementById('funnel-pct-3').innerText = pct3 + '%';
+        }, 100); 
 
-    setTimeout(() => {
-        document.getElementById('funnel-bar-1').style.width = pct1 + '%';
-        document.getElementById('funnel-pct-1').innerText = pct1 + '%';
-        document.getElementById('funnel-bar-2').style.width = pct2 + '%';
-        document.getElementById('funnel-pct-2').innerText = pct2 + '%';
-        document.getElementById('funnel-bar-3').style.width = pct3 + '%';
-        document.getElementById('funnel-pct-3').innerText = pct3 + '%';
-    }, 100); 
+        if(document.getElementById('cd-chart-entregados')) document.getElementById('cd-chart-entregados').innerText = pct1 + '%';
+        if(document.getElementById('cd-chart-leidos')) document.getElementById('cd-chart-leidos').innerText = pct2 + '%';
+        if(document.getElementById('cd-chart-fallidos')) document.getElementById('cd-chart-fallidos').innerText = total > 0 ? ((fallidos/total)*100).toFixed(0) + '%' : '0%';
 
-    document.getElementById('cd-chart-entregados').innerText = pct1 + '%';
-    document.getElementById('cd-chart-leidos').innerText = pct2 + '%';
-    document.getElementById('cd-chart-fallidos').innerText = total > 0 ? ((fallidos/total)*100).toFixed(0) + '%' : '0%';
+        if(campDoughnutChart) campDoughnutChart.destroy();
+        const ctxDonut = document.getElementById('camp-donut-chart');
+        if(ctxDonut && typeof Chart !== 'undefined') {
+            let chartPendientes = total - entregados - fallidos;
+            campDoughnutChart = new Chart(ctxDonut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Entregados', 'Fallidos', 'Pendientes'],
+                    datasets: [{
+                        data: [entregados, fallidos, chartPendientes < 0 ? 0 : chartPendientes],
+                        backgroundColor: ['#10b981', '#fb7185', '#e2e8f0'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
 
-    if(campDoughnutChart) campDoughnutChart.destroy();
-    const ctxDonut = document.getElementById('camp-donut-chart');
-    if(ctxDonut && typeof Chart !== 'undefined') {
-        let chartPendientes = total - entregados - fallidos;
-        campDoughnutChart = new Chart(ctxDonut, {
-            type: 'doughnut',
-            data: {
-                labels: ['Entregados', 'Fallidos', 'Pendientes'],
-                datasets: [{
-                    data: [entregados, fallidos, chartPendientes < 0 ? 0 : chartPendientes],
-                    backgroundColor: ['#10b981', '#fb7185', '#e2e8f0'],
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        const filterVal = document.getElementById('cd-filter-status')?.value || 'all';
+        const searchInput = document.getElementById('cd-search-text');
+        const searchVal = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+        let displayTargets = allTargets;
+
+        if(searchVal) {
+            displayTargets = displayTargets.filter(t => 
+                t.username.toLowerCase().includes(searchVal) || 
+                (t.phone && t.phone.includes(searchVal)) || 
+                (t.original_name && t.original_name.toLowerCase().includes(searchVal))
+            );
+        }
+
+        if(filterVal === 'deposited') displayTargets = displayTargets.filter(t => t.deposited && t.wsp_status !== 'Bono');
+        else if(filterVal === 'not_deposited') displayTargets = displayTargets.filter(t => !t.deposited && t.wsp_status !== 'Bono');
+        else if(filterVal === 'wsp_leido') displayTargets = displayTargets.filter(t => t.wsp_status === 'Leído');
+        else if(filterVal === 'wsp_entregado') displayTargets = displayTargets.filter(t => t.wsp_status === 'Entregado' || t.wsp_status === 'Leído');
+        else if(filterVal === 'wsp_fallido') displayTargets = displayTargets.filter(t => t.wsp_status === 'Fallido');
+
+        const tbody = document.getElementById('cd-table-body');
+        if(!tbody) return;
+        let html = '';
+        displayTargets.forEach(t => {
+            let phone = t.phone || (contactsMap[t.username] ? contactsMap[t.username].phone : '-');
+            
+            let wspBadge = '';
+            if(t.wsp_status === 'Leído') wspBadge = `<span class="text-sky-500 font-bold text-[10px]"><i class="fas fa-check-double"></i> Leído</span>`;
+            else if(t.wsp_status === 'Entregado') wspBadge = `<span class="text-slate-500 font-bold text-[10px]"><i class="fas fa-check-double"></i> Entregado</span>`;
+            else if(t.wsp_status === 'Fallido') wspBadge = `<span class="text-rose-500 font-bold text-[10px]"><i class="fas fa-exclamation-circle"></i> Fallido</span>`;
+            else if(t.wsp_status === 'Bono') wspBadge = ``; 
+            else wspBadge = `<span class="text-slate-300 font-bold text-[10px]"><i class="fas fa-clock"></i> Pendiente</span>`;
+
+            let badge = '';
+            let amtClass = 'text-slate-300';
+            
+            if(t.wsp_status === 'Bono') {
+                badge = `<span class="px-3 py-1.5 bg-rose-50 text-rose-600 border border-rose-100 rounded-xl text-[10px] font-black uppercase"><i class="fas fa-gift mr-1"></i> Bono</span>`;
+                amtClass = 'text-rose-600';
+            } else if(t.deposited) {
+                badge = `<span class="px-3 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl text-[10px] font-black uppercase"><i class="fas fa-check mr-1"></i> Sí depositó</span>`;
+                amtClass = 'text-emerald-600';
+            } else {
+                badge = `<span class="px-3 py-1.5 bg-slate-50 text-slate-400 border border-slate-200 rounded-xl text-[10px] font-black uppercase"><i class="fas fa-times mr-1"></i> No</span>`;
+            }
+            
+            html += `<tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors"><td data-label="Usuario" class="p-4 pl-8 font-black uppercase text-purple-600">${t.username}</td><td data-label="Teléfono" class="p-4 font-mono text-sm font-bold text-slate-600">${phone} <br>${wspBadge}</td><td data-label="Depositó" class="p-4 text-center">${badge}</td><td data-label="Monto" class="p-4 pr-8 text-right font-black ${amtClass}">${fmt(t.amount_deposited)}</td></tr>`;
         });
+        tbody.innerHTML = html || `<tr><td colspan="4" class="p-8 text-center text-sm font-bold text-slate-400">No hay usuarios con este filtro.</td></tr>`;
+    } catch(err) {
+        console.error(err);
     }
-
-    const filterVal = document.getElementById('cd-filter-status')?.value || 'all';
-    const searchVal = document.getElementById('cd-search-text')?.value.toLowerCase().trim() || '';
-
-    let displayTargets = allTargets;
-
-    // Aplicar buscador de texto
-    if(searchVal) {
-        displayTargets = displayTargets.filter(t => 
-            t.username.toLowerCase().includes(searchVal) || 
-            (t.phone && t.phone.includes(searchVal)) || 
-            (t.original_name && t.original_name.toLowerCase().includes(searchVal))
-        );
-    }
-
-    // Aplicar filtros desplegables
-    if(filterVal === 'deposited') displayTargets = displayTargets.filter(t => t.deposited);
-    else if(filterVal === 'not_deposited') displayTargets = displayTargets.filter(t => !t.deposited);
-    else if(filterVal === 'wsp_leido') displayTargets = displayTargets.filter(t => t.wsp_status === 'Leído');
-    else if(filterVal === 'wsp_entregado') displayTargets = displayTargets.filter(t => t.wsp_status === 'Entregado' || t.wsp_status === 'Leído');
-    else if(filterVal === 'wsp_fallido') displayTargets = displayTargets.filter(t => t.wsp_status === 'Fallido');
-
-    const tbody = document.getElementById('cd-table-body');
-    if(!tbody) return;
-    let html = '';
-    displayTargets.forEach(t => {
-        let phone = t.phone || (contactsMap[t.username] ? contactsMap[t.username].phone : '-');
-        
-        let wspBadge = '';
-        if(t.wsp_status === 'Leído') wspBadge = `<span class="text-sky-500 font-bold text-[10px]"><i class="fas fa-check-double"></i> Leído</span>`;
-        else if(t.wsp_status === 'Entregado') wspBadge = `<span class="text-slate-500 font-bold text-[10px]"><i class="fas fa-check-double"></i> Entregado</span>`;
-        else if(t.wsp_status === 'Fallido') wspBadge = `<span class="text-rose-500 font-bold text-[10px]"><i class="fas fa-exclamation-circle"></i> Fallido</span>`;
-        else wspBadge = `<span class="text-slate-300 font-bold text-[10px]"><i class="fas fa-clock"></i> Pendiente</span>`;
-
-        let badge = t.deposited ? `<span class="px-3 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl text-[10px] font-black uppercase"><i class="fas fa-check mr-1"></i> Sí depositó</span>` : `<span class="px-3 py-1.5 bg-slate-50 text-slate-400 border border-slate-200 rounded-xl text-[10px] font-black uppercase"><i class="fas fa-times mr-1"></i> No</span>`;
-        let amtClass = t.deposited ? 'text-emerald-600' : 'text-slate-300';
-        
-        html += `<tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors"><td data-label="Usuario" class="p-4 pl-8 font-black uppercase text-purple-600">${t.username}</td><td data-label="Teléfono" class="p-4 font-mono text-sm font-bold text-slate-600">${phone} <br>${wspBadge}</td><td data-label="Depositó" class="p-4 text-center">${badge}</td><td data-label="Monto" class="p-4 pr-8 text-right font-black ${amtClass}">${fmt(t.amount_deposited)}</td></tr>`;
-    });
-    tbody.innerHTML = html || `<tr><td colspan="4" class="p-8 text-center text-sm font-bold text-slate-400">No hay usuarios con este filtro.</td></tr>`;
 }
 
 async function analyzeCampaignFile() {
@@ -3134,16 +3154,21 @@ function closeCampDownloadModal() {
 
 async function confirmCampDownload() {
     const id = document.getElementById('dw-camp-id').value;
-    const type = document.getElementById('dw-camp-type').value; 
-    const omitFailed = document.getElementById('dw-omit-failed').checked;
+    const type = document.getElementById('dw-camp-type')?.value || 'all'; 
+    const omitFailedCb = document.getElementById('dw-omit-failed');
+    const omitFailed = omitFailedCb ? omitFailedCb.checked : false;
     
     const camp = campaignsList.find(c => c.id === id);
     if(!camp) return;
     
     let finalUsers = campaignTargetsList.filter(t => t.campaign_id === id);
     
-    if(type === 'success') finalUsers = finalUsers.filter(t => t.deposited);
-    else if(type === 'fail') finalUsers = finalUsers.filter(t => !t.deposited);
+    if(type === 'success') {
+        finalUsers = finalUsers.filter(t => t.deposited && t.wsp_status !== 'Bono');
+    } else if(type === 'fail') {
+        // EXCLUYE a los que depositaron Y a los que tienen bono
+        finalUsers = finalUsers.filter(t => !t.deposited && t.wsp_status !== 'Bono');
+    }
     
     if(omitFailed) {
         finalUsers = finalUsers.filter(t => t.wsp_status !== 'Fallido');
@@ -3157,13 +3182,17 @@ async function confirmCampDownload() {
         let phoneVal = t.phone || (contactsMap[u] ? contactsMap[u].phone : 'Sin Teléfono');
         let origName = t.original_name || (contactsMap[u] ? contactsMap[u].orig : u);
         
+        let statusRecarga = 'NO';
+        if (t.wsp_status === 'Bono') statusRecarga = 'BONO';
+        else if (t.deposited) statusRecarga = 'SÍ';
+
         exportData.push({ 
             'Nombre Original': origName, 
             'Usuario (Sistema)': u, 
             'Teléfono': phoneVal,
             'Estado de Envío WSP': t.wsp_status || 'Pendiente',
-            '¿Realizó Recarga?': t.deposited ? 'SÍ' : 'NO',
-            'Monto Depositado ($)': t.amount_deposited || 0
+            '¿Realizó Recarga?': statusRecarga,
+            'Monto ($)': t.amount_deposited || 0
         });
     });
     
@@ -3173,9 +3202,8 @@ async function confirmCampDownload() {
     XLSX.writeFile(wb, `Reporte_CRM_${camp.name}.xlsx`);
     
     closeCampDownloadModal();
-    showToast("Reporte descargado con éxito", "success");
+    showToast("Audiencia descargada con éxito", "success");
 }
-
 async function deleteCampaign(id) {
     if(!confirm("¿Seguro que deseas eliminar esta campaña y sus estadísticas?")) return;
     try {
@@ -4786,6 +4814,108 @@ function updateLiveTimeline(){
 }
 
 // === SCRIPT FINALIZADO ===
+async function analyzeBonoFile() {
+    if(!currentCampaignId) return;
+    const fileInput = document.getElementById('upload-bono-analysis-file');
+    if(!fileInput.files.length) return showToast("Seleccione el reporte de Apuestas/Bonos", "warning");
+
+    const btn = fileInput.nextElementSibling;
+    const origHtml = btn.innerHTML;
+    btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-1"></i> Comparando...`;
+    btn.disabled = true;
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    reader.onload = async function(evt) {
+        try {
+            const workbook = XLSX.read(evt.target.result, {type:'binary'});
+            let bonosMap = {};
+
+            // Analiza todas las hojas del Excel
+            workbook.SheetNames.forEach(sheetName => {
+                const sheet = workbook.Sheets[sheetName];
+                const rows = XLSX.utils.sheet_to_json(sheet, {header:1});
+                let hIdx=-1, cU=-1, cB=-1, cM=-1;
+                
+                for(let i=0; i<Math.min(30, rows.length); i++){
+                    const r = Array.from(rows[i]||[]).map(x=>String(x).toLowerCase().trim());
+                    cU = r.findIndex(x=>x.includes('jugador') || x.includes('usuario') || x.includes('agente'));
+                    cB = r.findIndex(x=>x === 'es bono' || x === 'bono');
+                    cM = r.findIndex(x=>x.includes('monto') || x.includes('inversión') || x.includes('inversion'));
+                    if(cU !== -1 && cB !== -1) { hIdx=i; break; }
+                }
+
+                if(hIdx !== -1) {
+                    for(let i=hIdx+1; i<rows.length; i++){
+                        const row = rows[i]||[];
+                        if(row[cU] && row[cB]) {
+                            let bVal = String(row[cB]).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+                            if(bVal === 'si' || bVal === 'yes') {
+                                let rawU = String(row[cU]).toLowerCase().trim();
+                                let cleanU = rawU.replace(/[^a-z0-9]/g, '');
+                                let amt = cM !== -1 ? getVal(row[cM]) : 0;
+                                if(cleanU) {
+                                    if(!bonosMap[cleanU]) bonosMap[cleanU] = 0;
+                                    bonosMap[cleanU] += amt;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            if(Object.keys(bonosMap).length === 0) {
+                btn.innerHTML = origHtml; btn.disabled = false;
+                return showToast("No se detectaron usuarios con 'Es Bono = Sí'", "warning");
+            }
+
+            const targetsToUpdate = [];
+            campaignTargetsList.filter(t => t.campaign_id === currentCampaignId).forEach(t => {
+                const superClean = (str) => str.replace(/cliente|sorti365|sorti|sepybet|oficial/gi, '').replace(/[^a-z0-9]/g, '').trim();
+                let cleanTarget = superClean(t.username);
+                let matchedBono = false;
+                let matchAmt = 0;
+                
+                for(let backUser in bonosMap) {
+                    let cleanBack = superClean(backUser);
+                    if(cleanTarget === cleanBack && cleanTarget.length > 0) {
+                        matchedBono = true; 
+                        matchAmt = bonosMap[backUser];
+                        break;
+                    }
+                }
+
+                // El TRUCO: Solo si el usuario coincide y NO había depositado dinero real, se etiqueta como Bono
+                if(matchedBono && !t.deposited) {
+                    targetsToUpdate.push({
+                        id: t.id, campaign_id: t.campaign_id, username: t.username,
+                        deposited: false, 
+                        amount_deposited: matchAmt > 0 ? matchAmt : t.amount_deposited, 
+                        phone: t.phone,
+                        original_name: t.original_name,
+                        wsp_status: 'Bono' // Usa la variable de status para proteger la base de datos sin dañarla
+                    });
+                }
+            });
+
+            if(targetsToUpdate.length > 0) {
+                showToast(`Marcando ${targetsToUpdate.length} usuarios como BONO...`, "info");
+                const chunkSize = 500;
+                for (let i = 0; i < targetsToUpdate.length; i += chunkSize) {
+                    await db.from('campaign_targets').upsert(targetsToUpdate.slice(i, i + chunkSize));
+                }
+                showToast("Comparación completada con éxito", "success");
+                fileInput.value = '';
+                await fetchData(true); 
+            } else {
+                showToast("Ningún usuario de la campaña coincide con los bonos.", "warning");
+            }
+
+        } catch(err) { showToast("Error comparando bonos", "error"); console.log(err); }
+        btn.innerHTML = origHtml; btn.disabled = false;
+    };
+    reader.readAsBinaryString(file);
+}
 </script>
 </body>
 </html>
